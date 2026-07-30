@@ -264,7 +264,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-  import { getDatabase, ref, get, update, onValue, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+  import { getDatabase, ref, get, set, update, onValue, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
   // ===== إعدادات فايربيز — استبدل بالقيم الخاصة بمشروعك =====
   const firebaseConfig = {
@@ -339,6 +339,22 @@
     updateShareBox();
   }
 
+  // ===== توليد رابط من اسم العريس والعروسة (لازم يطابق اللي في login.html) =====
+  function slugify(groom, bride){
+    const clean = s => (s || '').trim().replace(/\s+/g,'');
+    return `${clean(groom)}&${clean(bride)}`;
+  }
+
+  async function uniqueSlug(base, currentSlug){
+    if (base === currentSlug) return base;
+    let candidate = base, i = 2;
+    while (true) {
+      const snap = await get(ref(db, 'invitations/' + encodeURIComponent(candidate)));
+      if (!snap.exists()) return candidate;
+      candidate = `${base}${i}`; i++;
+    }
+  }
+
   function selectTheme(theme){
     document.querySelectorAll('.theme-opt').forEach(el => {
       el.classList.toggle('selected', el.dataset.theme === theme);
@@ -351,9 +367,11 @@
   // ===== حفظ التفاصيل =====
   document.getElementById('saveDetails').addEventListener('click', async () => {
     const theme = document.querySelector('.theme-opt.selected')?.dataset.theme || 'royal';
+    const groomName = document.getElementById('groomName').value;
+    const brideName = document.getElementById('brideName').value;
     const payload = {
-      groomName: document.getElementById('groomName').value,
-      brideName: document.getElementById('brideName').value,
+      groomName,
+      brideName,
       eventType: document.getElementById('eventType').value,
       eventDate: document.getElementById('eventDate').value,
       venueName: document.getElementById('venueName').value,
@@ -361,11 +379,31 @@
       story: document.getElementById('story').value,
       theme
     };
-    await update(ref(db, 'invitations/' + slug), payload);
-    Object.assign(invData, payload);
     const m = document.getElementById('detailsMsg');
-    m.textContent = 'تم الحفظ بنجاح'; m.className = 'msg ok';
-    setTimeout(() => m.textContent = '', 3000);
+    try {
+      await update(ref(db, 'invitations/' + slug), payload);
+      Object.assign(invData, payload);
+
+      // لو الأسماء اتغيرت، لازم الرابط يتغيّر معاها عشان يفضل مطابق لاسم العريس والعروسة
+      const desiredSlug = slugify(groomName, brideName);
+      if (desiredSlug && desiredSlug !== '&' && desiredSlug !== slug) {
+        const finalSlug = await uniqueSlug(desiredSlug, slug);
+        const fullSnap = await get(ref(db, 'invitations/' + slug));
+        const fullData = fullSnap.val();
+        await set(ref(db, 'invitations/' + finalSlug), fullData);
+        await remove(ref(db, 'invitations/' + slug));
+        await update(ref(db, 'users/' + currentUid), { slug: finalSlug });
+        slug = finalSlug;
+        document.getElementById('slugTop').textContent = SITE_URL.replace('https://','') + '/' + slug;
+        listenRsvps(); listenWishes(); listenGallery();
+        updateShareBox();
+      }
+
+      m.textContent = 'تم الحفظ بنجاح'; m.className = 'msg ok';
+      setTimeout(() => m.textContent = '', 3000);
+    } catch {
+      m.textContent = 'حدث خطأ أثناء الحفظ، حاول مرة أخرى'; m.className = 'msg error';
+    }
   });
 
   // ===== رفع الصور / الأغنية عبر الـ Worker إلى R2 =====
