@@ -1,0 +1,679 @@
+/* ===================================
+   دعوة فرح - Landing Page Specific Styles
+   =================================== */
+
+/* Additional Landing Page Enhancements */
+
+/* Smooth Scroll Offset for Fixed Navbar */
+html {
+    scroll-padding-top: 100px;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--primary-gold);
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-gold-dark);
+}
+
+/* Selection Color */
+::selection {
+    background: var(--primary-gold-light);
+    color: var(--bg-dark);
+}
+
+/* Loading Animation */
+.page-loader {
+    position: fixed;
+    inset: 0;
+    background: var(--bg-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+.page-loader.hidden {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.loader-ring {
+    width: 60px;
+    height: 60px;
+    border: 4px solid var(--bg-secondary);
+    border-top-color: var(--primary-gold);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Back to Top Button */
+.back-to-top {
+    position: fixed;
+    bottom: 30px;
+    left: 30px;
+    width: 50px;
+    height: 50px;
+    background: var(--gradient-gold);
+    color: var(--bg-dark);
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    box-shadow: var(--shadow-gold);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(20px);
+    transition: all var(--transition-normal);
+    z-index: 999;
+    cursor: pointer;
+    border: none;
+}
+
+.back-to-top.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.back-to-top:hover {
+    transform: translateY(-5px);
+}
+
+/* Animated Gradient Background for Hero */
+.hero::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(212, 175, 55, 0.05) 0%, transparent 70%);
+    animation: heroGlow 15s ease-in-out infinite alternate;
+}
+
+@keyframes heroGlow {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    100% { transform: translate(5%, 5%) rotate(5deg); }
+}
+
+/* Feature Cards Hover Effect */
+.feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--gradient-gold);
+    transform: scaleX(0);
+    transition: transform var(--transition-normal);
+}
+
+.feature-card:hover::before {
+    transform: scaleX(1);
+}
+
+.feature-card {
+    position: relative;
+}
+
+/* Template Card Shine Effect */
+.template-preview::after {
+    content: '';
+    position: absolute;
+    top: -100%;
+    left: -100%;
+    width: 300%;
+    height: 300%;
+    background: linear-gradient(
+        to bottom right,
+        transparent,
+        rgba(255, 255, 255, 0.2),
+        transparent
+    );
+    transform: rotate(45deg);
+    transition: all 0.6s ease;
+}
+
+.template-card:hover .template-preview::after {
+    top: 100%;
+    left: 100%;
+}
+
+/* Pricing Card Popular Glow */
+.pricing-card.popular::before {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    background: var(--gradient-gold);
+    border-radius: var(--radius-lg);
+    z-index: -1;
+    opacity: 0.3;
+    filter: blur(15px);
+}
+
+/* Testimonial Card Quote Mark */
+.testimonial-card::before {
+    content: '"';
+    position: absolute;
+    top: 20px;
+    right: 25px;
+    font-size: 5rem;
+    font-family: Georgia, serif;
+    color: var(--primary-gold-light);
+    line-height: 1;
+    opacity: 0.5;
+}
+
+.testimonial-card {
+    position: relative;
+    overflow: hidden;
+}
+
+/* CTA Section Particles */
+.cta-section::after {
+    content: '💍';
+    position: absolute;
+    font-size: 3rem;
+    opacity: 0.1;
+    animation: floatParticle 8s ease-in-out infinite;
+    top: 20%;
+    left: 10%;
+}
+
+@keyframes floatParticle {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-30px) rotate(180deg); }
+}
+
+/* Form Focus Styles (for newsletter) */
+.newsletter-form input:focus {
+    border-color: var(--primary-gold);
+    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
+}
+
+/* Button Ripple Effect */
+.btn .ripple {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.4);
+    transform: scale(0);
+    animation: ripple 0.6s linear;
+    pointer-events: none;
+}
+
+@keyframes ripple {
+    to {
+        transform: scale(4);
+        opacity: 0;
+    }
+}
+
+/* Stats Counter Animation */
+.stat-number {
+    display: inline-block;
+}
+
+/* Template Filter Active State Animation */
+.filter-btn {
+    position: relative;
+    overflow: hidden;
+}
+
+.filter-btn.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60%;
+    height: 3px;
+    background: white;
+    border-radius: 3px 3px 0 0;
+}
+
+/* ===================================
+   Lifetime Pricing Styles
+   =================================== */
+
+.lifetime-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    background: linear-gradient(135deg, #FFF9E6 0%, #FFE6A0 100%);
+    color: #8B6914;
+    padding: 14px 30px;
+    border-radius: 50px;
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-bottom: 40px;
+    box-shadow: 0 4px 20px rgba(212, 175, 55, 0.25);
+    animation: pulseBadge 2s ease-in-out infinite;
+}
+
+.lifetime-badge i {
+    font-size: 1.4rem;
+    animation: rotateInfinity 4s linear infinite;
+}
+
+@keyframes pulseBadge {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.03); }
+}
+
+@keyframes rotateInfinity {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Hide old pricing toggle */
+.pricing-toggle {
+    display: none !important;
+}
+
+/* Pricing Grid - Lifetime */
+.pricing-lifetime {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+@media (max-width: 992px) {
+    .pricing-lifetime {
+        grid-template-columns: 1fr;
+        max-width: 450px;
+        margin: 0 auto;
+    }
+}
+
+/* Plan Icons */
+.plan-icon {
+    width: 70px;
+    height: 70px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    margin: 0 auto 15px;
+    background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+    color: #666;
+}
+
+.plan-icon.premium {
+    background: linear-gradient(135deg, #D4AF37 0%, #B8941F 100%);
+    color: white;
+    box-shadow: 0 8px 25px rgba(212, 175, 55, 0.35);
+}
+
+.plan-icon.vip-icon {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    color: #D4AF37;
+    box-shadow: 0 8px 25px rgba(26, 26, 46, 0.35);
+    border: 2px solid #D4AF37;
+}
+
+/* VIP Card Special Styling */
+.pricing-card.vip {
+    background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+    border-color: #D4AF37;
+    position: relative;
+    overflow: visible;
+}
+
+.pricing-card.vip .pricing-header h3,
+.pricing-card.vip .pricing-header p,
+.pricing-card.vip .price,
+.pricing-card.vip .pricing-features li {
+    color: white !important;
+}
+
+.pricing-card.vip .price .amount {
+    background: linear-gradient(135deg, #D4AF37 0%, #F4E4A6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-size: 3rem;
+}
+
+.pricing-card.vip .pricing-features li i {
+    color: #D4AF37;
+}
+
+.pricing-card.vip .pricing-features li.disabled i {
+    color: #555;
+}
+
+.pricing-card.vip .pricing-features li.disabled {
+    color: #777;
+}
+
+.vip-badge {
+    position: absolute;
+    top: -14px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, #D4AF37 0%, #F4E4A6 100%);
+    color: #1a1a2e;
+    padding: 8px 24px;
+    border-radius: 50px;
+    font-weight: 800;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
+    z-index: 10;
+}
+
+/* Popular Badge Update */
+.popular-badge {
+    background: linear-gradient(135deg, #10B981 0%, #059669 100%) !important;
+    padding: 8px 24px !important;
+}
+
+/* Period Text Update */
+.price .period {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+/* ===================================
+   Steps Section Icons
+   =================================== */
+
+.step-icon {
+    width: 100px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+}
+
+.step-icon svg {
+    width: 100%;
+    height: 100%;
+    filter: drop-shadow(0 4px 10px rgba(212, 175, 55, 0.2));
+}
+
+.step-card:hover .step-icon svg {
+    animation: stepIconBounce 0.5s ease;
+}
+
+@keyframes stepIconBounce {
+    0%, 100% { transform: scale(1) translateY(0); }
+    50% { transform: scale(1.1) translateY(-5px); }
+}
+
+/* ===================================
+   Hero Buttons & Stats Update
+   =================================== */
+
+.hero-btn-main {
+    background: linear-gradient(135deg, #D4AF37 0%, #F4E4A6 50%, #D4AF37 100%) !important;
+    background-size: 200% auto !important;
+    color: #1a1a2e !important;
+    font-weight: 800 !important;
+    border: none !important;
+    box-shadow: 0 8px 30px rgba(212, 175, 55, 0.4) !important;
+    transition: all 0.3s ease !important;
+    animation: goldShine 3s linear infinite !important;
+}
+
+.hero-btn-main:hover {
+    background-position: right center !important;
+    transform: translateY(-3px);
+    box-shadow: 0 12px 40px rgba(212, 175, 55, 0.5) !important;
+}
+
+@keyframes goldShine {
+    to { background-position: 200% center; }
+}
+
+.hero-btn-secondary {
+    background: rgba(255, 255, 255, 0.1) !important;
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(212, 175, 55, 0.5) !important;
+    color: #D4AF37 !important;
+    font-weight: 600 !important;
+    transition: all 0.3s ease !important;
+}
+
+.hero-btn-secondary:hover {
+    background: rgba(212, 175, 55, 0.15) !important;
+    border-color: #D4AF37 !important;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(212, 175, 55, 0.25) !important;
+}
+
+/* Hero Stats Updated */
+.hero-stats {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 25px;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(20px);
+    padding: 20px 35px;
+    border-radius: 20px;
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    margin-top: 35px;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.stat-icon {
+    width: 45px;
+    height: 45px;
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(212, 175, 55, 0.1));
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #D4AF37;
+    font-size: 1.1rem;
+}
+
+.stat-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-info .stat-number {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1.2;
+}
+
+.stat-info .stat-label {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.7);
+    font-weight: 500;
+}
+
+.stat-divider {
+    width: 1px;
+    height: 40px;
+    background: rgba(212, 175, 55, 0.3);
+}
+
+/* ===================================
+   Check/Times Icons in Pricing
+   =================================== */
+
+.pricing-features li i.fa-check-circle {
+    color: #10B981;
+    margin-left: 8px;
+    font-size: 1rem;
+}
+
+.pricing-features li.disabled i.fa-times-circle {
+    color: #EF4444;
+    margin-left: 8px;
+    font-size: 1rem;
+    opacity: 0.7;
+}
+
+/* ===================================
+   Currency Selector
+   =================================== */
+
+.currency-selector {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 30px;
+    padding: 15px 25px;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 50px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.selector-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+}
+
+.selector-label i {
+    color: var(--primary-gold);
+}
+
+.selector-options {
+    display: flex;
+    gap: 8px;
+}
+
+.currency-btn {
+    padding: 10px 18px;
+    border: 2px solid #e5e5e5;
+    border-radius: 25px;
+    background: white;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.currency-btn:hover {
+    border-color: var(--primary-gold);
+    transform: translateY(-2px);
+}
+
+.currency-btn.active {
+    background: linear-gradient(135deg, #D4AF37 0%, #B8941F 100%);
+    border-color: transparent;
+    color: white;
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
+}
+
+/* ===================================
+   Social Media Icons - Footer
+   =================================== */
+
+.footer-social {
+    display: flex;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.footer-social a {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    text-decoration: none !important;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Instagram */
+.footer-social a[href*="instagram"] {
+    background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+    color: white;
+}
+
+/* Twitter/X */
+.footer-social a[href*="twitter"] {
+    background: #000000;
+    color: white;
+}
+
+/* TikTok */
+.footer-social a[href*="tiktok"] {
+    background: #000000;
+    color: white;
+}
+
+/* Snapchat */
+.footer-social a[href*="snapchat"] {
+    background: #FFFC00;
+    color: black;
+}
+
+.footer-social a span {
+    display: none; /* Hide text label on desktop */
+}
+
+.footer-social a:hover {
+    transform: translateY(-5px) scale(1.1);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* Mobile Social Icons */
+@media (max-width: 768px) {
+    .footer-social a {
+        width: 52px;
+        height: 52px;
+        font-size: 1.3rem;
+        border-radius: 16px;
+    }
+    
+    .currency-selector {
+        flex-wrap: wrap;
+        padding: 12px 18px;
+    }
+    
+    .selector-options {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .currency-btn {
+        padding: 8px 14px;
+        font-size: 0.85rem;
+    }
+}

@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>معاينة | القالب الملكي الفاخر - دعوة فرح</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=Amiri:wght@400;700&family=Aref+Ruqaa:wght@400;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --navy: #1a1a3e;
+            --navy-light: #2d2d5e;
+            --gold: #c9a227;
+            --gold-light: #f4e4b3;
+            --cream: #faf8f0;
+            --white: #ffffff;
+            --text: #333;
+        }
+        
+        body { font-family: 'Tajawal', sans-serif; background: linear-gradient(180deg, var(--navy) 0%, #0f0f23 100%); min-height: 100vh; }
+        
+        .preview-header {
+            background: linear-gradient(135deg, var(--navy), var(--navy-light));
+            padding: 15px 30px; display: flex; justify-content: space-between; align-items: center;
+            position: sticky; top: 0; z-index: 1000;
+            border-bottom: 1px solid rgba(201,162,39,0.3);
+        }
+        .preview-logo { display: flex; align-items: center; gap: 10px; color: white; text-decoration: none; font-weight: 700; }
+        .preview-logo .gold { color: var(--gold); }
+        .preview-actions { display: flex; gap: 12px; }
+        
+        .preview-btn {
+            padding: 10px 20px; border-radius: 25px; border: none; cursor: pointer;
+            font-family: 'Tajawal', sans-serif; font-weight: 600; transition: all 0.3s ease;
+            text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
+        }
+        .preview-btn.primary {
+            background: linear-gradient(135deg, var(--gold), #a88620);
+            color: var(--navy);
+        }
+        .preview-btn.outline { background: transparent; color: white; border: 2px solid var(--gold); }
+        .template-badge-bar { 
+            background: linear-gradient(90deg, var(--navy), var(--gold), var(--navy)); 
+            padding: 12px; text-align: center; color: white; font-weight: 700; 
+        }
+        
+        .invitation-container { max-width: 500px; margin: 40px auto; padding: 0 20px; }
+        
+        /* Royal Template */
+        .invitation-card {
+            background: linear-gradient(180deg, var(--white) 0%, var(--cream) 100%);
+            border-radius: 30px;
+            overflow: hidden;
+            box-shadow: 
+                0 25px 80px rgba(0,0,0,0.4),
+                0 0 0 1px var(--gold),
+                inset 0 0 60px rgba(201,162,39,0.08);
+            position: relative;
+        }
+        
+        .royal-crown {
+            position: absolute;
+            top: -5px; left: 50%; transform: translateX(-50%);
+            font-size: 3rem;
+            z-index: 10;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+        }
+        
+        .cover-section {
+            background: linear-gradient(180deg, var(--navy) 0%, var(--navy-light) 100%);
+            padding: 95px 45px 75px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cover-section::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(201,162,39,0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 50%, rgba(201,162,39,0.08) 0%, transparent 50%);
+        }
+        
+        .royal-pattern {
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 100%;
+            background-image: repeating-linear-gradient(
+                90deg,
+                transparent,
+                transparent 40px,
+                rgba(201,162,39,0.03) 40px,
+                rgba(201,162,39,0.03) 41px
+            );
+        }
+        
+        .bismillah-royal {
+            font-family: 'Aref Ruqaa', serif;
+            font-size: 1.9rem;
+            color: var(--gold);
+            margin-bottom: 35px;
+            position: relative;
+            z-index: 1;
+            letter-spacing: 2px;
+        }
+        
+        .couple-names h1 {
+            font-family: 'Amiri', serif;
+            font-size: 3.5rem;
+            color: white;
+            line-height: 1.3;
+            position: relative;
+            z-index: 1;
+            text-shadow: 0 2px 20px rgba(0,0,0,0.3);
+        }
+        
+        .couple-names .and {
+            display: block;
+            font-size: 2.2rem;
+            color: var(--gold);
+            margin: 15px 0;
+        }
+        
+        .wedding-date-royal {
+            display: inline-flex; align-items: center; gap: 12px;
+            background: linear-gradient(135deg, rgba(201,162,39,0.2), rgba(201,162,39,0.1));
+            padding: 15px 32px;
+            border-radius: 40px;
+            color: var(--gold);
+            font-size: 1.05rem;
+            margin-top: 28px;
+            position: relative;
+            z-index: 1;
+            border: 1px solid rgba(201,162,39,0.4);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+        
+        .content-section { padding: 58px 42px; text-align: center; }
+        
+        .ornament-royal {
+            display: flex; align-items: center; justify-content: center; gap: 15px;
+            margin-bottom: 28px; color: var(--gold);
+        }
+        
+        .ornament-line {
+            width: 60px; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--gold));
+        }
+        .ornament-line:last-child { background: linear-gradient(90deg, var(--gold), transparent); }
+        
+        .invitation-text-royal {
+            font-family: 'Amiri', serif;
+            font-size: 1.3rem;
+            line-height: 2.1;
+            color: var(--text);
+            margin-bottom: 38px;
+        }
+        
+        .couple-highlight-royal {
+            color: var(--navy);
+            font-weight: 800;
+            font-size: 1.4rem;
+            display: block;
+            margin: 10px 0;
+        }
+        
+        .event-card-royal {
+            background: linear-gradient(135deg, var(--cream), #fff);
+            border: 2px solid var(--gold-light);
+            border-radius: 22px;
+            padding: 34px;
+            margin: 32px 0;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.06);
+        }
+        
+        .event-title-royal {
+            font-size: 1.2rem;
+            color: var(--navy);
+            margin-bottom: 24px;
+            font-weight: 800;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+        }
+        
+        .event-row-royal {
+            display: flex; align-items: center; padding: 16px 0;
+            border-bottom: 1px solid var(--gold-light);
+        }
+        .event-row-royal:last-child { border-bottom: none; }
+        
+        .event-icon-royal {
+            width: 52px; height: 52px;
+            background: linear-gradient(135deg, var(--navy), var(--navy-light));
+            border-radius: 16px;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--gold); margin-left: 16px; flex-shrink: 0;
+        }
+        
+        .event-details-royal { flex: 1; text-align: right; }
+        .event-label-royal { font-size: 0.86rem; color: #888; margin-bottom: 5px; }
+        .event-value-royal { font-size: 1.08rem; color: var(--navy); font-weight: 700; }
+        
+        .countdown-royal {
+            background: linear-gradient(135deg, var(--navy), var(--navy-light));
+            padding: 40px 30px;
+            border-radius: 22px;
+            margin: 32px 0;
+            border: 1px solid rgba(201,162,39,0.2);
+        }
+        
+        .countdown-title-royal { color: var(--gold); font-size: 1.08rem; margin-bottom: 24px; font-weight: 600; }
+        
+        .countdown-grid-royal { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+        .countdown-box-royal { text-align: center; }
+        
+        .countdown-num-royal {
+            width: 65px; height: 65px; border-radius: 18px;
+            background: linear-gradient(135deg, var(--gold), #a88620);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.95rem; font-weight: 900; color: var(--navy); margin: 0 auto 10px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+        
+        .countdown-label-royal { color: var(--gold-light); font-size: 0.86rem; }
+        
+        .gallery-royal {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 32px 0;
+        }
+        
+        .gallery-item-royal {
+            aspect-ratio: 1;
+            background: linear-gradient(135deg, var(--gold-light), var(--cream));
+            border-radius: 18px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.85rem; cursor: pointer; transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        .gallery-item-royal:hover { border-color: var(--gold); transform: scale(1.08); box-shadow: 0 8px 25px rgba(201,162,39,0.25); }
+        
+        .qr-royal {
+            text-align: center; padding: 34px;
+            background: linear-gradient(135deg, var(--cream), #fff);
+            border-radius: 22px; margin-top: 30px;
+            border: 1px solid var(--gold-light);
+        }
+        
+        .qr-code-royal {
+            width: 130px; height: 130px; background: white;
+            margin: 14px auto; border-radius: 18px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 3.5rem; color: var(--navy);
+            box-shadow: 0 8px 30px rgba(26,26,62,0.15);
+            border: 2px solid var(--gold-light);
+        }
+        
+        .footer-royal {
+            text-align: center; padding: 34px;
+            color: var(--text); font-size: 0.95rem; background: var(--cream);
+            border-top: 2px solid var(--gold-light);
+        }
+        .footer-royal i { color: var(--gold); }
+        
+        @media (max-width: 520px) {
+            .invitation-container { margin: 20px auto; padding: 0 10px; }
+            .cover-section { padding: 70px 25px 55px; }
+            .couple-names h1 { font-size: 2.4rem; }
+            .content-section { padding: 38px 22px; }
+            .countdown-num-royal { width: 55px; height: 55px; font-size: 1.55rem; }
+        }
+    </style>
+</head>
+<body>
+    <header class="preview-header">
+        <a href="index.html" class="preview-logo"><span>💍</span> دعوة<span class="gold">فرح</span></a>
+        <div class="preview-actions">
+            <button class="preview-btn outline" onclick="history.back()"><i class="fas fa-arrow-right"></i> رجوع</button>
+            <a href="register.html" class="preview-btn primary"><i class="fas fa-magic"></i> استخدم هذا القالب</a>
+        </div>
+    </header>
+    
+    <div class="template-badge-bar">
+        <i class="fas fa-crown"></i> القالب الملكي الفاخر - معاينة مباشرة
+    </div>
+    
+    <main class="invitation-container">
+        <article class="invitation-card">
+            <div class="royal-crown">👑</div>
+            
+            <section class="cover-section">
+                <div class="royal-pattern"></div>
+                
+                <p class="bismillah-royal">بسم الله الرحمن الرحيم</p>
+                
+                <div class="couple-names">
+                    <h1>سلطان</h1>
+                    <span class="and">&</span>
+                    <h1>ميرة</h1>
+                </div>
+                
+                <div class="wedding-date-royal">
+                    <i class="fas fa-star"></i>
+                    <span>1 فبراير 2026</span>
+                </div>
+            </section>
+            
+            <section class="content-section">
+                <div class="ornament-royal">
+                    <span class="ornament-line"></span>
+                    <i class="fas fa-gem"></i>
+                    <span class="ornament-line"></span>
+                </div>
+                
+                <p class="invitation-text-royal">
+                    يشرفنا دعوتكم لحضور حفل زفاف<br><br>
+                    <span class="couple-highlight-royal">سلطان بن فيصل بن سلطان</span>
+                    مع<br>
+                    <span class="couple-highlight-royal">ميرة بنت عبدالرحمن العنقري</span>
+                </p>
+                
+                <div class="event-card-royal">
+                    <h3 class="event-title-royal"><i class="fas fa-crown"></i> موعد الحفل الملكي</h3>
+                    
+                    <div class="event-row-royal">
+                        <div class="event-icon-royal"><i class="fas fa-calendar-alt"></i></div>
+                        <div class="event-details-royal">
+                            <div class="event-label-royal">التاريخ</div>
+                            <div class="event-value-royal">الأحد 1 فبراير 2026</div>
+                        </div>
+                    </div>
+                    
+                    <div class="event-row-royal">
+                        <div class="event-icon-royal"><i class="fas fa-clock"></i></div>
+                        <div class="event-details-royal">
+                            <div class="event-label-royal">الوقت</div>
+                            <div class="event-value-royal">8:00 مساءً</div>
+                        </div>
+                    </div>
+                    
+                    <div class="event-row-royal">
+                        <div class="event-icon-royal"><i class="fas fa-building-columns"></i></div>
+                        <div class="event-details-royal">
+                            <div class="event-label-royal">المكان</div>
+                            <div class="event-value-royal">قصر الرمال - جدة</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="countdown-royal">
+                    <h4 class="countdown-title-royal">👑 باقي على الحفل السامي</h4>
+                    <div class="countdown-grid-royal" id="countdown">
+                        <div class="countdown-box-royal">
+                            <div class="countdown-num-royal" id="days">--</div>
+                            <div class="countdown-label-royal">يوم</div>
+                        </div>
+                        <div class="countdown-box-royal">
+                            <div class="countdown-num-royal" id="hours">--</div>
+                            <div class="countdown-label-royal">ساعة</div>
+                        </div>
+                        <div class="countdown-box-royal">
+                            <div class="countdown-num-royal" id="minutes">--</div>
+                            <div class="countdown-label-royal">دقيقة</div>
+                        </div>
+                        <div class="countdown-box-royal">
+                            <div class="countdown-num-royal" id="seconds">--</div>
+                            <div class="countdown-label-royal">ثانية</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="gallery-royal">
+                    <div class="gallery-item-royal">📸</div>
+                    <div class="gallery-item-royal">👫</div>
+                    <div class="gallery-item-royal">🎊</div>
+                    <div class="gallery-item-royal">💍</div>
+                    <div class="gallery-item-royal">⭐</div>
+                    <div class="gallery-item-royal">🌟</div>
+                </div>
+                
+                <div class="qr-royal">
+                    <h4 style="color: var(--navy); margin-bottom: 12px;">الدعوة الملكية</h4>
+                    <div class="qr-code-royal"><i class="fas fa-qrcode"></i></div>
+                    <p style="color: #888; font-size: 0.9rem;">امسح الكود للمشاركة</p>
+                </div>
+            </section>
+            
+            <footer class="footer-royal">
+                <p><i class="fas fa-crown"></i> شرف لنا حضوركم الكريم <i class="fas fa-crown"></i></p>
+            </footer>
+        </article>
+    </main>
+    
+    <script>
+        const weddingDate = new Date('2026-02-01T20:00:00').getTime();
+        function updateCountdown() {
+            const now = new Date().getTime(); const distance = weddingDate - now;
+            if (distance > 0) {
+                document.getElementById('days').textContent = Math.floor(distance / (1000 * 60 * 60 * 24)).toString().padStart(2,'0');
+                document.getElementById('hours').textContent = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2,'0');
+                document.getElementById('minutes').textContent = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2,'0');
+                document.getElementById('seconds').textContent = Math.floor((distance % (1000 * 60)) / 1000).toString().padStart(2,'0');
+            }
+        }
+        updateCountdown(); setInterval(updateCountdown, 1000);
+    </script>
+</body>
+</html>

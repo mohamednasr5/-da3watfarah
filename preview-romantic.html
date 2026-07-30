@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>معاينة | القالب الرومانسي الناعم - دعوة فرح</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=Amiri:wght@400;700&family=Aref+Ruqaa:wght@400;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --rose: #e879a9;
+            --rose-light: #fce7f3;
+            --rose-dark: #be185d;
+            --pink: #f9a8d4;
+            --cream: #fff1f6;
+            --white: #ffffff;
+            --dark: #4a1942;
+            --text: #5b2c4e;
+        }
+        
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: linear-gradient(180deg, var(--cream) 0%, #ffe4ec 100%);
+            min-height: 100vh;
+        }
+        
+        .preview-header {
+            background: linear-gradient(135deg, var(--dark) 0%, #702455 100%);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .preview-logo { display: flex; align-items: center; gap: 10px; color: white; text-decoration: none; font-weight: 700; }
+        .preview-logo .gold { color: var(--rose); }
+        .preview-actions { display: flex; gap: 12px; }
+        
+        .preview-btn {
+            padding: 10px 20px; border-radius: 25px; border: none; cursor: pointer;
+            font-family: 'Tajawal', sans-serif; font-weight: 600; transition: all 0.3s ease;
+            text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
+        }
+        
+        .preview-btn.primary { background: linear-gradient(135deg, var(--rose) 0%, var(--rose-dark) 100%); color: white; }
+        .preview-btn.outline { background: transparent; color: white; border: 2px solid var(--rose); }
+        .preview-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 20px rgba(232,121,169,0.4); }
+        
+        .template-badge-bar { background: linear-gradient(90deg, var(--rose), var(--pink)); padding: 12px; text-align: center; color: white; font-weight: 700; }
+        
+        .invitation-container { max-width: 480px; margin: 40px auto; padding: 0 20px; }
+        
+        /* Romantic Template */
+        .invitation-card {
+            background: var(--white);
+            border-radius: 30px;
+            overflow: hidden;
+            box-shadow: 0 25px 60px rgba(190,24,93,0.15);
+            position: relative;
+        }
+        
+        .hearts-bg {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            overflow: hidden;
+            pointer-events: none;
+            opacity: 0.05;
+        }
+        
+        .heart-float {
+            position: absolute;
+            font-size: 2rem;
+            animation: floatHeart 8s ease-in-out infinite;
+        }
+        
+        @keyframes floatHeart {
+            0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.05; }
+            50% { transform: translateY(-30px) rotate(10deg); opacity: 0.1; }
+        }
+        
+        .cover-section {
+            background: linear-gradient(135deg, var(--rose-dark) 0%, var(--rose) 50%, var(--pink) 100%);
+            padding: 90px 40px 75px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cover-section::before {
+            content: '💕';
+            position: absolute;
+            font-size: 150px;
+            opacity: 0.08;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .romantic-icon {
+            font-size: 3rem;
+            margin-bottom: 25px;
+            animation: pulse 2s ease-in-out infinite;
+            position: relative;
+            z-index: 1;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+        
+        .couple-names h1 {
+            font-family: 'Amiri', serif;
+            font-size: 3.2rem;
+            color: white;
+            line-height: 1.4;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .couple-names .and {
+            display: block;
+            font-size: 2.5rem;
+            margin: 12px 0;
+        }
+        
+        .wedding-date-romantic {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            padding: 14px 28px;
+            border-radius: 35px;
+            color: white;
+            font-size: 1.05rem;
+            margin-top: 25px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .content-section { padding: 55px 40px; text-align: center; position: relative; }
+        
+        .ornament-hearts {
+            font-size: 1.8rem;
+            color: var(--rose);
+            letter-spacing: 10px;
+            margin-bottom: 25px;
+        }
+        
+        .invitation-text-romantic {
+            font-family: 'Amiri', serif;
+            font-size: 1.3rem;
+            line-height: 2.1;
+            color: var(--text);
+            margin-bottom: 35px;
+        }
+        
+        .invitation-text-romantic .couple-highlight {
+            color: var(--rose-dark);
+            font-weight: 700;
+            font-size: 1.4rem;
+        }
+        
+        .event-card-romantic {
+            background: linear-gradient(135deg, var(--cream), #fff5f8);
+            border: 2px solid var(--rose-light);
+            border-radius: 22px;
+            padding: 32px;
+            margin: 30px 0;
+        }
+        
+        .event-title-romantic {
+            font-size: 1.2rem;
+            color: var(--rose-dark);
+            margin-bottom: 22px;
+            font-weight: 800;
+        }
+        
+        .event-row-romantic {
+            display: flex;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px dashed var(--rose-light);
+        }
+        
+        .event-row-romantic:last-child { border-bottom: none; }
+        
+        .event-icon-romantic {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--rose), var(--pink));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            margin-left: 15px;
+            flex-shrink: 0;
+        }
+        
+        .event-details-romantic { flex: 1; text-align: right; }
+        .event-label-romantic { font-size: 0.85rem; color: #999; margin-bottom: 4px; }
+        .event-value-romantic { font-size: 1.05rem; color: var(--dark); font-weight: 600; }
+        
+        .countdown-romantic {
+            background: linear-gradient(135deg, var(--dark), #702455);
+            padding: 38px 28px;
+            border-radius: 22px;
+            margin: 30px 0;
+        }
+        
+        .countdown-title-romantic { color: var(--pink); font-size: 1.05rem; margin-bottom: 22px; font-weight: 600; }
+        
+        .countdown-grid-romantic { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+        
+        .countdown-box-romantic { text-align: center; }
+        
+        .countdown-num-romantic {
+            background: linear-gradient(135deg, var(--rose), var(--pink));
+            width: 62px;
+            height: 62px;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.85rem;
+            font-weight: 800;
+            color: white;
+            margin: 0 auto 10px;
+        }
+        
+        .countdown-label-romantic { color: var(--rose-light); font-size: 0.85rem; }
+        
+        .gallery-romantic {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin: 30px 0;
+        }
+        
+        .gallery-item-romantic {
+            aspect-ratio: 1;
+            background: linear-gradient(135deg, var(--rose-light), #fce7f3);
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        
+        .gallery-item-romantic:hover { border-color: var(--rose); transform: scale(1.06); }
+        
+        .qr-romantic {
+            text-align: center;
+            padding: 32px;
+            background: var(--cream);
+            border-radius: 22px;
+            margin-top: 28px;
+        }
+        
+        .qr-code-romantic {
+            width: 125px;
+            height: 125px;
+            background: white;
+            margin: 12px auto;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3.2rem;
+            color: var(--rose);
+            box-shadow: 0 8px 25px rgba(232,121,169,0.2);
+        }
+        
+        .footer-romantic {
+            text-align: center;
+            padding: 32px;
+            color: var(--text);
+            font-size: 0.95rem;
+            background: var(--cream);
+        }
+        
+        .footer-romantic i { color: var(--rose); }
+        
+        @media (max-width: 520px) {
+            .invitation-container { margin: 20px auto; padding: 0 10px; }
+            .cover-section { padding: 70px 25px 55px; }
+            .couple-names h1 { font-size: 2.3rem; }
+            .content-section { padding: 38px 22px; }
+            .countdown-num-romantic { width: 54px; height: 54px; font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <header class="preview-header">
+        <a href="index.html" class="preview-logo"><span>💍</span> دعوة<span class="gold">فرح</span></a>
+        <div class="preview-actions">
+            <button class="preview-btn outline" onclick="history.back()"><i class="fas fa-arrow-right"></i> رجوع</button>
+            <a href="register.html" class="preview-btn primary"><i class="fas fa-magic"></i> استخدم هذا القالب</a>
+        </div>
+    </header>
+    
+    <div class="template-badge-bar"><i class="fas fa-heart"></i> القالب الرومانسي الناعم - معاينة مباشرة</div>
+    
+    <main class="invitation-container">
+        <article class="invitation-card">
+            <div class="hearts-bg">
+                <span class="heart-float" style="top:10%;left:10%">❤️</span>
+                <span class="heart-float" style="top:20%;right:15%;animation-delay:1s">💕</span>
+                <span class="heart-float" style="top:60%;left:5%;animation-delay:2s">💖</span>
+                <span class="heart-float" style="bottom:20%;right:10%;animation-delay:3s">💗</span>
+            </div>
+            
+            <section class="cover-section">
+                <div class="romantic-icon">💕</div>
+                <div class="couple-names">
+                    <h1>سعود</h1>
+                    <span class="and">&</span>
+                    <h1>لمياء</h1>
+                </div>
+                <div class="wedding-date-romantic">
+                    <i class="fas fa-heart"></i>
+                    <span>5 نوفمبر 2025</span>
+                </div>
+            </section>
+            
+            <section class="content-section">
+                <div class="ornament-hearts">♥ ♥ ♥</div>
+                
+                <p class="invitation-text-romantic">
+                    في أجمل لحظات العمر<br><br>
+                    يجتمع قلبان في حب أبدي<br><br>
+                    <span class="couple-highlight">سعود بن فهد المطيري</span><br>
+                    مع<br>
+                    <span class="couple-highlight">لمياء بنت عبدالله الحربي</span>
+                </p>
+                
+                <div class="event-card-romantic">
+                    <h3 class="event-title-romantic"><i class="fas fa-heart-circle-check"></i> موعد الفرح</h3>
+                    
+                    <div class="event-row-romantic">
+                        <div class="event-icon-romantic"><i class="fas fa-calendar-alt"></i></div>
+                        <div class="event-details-romantic">
+                            <div class="event-label-romantic">التاريخ</div>
+                            <div class="event-value-romantic">الأربعاء 5 نوفمبر 2025</div>
+                        </div>
+                    </div>
+                    
+                    <div class="event-row-romantic">
+                        <div class="event-icon-romantic"><i class="fas fa-clock"></i></div>
+                        <div class="event-details-romantic">
+                            <div class="event-label-romantic">الوقت</div>
+                            <div class="event-value-romantic">6:00 مساءً</div>
+                        </div>
+                    </div>
+                    
+                    <div class="event-row-romantic">
+                        <div class="event-icon-romantic"><i class="fas fa-location-dot"></i></div>
+                        <div class="event-details-romantic">
+                            <div class="event-label-romantic">المكان</div>
+                            <div class="event-value-romantic">قاعة الأندلس - الدمام</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="countdown-romantic">
+                    <h4 class="countdown-title-romantic">💝 باقي على يوم الفرح</h4>
+                    <div class="countdown-grid-romantic" id="countdown">
+                        <div class="countdown-box-romantic">
+                            <div class="countdown-num-romantic" id="days">--</div>
+                            <div class="countdown-label-romantic">يوم</div>
+                        </div>
+                        <div class="countdown-box-romantic">
+                            <div class="countdown-num-romantic" id="hours">--</div>
+                            <div class="countdown-label-romantic">ساعة</div>
+                        </div>
+                        <div class="countdown-box-romantic">
+                            <div class="countdown-num-romantic" id="minutes">--</div>
+                            <div class="countdown-label-romantic">دقيقة</div>
+                        </div>
+                        <div class="countdown-box-romantic">
+                            <div class="countdown-num-romantic" id="seconds">--</div>
+                            <div class="countdown-label-romantic">ثانية</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="gallery-romantic">
+                    <div class="gallery-item-romantic">📸</div>
+                    <div class="gallery-item-romantic">💑</div>
+                    <div class="gallery-item-romantic">🌹</div>
+                    <div class="gallery-item-romantic">💕</div>
+                    <div class="gallery-item-romantic">🎀</div>
+                    <div class="gallery-item-romantic">🎊</div>
+                </div>
+                
+                <div class="qr-romantic">
+                    <h4 style="color: var(--rose-dark); margin-bottom: 10px;">شارك الحب</h4>
+                    <div class="qr-code-romantic"><i class="fas fa-qrcode"></i></div>
+                    <p style="color: #888; font-size: 0.9rem;">امسح الكود للمشاركة</p>
+                </div>
+            </section>
+            
+            <footer class="footer-romantic">
+                <p><i class="fas fa-heart"></i> حضوركم يكمل فرحتنا <i class="fas fa-heart"></i></p>
+            </footer>
+        </article>
+    </main>
+    
+    <script>
+        const weddingDate = new Date('2025-11-05T18:00:00').getTime();
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const distance = weddingDate - now;
+            if (distance > 0) {
+                document.getElementById('days').textContent = Math.floor(distance / (1000 * 60 * 60 * 24)).toString().padStart(2,'0');
+                document.getElementById('hours').textContent = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2,'0');
+                document.getElementById('minutes').textContent = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2,'0');
+                document.getElementById('seconds').textContent = Math.floor((distance % (1000 * 60)) / 1000).toString().padStart(2,'0');
+            }
+        }
+        updateCountdown(); setInterval(updateCountdown, 1000);
+    </script>
+</body>
+</html>

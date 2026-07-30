@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>معاينة | القالب البوهيمي الحر - دعوة فرح</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --sage: #7c9a82;
+            --sage-light: #d4e5d8;
+            --sage-dark: #5c7a62;
+            --terracotta: #d4785c;
+            --cream: #faf8f5;
+            --sand: #f5f0e8;
+            --white: #ffffff;
+            --dark: #3d3d3d;
+            --text: #4a4a4a;
+        }
+        
+        body { font-family: 'Tajawal', sans-serif; background: linear-gradient(180deg, var(--sand) 0%, var(--cream) 100%); min-height: 100vh; }
+        
+        .preview-header {
+            background: linear-gradient(135deg, var(--sage-dark) 0%, var(--sage) 100%);
+            padding: 15px 30px; display: flex; justify-content: space-between; align-items: center;
+            position: sticky; top: 0; z-index: 1000;
+        }
+        .preview-logo { display: flex; align-items: center; gap: 10px; color: white; text-decoration: none; font-weight: 700; }
+        .preview-logo .gold { color: var(--terracotta); }
+        .preview-actions { display: flex; gap: 12px; }
+        
+        .preview-btn {
+            padding: 10px 20px; border-radius: 25px; border: none; cursor: pointer;
+            font-family: 'Tajawal', sans-serif; font-weight: 600; transition: all 0.3s ease;
+            text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
+        }
+        .preview-btn.primary { background: linear-gradient(135deg, var(--sage), var(--sage-dark)); color: white; }
+        .preview-btn.outline { background: transparent; color: white; border: 2px solid var(--sage-light); }
+        .template-badge-bar { background: linear-gradient(90deg, var(--sage), var(--terracotta)); padding: 12px; text-align: center; color: white; font-weight: 700; }
+        
+        .invitation-container { max-width: 480px; margin: 40px auto; padding: 0 20px; }
+        
+        /* Bohemian Template */
+        .invitation-card {
+            background: var(--white);
+            border-radius: 32px;
+            overflow: hidden;
+            box-shadow: 0 25px 60px rgba(124,154,130,0.18);
+            position: relative;
+        }
+        
+        .boho-border {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            border: 3px solid transparent;
+            border-radius: 32px;
+            pointer-events: none;
+            background: 
+                linear-gradient(var(--white), var(--white)) padding-box,
+                linear-gradient(135deg, var(--sage), var(--terracotta)) border-box;
+        }
+        
+        .cover-section {
+            background: linear-gradient(180deg, var(--sage-light) 0%, var(--sand) 50%, var(--cream) 100%);
+            padding: 85px 40px 70px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .floral-decor {
+            position: absolute;
+            font-size: 4rem;
+            opacity: 0.15;
+        }
+        .floral-1 { top: 10px; left: 10px; transform: rotate(-20deg); }
+        .floral-2 { top: 10px; right: 10px; transform: rotate(20deg); }
+        .floral-3 { bottom: 10px; left: 20%; font-size: 3rem; }
+        
+        .boho-icon {
+            font-size: 3.5rem;
+            margin-bottom: 25px;
+            animation: sway 3s ease-in-out infinite;
+            position: relative;
+            z-index: 1;
+        }
+        
+        @keyframes sway {
+            0%, 100% { transform: rotate(-5deg); }
+            50% { transform: rotate(5deg); }
+        }
+        
+        .couple-names h1 {
+            font-family: 'Amiri', serif;
+            font-size: 3rem;
+            color: var(--dark);
+            line-height: 1.4;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .couple-names .and {
+            display: block;
+            font-size: 2rem;
+            color: var(--terracotta);
+            margin: 12px 0;
+        }
+        
+        .wedding-date-boho {
+            display: inline-flex; align-items: center; gap: 10px;
+            background: rgba(212,120,92,0.12);
+            padding: 13px 26px;
+            border-radius: 35px;
+            color: var(--terracotta);
+            font-size: 1.02rem;
+            margin-top: 22px;
+            position: relative;
+            z-index: 1;
+            border: 1px dashed var(--terracotta);
+        }
+        
+        .content-section { padding: 52px 38px; text-align: center; }
+        
+        .ornament-boho {
+            font-size: 1.5rem;
+            letter-spacing: 12px;
+            margin-bottom: 25px;
+            color: var(--sage);
+        }
+        
+        .invitation-text-boho {
+            font-family: 'Amiri', serif;
+            font-size: 1.22rem;
+            line-height: 2;
+            color: var(--text);
+            margin-bottom: 32px;
+        }
+        
+        .couple-highlight-boho {
+            color: var(--sage-dark);
+            font-weight: 700;
+            font-size: 1.3rem;
+            display: block;
+            margin: 8px 0;
+        }
+        
+        .event-card-boho {
+            background: linear-gradient(135deg, var(--sand), var(--cream));
+            border: 2px dashed var(--sage-light);
+            border-radius: 24px;
+            padding: 30px;
+            margin: 28px 0;
+        }
+        
+        .event-title-boho {
+            font-size: 1.15rem;
+            color: var(--sage-dark);
+            margin-bottom: 20px;
+            font-weight: 800;
+        }
+        
+        .event-row-boho {
+            display: flex; align-items: center; padding: 14px 0;
+            border-bottom: 1px dashed var(--sage-light);
+        }
+        .event-row-boho:last-child { border-bottom: none; }
+        
+        .event-icon-boho {
+            width: 48px; height: 48px;
+            background: linear-gradient(135deg, var(--sage), var(--terracotta));
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: white; margin-left: 14px; flex-shrink: 0;
+        }
+        
+        .event-details-boho { flex: 1; text-align: right; }
+        .event-label-boho { font-size: 0.84rem; color: #999; margin-bottom: 4px; }
+        .event-value-boho { font-size: 1.03rem; color: var(--dark); font-weight: 600; }
+        
+        .countdown-boho {
+            background: linear-gradient(135deg, var(--sage-dark), var(--sage));
+            padding: 36px 26px;
+            border-radius: 24px;
+            margin: 28px 0;
+        }
+        
+        .countdown-title-boho { color: var(--cream); font-size: 1.03rem; margin-bottom: 20px; font-weight: 600; }
+        
+        .countdown-grid-boho { display: grid; grid-template-columns: repeat(4, 1fr); gap: 11px; }
+        .countdown-box-boho { text-align: center; }
+        
+        .countdown-num-boho {
+            width: 60px; height: 60px; border-radius: 16px;
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.8rem; font-weight: 800; color: white; margin: 0 auto 9px;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+        
+        .countdown-label-boho { color: var(--sage-light); font-size: 0.83rem; }
+        
+        .gallery-boho {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 11px; margin: 28px 0;
+        }
+        
+        .gallery-item-boho {
+            aspect-ratio: 1;
+            background: linear-gradient(135deg, var(--sage-light), var(--sand));
+            border-radius: 18px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.7rem; cursor: pointer; transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        .gallery-item-boho:hover { border-color: var(--sage); transform: scale(1.06) rotate(2deg); }
+        
+        .qr-boho {
+            text-align: center; padding: 30px;
+            background: var(--sand); border-radius: 24px; margin-top: 26px;
+        }
+        
+        .qr-code-boho {
+            width: 120px; height: 120px; background: white;
+            margin: 12px auto; border-radius: 18px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 3rem; color: var(--sage);
+            box-shadow: 0 8px 25px rgba(124,154,130,0.18);
+        }
+        
+        .footer-boho {
+            text-align: center; padding: 30px;
+            color: var(--text); font-size: 0.93rem; background: var(--sand);
+        }
+        .footer-boho i { color: var(--terracotta); }
+        
+        @media (max-width: 520px) {
+            .invitation-container { margin: 20px auto; padding: 0 10px; }
+            .cover-section { padding: 65px 24px 50px; }
+            .couple-names h1 { font-size: 2.2rem; }
+            .content-section { padding: 36px 20px; }
+            .countdown-num-boho { width: 52px; height: 52px; font-size: 1.45rem; }
+        }
+    </style>
+</head>
+<body>
+    <header class="preview-header">
+        <a href="index.html" class="preview-logo"><span>💍</span> دعوة<span class="gold">فرح</span></a>
+        <div class="preview-actions">
+            <button class="preview-btn outline" onclick="history.back()"><i class="fas fa-arrow-right"></i> رجوع</button>
+            <a href="register.html" class="preview-btn primary"><i class="fas fa-magic"></i> استخدم هذا القالب</a>
+        </div>
+    </header>
+    
+    <div class="template-badge-bar"><i class="fas fa-leaf"></i> القالب البوهيمي الحر - معاينة مباشرة</div>
+    
+    <main class="invitation-container">
+        <article class="invitation-card">
+            <div class="boho-border"></div>
+            
+            <section class="cover-section">
+                <span class="floral-decor floral-1">🌸</span>
+                <span class="floral-decor floral-2">🌺</span>
+                <span class="floral-decor floral-3">🌿</span>
+                
+                <div class="boho-icon">🌸</div>
+                
+                <div class="couple-names">
+                    <h1>فيصل</h1>
+                    <span class="and">&</span>
+                    <h1>هيا</h1>
+                </div>
+                
+                <div class="wedding-date-boho">
+                    <i class="fas fa-seedling"></i>
+                    <span>18 يناير 2026</span>
+                </div>
+            </section>
+            
+            <section class="content-section">
+                <div class="ornament-boho">✿ ✾ ✿</div>
+                
+                <p class="invitation-text-boho">
+                    في رحاب الطبيعة والهدوء<br><br>
+                    نحتفل بحبنا مع أحبائنا<br><br>
+                    <span class="couple-highlight-boho">فيصل بن خالد الدوسري</span>
+                    و
+                    <span class="couple-highlight-boho">هيا بنت فهد العتيبي</span>
+                </p>
+                
+                <div class="event-card-boho">
+                    <h3 class="event-title-boho"><i class="fas fa-tree"></i> موعد الفرح</h3>
+                    
+                    <div class="event-row-boho">
+                        <div class="event-icon-boho"><i class="fas fa-calendar-alt"></i></div>
+                        <div class="event-details-boho">
+                            <div class="event-label-boho">التاريخ</div>
+                            <div class="event-value-boho">الأحد 18 يناير 2026</div>
+                        </div>
+                    </div>
+                    
+                    <div class="event-row-boho">
+                        <div class="event-icon-boho"><i class="fas fa-sun"></i></div>
+                        <div class="event-details-boho">
+                            <div class="event-label-boho">الوقت</div>
+                            <div class="event-value-boho">4:00 عصراً</div>
+                        </div>
+                    </div>
+                    
+                    <div class="event-row-boho">
+                        <div class="event-icon-boho"><i class="fas fa-campground"></i></div>
+                        <div class="event-details-boho">
+                            <div class="event-label-boho">المكان</div>
+                            <div class="event-value-boho">حديقة النخيل - أبها</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="countdown-boho">
+                    <h4 class="countdown-title-boho">🌿 باقي على الفرح</h4>
+                    <div class="countdown-grid-boho" id="countdown">
+                        <div class="countdown-box-boho">
+                            <div class="countdown-num-boho" id="days">--</div>
+                            <div class="countdown-label-boho">يوم</div>
+                        </div>
+                        <div class="countdown-box-boho">
+                            <div class="countdown-num-boho" id="hours">--</div>
+                            <div class="countdown-label-boho">ساعة</div>
+                        </div>
+                        <div class="countdown-box-boho">
+                            <div class="countdown-num-boho" id="minutes">--</div>
+                            <div class="countdown-label-boho">دقيقة</div>
+                        </div>
+                        <div class="countdown-box-boho">
+                            <div class="countdown-num-boho" id="seconds">--</div>
+                            <div class="countdown-label-boho">ثانية</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="gallery-boho">
+                    <div class="gallery-item-boho">📸</div>
+                    <div class="gallery-item-boho">💑</div>
+                    <div class="gallery-item-boho">🌸</div>
+                    <div class="gallery-item-boho">🌿</div>
+                    <div class="gallery-item-boho">🦋</div>
+                    <div class="gallery-item-boho">🎋</div>
+                </div>
+                
+                <div class="qr-boho">
+                    <h4 style="color: var(--sage-dark); margin-bottom: 10px;">شارك الفرحة</h4>
+                    <div class="qr-code-boho"><i class="fas fa-qrcode"></i></div>
+                    <p style="color: #888; font-size: 0.88rem;">امسح الكود للمشاركة</p>
+                </div>
+            </section>
+            
+            <footer class="footer-boho">
+                <p><i class="fas fa-leaf"></i> في أجواء طبيعية سحرية <i class="fas fa-leaf"></i></p>
+            </footer>
+        </article>
+    </main>
+    
+    <script>
+        const weddingDate = new Date('2026-01-18T16:00:00').getTime();
+        function updateCountdown() {
+            const now = new Date().getTime(); const distance = weddingDate - now;
+            if (distance > 0) {
+                document.getElementById('days').textContent = Math.floor(distance / (1000 * 60 * 60 * 24)).toString().padStart(2,'0');
+                document.getElementById('hours').textContent = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2,'0');
+                document.getElementById('minutes').textContent = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2,'0');
+                document.getElementById('seconds').textContent = Math.floor((distance % (1000 * 60)) / 1000).toString().padStart(2,'0');
+            }
+        }
+        updateCountdown(); setInterval(updateCountdown, 1000);
+    </script>
+</body>
+</html>

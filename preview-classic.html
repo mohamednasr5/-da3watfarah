@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>معاينة | القالب الكلاسيكي الذهبي - دعوة فرح</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=Amiri:wght@400;700&family=Aref+Ruqaa:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --gold: #D4AF37;
+            --gold-light: #F4E4A6;
+            --gold-dark: #B8941F;
+            --dark: #1a1a2e;
+            --cream: #FFF9E6;
+            --white: #ffffff;
+        }
+        
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: linear-gradient(180deg, var(--cream) 0%, var(--white) 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        /* Preview Header */
+        .preview-header {
+            background: linear-gradient(135deg, var(--dark) 0%, #16213e 100%);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+        
+        .preview-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+            text-decoration: none;
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+        
+        .preview-logo span:first-child { font-size: 1.5rem; }
+        .preview-logo .gold { color: var(--gold); }
+        
+        .preview-actions {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .preview-btn {
+            padding: 10px 20px;
+            border-radius: 25px;
+            border: none;
+            cursor: pointer;
+            font-family: 'Tajawal', sans-serif;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .preview-btn.primary {
+            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
+            color: var(--dark);
+        }
+        
+        .preview-btn.outline {
+            background: transparent;
+            color: white;
+            border: 2px solid var(--gold);
+        }
+        
+        .preview-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(212,175,55,0.4);
+        }
+        
+        /* Template Badge */
+        .template-badge-bar {
+            background: linear-gradient(90deg, var(--gold) 0%, var(--gold-dark) 50%, var(--gold) 100%);
+            padding: 12px;
+            text-align: center;
+            color: var(--dark);
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+        
+        /* Invitation Container */
+        .invitation-container {
+            max-width: 480px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        
+        /* Classic Template Style */
+        .invitation-card {
+            background: linear-gradient(180deg, var(--white) 0%, var(--cream) 100%);
+            border-radius: 24px;
+            box-shadow: 
+                0 25px 60px rgba(0,0,0,0.15),
+                0 0 0 3px var(--gold),
+                0 0 0 6px var(--gold-light);
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .invitation-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 8px;
+            background: linear-gradient(90deg, var(--gold-dark), var(--gold), var(--gold-light), var(--gold), var(--gold-dark));
+        }
+        
+        /* Cover Section */
+        .cover-section {
+            background: linear-gradient(135deg, var(--dark) 0%, #2d2d44 100%);
+            padding: 80px 40px 60px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cover-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(212,175,55,0.1) 0%, transparent 70%);
+            animation: shimmer 8s ease-in-out infinite;
+        }
+        
+        @keyframes shimmer {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            50% { transform: translate(5%, 5%) rotate(5deg); }
+        }
+        
+        .bismillah {
+            font-family: 'Aref Ruqaa', serif;
+            font-size: 1.8rem;
+            color: var(--gold);
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .couple-names {
+            margin-bottom: 25px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .couple-names h1 {
+            font-family: 'Amiri', serif;
+            font-size: 3rem;
+            color: var(--white);
+            line-height: 1.4;
+            margin-bottom: 10px;
+        }
+        
+        .couple-names .and {
+            font-size: 2rem;
+            color: var(--gold);
+            display: block;
+            margin: 10px 0;
+        }
+        
+        .wedding-date {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(212,175,55,0.15);
+            padding: 12px 25px;
+            border-radius: 30px;
+            color: var(--gold-light);
+            font-size: 1.1rem;
+            position: relative;
+            z-index: 1;
+            border: 1px solid rgba(212,175,55,0.3);
+        }
+        
+        /* Content Section */
+        .content-section {
+            padding: 50px 40px;
+            text-align: center;
+        }
+        
+        .invitation-text {
+            font-family: 'Amiri', serif;
+            font-size: 1.35rem;
+            line-height: 2;
+            color: #333;
+            margin-bottom: 40px;
+        }
+        
+        .invitation-text .highlight {
+            color: var(--gold-dark);
+            font-weight: 700;
+        }
+        
+        /* Event Details Card */
+        .event-details {
+            background: linear-gradient(135deg, var(--cream) 0%, #fff 100%);
+            border: 2px solid var(--gold-light);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 30px 0;
+        }
+        
+        .event-title {
+            font-size: 1.3rem;
+            color: var(--gold-dark);
+            margin-bottom: 20px;
+            font-weight: 800;
+        }
+        
+        .event-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 0;
+            border-bottom: 1px dashed var(--gold-light);
+        }
+        
+        .event-item:last-child { border-bottom: none; }
+        
+        .event-icon {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+        
+        .event-info {
+            text-align: right;
+            flex: 1;
+        }
+        
+        .event-label {
+            font-size: 0.85rem;
+            color: #888;
+            margin-bottom: 4px;
+        }
+        
+        .event-value {
+            font-size: 1.05rem;
+            color: var(--dark);
+            font-weight: 600;
+        }
+        
+        /* Countdown Timer */
+        .countdown-container {
+            background: var(--dark);
+            padding: 30px;
+            border-radius: 20px;
+            margin: 30px 0;
+        }
+        
+        .countdown-title {
+            color: var(--gold);
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        
+        .countdown-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+        
+        .countdown-item {
+            text-align: center;
+        }
+        
+        .countdown-number {
+            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
+            width: 60px;
+            height: 60px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--dark);
+            margin: 0 auto 8px;
+        }
+        
+        .countdown-label {
+            color: var(--gold-light);
+            font-size: 0.85rem;
+        }
+        
+        /* Gallery Preview */
+        .gallery-preview {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin: 30px 0;
+        }
+        
+        .gallery-thumb {
+            aspect-ratio: 1;
+            background: linear-gradient(135deg, var(--gold-light) 0%, var(--cream) 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        
+        .gallery-thumb:hover {
+            border-color: var(--gold);
+            transform: scale(1.05);
+        }
+        
+        /* QR Code Section */
+        .qr-section {
+            text-align: center;
+            padding: 30px;
+            background: var(--cream);
+            border-radius: 20px;
+            margin-top: 30px;
+        }
+        
+        .qr-code {
+            width: 120px;
+            height: 120px;
+            background: white;
+            margin: 15px auto;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--gold-light);
+            font-size: 3rem;
+            color: var(--dark);
+        }
+        
+        .qr-text {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        /* Footer Note */
+        .footer-note {
+            text-align: center;
+            padding: 30px;
+            color: #888;
+            font-size: 0.9rem;
+        }
+        
+        .footer-note i { color: var(--gold); margin: 0 5px; }
+        
+        /* Decorative Elements */
+        .ornament {
+            text-align: center;
+            font-size: 2rem;
+            color: var(--gold);
+            margin: 20px 0;
+        }
+        
+        .divider {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin: 25px 0;
+            color: var(--gold);
+        }
+        
+        .divider-line {
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--gold-light), transparent);
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 520px) {
+            .invitation-container {
+                margin: 20px auto;
+                padding: 0 10px;
+            }
+            
+            .cover-section { padding: 60px 25px 40px; }
+            
+            .couple-names h1 { font-size: 2.2rem; }
+            
+            .content-section { padding: 35px 25px; }
+            
+            .countdown-number {
+                width: 50px;
+                height: 50px;
+                font-size: 1.4rem;
+            }
+            
+            .preview-header {
+                padding: 12px 15px;
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+            
+            .preview-btn {
+                padding: 8px 15px;
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Preview Header -->
+    <header class="preview-header">
+        <a href="index.html" class="preview-logo">
+            <span>💍</span>
+            دعوة<span class="gold">فرح</span>
+        </a>
+        <div class="preview-actions">
+            <button class="preview-btn outline" onclick="history.back()">
+                <i class="fas fa-arrow-right"></i> رجوع
+            </button>
+            <a href="register.html" class="preview-btn primary">
+                <i class="fas fa-magic"></i> استخدم هذا القالب
+            </a>
+        </div>
+    </header>
+    
+    <!-- Template Badge -->
+    <div class="template-badge-bar">
+        <i class="fas fa-star"></i> القالب الكلاسيكي الذهبي - معاينة مباشرة
+    </div>
+    
+    <!-- Invitation Container -->
+    <main class="invitation-container">
+        <article class="invitation-card">
+            <!-- Cover Section -->
+            <section class="cover-section">
+                <p class="bismillah">بسم الله الرحمن الرحيم</p>
+                
+                <div class="couple-names">
+                    <h1>خالد</h1>
+                    <span class="and">&</span>
+                    <h1>نورة</h1>
+                </div>
+                
+                <div class="wedding-date">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>15 سبتمبر 2025</span>
+                </div>
+            </section>
+            
+            <!-- Content Section -->
+            <section class="content-section">
+                <div class="ornament">✦ ✦ ✦</div>
+                
+                <p class="invitation-text">
+                    يقول الله تعالى:<br>
+                    <span class="highlight">"وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُم مِّنْ أَنفُسِكُمْ أَزْوَاجًا"</span><br><br>
+                    نسرّكم بزفاف ابننا<br>
+                    <strong>خالد بن عبدالله العتيبي</strong><br>
+                    من<br>
+                    <strong>نورة بنت سعد الغامدي</strong>
+                </p>
+                
+                <div class="divider">
+                    <span class="divider-line"></span>
+                    <i class="fas fa-gem"></i>
+                    <span class="divider-line"></span>
+                </div>
+                
+                <!-- Event Details -->
+                <div class="event-details">
+                    <h3 class="event-title"><i class="fas fa-calendar-check"></i> تفاصيل الحفل</h3>
+                    
+                    <div class="event-item">
+                        <div class="event-icon"><i class="fas fa-calendar-alt"></i></div>
+                        <div class="event-info">
+                            <div class="event-label">التاريخ</div>
+                            <div class="event-value">الاثنين 15 سبتمبر 2025</div>
+                        </div>
+                    </div>
+                    
+                    <div class="event-item">
+                        <div class="event-icon"><i class="fas fa-clock"></i></div>
+                        <div class="event-info">
+                            <div class="event-label">الوقت</div>
+                            <div class="event-value">8:00 مساءً</div>
+                        </div>
+                    </div>
+                    
+                    <div class="event-item">
+                        <div class="event-icon"><i class="fas fa-map-marker-alt"></i></div>
+                        <div class="event-info">
+                            <div class="event-label">المكان</div>
+                            <div class="event-value">قاعة الأمير سلطان - جدة</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Countdown Timer -->
+                <div class="countdown-container">
+                    <h4 class="countdown-title"><i class="fas fa-hourglass-half"></i> باقي على الفرح</h4>
+                    <div class="countdown-grid" id="countdown">
+                        <div class="countdown-item">
+                            <div class="countdown-number" id="days">--</div>
+                            <div class="countdown-label">يوم</div>
+                        </div>
+                        <div class="countdown-item">
+                            <div class="countdown-number" id="hours">--</div>
+                            <div class="countdown-label">ساعة</div>
+                        </div>
+                        <div class="countdown-item">
+                            <div class="countdown-number" id="minutes">--</div>
+                            <div class="countdown-label">دقيقة</div>
+                        </div>
+                        <div class="countdown-item">
+                            <div class="countdown-number" id="seconds">--</div>
+                            <div class="countdown-label">ثانية</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Photo Gallery Preview -->
+                <div class="gallery-preview">
+                    <div class="gallery-thumb">📸</div>
+                    <div class="gallery-thumb">👫</div>
+                    <div class="gallery-thumb">💍</div>
+                    <div class="gallery-thumb">🎊</div>
+                    <div class="gallery-thumb">❤️</div>
+                    <div class="gallery-thumb">🌹</div>
+                </div>
+                
+                <!-- QR Code -->
+                <div class="qr-section">
+                    <h4 style="color: var(--gold-dark); margin-bottom: 10px;">شارك الدعوة</h4>
+                    <div class="qr-code">
+                        <i class="fas fa-qrcode"></i>
+                    </div>
+                    <p class="qr-text">امسح الكود لمشاركة الدعوة</p>
+                </div>
+            </section>
+            
+            <!-- Footer Note -->
+            <footer class="footer-note">
+                <p><i class="fas fa-heart"></i> يشرفنا حضوركم لتشاركوا فرحتنا <i class="fas fa-heart"></i></p>
+            </footer>
+        </article>
+    </main>
+    
+    <script>
+        // Countdown Timer
+        function initCountdown() {
+            const weddingDate = new Date('2025-09-15T20:00:00').getTime();
+            
+            function updateCountdown() {
+                const now = new Date().getTime();
+                const distance = weddingDate - now;
+                
+                if (distance > 0) {
+                    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                    
+                    document.getElementById('days').textContent = days.toString().padStart(2, '0');
+                    document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+                    document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+                    document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+                } else {
+                    document.getElementById('days').textContent = '00';
+                    document.getElementById('hours').textContent = '00';
+                    document.getElementById('minutes').textContent = '00';
+                    document.getElementById('seconds').textContent = '00';
+                }
+            }
+            
+            updateCountdown();
+            setInterval(updateCountdown, 1000);
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', initCountdown);
+    </script>
+</body>
+</html>
