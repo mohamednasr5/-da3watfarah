@@ -41,13 +41,22 @@ try {
         console.warn('⚠️ Firebase Auth SDK not loaded');
     }
     
-    // Initialize Firestore (for storing invitation data) - with fallback
-    if (typeof firebase.firestore === 'function') {
-        db = firebase.firestore();
-        console.log('✅ Firebase Firestore initialized');
+    // Initialize Realtime Database (for storing invitation data) - PRIMARY
+    if (typeof firebase.database === 'function') {
+        db = firebase.database();
+        console.log('✅ Firebase Realtime Database initialized');
     } else {
-        console.warn('⚠️ Firebase Firestore SDK not loaded - using localStorage fallback');
+        console.warn('⚠️ Firebase Realtime Database SDK not loaded - using localStorage fallback');
         db = null;
+    }
+    
+    // Initialize Firestore (secondary/backup) - with fallback
+    if (typeof firebase.firestore === 'function') {
+        window.firebaseFirestore = firebase.firestore();
+        console.log('✅ Firebase Firestore initialized (backup)');
+    } else {
+        window.firebaseFirestore = null;
+        console.warn('⚠️ Firebase Firestore SDK not loaded');
     }
     
     // Initialize Storage (for file storage) - with fallback
@@ -141,7 +150,92 @@ window.isFirebaseReady = function() {
     return {
         app: !!firebaseApp,
         auth: !!auth,
-        firestore: !!db,
+        database: !!db,  // Realtime Database (PRIMARY)
+        firestore: !!window.firebaseFirestore,  // Firestore (backup)
         storage: !!storage
     };
+};
+
+// ===================================
+// Helper: Get Realtime Database Reference
+// ===================================
+window.getDbRef = function(path) {
+    if (!db) {
+        console.error('❌ Realtime Database not initialized');
+        return null;
+    }
+    return db.ref(path);
+};
+
+// ===================================
+// Helper: Common RTDB Operations
+// ===================================
+
+// قراءة بيانات مرة واحدة (once)
+window.rtdbOnce = async function(path) {
+    try {
+        const snapshot = await db.ref(path).once('value');
+        return snapshot.exists() ? snapshot.val() : null;
+    } catch (error) {
+        console.error('❌ RTDB Read Error:', error);
+        throw error;
+    }
+};
+
+// كتابة/تحديث بيانات (set)
+window.rtdbSet = async function(path, data) {
+    try {
+        await db.ref(path).set(data);
+        return true;
+    } catch (error) {
+        console.error('❌ RTDB Set Error:', error);
+        throw error;
+    }
+};
+
+// تحديث جزئي (update)
+window.rtdbUpdate = async function(path, data) {
+    try {
+        await db.ref(path).update(data);
+        return true;
+    } catch (error) {
+        console.error('❌ RTDB Update Error:', error);
+        throw error;
+    }
+};
+
+// دفع بيانة جديدة مع مفتاح فريد (push)
+window.rtdbPush = async function(path, data) {
+    try {
+        const newRef = db.ref(path).push();
+        await newRef.set(data);
+        return newRef.key; // إرجاع المفتاح الجديد
+    } catch (error) {
+        console.error('❌ RTDB Push Error:', error);
+        throw error;
+    }
+};
+
+// حذف بيانات
+window.rtdbRemove = async function(path) {
+    try {
+        await db.ref(path).remove();
+        return true;
+    } catch (error) {
+        console.error('❌ RTDB Remove Error:', error);
+        throw error;
+    }
+};
+
+// الاستماع للتغييرات في الوقت الحقيقي (on)
+window.rtdbOn = function(path, eventType, callback) {
+    // eventType: 'value', 'child_added', 'child_changed', 'child_removed'
+    const handler = (snapshot) => {
+        callback(snapshot.exists() ? snapshot.val() : null, snapshot.key);
+    };
+    
+    db.ref(path).on(eventType, handler);
+    
+    // إرجاع دالة لإلغاء الاستماع
+    return () => db.ref(path).off(eventType, handler);
 };

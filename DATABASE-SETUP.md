@@ -1,5 +1,5 @@
 # 📊 دليل إعداد قاعدة البيانات - دعوة فرح
-## Firebase Firestore Database Setup Guide
+## Firebase Realtime Database Setup Guide
 
 ---
 
@@ -7,12 +7,12 @@
 
 1. [متطلبات ما قبل الإعداد](#-متطلبات-ما-قبل-الإعداد)
 2. [إنشاء مشروع Firebase](#-إنشاء-مشروع-firebase)
-3. [إعداد Firestore](#-إعداد-firestore)
+3. [إعداد Realtime Database](#-إ-setup-realtime-database)
 4. [قواعد الأمان (Security Rules)](#-قواعد-الأمان-security-rules)
-5. [هيكل المجموعات (Collections)](#-هيكل-المجموعات-collections)
-6. [أوامر إنشاء الفهارس (Indexes)](#-أوامر-إنشاء-الفهارس-indexes)
-7. [بيانات تجريبية (Seed Data)](#-بيانات-تجريبية-seed-data)
-8. [أوامر CRUD الأساسية](#-أوامر-crud-الأساسية)
+5. [هكل البيانات JSON Tree](#-هيكل-البيانات-json-tree)
+6. [بيانات تجريبية (Seed Data)](#-بيانات-تجريبية-seed-data)
+7. [أوامر CRUD الأساسية](#-أوامر-crud-الأساسية)
+8. [استكشاف الأخطاء وإصلاحها](#-استكشاف-الأخطاء وإصلاحها)
 
 ---
 
@@ -32,8 +32,13 @@ firebase login
 # الانتقال لمجلد المشروع
 cd da3watfarah
 
-# تهيئة Firebase
-firebase init firestore
+# تهيئة Firebase مع Realtime Database
+firebase init database
+
+# اختر:
+# - Which Firebase project? → da3watfarah (أو اسم مشروعك)
+# - What file should be used for Realtime Database rules? → database.rules.json
+# - Do you want to override it? → Yes (لتحديث القواعد)
 ```
 
 ---
@@ -42,710 +47,726 @@ firebase init firestore
 
 ### الخطوات:
 1. اذهب إلى [Firebase Console](https://console.firebase.google.com/)
-2. أنشئ مشروع جديد: `da3watfarah-app`
-3. فعّل **Firestore Database**
-4. اختر المنطقة: `europe-west1` (أقرب للسعودية)
+2. أنشئ مشروع جديد أو اختر مشروع موجود: `da3watfarah`
+3. فعّل **Realtime Database** (مش Firestore!)
+4. اختر المنطقة: `us-central1` (أو أقرب منطقة متاحة)
+5. **مهم**: اختر "Start in test mode" مؤقتاً للتجربة، ثم غيّر لقواعد الأمان بعد ذلك
+
+### الحصول على بيانات الاعتماد (Service Account):
+1. اذهب إلى Project Settings → Service Accounts
+2. اضغط "Generate New Private Key"
+3. حمّل الملف وسمّيه `serviceAccount.json`
+4. ضعه في جذر المشروع (**لا ترفعه على GitHub!**)
 
 ---
 
-## 📦 إعداد Firestore
+## 📦 إعداد Realtime Database
 
-### هيكل قاعدة البيانات:
+### هيكل قاعدة البيانات (JSON Tree):
 
-```
-da3watfarah-db/
-├── users/                    # مجموعة المستخدمين
-│   └── {userId}/             # معرف المستخدم
-│       ├── profile           # بيانات الشخصية
-│       ├── invitations/      # دعوات المستخدم
-│       └── settings          # الإعدادات
-├── invitations/              # مجموعة الدعوات العامة
-│   └── {invitationId}/      # معرف الدعوة
-├── rsvps/                   # تأكيدات الحضور
-│   └── {rsvpId}/            # معرف التأكيد
-├── wishes/                  # التهاني
-│   └── {wishId}/            # معرف التهنئة
-└── templates/               # القوالب المتاحة
-    └── {templateId}/        # معرف القالب
+```json
+{
+  "users": {
+    "{userId}": {
+      "uid": "string",
+      "email": "string",
+      "displayName": "string",
+      "photoURL": "string",
+      "plan": "free|premium|vip",
+      "planExpiry": timestamp,
+      "createdAt": timestamp,
+      "updatedAt": timestamp,
+      "settings": {
+        "language": "ar",
+        "currency": "SAR",
+        "notifications": true,
+        "theme": "auto"
+      },
+      "stats": {
+        "invitationsCount": 0,
+        "totalViews": 0,
+        "totalRsvps": 0
+      },
+      "invitations": {
+        "{invitationId}: { ... }"
+      }
+    }
+  },
+  
+  "templates": {
+    "classic": { ... },
+    "modern": { ... },
+    "romantic": { ... },
+    "islamic": { ... },
+    "bohemian": { ... },
+    "royal": { ... }
+  },
+  
+  "invitations": {
+    "{invitationId}": {
+      "userId": "string",
+      "couple": { ... },
+      "event": { ... },
+      "design": { ... },
+      "content": { ... },
+      "slug": "string",
+      "url": "string",
+      "status": "draft|active|archived",
+      "isPublished": boolean,
+      "viewsCount": number,
+      "rsvpsCount": number,
+      "wishesCount": number,
+      "weddingDate": timestamp,
+      "createdAt": timestamp,
+      "updatedAt": timestamp,
+      
+      // البيانات الفرعية
+      "rsvps": {
+        "{rsvpId}": { ... }
+      },
+      "wishes": {
+        "{wishId}": { ... }
+      }
+    }
+  }
+}
 ```
 
 ---
 
 ## 🔒 قواعد الأمان (Security Rules)
 
-### انسخ هذا الكود في Firebase Console → Firestore → Rules:
+### 📍 موقع الملف: `database.rules.json`
 
-```javascript
-rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
-    
-    // قواعد المستخدمين
-    match /users/{userId} {
-      allow read: if request.auth != null && request.auth.uid == userId;
-      allow write: if request.auth != null && request.auth.uid == userId;
-      
-      // دعوات المستخدم
-      match /invitations/{invitationId} {
-        allow read, write: if request.auth != null && request.auth.uid == userId;
-      }
-    }
-    
-    // الدعوات العامة (للضيوف)
-    match /invitations/{invitationId} {
-      allow read: if true; // عام للجميع
-      
-      allow create: if request.auth != null;
-      allow update, delete: if request.auth != null && 
-        resource.data.userId == request.auth.uid;
-        
-      // RSVPs داخل الدعوة
-      match /rsvps/{rsvpId} {
-        allow read: if true;
-        allow create: if request.auth != null || request.auth == null;
-        allow update, delete: if request.auth != null;
-      }
-      
-      // التهاني داخل الدعوة
-      match /wishes/{wishId} {
-        allow read: if true;
-        allow create: if request.auth != null || request.auth == null;
-      }
-    }
-    
-    // القوالب (للقراءة العامة)
-    match /templates/{templateId} {
-      allow read: if true;
-      allow write: if false; // للإدارة فقط
-    }
-  }
-}
+### طريقة النشر:
+
+#### الطريقة الأولى: عبر Firebase Console (الأسهل)
+1. اذهب إلى Firebase Console → Realtime Database → Rules
+2. احذف القواعد الحالية
+3. انسخ محتوى ملف `database.rules.json`
+4. اضغط "Publish"
+
+#### الطريقة الثانية: عبر CLI
+```bash
+# نشر قواعد الأمان
+firebase deploy --only database:rules
 ```
 
----
-
-## 🗂️ هيكل المجموعات (Collections)
-
-### 1. مجموعة المستخدمين (`users`)
-
-**المسار:** `users/{userId}`
-
-```javascript
-// هيكل مستند المستخدم
-{
-  uid: "string",              // معرف Firebase Auth
-  email: "string",            // البريد الإلكتروني
-  displayName: "string",      // الاسم المعروض
-  photoURL: "string?",        // رابط الصورة (اختياري)
-  
-  // بيانات الحساب
-  plan: "free | premium | vip",  // الباقة
-  planExpiry: timestamp?,         // تاريخ انتهاء الباقة
-  createdAt: timestamp,           // تاريخ الإنشاء
-  updatedAt: timestamp,           // آخر تحديث
-  
-  // الإعدادات
-  settings: {
-    language: "ar",           // اللغة
-    currency: "SAR",          // العملة
-    notifications: true       // الإشعارات
-  },
-  
-  // الإحصائيات
-  stats: {
-    invitationsCount: 0,     // عدد الدعوات
-    totalViews: 0,           // إجمالي المشاهدات
-    totalRsvps: 0            // إجمالي التأكيدات
-  }
-}
-```
-
-### 2. مجموعة الدعوات (`invitations`)
-
-**المسار:** `invitations/{invitationId}` أو `users/{userId}/invitations/{invitationId}`
-
-```javascript
-// هيكل مستند الدعوة
-{
-  id: "string",                // معرف فريد
-  userId: "string",            // صاحب الدعوة
-  
-  // أسماء العروسين
-  couple: {
-    groomName: "string",       // اسم العريس
-    groomFatherName: "string?", // اسم أب العريس
-    brideName: "string",       // اسم العروس
-    brideFatherName: "string?", // اسم أب العروس
-    parentsNames: "string"     // أسماء الوالدين كامل
-  },
-  
-  // تفاصيل الحفل
-  event: {
-    date: timestamp,           // تاريخ الزفاف
-    time: "string",            // الوقت (مثلاً: "8:00 مساءً")
-    venue: "string",           // اسم القاعة
-    address: "string",         // العنوان
-    location: {               // إحداثيات GPS
-      lat: number,
-      lng: number
-    },
-    googleMapsUrl: "string"    // رابط Google Maps
-  },
-  
-  // التصميم
-  design: {
-    templateId: "string",      // معرف القالب
-    primaryColor: "string",    // اللون الرئيسي
-    secondaryColor: "string",  // اللون الثانوي
-    fontFamily: "string",      // الخط
-    coverImage: "string?",     // صورة الغلاف
-    galleryImages: [string[]], // صور المعرض
-    musicUrl: "string?"        // رابط الموسيقى
-  },
-  
-  // المحتوى النصي
-  content: {
-    welcomeText: "string?",    // نص الترحيب
-    invitationText: "string",  // نص الدعوة
-    quranVerse: "string?",     // آية قرآنية
-    loveStory: [{              // قصة الحب (اختياري)
-      title: "string",
-      text: "string",
-      date: timestamp,
-      image?: "string"
-    }]
-  },
-  
-  // الرابط المخصص
-  slug: "string",              // رابط مخصص (مثلاً: "mohamed&mona")
-  url: "string",               // URL كامل
-  
-  // حالة الدعوة
-  status: "draft | active | archived",
-  isPublished: boolean,
-  
-  // الإحصائيات
-  viewsCount: 0,
-  rsvpsCount: 0,
-  wishesCount: 0,
-  
-  // التواريخ
-  createdAt: timestamp,
-  updatedAt: timestamp,
-  weddingDate: timestamp      // تاريخ الزفاف (للعد التنازلي)
-}
-```
-
-### 3. مجموعة تأكيدات الحضور (`rsvps`)
-
-**المسار:** `invitations/{invitationId}/rsvps/{rsvpId}`
-
-```javascript
-// هيكل مستند RSVP
-{
-  invitationId: "string",      // معرف الدعوة
-  guestName: "string",         // اسم الضيف
-  guestEmail: "string?",       // بريد الضيف (اختياري)
-  guestPhone: "string?",       // هاتف الضيف (اختياري)
-  guestCount: number,          // عدد المرافقين (0-5)
-  attendance: "attending | not-attending | pending",
-  message: "string?",          // رسالة للعروسين
-  dietaryRequirements: "string?", // متطلبات غذائية
-  
-  createdAt: timestamp,
-  updatedAt: timestamp
-}
-```
-
-### 4. مجموعة التهاني (`wishes`)
-
-**المسار:** `invitations/{invitationId}/wishes/{wishId}`
-
-```javascript
-// هيكل مستند التهنئة
-{
-  invitationId: "string",      // معرف الدعوة
-  authorName: "string",        // اسم الكاتب
-  message: "string",           // نص التهنئة
-  isVisible: boolean,          // هل ظاهر للعموم؟
-  
-  createdAt: timestamp
-}
-```
-
-### 5. مجموعة القوالب (`templates`)
-
-**المسار:** `templates/{templateId}`
-
-```javascript
-// هيكل مستند القالب
-{
-  id: "string",                // معرف القالب
-  name: "string",              // اسم القالب
-  nameAr: "string",            // الاسم بالعربية
-  category: "classic | modern | romantic | islamic | bohemian | royal",
-  description: "string",       // وصف
-  previewImage: "string",      // صورة المعاينة
-  thumbnail: "string",         // صورة مصغرة
-  
-  // خيارات التصميم
-  colors: {
-    primary: "string",         // اللون الرئيسي الافتراضي
-    secondary: "string",       // اللون الثانوي الافتراضي
-    background: "string"       // لون الخلفية
-  },
-  fontFamily: "string",        // الخط الافتراضي
-  
-  // التوفر
-  availableFor: ["free", "premium", "vip"], // الباقات المتاحة
-  isPopular: boolean,          // هل هو شائع؟
-  isNew: boolean,              // هل هو جديد؟
-  
-  sortOrder: number,           // ترتيب العرض
-  isActive: boolean            // هل مفعل؟
-}
-```
-
----
-
-## 📑 أوامر إنشاء الفهارس (Indexes)
-
-### الطريقة الأولى: عبر Firebase Console
-
-اذهب إلى: **Firestore → Indexes → Composite Indexes → Create Index**
-
-### الطريقة الثانية: عبر CLI
-
-أنشئ ملف `firestore.indexes.json` في جذر المشروع:
+### محتوى قواعد الأمان (database.rules.json):
 
 ```json
 {
-  "indexes": [
-    {
-      "collectionGroup": "invitations",
-      "queryScope": {
-        "collectionId": "invitations",
-        "allCollections": true
-      },
-      "fields": [
-        {"fieldPath": "userId", "order": "ASCENDING"},
-        {"fieldPath": "createdAt", "order": "DESCENDING"}
-      ]
-    },
-    {
-      "collectionGroup": "invitations",
-      "queryScope": {
-        "collectionId": "invitations"
-      },
-      "fields": [
-        {"fieldPath": "slug", "order": "ASCENDING"},
-        {"fieldPath": "isPublished", "order": "ASCENDING"}
-      ]
-    },
-    {
-      "collectionGroup": "invitations",
-      "queryScope": {
-        "collectionId": "invitations"
-      },
-      "fields": [
-        {"fieldPath": "userId", "order": "ASCENDING"},
-        {"fieldPath": "status", "order": "ASCENDING"},
-        {"fieldPath": "weddingDate", "order": "DESCENDING"}
-      ]
-    },
-    {
-      "collectionGroup": "rsvps",
-      "queryScope": {
-        "collectionId": "rsvps",
-        "allCollections": true
-      },
-      "fields": [
-        {"fieldPath": "invitationId", "order": "ASCENDING"},
-        {"fieldPath": "createdAt", "order": "DESCENDING"}
-      ]
-    },
-    {
-      "collectionGroup": "wishes",
-      "queryScope": {
-        "collectionId": "wishes",
-        "allCollections": true
-      },
-      "fields": [
-        {"fieldPath": "invitationId", "order": "ASCENDING"},
-        {"fieldPath": "isVisible", "order": "ASCENDING"},
-        {"fieldPath": "createdAt", "order": "DESCENDING"}
-      ]
-    },
-    {
-      "collectionGroup": "templates",
-      "queryScope": {
-        "collectionId": "templates"
-      },
-      "fields": [
-        {"fieldPath": "isActive", "order": "ASCENDING"},
-        {"fieldPath": "sortOrder", "order": "ASCENDING"}
-      ]
-    },
-    {
-      "collectionGroup": "templates",
-      "queryScope": {
-        "collectionId": "templates"
-      },
-      "fields": [
-        {"fieldPath": "category", "order": "ASCENDING"},
-        {"fieldPath": "isActive", "order": "ASCENDING"}
-      ]
-    }
-  ],
-  "fieldOverrides": [
-    {
-      "collectionGroup": "invitations",
-      "fieldPath": "weddingDate",
-      "indexes": [
-        {
-          "order": "DESCENDING",
-          "arrayConfig": "CONTAINS"
+  "rules": {
+    ".read": false,
+    ".write": false,
+    
+    "users": {
+      "$uid": {
+        ".read": "$uid === auth.uid",
+        ".write": "$uid === auth.uid",
+        ".validate": "newData.hasChildren(['email', 'createdAt'])",
+        
+        "invitations": {
+          "$invitationId": {
+            ".read": "$uid === auth.uid",
+            ".write": "$uid === auth.uid"
+          }
         }
-      ]
+      }
+    },
+    
+    "templates": {
+      ".read": true,
+      ".write": false
+    },
+    
+    "invitations": {
+      "$invitationId": {
+        ".read": true,
+        ".write": "auth != null && (data.child('userId').val() === auth.uid || !data.exists())",
+        
+        "rsvps": {
+          ".read": true,
+          "$rsvpId": {
+            ".write": "auth != null"
+          }
+        },
+        
+        "wishes": {
+          ".read": true,
+          "$wishId": {
+            ".write": "auth != null",
+            ".validate": "newData.hasChildren(['authorName', 'message'])"
+          }
+        }
+      }
     }
-  ]
+  }
 }
 ```
 
-ثم نفذ الأمر:
-```bash
-firebase deploy --only firestore:indexes
+### شرح القواعد:
+- **`.read: false, .write: false`**: حماية الجذر - لا يسمح بالوصول العام
+- **`users/$uid`**: المستخدم يقرأ/يكتب بياناته فقط (`auth.uid`)
+- **`templates`**: قراءة عامة للجميع، كتابة محظورة (للإدارة فقط)
+- **`invitations/$invitationId`**: 
+  - قراءة عامة (للضيوف)
+  - كتابة: للمستخدم المسجل أو صاحب الدعوة فقط
+- **`rsvps` و `wishes`**: قراءة عامة، كتابة للمسجلين فقط
+
+---
+
+## 🗂️ هيكل البيانات JSON Tree
+
+### 1. عقدة المستخدمين (`users/{userId}`)
+
+```json
+{
+  "uid": "XjG3i8awcJfZ71swBHMneuIuD822",
+  "email": "elfannanm@gmail.com",
+  "displayName": "Eng :Mohamed Hammad",
+  "photoURL": "https://example.com/photo.jpg",
+  
+  "plan": "premium",
+  "planExpiry": 1735689600000,
+  
+  "createdAt": 1704067200000,
+  "updatedAt": 1704153600000,
+  
+  "settings": {
+    "language": "ar",
+    "currency": "SAR",
+    "notifications": true,
+    "theme": "auto"
+  },
+  
+  "stats": {
+    "invitationsCount": 3,
+    "totalViews": 1250,
+    "totalRsvps": 89
+  }
+}
+```
+
+### 2. عقدة الدعوات (`invitations/{invitationId}`)
+
+```json
+{
+  "id": "-NkLmNoPqRsTuVwXyZ",
+  "userId": "XjG3i8awcJfZ71swBHMneuIuD822",
+  
+  "couple": {
+    "groomName": "محمد",
+    "groomFatherName": "أحمد",
+    "brideName": "منى",
+    "brideFatherName": "عبدالله",
+    "parentsNames": "أحمد محمد & فاطمة علي"
+  },
+  
+  "event": {
+    "date": 1771190400000,
+    "time": "8:00 مساءً",
+    "venue": "فندق الريتز كارلتون",
+    "address": " طريق الملك فهد، حي العليا، الرياض",
+    "location": {
+      "lat": 24.71356,
+      "lng": 46.67529
+    },
+    "googleMapsUrl": "https://maps.google.com/?q=24.71356,46.67529"
+  },
+  
+  "design": {
+    "templateId": "classic",
+    "primaryColor": "#8B4513",
+    "secondaryColor": "#D4AF37",
+    "fontFamily": "'Aref Ruqaa', serif",
+    "coverImage": "https://pub-xxx.r2.dev/covers/wedding-photo.jpg",
+    "galleryImages": [
+      "https://pub-xxx.r2.dev/gallery/photo1.jpg",
+      "https://pub-xxx.r2.dev/gallery/photo2.jpg"
+    ],
+    "musicUrl": "https://pub-xxx.r2.dev/music/wedding-song.mp3"
+  },
+  
+  "content": {
+    "welcomeText": "﴿وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُم مِّنْ أَنفُسِكُمْ أَزْوَاجًا﴾",
+    "invitationText": "يسرنا ويسعدنا أن ندعوكم لحضور زفاف ابنتنا منى مع فارس أحلامها محمد",
+    "quranVerse": "وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُم مِّنْ أَنفُسِكُمْ أَزْوَاجًا",
+    "loveStory": []
+  },
+  
+  "slug": "mohamed&mona",
+  "url": "https://da3watfarah.com/mohamed&mona",
+  
+  "status": "active",
+  "isPublished": true,
+  
+  "viewsCount": 456,
+  "rsvpsCount": 34,
+  "wishesCount": 12,
+  
+  "weddingDate": 1771190400000,
+  "createdAt": 1704000000000,
+  "updatedAt": 1704200000000
+}
+```
+
+### 3. عقدة تأكيدات الحضور (`invitations/{id}/rsvps/{rsvpId}`)
+
+```json
+{
+  "guestName": "سعود الغامدي",
+  "guestEmail": "saud@example.com",
+  "guestPhone": "+966501234567",
+  "guestCount": 2,
+  "attendance": "attending",
+  "message": "ألف مبروك! أسأل الله أن يبارك لكما ويجمع بينكما في خير 🌹",
+  "dietaryRequirements": "",
+  "createdAt": 1722200000000,
+  "updatedAt": 1722200000000
+}
+```
+
+### 4. عقدة التهاني (`invitations/{id}/wishes/{wishId}`)
+
+```json
+{
+  "authorName": "هدى السعيد",
+  "authorEmail": "huda@example.com",
+  "message": "ألف مبروك! أسأل الله أن يبارك في زواجكما ويجعله زواجاً سعيداً 🌹💕",
+  "isVisible": true,
+  "createdAt": 1722205000000
+}
+```
+
+### 5. عقدة القوالب (`templates/{templateId}`)
+
+```json
+{
+  "id": "classic",
+  "name": "Classic",
+  "nameAr": "الكلاسيكي",
+  "category": "classic",
+  "description": "تصميم كلاسيكي أنيق يناسب جميع الأذواق مع ألوان دافئة وزخارف تقليدية",
+  "previewImage": "/assets/templates/classic-preview.jpg",
+  "thumbnail": "/assets/templates/classic-thumb.jpg",
+  "colors": {
+    "primary": "#8B4513",
+    "secondary": "#D4AF37",
+    "background": "#FFF8F0"
+  },
+  "fontFamily": "'Aref Ruqaa', serif",
+  "availableFor": ["free", "premium", "vip"],
+  "isPopular": true,
+  "isNew": false,
+  "sortOrder": 1,
+  "isActive": true,
+  "createdAt": 1704000000000,
+  "updatedAt": 1704000000000
+}
 ```
 
 ---
 
 ## 🌱 بيانات تجريبية (Seed Data)
 
-### سكريبت إضافة القوالب الأولية:
+### 📍 الملف الجاهز: `seed-data-rtdb.js`
 
-```javascript
-// seed-templates.js
-// تشغيل: node seed-templates.js
+### المتطلبات:
+```bash
+# تثبيت Firebase Admin SDK
+npm install firebase-admin
 
-const admin = require('firebase-admin');
-
-// تهيئة Firebase Admin (استبدل بمسار serviceAccount.json)
-admin.initializeApp({
-  credential: admin.credential.applicationDefault()
-});
-
-const db = admin.firestore();
-
-const templates = [
-  {
-    id: 'classic',
-    name: 'Classic',
-    nameAr: 'الكلاسيكي',
-    category: 'classic',
-    description: 'تصميم كلاسيكي أنيق يناسب جميع الأذواق',
-    previewImage: '/assets/templates/classic-preview.jpg',
-    thumbnail: '/assets/templates/classic-thumb.jpg',
-    colors: {
-      primary: '#8B4513',
-      secondary: '#D4AF37',
-      background: '#FFF8F0'
-    },
-    fontFamily: "'Aref Ruqaa', serif",
-    availableFor: ['free', 'premium', 'vip'],
-    isPopular: true,
-    isNew: false,
-    sortOrder: 1,
-    isActive: true
-  },
-  {
-    id: 'modern',
-    name: 'Modern',
-    nameAr: 'العصري',
-    category: 'modern',
-    description: 'تصميم عصري بألوان جريئة وأشكال حديثة',
-    previewImage: '/assets/templates/modern-preview.jpg',
-    thumbnail: '/assets/templates/modern-thumb.jpg',
-    colors: {
-      primary: '#1A1A2E',
-      secondary: '#E94560',
-      background: '#FFFFFF'
-    },
-    fontFamily: "'Tajawal', sans-serif",
-    availableFor: ['premium', 'vip'],
-    isPopular: true,
-    isNew: false,
-    sortOrder: 2,
-    isActive: true
-  },
-  {
-    id: 'romantic',
-    name: 'Romantic',
-    nameAr: 'الرومانسي',
-    category: 'romantic',
-    description: 'تصميم رومانسي ناعم بالقلوب والورود',
-    previewImage: '/assets/templates/romantic-preview.jpg',
-    thumbnail: '/assets/templates/romantic-thumb.jpg',
-    colors: {
-      primary: '#D4A5A5',
-      secondary: '#E8B4BC',
-      background: '#FFF0F3'
-    },
-    fontFamily: "'Amiri', serif",
-    availableFor: ['premium', 'vip'],
-    isPopular: true,
-    isNew: false,
-    sortOrder: 3,
-    isActive: true
-  },
-  {
-    id: 'islamic',
-    name: 'Islamic',
-    nameAr: 'الإسلامي',
-    category: 'islamic',
-    description: 'تصميم إسلامي بالزخارف والآيات القرآنية',
-    previewImage: '/assets/templates/islamic-preview.jpg',
-    thumbnail: '/assets/templates/islamic-thumb.jpg',
-    colors: {
-      primary: '#1B5E20',
-      secondary: '#D4AF37',
-      background: '#FFFDE7'
-    },
-    fontFamily: "'Aref Ruqaa', serif",
-    availableFor: ['free', 'premium', 'vip'],
-    isPopular: true,
-    isNew: false,
-    sortOrder: 4,
-    isActive: true
-  },
-  {
-    id: 'bohemian',
-    name: 'Bohemian',
-    nameAr: 'البوهيمي',
-    category: 'bohemian',
-    description: 'تصميم بوهيمي حر بألوان الطبيعة',
-    previewImage: '/assets/templates/bohemian-preview.jpg',
-    thumbnail: '/assets/templates/bohemian-thumb.jpg',
-    colors: {
-      primary: '#C17F59',
-      secondary: '#9CAF88',
-      background: '#FAF6F1'
-    },
-    fontFamily: "'Tajawal', sans-serif",
-    availableFor: ['vip'],
-    isPopular: false,
-    isNew: true,
-    sortOrder: 5,
-    isActive: true
-  },
-  {
-    id: 'royal',
-    name: 'Royal',
-    nameAr: 'الملكي',
-    category: 'royal',
-    description: 'تصميم ملكي فاخر بالذهب والأرجواني',
-    previewImage: '/assets/templates/royal-preview.jpg',
-    thumbnail: '/assets/templates/royal-thumb.jpg',
-    colors: {
-      primary: '#1A1A3E',
-      secondary: '#D4AF37',
-      background: '#FFFFF0'
-    },
-    fontFamily: "'Aref Ruqaa', serif",
-    availableFor: ['vip'],
-    isPopular: false,
-    isNew: false,
-    sortOrder: 6,
-    isActive: true
-  }
-];
-
-async function seedTemplates() {
-  console.log('🚀 بدء إضافة القوالب...');
-  
-  for (const template of templates) {
-    await db.collection('templates').doc(template.id).set(template);
-    console.log(`✅ تم إضافة القالب: ${template.nameAr}`);
-  }
-  
-  console.log('🎉 تمت إضافة جميع القوالب بنجاح!');
-  process.exit(0);
-}
-
-seedTemplates().catch(console.error);
+# حمّل serviceAccount.json من Firebase Console
+# ضعه في نفس مجلد السكريبت
 ```
 
-### سكريبت إنشاء مستخدم تجريبي:
+### تشغيل السكريبت:
+```bash
+node seed-data-rtdb.js
+```
 
-```javascript
-// seed-user.js
-const admin = require('firebase-admin');
-admin.initializeApp({ credential: admin.credential.applicationDefault() });
-const db = admin.firestore();
+### ما يفعله السكريبت:
+1. ✅ إضافة 6 قوالب (classic, modern, romantic, islamic, bohemian, royal)
+2. ✅ إنشاء مستخدم تجريبي (demo@da3watfarah.com) - باقة VIP
+3. ✅ إنشاء دعتين تجريبيتين:
+   - أحمد & فاطمة (منشورة - classic template)
+   - خالد & نورة (مسودة - modern template)
+4. ✅ إضافة 3 تأكيدات حضور للدعوة الأولى
+5. ✅ إضافة 3 تهاني للدعوة الأولى
+6. ✅ التحقق من صحة البيانات وعرض ملخص
 
-async function createTestUser() {
-  const testUser = {
-    uid: 'test-user-123',
-    email: 'test@da3watfarah.com',
-    displayName: 'مستخدم تجريبي',
-    plan: 'vip',
-    planExpiry: admin.firestore.Timestamp.fromDate(new Date('2027-12-31')),
-    createdAt: admin.firestore.FieldValue.serverTimestamp(),
-    updatedAt: admin.firestore.FieldValue.serverTimestamp(),
-    settings: {
-      language: 'ar',
-      currency: 'SAR',
-      notifications: true
-    },
-    stats: {
-      invitationsCount: 0,
-      totalViews: 0,
-      totalRsvps: 0
-    }
-  };
-  
-  await db.collection('users').doc(testUser.uid).set(testUser);
-  console.log('✅ تم إنشاء المستخدم التجريبي:', testUser.email);
-}
+### مثال على الإخراج المتوقع:
+```
+╔═══════════════════════════════════════════════════════════╗
+║     🚀 سكريبت إضافة البيانات - Realtime Database           ║
+║     🎯 مشروع: دعوة فرح - da3watfarah.com                  ║
+╚═══════════════════════════════════════════════════════════╝
 
-createTestUser().catch(console.error);
+✅ متصل بـ Realtime Database بنجاح
+
+🎨 [1/4] جاري إضافة القوالب إلى Realtime Database...
+   ✅ الكلاسيكي (classic)
+   ✅ العصري (modern)
+   ✅ الرومانسي (romantic)
+   ✅ الإسلامي (islamic)
+   ✅ البوهيمي (bohemian)
+   ✅ الملكي الفاخر (royal)
+   
+   📊 تمت إضافة 6 قوالب بنجاح
+
+👤 [2/4] جاري إنشاء المستخدم التجريبي...
+   ✅ مستخدم تجريبي (demo@da3watfarah.com)
+   📋 الباقة: VIP
+
+💌 [3/4] جاري إنشاء الدعوات التجريبية...
+   ✅ أحمد & فاطمة
+      🔗 الرابط: /ahmed&fatima-0
+   
+   📝 [3.5/4] جاري إضافة تأكيدات الحضور...
+      ✅ RSVP: سعود الغامدي
+      ✅ RSVP: منيرة أحمد
+      ✅ RSVP: خالد العتيبي
+   
+   💬 [3.6/4] جاري إضافة التهاني...
+      ✅ تهنئة من: هدى السعيد
+      ✅ تهنئة من: ياسر العمري
+      ✅ تهنئة من: ريم العنزي
+   
+   ✅ خالد & نورة
+      🔗 الرابط: /khaled&noura-1
+   
+   📊 تم إنشاء 2 دعوة
+
+✅ [4/4] جاري التحقق من البيانات...
+
+==================================================
+📊 ملخص البيانات المضافة:
+==================================================
+   🎨 القوالب:       6
+   👤 المستخدمون:    1
+   💌 الدعوات:      2
+   📝 تأكيدات الحضور: 3
+   💬 التهاني:       3
+==================================================
+
+🎉 تمت عملية إضافة البيانات التجريبية بنجاح!
+
+💡 يمكنك الآن:
+   1. فتح Firebase Console → Realtime Database لعرض البيانات
+   2. اختبار التطبيق باستخدام: demo@da3watfarah.com
+   3. عرض الدعوة التجريبية على: /ahmed&fatima-0
+
+🔗 روابط مفيدة:
+   • Console: https://console.firebase.google.com/project/da3watfarah/database/da3watfarah-default-rtdb/data
 ```
 
 ---
 
-## ⚡ أوامر CRUD الأساسية
+## ⚡ أوامر CRUD الأساسية (Realtime Database)
 
-### قراءة البيانات:
+### 📖 قراءة البيانات:
 
 ```javascript
-// جلب جميع القوالب المفعلة
-const templatesSnapshot = await db.collection('templates')
-  .where('isActive', '==', true)
-  .orderBy('sortOrder', 'asc')
-  .get();
+// ===================================
+// باستخدام Firebase Client SDK (في المتصفح)
+// ===================================
 
-// جلب دعوة بواسطة الـ slug
-const invitationSnapshot = await db.collection('invitations')
-  .where('slug', '==', 'mohamed&mona')
-  .where('isPublished', '==', true)
-  .limit(1)
-  .get();
+// قراءة مرة واحدة (once)
+const snapshot = await db.ref('templates').once('value');
+const templates = snapshot.val();
+console.log(templates); // { classic: {...}, modern: {...}, ... }
 
-// جلب تأكيدات الحضور لدعوة محددة
-const rsvpsSnapshot = await db.collection('invitations')
-  .doc(invitationId)
-  .collection('rsvps')
-  .orderBy('createdAt', 'desc')
-  .get();
+// قراءة قالب محدد
+const classicSnapshot = await db.ref('templates/classic').once('value');
+const classicTemplate = classicSnapshot.val();
+
+// الاستماع للتغييرات في الوقت الحقيقي (real-time)
+db.ref('invitations/' + invitationId).on('value', (snapshot) => {
+  const invitation = snapshot.val();
+  console.log('تم تحديث الدعوة:', invitation);
+});
+
+// البحث بواسطة slug (يجب استخدام orderByChild + equalTo)
+const invitationsBySlug = await db.ref('invitations')
+  .orderByChild('slug')
+  .equalTo('mohamed&mona')
+  .once('value');
+
+// جلب تأكيدات الحضور لدعوة
+const rsvpsSnapshot = await db.ref(`invitations/${invitationId}/rsvps`).once('value');
+const rsvps = rsvpsSnapshot.val(); // { rsvpId1: {...}, rsvpId2: {...} }
+
+// جلب التهاني المرئية فقط
+const wishesSnapshot = await db.ref(`invitations/${invitationId}/wishes`)
+  .orderByChild('isVisible')
+  .equalTo(true)
+  .once('value');
 ```
 
-### كتابة البيانات:
+### ✏️ كتابة البيانات:
 
 ```javascript
-// إنشاء دعوة جديدة
-const newInvitation = await db.collection('invitations').add({
+// ===================================
+// إنشاء بيانات جديدة
+// ===================================
+
+// إنشاء دعوة جديدة (مع معرف فريد تلقائي)
+const newInvitationRef = db.ref('invitations').push();
+
+await newInvitationRef.set({
   userId: currentUser.uid,
   couple: {
     groomName: 'أحمد',
     brideName: 'سارة'
   },
   event: {
-    date: Timestamp.fromDate(new Date('2026-06-15')),
+    date: Date.now(), // timestamp
     time: '8:00 مساءً',
     venue: 'فندق الريتز'
   },
   design: {
-    templateId: 'classic'
+    templateId: 'classic',
+    primaryColor: '#8B4513',
+    secondaryColor: '#D4AF37'
   },
   slug: 'ahmed&sara',
   status: 'draft',
   isPublished: false,
   viewsCount: 0,
-  createdAt: FieldValue.serverTimestamp(),
-  updatedAt: FieldValue.serverTimestamp()
+  createdAt: firebase.database.ServerValue.TIMESTAMP,
+  updatedAt: firebase.database.ServerValue.TIMESTAMP
 });
 
-console.log('تم إنشاء الدعوة:', newInvitation.id);
-```
+console.log('تم إنشاء الدعوة:', newInvitationRef.key);
 
-### تحديث البيانات:
+// ===================================
+// تحديث جزئي (update)
+// ===================================
 
-```javascript
 // تحديث عدد المشاهدات
-await db.collection('invitations').doc(invitationId).update({
-  viewsCount: FieldValue.increment(1),
-  updatedAt: FieldValue.serverTimestamp()
-});
+await db.ref(`invitations/${invitationId}/viewsCount`).set(
+  transaction(current => (current || 0) + 1)
+);
 
-// نشر الدعوة
-await db.collection('invitations').doc(invitationId).update({
+// أو استخدام update لتعديل حقول متعددة
+await db.ref(`invitations/${invitationId}`).update({
   isPublished: true,
   status: 'active',
-  publishedAt: FieldValue.serverTimestamp(),
-  updatedAt: FieldValue.serverTimestamp()
+  updatedAt: firebase.database.ServerValue.TIMESTAMP
+});
+
+// ===================================
+// إضافة RSVP جديد
+// ===================================
+
+const newRsvpRef = db.ref(`invitations/${invitationId}/rsvps`).push();
+
+await newRsvpRef.set({
+  guestName: 'سعود الغامدي',
+  guestEmail: 'saud@example.com',
+  guestPhone: '+966501234567',
+  guestCount: 2,
+  attendance: 'attending',
+  message: 'ألف مبروك!',
+  createdAt: firebase.database.ServerValue.TIMESTAMP,
+  updatedAt: firebase.database.ServerValue.TIMESTAMP
+});
+
+// ===================================
+// إضافة تهنئة جديدة
+// ===================================
+
+const newWishRef = db.ref(`invitations/${invitationId}/wishes`).push();
+
+await newWishRef.set({
+  authorName: 'هدى السعيد',
+  authorEmail: 'huda@example.com',
+  message: 'ألف مبروك! فرحة سعيدة 💕',
+  isVisible: true,
+  createdAt: firebase.database.ServerValue.TIMESTAMP
 });
 ```
 
-### حذف البيانات:
+### 🗑️ حذف البيانات:
 
 ```javascript
 // حذف دعوة (مع جميع البيانات الفرعية)
-const batch = db.batch();
-const rsvps = await db.collection('invitations').doc(id).collection('rsvps').get();
-const wishes = await db.collection('invitations').doc(id).collection('wishes').get();
+await db.ref(`invitations/${invitationId}`).remove();
 
-rsvps.docs.forEach(doc => batch.delete(doc.ref));
-wishes.docs.forEach(doc => batch.delete(doc.ref));
-batch.delete(db.collection('invitations').doc(id));
+// حذف RSVP محدد
+await db.ref(`invitations/${invitationId}/rsvps/${rsvpId}`).remove();
 
-await batch.commit();
-console.log('تم حذف الدعوة وجميع البيانات المرتبطة');
+// حذف تهنئة محددة
+await db.ref(`invitations/${invitationId}/wishes/${wishId}`).remove();
+
+// حذف مستخدم وجميع بياناته
+await db.ref(`users/${userId}`).remove();
+```
+
+### 🔄 المعاملات (Transactions):
+
+```javascript
+// زيادة عدد المشاهدات بأمان (لمنع التعارض)
+const viewsRef = db.ref(`invitations/${invitationId}/viewsCount`);
+
+viewsRef.transaction((currentViews) => {
+  return (currentViews || 0) + 1;
+});
+
+// زيادة عدد تأكيدات الحضور
+const rsvpsCountRef = db.ref(`invitations/${invitationId}/rsvpsCount`);
+
+rsvpsCountRef.transaction((currentCount) => {
+  return (currentCount || 0) + 1;
+});
 ```
 
 ---
 
-## 🔧 أوامر Firebase CLI السريعة
+## 🔧 أوامر Firebase CLI السريعة (Realtime Database)
 
 ```bash
 # عرض حالة المشروع
 firebase projects:list
 
-# نشر قواعد الأمان
-firebase deploy --only firestore:rules
+# نشر قواعد الأمان (من ملف database.rules.json)
+firebase deploy --only database:rules
 
-# نشر الفهارس
-firebase deploy --only firestore:indexes
+# تصدير كل البيانات (نسخة احتياطية)
+firebase database:export backup.json
 
-# تصدير البيانات
-firestore export gs://your-bucket/backups
+# استيراد البيانات (استعادة)
+firebase database:import backup.json
 
-# استيراد البيانات
-firestore import gs://your-bucket/backups
-
-# فتح وحدة التحكم
+# فتح وحدة التحكم في المتصفح
 firebase console
+
+# عرض بيانات RTDB مباشرة
+firebase database:get /templates
+
+# تعيين بيانات مباشرة
+firebase database:set /test '{"hello": "world"}'
+
+# حذف مسار محدد
+firebase database:remove /test
 ```
 
 ---
 
-## ✅ قائمة التحقق النهائية
+## ⚠️ استكشاف الأخطاء وإصلاحها
 
-- [ ] إنشاء مشروع Firebase
-- [ ] تفعيل Firestore Database
-- [ ] إعداد قواعد الأمان
-- [ ] إنشاء الفهارس المركبة
-- [ ] إضافة القوالب الأولية (Seed Data)
-- [ ] اختبار عمليات القراءة/الكتابة
-- [ ] ربط المشروع بـ Cloudflare R2 (للتخزين)
-- [ ] إعداد NVIDIA AI API (للكتابة الذكية)
+### مشكلة 1: PERMISSION_DENIED
+**السبب:** قواعد الأمان ترفض الوصول
+
+**الحل:** 
+1. تحقق من تسجيل الدخول (`auth.uid`)
+2. تأكد من أن القواعد تسمح بالعملية المطلوبة
+3. للتجربة: استخدم مؤقتاً قواعد الاختبار:
+```json
+{
+  "rules": {
+    ".read": true,
+    ".write": true
+  }
+}
+```
+
+### مشكلة 2: firebase.database is not a function
+**السبب:** لم يتم تحميل SDK الخاص بـ Realtime Database
+
+**الحل:** تأكد من وجود هذا السكريبت في HTML:
+```html
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+```
+
+### مشكلة 3: البيانات لا تظهر في الوقت الحقيقي
+**السبب:** استخدام `.once()` بدلاً من `.on()`
+
+**الحل:** للاستماع للتغييرات المستمرة:
+```javascript
+// ❌ خطأ - يقرأ مرة واحدة فقط
+db.ref('path').once('value').then(...);
+
+// ✅ صحيح - يستمع لكل تغيير
+db.ref('path').on('value', (snapshot) => {
+  console.log(snapshot.val());
+});
+```
+
+### مشكلة 4: خطأ في بنية البيانات
+**الرسالة:** `Invalid data path`
+
+**الحل:** 
+- لا تستخدم `/` في بداية المسار
+- تجنب `$`, `#`, `[`, `]`, `.`, أو أحرف تحكم أخرى في المفاتيح
+- لا تستخدم مفاتيح فارغة
+
+### مشكلة 5: تجاوز الحد الأقصى للحجم
+**الحد:** 32 MB لكل عملية قراءة/كتابة، 256 MB عمق الشجرة
+
+**الحل:** 
+- قسم البيانات الكبيرة إلى عقد أصغر
+- استخدم Pagination للبيانات الكثيرة
+- احذف البيانات القديمة غير الضرورية
 
 ---
 
-## 📞 الدعم
+## ✅ قائمة التحقق النهائية (Checklist)
 
-للمساعدة التقنية، تواصل معنا:
+### قبل الإطلاق:
+- [ ] إنشاء مشروع Firebase وتفعيل Realtime Database
+- [ ] ربط تطبيق الويب بالمشروع (Firebase Config)
+- [ ] نشر قواعد الأمان (`database.rules.json`)
+- [ ] إضافة القوالب الأولية (`seed-data-rtdb.js`)
+- [ ] اختبار تسجيل الدخول (Google + Email/Password)
+- [ ] اختبار إنشاء/تعديل/حذف الدعوات
+- [ ] اختبار نظام RSVP والتهاني
+- [ ] اختبار الوصول العام للدعوات المنشورة
+- [ ] ربط Cloudflare R2 (لتخزين الصور والموسيقى)
+- [ ] إعداد NVIDIA AI API (للكتابة الذكية)
+
+### الأمان:
+- [ ] تغيير قواعد الأمان من وضع الاختبار للوضع الإنتاجي
+- [ ] التحقق من صلاحيات القراءة/الكتابة
+- [ ] إخفاء `serviceAccount.json` عن Git (إضافته لـ `.gitignore`)
+- [ ] تفعيل التحقق من البريد الإلكتروني في Firebase Auth
+
+---
+
+## 🔄 الفرق بين Firestore و Realtime Database
+
+| الميزة | Realtime Database | Firestore |
+|--------|------------------|-----------|
+| **هيكل البيانات** | JSON Tree واحد كبير | Collection/Document |
+| **الاستعلامات** | محدودة (orderBy + limitTo) | مرنة (compound queries) |
+| **الوقت الحقيقي** | ✅ فوري (WebSocket) | ✅ سريع لكن ليس فورياً |
+| **التوسع** | شجرة واحدة (قد يصبح بطيئاً) | أفضل للتطبيقات الكبيرة |
+| **الفهارس** | `.indexOn` في Rules | تلقائي أو يدوي |
+| **السعر** | أرخص (بدون فهارس معقدة) | أعلى للمشاريع الكبيرة |
+| **السهولة** | أسهل للمبتدئين | يحتاج خبرة أكثر |
+
+**لماذا اخترنا Realtime Database؟**
+- ✅ أسهل في التعلم والاستخدام
+- ✅ مناسب لحجم البيانات المتوقع
+- ✅ تحديثات فورية للضيوف (RSVP, Wishes)
+- ✅ تكلفة أقل للمشروع الناشئ
+- ✅ JSON Tree بسيط وسهل الفهم
+
+---
+
+## 📞 الدعم والمساعدة
+
+### روابط مفيدة:
+- **Firebase RTDB Docs:** https://firebase.google.com/docs/database
+- **RTDB Security Rules:** https://firebase.google.com/docs/database/security
+- **Firebase Console:** https://console.firebase.google.com
+
+### للتواصل:
 - البريد: support@da3watfarah.com
 - الوثائق: docs.da3watfarah.com
 
 ---
 
 **© 2025 دعوة فرح - جميع الحقوق محفوظة**
+**Powered by Firebase Realtime Database ☁️**

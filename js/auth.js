@@ -45,10 +45,17 @@ function checkAuthState() {
         if (user) {
             console.log('✅ User is signed in:', user.email);
             // User is signed in, redirect to dashboard if on auth pages
-            const currentPage = window.location.pathname.split('/').pop();
-            if (currentPage === 'login.html' || currentPage === 'register.html') {
-                // Optional: redirect to dashboard
-                // window.location.href = 'dashboard.html';
+            const currentPage = window.location.pathname.split('/').pop() || '';
+            
+            // Check if we're on auth pages - if so, redirect to dashboard
+            if (currentPage === 'login.html' || currentPage === 'register.html' || 
+                currentPage === '' || window.location.pathname.includes('/auth/') ||
+                currentPage === 'index.html' && window.location.search.includes('redirect')) {
+                console.log('🔄 Redirecting to dashboard...');
+                showNotification('تم تسجيل الدخول بنجاح! جاري التحويل...', 'success');
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 500);
             }
         } else {
             console.log('👤 User is signed out');
@@ -635,25 +642,26 @@ document.addEventListener('click', (e) => {
 });
 
 // ===================================
-// Save User Data (Firestore + localStorage fallback)
+// Save User Data (Realtime Database + localStorage fallback)
 // ===================================
 async function saveUserData(uid, userData) {
     console.log('💾 Saving user data:', { uid, ...userData });
     
     try {
-        // Try to save to Firestore first
-        if (window.firebaseDb) {
-            await window.firebaseDb.collection('users').doc(uid).set({
+        // Try to save to Realtime Database first
+        if (window.firebaseDb && typeof window.firebaseDb.ref === 'function') {
+            await window.firebaseDb.ref('users/' + uid).set({
                 ...userData,
                 uid: uid,
-                updatedAt: new Date().toISOString()
-            }, { merge: true });
+                createdAt: firebase.database.ServerValue.TIMESTAMP,
+                updatedAt: firebase.database.ServerValue.TIMESTAMP
+            });
             
-            console.log('✅ User data saved to Firestore');
+            console.log('✅ User data saved to Realtime Database');
             return true;
         }
     } catch (error) {
-        console.warn('⚠️ Firestore not available, using localStorage');
+        console.warn('⚠️ Realtime Database not available, using localStorage:', error.message);
     }
     
     // Fallback to localStorage
@@ -662,6 +670,7 @@ async function saveUserData(uid, userData) {
         users[uid] = {
             ...userData,
             uid,
+            createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString()
         };
         localStorage.setItem('da3watfarah_users', JSON.stringify(users));
@@ -675,24 +684,30 @@ async function saveUserData(uid, userData) {
 }
 
 // ===================================
-// Update user last login time
+// Update user last login time (Realtime Database)
 // ===================================
 async function updateUserLastLogin(uid) {
     try {
-        if (window.firebaseDb) {
-            await window.firebaseDb.collection('users').doc(uid).update({
-                lastLogin: new Date().toISOString()
-            });
+        // Update in Realtime Database
+        if (window.firebaseDb && typeof window.firebaseDb.ref === 'function') {
+            await window.firebaseDb.ref('users/' + uid + '/lastLogin').set(
+                firebase.database.ServerValue.TIMESTAMP
+            );
+            await window.firebaseDb.ref('users/' + uid + '/updatedAt').set(
+                firebase.database.ServerValue.TIMESTAMP
+            );
+            console.log('✅ Last login updated in Realtime Database');
         }
         
         // Also update localStorage
         const users = JSON.parse(localStorage.getItem('da3watfarah_users') || '{}');
         if (users[uid]) {
             users[uid].lastLogin = new Date().toISOString();
+            users[uid].updatedAt = new Date().toISOString();
             localStorage.setItem('da3watfarah_users', JSON.stringify(users));
         }
     } catch (error) {
-        console.warn('⚠️ Could not update last login time');
+        console.warn('⚠️ Could not update last login time:', error.message);
     }
 }
 
