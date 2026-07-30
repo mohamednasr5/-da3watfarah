@@ -142,7 +142,9 @@
   }
   tabLogin.addEventListener('click', () => showTab('login'));
   tabSignup.addEventListener('click', () => showTab('signup'));
-  if (new URLSearchParams(location.search).get('mode') === 'signup') showTab('signup');
+  const qs = new URLSearchParams(location.search);
+  if (qs.get('mode') === 'signup') showTab('signup');
+  const presetTheme = ['royal','blossom','modern','rosegold','lavender','emerald','sunset','garden'].includes(qs.get('theme')) ? qs.get('theme') : 'royal';
 
   function setMsg(text, type){
     msg.textContent = text;
@@ -210,7 +212,7 @@
         groomName: groom,
         brideName: bride,
         eventType: 'wedding',
-        theme: 'royal',
+        theme: presetTheme,
         published: false,
         views: 0,
         createdAt: Date.now()
@@ -277,7 +279,7 @@
         groomName: groom,
         brideName: bride,
         eventType: 'wedding',
-        theme: 'royal',
+        theme: presetTheme,
         published: false,
         views: 0,
         createdAt: Date.now()
