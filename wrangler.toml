@@ -1,0 +1,15 @@
+name = "da3watfarah-worker"
+main = "src/index.js"
+compatibility_date = "2025-01-01"
+
+# ربط باكت R2 لتخزين الصور والأصوات
+[[r2_buckets]]
+binding = "MEDIA_BUCKET"
+bucket_name = "da3watfarah-media"
+
+# متغيرات عامة (غير سرية)
+[vars]
+PUBLIC_R2_URL = "https://media.da3watfarah.com"
+
+# ملحوظة: مفتاح NVIDIA_API_KEY يُضاف كـ secret عبر:
+#   wrangler secret put NVIDIA_API_KEY
