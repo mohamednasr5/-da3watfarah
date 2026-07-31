@@ -2030,8 +2030,8 @@ ${venueName ? `- مكان الزفاف: ${venueName}` : ''}
         // Packages offered at the payment gate (kept in sync with the
         // marketing pricing section on index.html).
         const PUBLISH_PLANS = {
-            free: { id: 'free', label: 'مجاني', icon: 'fa-gift', usd: 0, sar: 0, egp: 0,
-                desc: 'قالب واحد أساسي، 10 صور، رابط دعوة (لا يحتاج دفع)' },
+            free: { id: 'free', label: 'مجاني', icon: 'fa-gift', usd: 0, sar: 0, egp: 0, previewOnly: true,
+                desc: 'معاينة القالب وشكل دعوتك فقط — بدون نشر رابط دعوة فعلي للعامة (لا يحتاج دفع)' },
             premium: { id: 'premium', label: 'بريميوم', icon: 'fa-crown', usd: 10, sar: 150, egp: 150,
                 desc: 'جميع القوالب، صور غير محدودة، رابط مخصص، كل الميزات' },
             vip: { id: 'vip', label: 'VIP', icon: 'fa-gem', usd: 25, sar: 500, egp: 400,
@@ -2186,6 +2186,27 @@ ${venueName ? `- مكان الزفاف: ${venueName}` : ''}
             renderPlanGrid();
 
             document.querySelector('.wizard-nav').style.display = 'none';
+
+            // If the visitor already picked a plan before getting here —
+            // e.g. from the pricing section on the homepage, or the
+            // "ترقية لـ VIP" sidebar banner — skip straight to that
+            // plan's payment step instead of asking them to choose again.
+            const preselectedPlan = consumePreselectedPlan();
+            if (preselectedPlan && PUBLISH_PLANS[preselectedPlan]) {
+                choosePublishPlan(preselectedPlan);
+            }
+        }
+
+        // Reads (and clears) the plan chosen earlier on the homepage
+        // pricing section or the dashboard's "ترقية لـ VIP" banner.
+        function consumePreselectedPlan() {
+            try {
+                const plan = localStorage.getItem('da3wa_selected_plan');
+                localStorage.removeItem('da3wa_selected_plan');
+                return plan;
+            } catch (e) {
+                return null;
+            }
         }
 
         function renderPlanGrid() {
@@ -2210,7 +2231,9 @@ ${venueName ? `- مكان الزفاف: ${venueName}` : ''}
             selectedPublishPlan = PUBLISH_PLANS[planId];
 
             if (selectedPublishPlan.usd === 0) {
-                // Free plan — no payment needed, submit straight to admin review.
+                // Free plan — preview only, no payment and no public
+                // publishing. Submit straight to admin review, then show
+                // the dedicated preview-only confirmation screen.
                 db.showNotification('جاري إرسال الطلب للإدارة...', 'info');
                 const res = await db.submitPaymentInfo(pendingInvitationId, {
                     plan: 'free',
@@ -2219,7 +2242,7 @@ ${venueName ? `- مكان الزفاف: ${venueName}` : ''}
                     currency: 'usd'
                 });
                 if (res.success) {
-                    showWaitingForReviewState();
+                    showFreePreviewSubmittedState();
                 } else {
                     db.showNotification(res.error || 'حدث خطأ، حاول مرة أخرى', 'error');
                 }
@@ -2345,6 +2368,48 @@ ${venueName ? `- مكان الزفاف: ${venueName}` : ''}
                 statusEl.style.color = '#EF4444';
                 statusEl.textContent = submitResult.error || 'حدث خطأ أثناء إرسال البيانات';
             }
+        }
+
+        // Free-plan confirmation screen. The free plan is a preview-only
+        // package: it lets the couple see the template and the invitation's
+        // look and feel, but no real public invitation link is published
+        // for guests. This intentionally does NOT show a shareable link.
+        function showFreePreviewSubmittedState() {
+            const wizardContent = document.querySelector('.wizard-content.active');
+
+            wizardContent.innerHTML = `
+                <div class="success-animation">
+                    <i class="fas fa-eye" style="color:var(--primary-gold);"></i>
+                    <h2>تم حفظ معاينتك 👀</h2>
+                    <p>الباقة المجانية مخصصة لمعاينة القالب وشكل دعوتك فقط، ولن يتم نشر رابط دعوة فعلي يراه ضيوفك.</p>
+                    <p style="color:var(--text-secondary);max-width:480px;margin:0 auto;">
+                        إذا أعجبك القالب وحبيت تنشر دعوة حقيقية للعامة، تقدر ترقي لباقة بريميوم أو VIP في أي وقت.
+                    </p>
+
+                    <div style="display:flex;gap:15px;justify-content:center;flex-wrap:wrap;margin-top:20px;">
+                        <button onclick="upgradeFromFreePreview()" class="btn-wizard btn-publish" style="padding:14px 28px;">
+                            <i class="fas fa-crown"></i> ترقية الآن ونشر الدعوة
+                        </button>
+                        <a href="my-invitations.html" class="btn-wizard btn-prev" style="padding:14px 28px;">
+                            <i class="fas fa-list"></i> دعواتي
+                        </a>
+                    </div>
+                </div>
+            `;
+
+            document.querySelector('.wizard-nav').style.display = 'none';
+
+            db.showNotification('تم حفظ معاينتك! هذه معاينة فقط ولا تنشر رابطاً للعامة 👀', 'info');
+        }
+
+        // From the free-preview screen, let the couple upgrade this same
+        // invitation to a paid plan straight away instead of starting over.
+        function showPaymentStepForPlan(planId) {
+            selectedPublishPlan = PUBLISH_PLANS[planId];
+            renderPaymentMethodsStep();
+        }
+        function upgradeFromFreePreview() {
+            showPaymentStepForPlan('premium');
         }
 
         // Step 3 of the gate: final "please wait for admin approval" screen

@@ -20,6 +20,14 @@
 
 const KNOWN_BUCKET_BINDING_NAMES = ['FARAH', 'R2_BUCKET', 'MEDIA_BUCKET', 'BUCKET', 'R2', 'da3watfarah'];
 
+// Admin panel (admin.html) login password. Used to be a Firebase
+// email + password login shared with regular users; now the admin only
+// types this single password (kept here, on the Worker — not in the
+// front-end code). Override it by setting an ADMIN_PASSWORD secret on
+// the Worker (Settings > Variables and secrets) if you want to change it
+// without editing this file.
+const DEFAULT_ADMIN_PASSWORD = '521988';
+
 function getBucket(env) {
     for (const name of KNOWN_BUCKET_BINDING_NAMES) {
         if (env[name] && typeof env[name].put === 'function') {
@@ -69,6 +77,10 @@ export default {
             return handleAiGenerate(request, env, corsHeaders);
         }
 
+        if (url.pathname === '/api/admin/login' && request.method === 'POST') {
+            return handleAdminLogin(request, env, corsHeaders);
+        }
+
         if (url.pathname.startsWith('/files/')) {
             return serveFile(url, env, corsHeaders);
         }
@@ -93,6 +105,7 @@ export default {
                 'DELETE /api/delete - Delete file from R2',
                 'GET /api/list - List files in bucket',
                 'POST /api/ai/generate - Generate invitation text via AI',
+                'POST /api/admin/login - Owner login with a single password (no email)',
                 'GET /files/:key - Serve file from R2',
                 'GET /health - Diagnostics'
             ]
@@ -352,6 +365,61 @@ async function handleAiGenerate(request, env, corsHeaders) {
     } catch (error) {
         console.error('AI generate error:', error);
         return errorResponse('Failed to generate text', 500, corsHeaders);
+    }
+}
+
+/**
+ * Admin panel login — password only, no email.
+ *
+ * admin.html now shows a single password field. The password itself
+ * is checked right here on the Worker against env.ADMIN_PASSWORD
+ * (falls back to DEFAULT_ADMIN_PASSWORD = "521988" if that secret
+ * isn't set), so it never has to live in the front-end code.
+ *
+ * Firebase Realtime Database security rules (database.rules.json)
+ * still require a real Firebase Auth session belonging to a UID listed
+ * under "admins/{uid} = true" before they'll allow admin.html to
+ * read/update/delete invitations. So, on a correct password, this
+ * endpoint also hands back one hidden Firebase account's email +
+ * password (env.ADMIN_FIREBASE_EMAIL / env.ADMIN_FIREBASE_PASSWORD) so
+ * the browser can sign in to Firebase silently in the background — the
+ * admin never sees or types that email/password, only the number above.
+ *
+ * One-time setup needed on the Worker (Settings > Variables and secrets):
+ *   - ADMIN_PASSWORD           optional — overrides the default 521988
+ *   - ADMIN_FIREBASE_EMAIL     email of a Firebase user you created once
+ *                              (e.g. via register.html or Firebase Console)
+ *   - ADMIN_FIREBASE_PASSWORD  that user's Firebase password
+ *   ...and in the Realtime Database, add: admins/{that user's uid} = true
+ */
+async function handleAdminLogin(request, env, corsHeaders) {
+    try {
+        const body = await request.json().catch(() => ({}));
+        const password = body.password;
+        const expectedPassword = env.ADMIN_PASSWORD || DEFAULT_ADMIN_PASSWORD;
+
+        if (!password || password !== expectedPassword) {
+            return errorResponse('كلمة السر غير صحيحة', 401, corsHeaders);
+        }
+
+        if (!env.ADMIN_FIREBASE_EMAIL || !env.ADMIN_FIREBASE_PASSWORD) {
+            return errorResponse(
+                'كلمة السر صحيحة، لكن لم يتم ضبط حساب المالك على الـ Worker بعد. ' +
+                'أضف ADMIN_FIREBASE_EMAIL و ADMIN_FIREBASE_PASSWORD من Worker > Settings > Variables and secrets.',
+                500,
+                corsHeaders
+            );
+        }
+
+        return jsonResponse({
+            success: true,
+            email: env.ADMIN_FIREBASE_EMAIL,
+            password: env.ADMIN_FIREBASE_PASSWORD
+        }, corsHeaders);
+
+    } catch (error) {
+        console.error('Admin login error:', error);
+        return errorResponse('حدث خطأ أثناء تسجيل الدخول', 500, corsHeaders);
     }
 }
 

@@ -88,7 +88,7 @@ function loadSidebar() {
             <div class="upgrade-icon">👑</div>
             <h4>ترقية لـ VIP</h4>
             <p>احصل على ميزات حصرية ومزيد من التخصيص</p>
-            <a href="#" class="btn btn-sm btn-gold">ترقية الآن</a>
+            <a href="#" class="btn btn-sm btn-gold" id="sidebarUpgradeBtn">ترقية الآن</a>
         </div>
 
         <!-- Logout Button -->
@@ -134,6 +134,19 @@ function initSidebarFunctionality() {
             }
         });
     });
+
+    // "ترقية لـ VIP" banner — remember the VIP plan then head into
+    // create-invitation.html, whose payment gate (linked to the same
+    // payment methods shown on the homepage) will open on the VIP plan
+    // automatically instead of asking the user to pick a plan again.
+    const upgradeBtn = document.getElementById('sidebarUpgradeBtn');
+    if (upgradeBtn) {
+        upgradeBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            try { localStorage.setItem('da3wa_selected_plan', 'vip'); } catch (err) {}
+            window.location.href = 'create-invitation.html';
+        });
+    }
 }
 
 // ===================================

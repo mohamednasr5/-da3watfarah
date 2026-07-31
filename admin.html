@@ -40,14 +40,24 @@
   .gate{display:flex;align-items:center;justify-content:center;min-height:100vh;flex-direction:column;gap:14px}
   .gate p{color:var(--text-dim);font-size:14px}
   .empty{padding:40px;text-align:center;color:var(--text-dim)}
+  #adminLoginForm{display:flex;flex-direction:column;gap:12px;align-items:center}
+  #adminPassword{padding:12px 16px;border-radius:10px;border:1px solid var(--line);background:var(--panel2);color:var(--text);font-family:'Cairo';font-size:15px;text-align:center;min-width:240px;letter-spacing:2px}
+  #adminPassword:focus{outline:none;border-color:var(--gold)}
+  .gate .btn{background:var(--gold);color:#0B0F0E;border-color:var(--gold)}
+  .gate .btn:disabled{opacity:.6;cursor:not-allowed}
+  #adminLoginError{color:var(--red);font-size:13px;min-height:16px}
 </style>
 </head>
 <body>
 
 <div class="gate" id="gate">
   <div class="logo">لوحة المالك</div>
-  <p>سجّل دخولك بحساب المالك للمتابعة</p>
-  <a href="login.html" class="btn">تسجيل الدخول</a>
+  <p>أدخل كلمة سر المالك للمتابعة</p>
+  <form id="adminLoginForm">
+    <input type="password" id="adminPassword" placeholder="كلمة السر" autocomplete="off" required>
+    <button type="submit" class="btn" id="adminLoginBtn">دخول</button>
+    <p id="adminLoginError"></p>
+  </form>
 </div>
 
 <div id="dashboard" style="display:none">
@@ -92,8 +102,13 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getAuth, onAuthStateChanged, signOut, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
   import { getDatabase, ref, get, remove, update } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+  // Worker endpoint that verifies the admin password (521988 by default,
+  // see worker.js) and, on success, hands back the hidden Firebase admin
+  // account used to satisfy database.rules.json.
+  const ADMIN_WORKER_URL = 'https://da3watfarah.nonm1724.workers.dev';
 
   // ===== إعدادات فايربيز — استبدل بالقيم الخاصة بمشروعك =====
   const firebaseConfig = {
@@ -110,8 +125,15 @@
   const auth = getAuth(app);
   const db = getDatabase(app);
 
-  // ملحوظة: لازم تضيف حساب المالك يدويًا في قاعدة البيانات:
-  // admins/{uid} = true  -- ضيفها من Firebase Console بعد ما تعمل حساب عادي من login.html
+  // Setup note (one-time, done by the site owner — not the admin typing
+  // the password every day):
+  // 1) Create one Firebase user (Firebase Console, or register.html) to
+  //    act as the hidden admin account.
+  // 2) In the Realtime Database add: admins/{that user's uid} = true
+  // 3) On the Worker (Settings > Variables and secrets) set:
+  //    ADMIN_FIREBASE_EMAIL, ADMIN_FIREBASE_PASSWORD, and optionally
+  //    ADMIN_PASSWORD (defaults to 521988 — see worker.js).
+  // After that, admin.html only ever asks for the numeric password.
 
   let allInvitations = {}; // keyed by invitationId (push key from db.js)
   let currentFilter = 'all';
@@ -127,6 +149,46 @@
   });
 
   document.getElementById('logoutBtn').addEventListener('click', () => signOut(auth).then(() => location.reload()));
+
+  // Password-only admin login. The password is checked on the Worker
+  // (never in this front-end file); on success the Worker returns the
+  // hidden Firebase admin credentials used to actually sign in.
+  document.getElementById('adminLoginForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const passwordInput = document.getElementById('adminPassword');
+    const loginBtn = document.getElementById('adminLoginBtn');
+    const errorEl = document.getElementById('adminLoginError');
+    const password = passwordInput.value;
+
+    errorEl.textContent = '';
+    loginBtn.disabled = true;
+    loginBtn.textContent = 'جارٍ التحقق...';
+
+    try {
+      const res = await fetch(`${ADMIN_WORKER_URL}/api/admin/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password })
+      });
+      const data = await res.json();
+
+      if (!res.ok || !data.success) {
+        errorEl.textContent = data.error || 'كلمة السر غير صحيحة';
+        return;
+      }
+
+      await signInWithEmailAndPassword(auth, data.email, data.password);
+      // onAuthStateChanged above takes it from here (checks admins/{uid}
+      // then shows the dashboard).
+    } catch (err) {
+      console.error('Admin login error:', err);
+      errorEl.textContent = 'تعذر تسجيل الدخول، حاول مرة أخرى';
+    } finally {
+      loginBtn.disabled = false;
+      loginBtn.textContent = 'دخول';
+      passwordInput.value = '';
+    }
+  });
 
   const paymentStatusLabels = {
     unpaid: { text: 'بانتظار اختيار الباقة', cls: 'draft' },

@@ -480,19 +480,23 @@
                             <span class="amount" data-price-sar="0" data-price-egp="0" data-price-usd="0">0</span>
                             <span class="period">مدى الحياة</span>
                         </div>
-                        <p>للتجربة والاستكشاف</p>
+                        <p>لمعاينة القوالب وشكل الدعوة فقط</p>
                     </div>
                     <ul class="pricing-features">
                         <li><i class="fas fa-check-circle"></i> قالب واحد أساسي</li>
                         <li><i class="fas fa-check-circle"></i> 10 صور فقط</li>
-                        <li><i class="fas fa-check-circle"></i> رابط دعوة</li>
+                        <li><i class="fas fa-check-circle"></i> معاينة كاملة لشكل الدعوة</li>
                         <li><i class="fas fa-check-circle"></i> عداد تنازلي</li>
+                        <li class="disabled"><i class="fas fa-times-circle"></i> نشر رابط دعوة فعلي للعامة</li>
                         <li class="disabled"><i class="fas fa-times-circle"></i> تخصيص الألوان</li>
                         <li class="disabled"><i class="fas fa-times-circle"></i> رفع أغنية</li>
                         <li class="disabled"><i class="fas fa-times-circle"></i> كتابة AI</li>
                         <li class="disabled"><i class="fas fa-times-circle"></i> إزالة الشعار</li>
                     </ul>
-                    <a href="register.html" class="btn btn-outline btn-block">ابدأ مجاناً</a>
+                    <p style="font-size:.78rem;color:var(--text-secondary,#8a8578);margin-top:-6px;margin-bottom:14px;">
+                        * باقة معاينة فقط، لا يتم نشر أي رابط دعوة فعلي يراه ضيوفك.
+                    </p>
+                    <a href="#" class="btn btn-outline btn-block" onclick="selectPricingPlan('free');return false;">ابدأ مجاناً (معاينة فقط)</a>
                 </div>
                 
                 <!-- Premium Plan -->
@@ -520,7 +524,7 @@
                         <li><i class="fas fa-check-circle"></i> كتابة AI احترافية</li>
                         <li><i class="fas fa-check-circle"></i> QR Code احترافي</li>
                     </ul>
-                    <a href="register.html" class="btn btn-primary btn-block">اشترك الآن</a>
+                    <a href="#" class="btn btn-primary btn-block" onclick="selectPricingPlan('premium');return false;">اشترك الآن</a>
                 </div>
                 
                 <!-- VIP Plan -->
@@ -550,7 +554,7 @@
                         <li><i class="fas fa-check-circle"></i> دعم أولوية 24/7</li>
                         <li><i class="fas fa-check-circle"></i> تعديلات غير محدودة</li>
                     </ul>
-                    <a href="register.html" class="btn btn-gold btn-block">ترقية لـ VIP</a>
+                    <a href="#" class="btn btn-gold btn-block" onclick="selectPricingPlan('vip');return false;">ترقية لـ VIP</a>
                 </div>
             </div>
         </div>
@@ -733,6 +737,19 @@
 
     <script src="js/main.js"></script>
     
+    <!-- Link pricing cards to the actual payment flow -->
+    <script>
+    // Called from the pricing cards' buttons (free / premium / VIP).
+    // Remembers the chosen plan so that once the visitor creates an
+    // account and starts an invitation, the payment step inside
+    // create-invitation.html jumps straight to that plan's payment
+    // methods instead of asking them to choose again.
+    function selectPricingPlan(planId) {
+        try { localStorage.setItem('da3wa_selected_plan', planId); } catch (e) {}
+        window.location.href = 'register.html';
+    }
+    </script>
+
     <!-- Dynamic Pricing by Country Script -->
     <script>
     // Currency Configuration
