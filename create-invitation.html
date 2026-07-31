@@ -798,6 +798,16 @@
             background: linear-gradient(135deg, #059669, #047857);
         }
         
+        .publish-plan-card:hover {
+            border-color: var(--primary-gold) !important;
+            box-shadow: 0 8px 20px rgba(212, 175, 55, 0.15);
+            transform: translateY(-3px);
+        }
+
+        .payment-method-card {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+
         /* Success Animation */
         .success-animation {
             text-align: center;
@@ -2010,11 +2020,72 @@ ${venueName ? `- مكان الزفاف: ${venueName}` : ''}
         
         // ===================================
         // Publish Invitation (Enhanced)
+        // — Sends the invitation to the admin for review instead of
+        //   publishing it instantly. The user must pick a package and
+        //   (for paid packages) upload proof of payment before the
+        //   invitation goes live; the admin does the final approval
+        //   from admin.html.
         // ===================================
+
+        // Packages offered at the payment gate (kept in sync with the
+        // marketing pricing section on index.html).
+        const PUBLISH_PLANS = {
+            free: { id: 'free', label: 'مجاني', icon: 'fa-gift', usd: 0, sar: 0, egp: 0,
+                desc: 'قالب واحد أساسي، 10 صور، رابط دعوة (لا يحتاج دفع)' },
+            premium: { id: 'premium', label: 'بريميوم', icon: 'fa-crown', usd: 10, sar: 150, egp: 150,
+                desc: 'جميع القوالب، صور غير محدودة، رابط مخصص، كل الميزات' },
+            vip: { id: 'vip', label: 'VIP', icon: 'fa-gem', usd: 25, sar: 500, egp: 400,
+                desc: 'كل ميزات بريميوم + نطاق مخصص + إزالة الشعار + دعم أولوية' }
+        };
+
+        // Payment methods offered at the payment gate.
+        const PUBLISH_PAYMENT_METHODS = [
+            {
+                id: 'card', label: 'فيزا / بايبال (PayPal)', icon: 'fa-credit-card',
+                sub: 'دفع دولي آمن بالبطاقة البنكية', currency: 'usd',
+                payUrl: 'https://www.paypal.com/ncp/payment/AP8XCY357F6KG',
+                payLabel: 'ادفع الآن عبر PayPal / Visa'
+            },
+            {
+                id: 'bank_transfer', label: 'تحويل بنكي - بنك D360', icon: 'fa-building-columns',
+                sub: 'تحويل مباشر عبر الآيبان السعودي', currency: 'sar',
+                fields: [
+                    { label: 'اسم البنك', value: 'D360' },
+                    { label: 'اسم صاحب الحساب', value: 'أيمن نصر نصر' },
+                    { label: 'رقم الآيبان (IBAN)', value: 'SA7636036036031909112576' }
+                ],
+                note: 'قد يستغرق التحويل من 1 إلى 24 ساعة. أرسل إيصال التحويل للتفعيل.'
+            },
+            {
+                id: 'instapay', label: 'إنستاباي (InstaPay)', icon: 'fa-bolt',
+                sub: 'تحويل مباشر من داخل مصر', currency: 'egp',
+                payUrl: 'https://ipn.eg/S/engmohamednasr/instapay/8NShbl',
+                payLabel: 'افتح رابط الدفع عبر إنستاباي',
+                fields: [ { label: 'رقم الهاتف (إنستاباي)', value: '01279934735' } ]
+            },
+            {
+                id: 'barq', label: 'تطبيق برق السعودي', icon: 'fa-bolt-lightning',
+                sub: 'تحويل دولي من السعودية', currency: 'sar',
+                steps: 'اختر التحويل الدولي ← مصر ← ميزة ← ثم أدخل الرقم:',
+                fields: [ { label: 'رقم المستلم', value: '01279934735' } ]
+            },
+            {
+                id: 'vodafone_cash', label: 'فودافون كاش', icon: 'fa-wallet',
+                sub: 'تحويل فوري عبر فودافون كاش', currency: 'egp',
+                fields: [ { label: 'رقم المحفظة', value: '01279934735' } ]
+            }
+        ];
+
+        let pendingInvitationId = null;
+        let pendingInvitationSlug = null;
+        let selectedPublishPlan = null;
+        let selectedPaymentMethod = null;
+        let selectedReceiptUrl = null;
+
         async function publishInvitation() {
             const publishBtn = document.getElementById('publishBtn');
             const originalContent = publishBtn.innerHTML;
-            
+
             // Validate all steps
             for (let i = 1; i <= 3; i++) {
                 if (!validateStep(i)) {
@@ -2022,15 +2093,15 @@ ${venueName ? `- مكان الزفاف: ${venueName}` : ''}
                     return;
                 }
             }
-            
+
             try {
                 // Show loading state
                 publishBtn.disabled = true;
-                publishBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري النشر...';
-                
-                const slug = document.getElementById('customSlug').value.trim() || 
+                publishBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الإرسال...';
+
+                const slug = document.getElementById('customSlug').value.trim() ||
                              buildSlug(document.getElementById('groomName').value, document.getElementById('brideName').value);
-                
+
                 // Check slug availability
                 const isAvailable = await db.isSlugAvailable(slug);
                 if (!isAvailable) {
@@ -2039,7 +2110,7 @@ ${venueName ? `- مكان الزفاف: ${venueName}` : ''}
                     publishBtn.innerHTML = originalContent;
                     return;
                 }
-                
+
                 // Prepare invitation data with template info
                 const invitationData = {
                     couple: {
@@ -2076,47 +2147,224 @@ ${venueName ? `- مكان الزفاف: ${venueName}` : ''}
                     },
                     slug: slug
                 };
-                
-                db.showNotification('جاري إنشاء الدعوة...', 'info');
-                
-                // Create invitation in Firebase
+
+                db.showNotification('جاري إرسال الدعوة للمراجعة...', 'info');
+
+                // Create invitation in Firebase (as "pending_review" — see db.js)
                 const result = await db.createInvitation(invitationData);
-                
+
                 if (result.success) {
-                    // Show success state
-                    showSuccessState(result.invitationId, slug);
+                    pendingInvitationId = result.invitationId;
+                    pendingInvitationSlug = slug;
+                    showReviewGateState();
                 } else {
                     throw new Error(result.error || 'حدث خطأ في إنشاء الدعوة');
                 }
-                
+
             } catch (error) {
                 console.error('Publish error:', error);
-                db.showNotification(error.message || 'حدث خطأ في النشر، يرجى المحاولة مرة أخرى', 'error');
+                db.showNotification(error.message || 'حدث خطأ في الإرسال، يرجى المحاولة مرة أخرى', 'error');
                 publishBtn.disabled = false;
                 publishBtn.innerHTML = originalContent;
             }
         }
-        
-        function showSuccessState(invitationId, slug) {
+
+        // Step 1 of the gate: "sent for review" message + package picker
+        function showReviewGateState() {
             const wizardContent = document.querySelector('.wizard-content.active');
-            
+
             wizardContent.innerHTML = `
                 <div class="success-animation">
-                    <i class="fas fa-check-circle"></i>
-                    <h2>تم إنشاء الدعوة بنجاح! 🎉</h2>
-                    <p>دعوتكم جاهزة الآن ويمكنك مشاركتها مع الضيوف</p>
-                    
+                    <i class="fas fa-paper-plane" style="color:var(--primary-gold);"></i>
+                    <h2>تم إرسال دعوتك إلى الإدارة للمراجعة 🎉</h2>
+                    <p>دعوتك جاهزة الآن! لكي تظهر للعالم كله، يرجى اختيار باقة الدفع ثم إتمام الدفع — بعدها ستتم مراجعتها ونشرها من قبل الإدارة.</p>
+                </div>
+
+                <div id="planGrid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;max-width:800px;margin:0 auto 10px;"></div>
+            `;
+
+            renderPlanGrid();
+
+            document.querySelector('.wizard-nav').style.display = 'none';
+        }
+
+        function renderPlanGrid() {
+            const grid = document.getElementById('planGrid');
+            grid.innerHTML = Object.values(PUBLISH_PLANS).map(plan => `
+                <div class="publish-plan-card" data-plan="${plan.id}" onclick="choosePublishPlan('${plan.id}')"
+                     style="border:2px solid var(--border-color,#E5E7EB);border-radius:var(--radius-lg);padding:22px 18px;text-align:center;cursor:pointer;transition:all .2s;background:var(--bg-card,#fff);">
+                    <i class="fas ${plan.icon}" style="font-size:1.8rem;color:var(--primary-gold);margin-bottom:10px;display:block;"></i>
+                    <h3 style="margin-bottom:6px;color:var(--text-primary);">${plan.label}</h3>
+                    <div style="font-weight:700;color:var(--primary-gold);font-size:1.3rem;margin-bottom:8px;">
+                        ${plan.usd === 0 ? 'مجاني' : `$${plan.usd} <span style="font-size:.8rem;color:var(--text-secondary);">/ ${plan.sar} ر.س / ${plan.egp} ج.م</span>`}
+                    </div>
+                    <p style="color:var(--text-secondary);font-size:.85rem;">${plan.desc}</p>
+                    <button class="btn-wizard btn-next" style="margin-top:14px;width:100%;justify-content:center;">
+                        ${plan.usd === 0 ? 'اختر المجاني' : 'اختر هذه الباقة'}
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        async function choosePublishPlan(planId) {
+            selectedPublishPlan = PUBLISH_PLANS[planId];
+
+            if (selectedPublishPlan.usd === 0) {
+                // Free plan — no payment needed, submit straight to admin review.
+                db.showNotification('جاري إرسال الطلب للإدارة...', 'info');
+                const res = await db.submitPaymentInfo(pendingInvitationId, {
+                    plan: 'free',
+                    planLabel: 'مجاني',
+                    amount: 0,
+                    currency: 'usd'
+                });
+                if (res.success) {
+                    showWaitingForReviewState();
+                } else {
+                    db.showNotification(res.error || 'حدث خطأ، حاول مرة أخرى', 'error');
+                }
+                return;
+            }
+
+            renderPaymentMethodsStep();
+        }
+
+        // Step 2 of the gate: payment methods (matches the design supplied)
+        function renderPaymentMethodsStep() {
+            const wizardContent = document.querySelector('.wizard-content.active');
+            const plan = selectedPublishPlan;
+
+            wizardContent.innerHTML = `
+                <button class="btn-wizard btn-prev" onclick="showReviewGateState()" style="margin-bottom:20px;">
+                    <i class="fas fa-arrow-right"></i> تغيير الباقة
+                </button>
+
+                <h3 style="margin-bottom:6px;"><i class="fas fa-credit-card" style="color:var(--primary-gold);"></i> اختر طريقة الدفع</h3>
+                <p style="color:var(--text-secondary);margin-bottom:20px;">
+                    الباقة المختارة: <strong>${plan.label}</strong> —
+                    المبلغ المطلوب: <strong style="color:var(--primary-gold);">$${plan.usd} / ${plan.sar} ر.س / ${plan.egp} ج.م</strong>
+                </p>
+
+                <div id="paymentMethodsList" style="display:flex;flex-direction:column;gap:16px;max-width:640px;"></div>
+            `;
+
+            document.getElementById('paymentMethodsList').innerHTML = PUBLISH_PAYMENT_METHODS.map(m => {
+                const amount = plan[m.currency];
+                const currencyLabel = { usd: 'دولار', sar: 'ر.س', egp: 'ج.م' }[m.currency];
+                return `
+                <div class="payment-method-card" style="border:2px solid var(--border-color,#E5E7EB);border-radius:var(--radius-lg);padding:20px;background:var(--bg-card,#fff);">
+                    <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;">
+                        <div>
+                            <h4 style="margin-bottom:3px;">${m.label}</h4>
+                            <p style="color:var(--text-secondary);font-size:.85rem;margin:0;">${m.sub}</p>
+                        </div>
+                        <i class="fas ${m.icon}" style="font-size:1.4rem;color:var(--primary-gold);"></i>
+                    </div>
+
+                    <div style="background:var(--bg-secondary,#F9FAFB);border-radius:var(--radius-md);padding:12px 16px;margin-top:14px;">
+                        <span style="color:var(--text-secondary);font-size:.8rem;">المبلغ المطلوب</span>
+                        <div style="font-weight:700;color:var(--primary-gold);font-size:1.2rem;">${amount} ${currencyLabel}</div>
+                    </div>
+
+                    ${m.fields ? m.fields.map(f => `
+                        <div style="display:flex;justify-content:space-between;align-items:center;background:var(--bg-secondary,#F9FAFB);border-radius:var(--radius-md);padding:10px 16px;margin-top:8px;">
+                            <div>
+                                <span style="color:var(--text-secondary);font-size:.75rem;display:block;">${f.label}</span>
+                                <strong style="direction:ltr;display:inline-block;">${f.value}</strong>
+                            </div>
+                            <button type="button" class="btn-wizard btn-prev" style="padding:6px 12px;font-size:.75rem;" onclick="copyPublishValue(this,'${f.value}')">نسخ</button>
+                        </div>
+                    `).join('') : ''}
+
+                    ${m.steps ? `<p style="font-size:.8rem;color:var(--text-secondary);margin-top:10px;">${m.steps}</p>` : ''}
+
+                    ${m.payUrl ? `
+                        <a href="${m.payUrl}" target="_blank" rel="noopener" class="btn-wizard btn-publish" style="width:100%;justify-content:center;margin-top:14px;">
+                            <i class="fas fa-arrow-up-right-from-square"></i> ${m.payLabel}
+                        </a>
+                    ` : ''}
+
+                    <div style="margin-top:16px;border-top:1px dashed var(--border-color,#E5E7EB);padding-top:14px;">
+                        <label style="display:block;font-size:.85rem;margin-bottom:8px;color:var(--text-primary);">
+                            <i class="fas fa-receipt" style="color:var(--primary-gold);"></i> ارفع صورة إيصال / إثبات الدفع
+                        </label>
+                        <input type="file" accept="image/*" id="receipt-${m.id}" style="margin-bottom:10px;">
+                        <button type="button" class="btn-wizard btn-next" style="width:100%;justify-content:center;" onclick="uploadReceiptAndSubmit('${m.id}')">
+                            <i class="fas fa-check"></i> تأكيد الدفع وإرسال الإيصال
+                        </button>
+                        <p id="receiptStatus-${m.id}" style="font-size:.8rem;margin-top:8px;color:var(--text-secondary);"></p>
+                    </div>
+                </div>
+            `}).join('');
+        }
+
+        function copyPublishValue(btn, value) {
+            navigator.clipboard.writeText(value).then(() => {
+                const original = btn.textContent;
+                btn.textContent = 'تم النسخ ✓';
+                setTimeout(() => { btn.textContent = original; }, 1500);
+            });
+        }
+
+        async function uploadReceiptAndSubmit(methodId) {
+            const method = PUBLISH_PAYMENT_METHODS.find(m => m.id === methodId);
+            const fileInput = document.getElementById(`receipt-${methodId}`);
+            const statusEl = document.getElementById(`receiptStatus-${methodId}`);
+            const file = fileInput.files[0];
+
+            if (!file) {
+                statusEl.style.color = '#EF4444';
+                statusEl.textContent = 'يرجى اختيار صورة الإيصال أولاً';
+                return;
+            }
+
+            statusEl.style.color = 'var(--text-secondary)';
+            statusEl.textContent = 'جاري رفع الإيصال...';
+
+            const uploadResult = await db.uploadToR2(file, 'image');
+            if (!uploadResult.success) {
+                statusEl.style.color = '#EF4444';
+                statusEl.textContent = uploadResult.error || 'فشل رفع الإيصال، حاول مرة أخرى';
+                return;
+            }
+
+            const plan = selectedPublishPlan;
+            const submitResult = await db.submitPaymentInfo(pendingInvitationId, {
+                plan: plan.id,
+                planLabel: plan.label,
+                amount: plan[method.currency],
+                currency: method.currency,
+                method: method.id,
+                methodLabel: method.label,
+                receiptUrl: uploadResult.url
+            });
+
+            if (submitResult.success) {
+                showWaitingForReviewState();
+            } else {
+                statusEl.style.color = '#EF4444';
+                statusEl.textContent = submitResult.error || 'حدث خطأ أثناء إرسال البيانات';
+            }
+        }
+
+        // Step 3 of the gate: final "please wait for admin approval" screen
+        function showWaitingForReviewState() {
+            const wizardContent = document.querySelector('.wizard-content.active');
+
+            wizardContent.innerHTML = `
+                <div class="success-animation">
+                    <i class="fas fa-hourglass-half" style="color:var(--primary-gold);"></i>
+                    <h2>بانتظار مراجعة الإدارة ⏳</h2>
+                    <p>تم استلام طلبك بنجاح، وسيتم تفعيل ونشر دعوتك بعد مراجعة الإدارة للدفع خلال وقت قصير.</p>
+
                     <div style="background:linear-gradient(135deg,var(--primary-gold),#C9A227);padding:25px;border-radius:var(--radius-lg);max-width:500px;margin:0 auto 25px;">
-                        <p style="color:rgba(255,255,255,0.9);margin-bottom:10px;font-size:0.9rem;">رابط الدعوة:</p>
+                        <p style="color:rgba(255,255,255,0.9);margin-bottom:10px;font-size:0.9rem;">رابط الدعوة (سيعمل بعد الموافقة):</p>
                         <div style="background:rgba(255,255,255,0.2);padding:15px;border-radius:var(--radius-md);font-family:monospace;direction:ltr;text-align:center;color:white;font-size:1.1rem;word-break:break-all;">
-                            da3watfarah.com/${slug}
+                            da3watfarah.com/${pendingInvitationSlug}
                         </div>
                     </div>
-                    
+
                     <div style="display:flex;gap:15px;justify-content:center;flex-wrap:wrap;">
-                        <a href="invite.html?id=${invitationId}" target="_blank" class="btn-wizard btn-next" style="padding:14px 28px;">
-                            <i class="fas fa-external-link-alt"></i> عرض الدعوة
-                        </a>
                         <a href="my-invitations.html" class="btn-wizard btn-publish" style="padding:14px 28px;">
                             <i class="fas fa-list"></i> دعواتي
                         </a>
@@ -2126,13 +2374,12 @@ ${venueName ? `- مكان الزفاف: ${venueName}` : ''}
                     </div>
                 </div>
             `;
-            
-            // Hide navigation
+
             document.querySelector('.wizard-nav').style.display = 'none';
-            
-            db.showNotification('تم نشر الدعوة بنجاح! 🎉', 'success');
+
+            db.showNotification('تم إرسال طلبك للمراجعة! سيتم التواصل معك عند النشر 🎉', 'success');
         }
-        
+
         // ===================================
         // Logout Function
         // ===================================
@@ -2147,4 +2394,3 @@ ${venueName ? `- مكان الزفاف: ${venueName}` : ''}
         }
     </script>
 </body>
-</html>

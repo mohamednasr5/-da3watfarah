@@ -228,6 +228,10 @@ async function createInvitation(invitationData) {
         }
         
         // Create invitation object
+        // NOTE: invitations no longer go live immediately. Every new invitation
+        // is created in "pending_review" state and only becomes visible to the
+        // world (isPublished: true) after the admin verifies the payment
+        // (or the free plan is confirmed) from the admin panel.
         const newInvitation = {
             userId: currentUserId,
             couple: invitationData.couple || {},
@@ -236,8 +240,21 @@ async function createInvitation(invitationData) {
             content: invitationData.content || {},
             slug: invitationData.slug,
             url: `https://da3watfarah.com/${invitationData.slug}`,
-            status: 'active',
-            isPublished: true,
+            status: 'pending_review',
+            isPublished: false,
+            payment: {
+                status: 'unpaid',        // unpaid | pending_verification | verified | rejected | not_required
+                plan: null,              // 'free' | 'premium' | 'vip'
+                planLabel: null,
+                amount: null,
+                currency: null,
+                method: null,            // 'card', 'bank_transfer', 'instapay', 'barq', 'vodafone_cash'
+                methodLabel: null,
+                receiptUrl: null,
+                submittedAt: null,
+                verifiedAt: null,
+                rejectionReason: null
+            },
             viewsCount: 0,
             rsvpsCount: 0,
             wishesCount: 0,
@@ -330,6 +347,53 @@ async function toggleInvitationPublish(invitationId, publish) {
         isPublished: publish,
         status: publish ? 'active' : 'draft'
     });
+}
+
+/**
+ * Submit the chosen package + payment proof for an invitation.
+ * Does NOT publish the invitation — it only marks it as "pending_verification"
+ * so the admin can check the receipt from the admin panel and approve it.
+ *
+ * @param {string} invitationId
+ * @param {Object} paymentInfo
+ * @param {string} paymentInfo.plan          'free' | 'premium' | 'vip'
+ * @param {string} paymentInfo.planLabel     Arabic label for the plan
+ * @param {number} paymentInfo.amount        amount due
+ * @param {string} paymentInfo.currency      'USD' | 'SAR' | 'EGP'
+ * @param {string} [paymentInfo.method]      payment method key (omitted for free plan)
+ * @param {string} [paymentInfo.methodLabel] Arabic label for the method
+ * @param {string} [paymentInfo.receiptUrl]  URL of the uploaded receipt image (R2)
+ */
+async function submitPaymentInfo(invitationId, paymentInfo) {
+    if (!currentUserId) throw new Error('Not authenticated');
+
+    try {
+        const isFree = paymentInfo.plan === 'free';
+
+        const paymentUpdate = {
+            'payment/status': isFree ? 'not_required' : 'pending_verification',
+            'payment/plan': paymentInfo.plan || null,
+            'payment/planLabel': paymentInfo.planLabel || null,
+            'payment/amount': paymentInfo.amount ?? null,
+            'payment/currency': paymentInfo.currency || null,
+            'payment/method': paymentInfo.method || null,
+            'payment/methodLabel': paymentInfo.methodLabel || null,
+            'payment/receiptUrl': paymentInfo.receiptUrl || null,
+            'payment/submittedAt': Date.now(),
+            status: 'pending_review',
+            updatedAt: Date.now()
+        };
+
+        await window.rtdbUpdate(`invitations/${invitationId}`, paymentUpdate);
+        await window.rtdbUpdate(`users/${currentUserId}/invitations/${invitationId}`, paymentUpdate);
+
+        console.log('✅ Payment info submitted for invitation:', invitationId);
+        return { success: true };
+
+    } catch (error) {
+        console.error('❌ Error submitting payment info:', error);
+        return { success: false, error: error.message };
+    }
 }
 
 // ===================================
@@ -949,6 +1013,7 @@ window.db = {
     updateInvitation,
     deleteInvitation,
     toggleInvitationPublish,
+    submitPaymentInfo,
     getUserInvitations,
     listenToInvitations,
     addRSVP,
