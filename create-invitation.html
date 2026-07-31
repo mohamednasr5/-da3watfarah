@@ -936,7 +936,7 @@
                             
                             <div class="form-group full-width">
                                 <label><i class="fas fa-link"></i> الرابط المخصص (Slug)</label>
-                                <input type="text" class="form-control" id="customSlug" placeholder="mohamed&mona" dir="ltr">
+                                <input type="text" class="form-control" id="customSlug" placeholder="mohamed-mona" dir="ltr">
                                 <small style="color: #6B7280;">سيكون رابط الدعوة: da3watfarah.com/{slug}</small>
                             </div>
                         </div>
@@ -1765,11 +1765,26 @@ ${venueName ? `- مكان الزفاف: ${venueName}` : ''}
         }
         
         // ===================================
+        // Build a clean, URL-safe slug from the couple's names
+        // (uses "-" instead of "&" so the pretty link never needs
+        // to be percent-encoded, e.g. da3watfarah.com/mohktar-athar)
+        // ===================================
+        function buildSlug(groomName, brideName) {
+            const clean = (str) => (str || '')
+                .trim()
+                .toLowerCase()
+                .replace(/\s+/g, '-')          // spaces -> hyphen
+                .replace(/[^a-z0-9\u0600-\u06FF\-]/g, ''); // strip unsafe chars (keeps Arabic letters too)
+
+            return `${clean(groomName)}-${clean(brideName)}`;
+        }
+
+        // ===================================
         // Generate Final Preview
         // ===================================
         function generateFinalPreview() {
             const slug = document.getElementById('customSlug').value.trim() || 
-                         `${document.getElementById('groomName').value}&${document.getElementById('brideName').value}`;
+                         buildSlug(document.getElementById('groomName').value, document.getElementById('brideName').value);
             
             // Update URL preview
             document.getElementById('previewUrl').textContent = `da3watfarah.com/${slug}`;
@@ -1820,7 +1835,7 @@ ${venueName ? `- مكان الزفاف: ${venueName}` : ''}
                 publishBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري النشر...';
                 
                 const slug = document.getElementById('customSlug').value.trim() || 
-                             `${document.getElementById('groomName').value}&${document.getElementById('brideName').value}`;
+                             buildSlug(document.getElementById('groomName').value, document.getElementById('brideName').value);
                 
                 // Check slug availability
                 const isAvailable = await db.isSlugAvailable(slug);

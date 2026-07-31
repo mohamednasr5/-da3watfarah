@@ -208,9 +208,13 @@ async function createInvitation(invitationData) {
     
     try {
         // Generate unique slug if not provided
+        // Uses "-" as separator (not "&") so the pretty link
+        // never needs percent-encoding, e.g. da3watfarah.com/mohktar-athar
         if (!invitationData.slug) {
-            const names = `${invitationData.couple?.groomName || ''}&${invitationData.couple?.brideName || ''}`;
-            invitationData.slug = names.replace(/\s+/g, '').toLowerCase();
+            invitationData.slug = generateSlug(
+                invitationData.couple?.groomName || '',
+                invitationData.couple?.brideName || ''
+            );
         }
         
         // Create invitation object
@@ -738,13 +742,16 @@ async function isSlugAvailable(slug, excludeInvitationId = null) {
  * Generate unique slug from names
  */
 function generateSlug(groomName, brideName) {
-    const base = `${groomName}-${brideName}`
+    // Uses "-" as the separator (not "&") so the resulting link
+    // is URL-safe as-is and never gets percent-encoded (e.g. %26)
+    // when shared, e.g. da3watfarah.com/mohktar-athar
+    const clean = (str) => `${str || ''}`
+        .trim()
+        .toLowerCase()
         .replace(/\s+/g, '-')
-        .replace(/[^a-zA-Z0-9\-&]/g, '')
-        .toLowerCase();
-    
-    // Replace & with proper encoding
-    return base.replace(/-/g, '&').substring(0, 50);
+        .replace(/[^a-z0-9\u0600-\u06FF\-]/g, '');
+
+    return `${clean(groomName)}-${clean(brideName)}`.substring(0, 50);
 }
 
 // ===================================
