@@ -947,7 +947,7 @@
             // Calculate actual values from invitations if stats not available
             const invitationsCount = stats?.invitationsCount || invitations.length || 0;
             const totalViews = stats?.totalViews || invitations.reduce((sum, inv) => sum + (inv.viewsCount || 0), 0);
-            const totalRsvps = stats?.totalRsvps || invitations.reduce((sum, inv) => sum + (inv.rsvpsCount || 0), 0);
+            const totalRsvps = stats?.totalRsvps || invitations.reduce((sum, inv) => sum + (inv.attendingCount ?? inv.rsvpsCount ?? 0), 0);
             
             statsGrid.innerHTML = `
                 <div class="stat-card" onclick="window.location.href='my-invitations.html'" data-aos="zoom-in" data-aos-delay="0">
@@ -977,7 +977,7 @@
                     </div>
                     <div class="stat-details">
                         <h3 id="statRsvps">0</h3>
-                        <p>تأكيدات الحضور</p>
+                        <p>عدد الحضور</p>
                     </div>
                 </div>
                 
@@ -1004,20 +1004,7 @@
         // Calculate Total Wishes
         // ===================================
         async function calculateTotalWishes(invitations) {
-            let totalWishes = 0;
-            
-            try {
-                // Only count wishes from first 3 invitations to avoid too many requests
-                for (const inv of invitations.slice(0, 3)) {
-                    if (inv.id) {
-                        const wishes = await getWishes(inv.id);
-                        totalWishes += wishes.length;
-                    }
-                }
-            } catch (error) {
-                console.warn('Error calculating wishes:', error);
-            }
-            
+            const totalWishes = invitations.reduce((sum, inv) => sum + (inv.wishesCount || 0), 0);
             animateNumber('statWishes', totalWishes);
         }
         
@@ -1066,8 +1053,8 @@
                             <span class="mini-stat" title="المشاهدات">
                                 <i class="fas fa-eye"></i> ${formatNumber(inv.viewsCount || 0)}
                             </span>
-                            <span class="mini-stat" title="التأكيدات">
-                                <i class="fas fa-user-check"></i> ${formatNumber(inv.rsvpsCount || 0)}
+                            <span class="mini-stat" title="عدد الحضور">
+                                <i class="fas fa-user-check"></i> ${formatNumber(inv.attendingCount ?? inv.rsvpsCount ?? 0)}
                             </span>
                         </div>
                         <span class="status-badge ${inv.isPublished ? 'active' : 'draft'}">

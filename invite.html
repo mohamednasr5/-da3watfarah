@@ -608,6 +608,7 @@
         
         .attendance-option {
             cursor: pointer;
+            touch-action: manipulation;
         }
         
         .attendance-option input {
@@ -619,7 +620,7 @@
             border-radius: 12px;
             text-align: center;
             border: 2px solid #e0e0e0;
-            transition: all 0.2s;
+            transition: border-color 0.15s, background 0.15s;
         }
         
         .option-box i {
@@ -647,6 +648,22 @@
             transition: all 0.2s;
             border: none;
             text-decoration: none;
+            touch-action: manipulation;
+        }
+
+        .btn:disabled {
+            opacity: 0.75;
+            cursor: default;
+            transform: none !important;
+        }
+
+        .btn .fa-spinner {
+            animation: btnSpin 0.7s linear infinite;
+        }
+
+        @keyframes btnSpin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
         
         .btn-primary {
@@ -669,18 +686,68 @@
         .wishes-list {
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 16px;
             max-width: 600px;
             margin: 0 auto;
         }
+
+        @keyframes wishCardIn {
+            0% { opacity: 0; transform: translateY(22px) scale(0.96); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        @keyframes wishHeartPop {
+            0% { transform: scale(0.6); opacity: 0; }
+            60% { transform: scale(1.15); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes wishHeartBeat {
+            0%, 100% { transform: scale(1); }
+            25% { transform: scale(1.18); }
+            50% { transform: scale(1); }
+        }
         
         .wish-card {
+            position: relative;
             display: flex;
             gap: 15px;
-            padding: 20px;
-            border-radius: 15px;
+            padding: 22px 24px;
+            border-radius: 16px;
             background: white;
             box-shadow: 0 3px 15px rgba(0,0,0,0.06);
+            border-right: 4px solid var(--theme-primary, #D4AF37);
+            overflow: hidden;
+            opacity: 0;
+            animation: wishCardIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .wish-card::before {
+            content: '\201D';
+            position: absolute;
+            top: -10px;
+            left: 14px;
+            font-family: Georgia, serif;
+            font-size: 4rem;
+            line-height: 1;
+            color: var(--theme-primary, #D4AF37);
+            opacity: 0.1;
+            pointer-events: none;
+        }
+
+        .wish-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .wish-heart-badge {
+            position: absolute;
+            top: 14px;
+            left: 16px;
+            font-size: 0.95rem;
+            color: #FF6B8A;
+            animation: wishHeartPop 0.5s ease 0.15s backwards, wishHeartBeat 2.4s ease-in-out 0.8s infinite;
         }
         
         .wish-avatar {
@@ -693,6 +760,7 @@
             flex-shrink: 0;
             font-weight: 700;
             color: white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
         
         .wish-content h4 {
@@ -813,6 +881,15 @@
         
         .music-toggle:hover {
             transform: scale(1.1);
+        }
+
+        .music-toggle.playing i {
+            animation: musicSpin 3.5s linear infinite;
+        }
+
+        @keyframes musicSpin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
         
         /* Footer */
@@ -1919,6 +1996,7 @@
             if (musicUrl) {
                 document.getElementById('bgAudio').src = musicUrl;
                 document.getElementById('musicPlayer').style.display = 'block';
+                attemptAutoplayMusic();
             }
 
             // Store invitation ID globally for RSVP/Wishes
@@ -1979,18 +2057,43 @@
             if (e.target === document.getElementById('lightbox')) closeLightbox();
         });
 
-        // Music toggle
-        let isPlaying = false;
-        document.getElementById('musicToggle').addEventListener('click', () => {
+        // Music: try to autoplay, and keep the toggle button in sync with real playback state
+        function attemptAutoplayMusic() {
             const audio = document.getElementById('bgAudio');
-            if (isPlaying) {
-                audio.pause();
-                document.getElementById('musicToggle').innerHTML = '<i class="fas fa-music"></i>';
-            } else {
-                audio.play().catch(() => {});
-                document.getElementById('musicToggle').innerHTML = '<i class="fas fa-pause"></i>';
+            const playPromise = audio.play();
+            if (playPromise !== undefined) {
+                playPromise.catch(() => {
+                    // Autoplay was blocked by the browser — start playback on the
+                    // visitor's first interaction with the page instead.
+                    const startOnInteraction = () => {
+                        audio.play().catch(() => {});
+                        ['click', 'touchstart', 'scroll', 'keydown'].forEach(evt =>
+                            document.removeEventListener(evt, startOnInteraction));
+                    };
+                    ['click', 'touchstart', 'scroll', 'keydown'].forEach(evt =>
+                        document.addEventListener(evt, startOnInteraction, { once: true, passive: true }));
+                });
             }
-            isPlaying = !isPlaying;
+        }
+
+        const bgAudioEl = document.getElementById('bgAudio');
+        const musicToggleBtn = document.getElementById('musicToggle');
+
+        bgAudioEl.addEventListener('play', () => {
+            musicToggleBtn.innerHTML = '<i class="fas fa-pause"></i>';
+            musicToggleBtn.classList.add('playing');
+        });
+        bgAudioEl.addEventListener('pause', () => {
+            musicToggleBtn.innerHTML = '<i class="fas fa-music"></i>';
+            musicToggleBtn.classList.remove('playing');
+        });
+
+        musicToggleBtn.addEventListener('click', () => {
+            if (bgAudioEl.paused) {
+                bgAudioEl.play().catch(() => {});
+            } else {
+                bgAudioEl.pause();
+            }
         });
 
         // RSVP Form Handler
@@ -2008,6 +2111,11 @@
 
             if (!window.currentInvitationId) return;
 
+            const submitBtn = document.querySelector('#rsvpForm .rsvp-submit-btn');
+            const submitBtnOriginalHtml = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner"></i> جاري الإرسال...';
+
             try {
                 await push(ref(db, `invitations/${window.currentInvitationId}/rsvps`), {
                     guestName: name,
@@ -2016,11 +2124,22 @@
                     createdAt: Date.now()
                 });
 
+                // Keep the dashboard's counters (views / RSVPs / actual attendee headcount) up to date
+                const counterUpdates = { rsvpsCount: increment(1) };
+                if (attendance === 'attending') {
+                    counterUpdates.attendingCount = increment(1 + parseInt(guestCount));
+                } else {
+                    counterUpdates.notAttendingCount = increment(1);
+                }
+                update(ref(db, `invitations/${window.currentInvitationId}`), counterUpdates).catch(() => {});
+
                 document.getElementById('rsvpForm').style.display = 'none';
                 document.getElementById('rsvpSuccessMessage').classList.add('show');
             } catch (error) {
                 console.error('Error submitting RSVP:', error);
                 alert('حدث خطأ أثناء إرسال التأكيد. يرجى المحاولة مرة أخرى.');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = submitBtnOriginalHtml;
             }
         });
 
@@ -2122,9 +2241,11 @@
 
             try {
                 let audioUrl = '';
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = recordedBlob
+                    ? '<i class="fas fa-spinner fa-spin"></i> جاري رفع التسجيل...'
+                    : '<i class="fas fa-spinner fa-spin"></i> جاري الإرسال...';
                 if (recordedBlob) {
-                    submitBtn.disabled = true;
-                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري رفع التسجيل...';
                     audioUrl = await uploadVoiceWish(recordedBlob);
                 }
 
@@ -2137,6 +2258,11 @@
                 if (audioUrl) payload.audioUrl = audioUrl;
 
                 await push(ref(db, `invitations/${window.currentInvitationId}/wishes`), payload);
+
+                // Keep the owner's dashboard count of well-wishers up to date
+                update(ref(db, `invitations/${window.currentInvitationId}`), {
+                    wishesCount: increment(1)
+                }).catch(() => {});
 
                 document.getElementById('wishNameInput').value = '';
                 document.getElementById('wishMessageInput').value = '';
@@ -2165,9 +2291,10 @@
                 Object.values(wishes)
                     .filter(w => w.isVisible !== false)
                     .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0))
-                    .forEach(wish => {
+                    .forEach((wish, index) => {
                         const card = document.createElement('div');
                         card.className = 'wish-card';
+                        card.style.animationDelay = `${Math.min(index * 90, 900)}ms`;
                         
                         const escapeHtml = (str) => (str || '').replace(/[&<>"']/g, (c) => ({
                             '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
@@ -2185,6 +2312,7 @@
                             : '';
                         
                         card.innerHTML = `
+                            <i class="fas fa-heart wish-heart-badge"></i>
                             <div class="wish-avatar" style="background: ${avatarColor}">${firstChar}</div>
                             <div class="wish-content">
                                 <h4>${escapeHtml(displayName)}</h4>
@@ -2249,14 +2377,10 @@
         // Increment view count
         async function incrementViewCount(id) {
             try {
-                const snapshot = await get(ref(db, `invitations/${id}`));
-                if (snapshot.exists()) {
-                    const currentViews = snapshot.val().viewsCount || snapshot.val().views || 0;
-                    await update(ref(db, `invitations/${id}`), {
-                        viewsCount: currentViews + 1,
-                        views: currentViews + 1
-                    });
-                }
+                await update(ref(db, `invitations/${id}`), {
+                    viewsCount: increment(1),
+                    views: increment(1)
+                });
             } catch (e) {
                 console.warn('Could not increment view count:', e);
             }

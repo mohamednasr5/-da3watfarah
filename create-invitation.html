@@ -559,6 +559,50 @@
             grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
             gap: 15px;
         }
+
+        /* Upload progress bar */
+        .upload-progress {
+            display: none;
+            align-items: center;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .upload-progress.active {
+            display: flex;
+        }
+
+        .upload-progress-track {
+            flex: 1;
+            height: 8px;
+            border-radius: 5px;
+            background: #eee;
+            overflow: hidden;
+        }
+
+        .upload-progress-fill {
+            height: 100%;
+            width: 0%;
+            border-radius: 5px;
+            background: linear-gradient(90deg, var(--primary-color, #8B4513), var(--secondary-color, #D4AF37));
+            transition: width 0.15s ease;
+        }
+
+        .upload-progress-label {
+            font-size: 0.85rem;
+            color: #666;
+            min-width: 42px;
+            text-align: left;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .upload-progress.error .upload-progress-fill {
+            background: #e74c3c;
+        }
+
+        .upload-progress.error .upload-progress-label {
+            color: #e74c3c;
+        }
         
         /* URL Link Input (alternative to file upload) */
         .url-input-row {
@@ -1014,6 +1058,10 @@
                                     <p>PNG, JPG حتى 5MB</p>
                                     <input type="file" id="coverInput" accept="image/*" hidden>
                                 </div>
+                                <div class="upload-progress" id="coverUploadProgress">
+                                    <div class="upload-progress-track"><div class="upload-progress-fill" id="coverUploadProgressFill"></div></div>
+                                    <span class="upload-progress-label" id="coverUploadProgressLabel">0%</span>
+                                </div>
                                 <div class="url-input-row">
                                     <span class="url-divider">أو رابط مباشر:</span>
                                     <input type="url" id="coverUrlInput" placeholder="https://example.com/image.jpg">
@@ -1030,6 +1078,10 @@
                                     <p>يمكنك إضافة عدة صور</p>
                                     <input type="file" id="galleryInput" accept="image/*" multiple hidden>
                                 </div>
+                                <div class="upload-progress" id="galleryUploadProgress">
+                                    <div class="upload-progress-track"><div class="upload-progress-fill" id="galleryUploadProgressFill"></div></div>
+                                    <span class="upload-progress-label" id="galleryUploadProgressLabel">0%</span>
+                                </div>
                                 <div class="url-input-row">
                                     <span class="url-divider">أو رابط مباشر:</span>
                                     <input type="url" id="galleryUrlInput" placeholder="https://example.com/image.jpg">
@@ -1045,6 +1097,10 @@
                                     <h4>اختر موسيقى للدعوة</h4>
                                     <p>MP3 حتى 10MB</p>
                                     <input type="file" id="musicInput" accept="audio/*" hidden>
+                                </div>
+                                <div class="upload-progress" id="musicUploadProgress">
+                                    <div class="upload-progress-track"><div class="upload-progress-fill" id="musicUploadProgressFill"></div></div>
+                                    <span class="upload-progress-label" id="musicUploadProgressLabel">0%</span>
                                 </div>
                                 <div class="url-input-row">
                                     <span class="url-divider">أو رابط مباشر:</span>
@@ -1642,19 +1698,42 @@ ${venueName ? `- مكان الزفاف: ${venueName}` : ''}
             });
         }
         
+        // Show/update/hide the upload progress bar for a given prefix ("cover" | "gallery" | "music")
+        function setUploadProgress(prefix, percent, state) {
+            const bar = document.getElementById(`${prefix}UploadProgress`);
+            const fill = document.getElementById(`${prefix}UploadProgressFill`);
+            const label = document.getElementById(`${prefix}UploadProgressLabel`);
+            if (!bar || !fill || !label) return;
+
+            if (state === 'hide') {
+                bar.classList.remove('active', 'error');
+                fill.style.width = '0%';
+                return;
+            }
+
+            bar.classList.add('active');
+            bar.classList.toggle('error', state === 'error');
+            fill.style.width = `${percent}%`;
+            label.textContent = state === 'error' ? 'فشل الرفع' : `جاري الرفع... ${percent}%`;
+        }
+
         async function handleCoverUpload(file) {
             const area = document.getElementById('coverUpload');
             area.classList.add('dragover');
+            setUploadProgress('cover', 0, 'active');
             try {
-                const result = await db.uploadToR2(file, 'image');
+                const result = await db.uploadToR2WithProgress(file, 'image', (pct) => setUploadProgress('cover', pct, 'active'));
                 if (result.success) {
                     setCoverImage(result.url);
                     db.showNotification('تم رفع صورة الغلاف بنجاح', 'success');
+                    setUploadProgress('cover', 100, 'hide');
                 } else {
+                    setUploadProgress('cover', 0, 'error');
                     db.showNotification(result.error || 'فشل رفع الصورة. جرّب استخدام رابط مباشر بدلاً من ذلك', 'error');
                 }
             } catch (error) {
                 console.error('Cover upload error:', error);
+                setUploadProgress('cover', 0, 'error');
                 db.showNotification('تعذر رفع الصورة. يمكنك استخدام خيار "رابط مباشر" بدلاً من ذلك', 'error');
             } finally {
                 area.classList.remove('dragover');
@@ -1662,32 +1741,40 @@ ${venueName ? `- مكان الزفاف: ${venueName}` : ''}
         }
         
         async function handleGalleryUpload(file) {
+            setUploadProgress('gallery', 0, 'active');
             try {
-                const result = await db.uploadToR2(file, 'image');
+                const result = await db.uploadToR2WithProgress(file, 'image', (pct) => setUploadProgress('gallery', pct, 'active'));
                 if (result.success) {
                     uploadedGallery.push(result.url);
                     renderGalleryPreview();
                     db.showNotification('تمت إضافة الصورة بنجاح', 'success');
+                    setUploadProgress('gallery', 100, 'hide');
                 } else {
+                    setUploadProgress('gallery', 0, 'error');
                     db.showNotification(result.error || 'فشل رفع الصورة. جرّب استخدام رابط مباشر بدلاً من ذلك', 'error');
                 }
             } catch (error) {
                 console.error('Gallery upload error:', error);
+                setUploadProgress('gallery', 0, 'error');
                 db.showNotification('تعذر رفع الصورة. يمكنك استخدام خيار "رابط مباشر" بدلاً من ذلك', 'error');
             }
         }
         
         async function handleMusicUpload(file) {
+            setUploadProgress('music', 0, 'active');
             try {
-                const result = await db.uploadToR2(file, 'audio');
+                const result = await db.uploadToR2WithProgress(file, 'audio', (pct) => setUploadProgress('music', pct, 'active'));
                 if (result.success) {
                     setMusic(result.url, file.name);
                     db.showNotification('تم رفع الموسيقى بنجاح', 'success');
+                    setUploadProgress('music', 100, 'hide');
                 } else {
+                    setUploadProgress('music', 0, 'error');
                     db.showNotification(result.error || 'فشل رفع الموسيقى. جرّب استخدام رابط مباشر بدلاً من ذلك', 'error');
                 }
             } catch (error) {
                 console.error('Music upload error:', error);
+                setUploadProgress('music', 0, 'error');
                 db.showNotification('تعذر رفع الموسيقى. يمكنك استخدام خيار "رابط مباشر" بدلاً من ذلك', 'error');
             }
         }

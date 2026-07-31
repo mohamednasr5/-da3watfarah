@@ -559,6 +559,81 @@ async function uploadToR2(file, type = 'image') {
 }
 
 /**
+ * Upload file to R2 via Worker, reporting real upload progress (0-100)
+ * through onProgress(percent). Uses XHR since fetch() cannot expose
+ * upload progress for request bodies in all browsers.
+ */
+function uploadToR2WithProgress(file, type = 'image', onProgress) {
+    return new Promise((resolve) => {
+        if (!window.r2Config || !window.r2Config.workerUrl) {
+            console.error('❌ R2 config not found');
+            resolve({ success: false, error: 'خدمة رفع الملفات غير مهيأة (R2 config)' });
+            return;
+        }
+
+        if (!file) {
+            resolve({ success: false, error: 'لم يتم اختيار ملف' });
+            return;
+        }
+
+        const maxSizeMb = type === 'audio' ? 20 : 8;
+        if (file.size > maxSizeMb * 1024 * 1024) {
+            resolve({ success: false, error: `حجم الملف كبير جداً (الحد الأقصى ${maxSizeMb}MB)` });
+            return;
+        }
+
+        const folderMap = { image: 'images', audio: 'music', video: 'video' };
+        const folder = folderMap[type] || 'uploads';
+
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('type', type);
+        formData.append('folder', folder);
+        formData.append('userId', currentUserId || 'anonymous');
+
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', `${window.r2Config.workerUrl}${window.r2Config.uploadEndpoint}`, true);
+        xhr.timeout = 30000;
+
+        if (xhr.upload && typeof onProgress === 'function') {
+            xhr.upload.addEventListener('progress', (e) => {
+                if (e.lengthComputable) {
+                    onProgress(Math.round((e.loaded / e.total) * 100));
+                }
+            });
+        }
+
+        xhr.onload = () => {
+            let result;
+            try {
+                result = JSON.parse(xhr.responseText);
+            } catch (_) {
+                result = null;
+            }
+
+            if (xhr.status >= 200 && xhr.status < 300 && result && result.success) {
+                console.log('✅ File uploaded to R2:', result.url);
+                if (typeof onProgress === 'function') onProgress(100);
+                resolve({ success: true, url: result.url, key: result.key });
+            } else {
+                const serverMsg = result && result.error ? result.error : `فشل رفع الملف (${xhr.status})`;
+                resolve({ success: false, error: serverMsg });
+            }
+        };
+
+        xhr.onerror = () => {
+            resolve({ success: false, error: 'تعذر الاتصال بخدمة الرفع، تحقق من اتصال الإنترنت' });
+        };
+
+        xhr.ontimeout = () => {
+            resolve({ success: false, error: 'انتهت مهلة رفع الملف، تحقق من اتصال الإنترنت وحاول مرة أخرى' });
+        };
+
+        xhr.send(formData);
+    });
+}
+
+/**
  * Delete file from R2
  */
 async function deleteFromR2(fileKey) {
@@ -873,6 +948,7 @@ window.db = {
     getTemplates,
     getTemplate,
     uploadToR2,
+    uploadToR2WithProgress,
     deleteFromR2,
     uploadMultipleFiles,
     incrementViewCount,

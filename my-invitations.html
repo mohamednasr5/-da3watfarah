@@ -1664,7 +1664,7 @@
             const url = invitation.url || `https://da3watfarah.com/${slug}`;
             const isPublished = invitation.isPublished;
             const views = invitation.viewsCount || 0;
-            const rsvps = invitation.rsvpsCount || 0;
+            const rsvps = invitation.attendingCount ?? invitation.rsvpsCount ?? 0;
             const wishes = invitation.wishesCount || 0;
             const createdAt = window.db.formatDateAr(invitation.createdAt);
             const weddingDate = invitation.weddingDate ? window.db.formatDateAr(invitation.weddingDate) : null;
@@ -1718,9 +1718,9 @@
                                 <div class="card-stat-value">${window.db.formatNumber(views)}</div>
                                 <div class="card-stat-label">مشاهدة</div>
                             </div>
-                            <div class="card-stat" title="التأكيدات">
+                            <div class="card-stat" title="عدد الحضور المؤكد (شامل المرافقين)">
                                 <div class="card-stat-value">${window.db.formatNumber(rsvps)}</div>
-                                <div class="card-stat-label">تأكيد حضور</div>
+                                <div class="card-stat-label">حضور</div>
                             </div>
                             <div class="card-stat" title="التهاني">
                                 <div class="card-stat-value">${window.db.formatNumber(wishes)}</div>
