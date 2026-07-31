@@ -887,6 +887,122 @@ input, textarea {
 }
 
 /* ===================================
+   Real Invitations Showcase Section
+   =================================== */
+.real-invitations {
+    padding: 120px 0;
+    background: var(--bg-primary);
+}
+
+.real-invitations-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+}
+
+.real-invitation-card {
+    display: block;
+    background: white;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    transition: all var(--transition-normal);
+    text-decoration: none;
+    color: inherit;
+}
+
+.real-invitation-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-lg);
+}
+
+.real-invitation-thumb {
+    position: relative;
+    height: 260px;
+    background-size: cover;
+    background-position: center;
+    background-color: var(--bg-secondary);
+    display: flex;
+    align-items: flex-end;
+}
+
+.real-invitation-overlay {
+    width: 100%;
+    padding: 20px;
+    background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.15) 60%, transparent 100%);
+}
+
+.real-invitation-overlay h3 {
+    color: white;
+    font-size: 1.3rem;
+    font-weight: 800;
+    font-family: var(--font-amiri, inherit);
+}
+
+.real-invitation-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+}
+
+.real-invitation-view {
+    color: var(--primary-gold);
+    font-weight: 600;
+    font-size: 0.95rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.real-invitation-count {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.real-invitation-card.skeleton-card {
+    height: 336px;
+    background: linear-gradient(90deg, var(--bg-secondary) 25%, #efe6d8 50%, var(--bg-secondary) 75%);
+    background-size: 200% 100%;
+    animation: skeletonShimmer 1.4s ease-in-out infinite;
+    box-shadow: none;
+}
+
+@keyframes skeletonShimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+.real-invitations-empty {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-secondary);
+}
+
+.real-invitations-empty i {
+    font-size: 2.5rem;
+    margin-bottom: 15px;
+    opacity: 0.5;
+    color: var(--primary-gold);
+}
+
+@media (max-width: 992px) {
+    .real-invitations-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .real-invitations-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ===================================
    How It Works Section
    =================================== */
 .how-it-works {

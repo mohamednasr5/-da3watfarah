@@ -369,6 +369,26 @@
         </div>
     </section>
 
+    <!-- Real Invitations Showcase Section -->
+    <section class="real-invitations" id="real-invitations">
+        <div class="container">
+            <div class="section-header" data-aos="fade-up">
+                <span class="section-badge">دعوات حقيقية</span>
+                <h2>دعوات فرحنا الأكثر <span class="gold">تفاعلاً</span></h2>
+                <p>دعوات حقيقية صمّمها عرسان على فرحنا وشاركوها مع ضيوفهم.</p>
+            </div>
+
+            <div class="real-invitations-grid" id="realInvitationsGrid" data-aos="fade-up" data-aos-delay="100">
+                <div class="real-invitation-card skeleton-card"></div>
+                <div class="real-invitation-card skeleton-card"></div>
+                <div class="real-invitation-card skeleton-card"></div>
+                <div class="real-invitation-card skeleton-card"></div>
+                <div class="real-invitation-card skeleton-card"></div>
+                <div class="real-invitation-card skeleton-card"></div>
+            </div>
+        </div>
+    </section>
+
     <!-- How It Works Section -->
     <section class="how-it-works" id="how-it-works">
         <div class="container">
@@ -704,6 +724,13 @@
 
     <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+
+    <!-- Firebase SDK (Realtime Database, public read-only for the showcase) -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+    <script src="js/firebase-config.js"></script>
+    <script src="js/real-invitations.js"></script>
+
     <script src="js/main.js"></script>
     
     <!-- Dynamic Pricing by Country Script -->
