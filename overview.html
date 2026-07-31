@@ -1121,20 +1121,9 @@
         function getPreviewUrl(invitation) {
             if (!invitation.slug) return '#';
             
-            // Map template types to preview pages
-            const templateMap = {
-                'royal': 'preview-royal.html',
-                'romantic': 'preview-romantic.html',
-                'classic': 'preview-classic.html',
-                'modern': 'preview-modern.html',
-                'islamic': 'preview-islamic.html',
-                'bohemian': 'preview-bohemian.html'
-            };
-            
-            const template = invitation.design?.template || 'classic';
-            const previewPage = templateMap[template] || 'preview-classic.html';
-            
-            return `${previewPage}?slug=${encodeURIComponent(invitation.slug)}&id=${invitation.id}`;
+            // Open the real invitation renderer (reads live data from the DB),
+            // not the static template demo page.
+            return `invite.html?slug=${encodeURIComponent(invitation.slug)}&id=${invitation.id}`;
         }
         
         // ===================================
