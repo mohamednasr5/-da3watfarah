@@ -13,12 +13,15 @@ let invitationData = {};
 // Initialize Dashboard
 // ===================================
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('🚀 Initializing Dashboard...');
+    
     // Initialize AOS
     if (typeof AOS !== 'undefined') {
         AOS.init({
             duration: 600,
             once: true
         });
+        console.log('✅ AOS initialized');
     }
     
     // Initialize components
@@ -30,6 +33,34 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Check authentication
     checkDashboardAuth();
+    
+    // ⭐ CRITICAL: Show overview section by default
+    setTimeout(() => {
+        const overviewSection = document.getElementById('overview');
+        if (overviewSection) {
+            overviewSection.classList.add('active');
+            console.log('✅ Overview section activated');
+        } else {
+            console.error('❌ Overview section not found!');
+        }
+        
+        // Ensure all sections except overview are hidden
+        const sections = document.querySelectorAll('.dashboard-section');
+        sections.forEach(section => {
+            if (section.id !== 'overview') {
+                section.classList.remove('active');
+            }
+        });
+        
+        // Update active nav item
+        const navLinks = document.querySelectorAll('.sidebar-nav a');
+        navLinks.forEach(link => {
+            link.parentElement.classList.remove('active');
+            if (link.dataset.section === 'overview') {
+                link.parentElement.classList.add('active');
+            }
+        });
+    }, 100);
 });
 
 // ===================================
@@ -102,14 +133,31 @@ function initNavigation() {
 }
 
 function showSection(sectionId) {
+    console.log(`🔄 Switching to section: ${sectionId}`);
+    
     // Hide all sections
     const sections = document.querySelectorAll('.dashboard-section');
-    sections.forEach(section => section.classList.remove('active'));
+    console.log(`📋 Found ${sections.length} sections`);
+    
+    sections.forEach(section => {
+        section.classList.remove('active');
+        console.log(`  - Hidden: ${section.id || 'unknown'}`);
+    });
     
     // Show target section
     const targetSection = document.getElementById(sectionId);
     if (targetSection) {
         targetSection.classList.add('active');
+        console.log(`✅ Shown: ${sectionId}`);
+        
+        // Scroll to top smoothly
+        const contentWrapper = document.querySelector('.content-wrapper');
+        if (contentWrapper) {
+            contentWrapper.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    } else {
+        console.error(`❌ Section not found: ${sectionId}`);
+        return;
     }
     
     // Update page title
@@ -126,12 +174,7 @@ function showSection(sectionId) {
     
     if (pageTitle && titles[sectionId]) {
         pageTitle.textContent = titles[sectionId];
-    }
-    
-    // Scroll to top of content
-    const contentWrapper = document.querySelector('.content-wrapper');
-    if (contentWrapper) {
-        contentWrapper.scrollTop = 0;
+        console.log(`📝 Title updated to: ${titles[sectionId]}`);
     }
 }
 

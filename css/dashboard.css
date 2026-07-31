@@ -10,9 +10,9 @@
 
 /* Dashboard Container */
 .dashboard-container {
-    display: grid;
-    grid-template-columns: 280px 1fr;
+    display: flex;
     min-height: 100vh;
+    position: relative;
 }
 
 /* ===================================
@@ -31,6 +31,7 @@
     overflow-y: auto;
     z-index: 1000;
     transition: transform var(--transition-normal);
+    box-shadow: -5px 0 25px rgba(0, 0, 0, 0.15);
 }
 
 .sidebar-header {
@@ -176,9 +177,11 @@
    =================================== */
 .main-content {
     margin-right: 280px;
+    width: calc(100% - 280px);
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    background: var(--bg-secondary);
 }
 
 /* Top Header */
@@ -362,16 +365,24 @@
 .content-wrapper {
     padding: 30px;
     flex: 1;
+    max-width: 1400px;
+    margin: 0 auto;
+    width: 100%;
 }
 
 /* Dashboard Sections */
 .dashboard-section {
     display: none;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.3s ease;
 }
 
 .dashboard-section.active {
     display: block;
-    animation: fadeIn 0.3s ease;
+    opacity: 1;
+    transform: translateY(0);
+    animation: fadeIn 0.4s ease;
 }
 
 @keyframes fadeIn {
@@ -1344,6 +1355,26 @@
 /* ===================================
    Responsive Design for Dashboard
    =================================== */
+
+/* Large Desktops (1400px+) */
+@media (min-width: 1400px) {
+    .content-wrapper {
+        padding: 40px;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+/* Desktop (1200px - 1399px) */
+@media (max-width: 1399px) and (min-width: 1025px) {
+    .stats-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+/* Tablets Landscape & Small Laptops */
 @media (max-width: 1280px) {
     .stats-grid {
         grid-template-columns: repeat(2, 1fr);
@@ -1352,8 +1383,13 @@
     .templates-grid-dashboard {
         grid-template-columns: repeat(2, 1fr);
     }
+    
+    .welcome-content h2 {
+        font-size: 1.75rem;
+    }
 }
 
+/* Tablets Portrait */
 @media (max-width: 1024px) {
     .sidebar {
         transform: translateX(100%);
@@ -1365,6 +1401,7 @@
     
     .main-content {
         margin-right: 0;
+        width: 100%;
     }
     
     .mobile-menu-btn {
@@ -1378,6 +1415,7 @@
     .welcome-banner {
         flex-direction: column;
         text-align: center;
+        padding: 30px;
     }
     
     .welcome-image {
@@ -1387,8 +1425,13 @@
     .settings-grid {
         grid-template-columns: 1fr;
     }
+    
+    .top-header {
+        padding: 15px 25px;
+    }
 }
 
+/* Mobile Landscape & Small Tablets */
 @media (max-width: 768px) {
     .content-wrapper {
         padding: 20px 15px;
@@ -1446,5 +1489,38 @@
     
     .color-options {
         justify-content: center;
+    }
+    
+    .welcome-banner {
+        padding: 25px 20px;
+    }
+    
+    .welcome-content h2 {
+        font-size: 1.5rem;
+    }
+}
+
+/* Mobile Portrait */
+@media (max-width: 480px) {
+    .content-wrapper {
+        padding: 15px 10px;
+    }
+    
+    .page-title {
+        font-size: 1.2rem;
+    }
+    
+    .welcome-content h2 {
+        font-size: 1.3rem;
+    }
+    
+    .stat-card {
+        flex-direction: column;
+        text-align: center;
+        padding: 20px;
+    }
+    
+    .templates-grid-dashboard {
+        grid-template-columns: 1fr;
     }
 }
