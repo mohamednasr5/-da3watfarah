@@ -69,6 +69,11 @@
   .tag{display:inline-block;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:700}
   .tag.yes{background:rgba(140,224,160,.15);color:#8CE0A0}
   .tag.no{background:rgba(232,136,136,.15);color:#E88}
+  .inv-stats-bar{display:flex;gap:14px;flex-wrap:wrap;padding:14px 5%;border-bottom:1px solid var(--line);background:rgba(21,36,32,.4)}
+  .inv-stat{display:flex;align-items:center;gap:10px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 16px;min-width:150px}
+  .inv-stat i{color:var(--gold-light);font-size:18px}
+  .inv-stat b{display:block;font-size:18px;color:var(--text)}
+  .inv-stat span{display:block;font-size:12px;color:var(--text-dim)}
 </style>
 </head>
 <body>
@@ -80,6 +85,8 @@
     <button class="btn" id="logoutBtn">تسجيل الخروج</button>
   </div>
 </header>
+
+<div class="inv-stats-bar" id="invStatsBar"></div>
 
 <div class="wrap">
   <aside>
@@ -262,20 +269,53 @@
   const auth = getAuth(app);
   const db = getDatabase(app);
 
-  let currentUid = null, slug = null, invData = {};
+  let currentUid = null, invitationId = null, slug = null, invData = {};
 
   onAuthStateChanged(auth, async (user) => {
     if (!user) { window.location.href = 'login.html'; return; }
     currentUid = user.uid;
-    const userSnap = await get(ref(db, 'users/' + user.uid));
-    if (!userSnap.exists()) { window.location.href = 'login.html'; return; }
-    slug = userSnap.val().slug;
-    document.getElementById('slugTop').textContent = SITE_URL.replace('https://','') + '/' + slug;
-    loadInvitation();
+
+    // The invitation to edit is identified by ?id=... in the URL (this is how
+    // overview.html / my-invitations.html link here). Without it we have no
+    // way of knowing which invitation to load.
+    invitationId = new URLSearchParams(window.location.search).get('id');
+    if (!invitationId) {
+      alert('لم يتم تحديد الدعوة المطلوب تعديلها');
+      window.location.href = 'my-invitations.html';
+      return;
+    }
+
+    const invSnap = await get(ref(db, 'invitations/' + invitationId));
+    if (!invSnap.exists()) {
+      alert('هذه الدعوة غير موجودة');
+      window.location.href = 'my-invitations.html';
+      return;
+    }
+    invData = invSnap.val();
+
+    // Make sure the logged-in user actually owns this invitation.
+    if (invData.userId && invData.userId !== currentUid) {
+      alert('ليس لديك صلاحية لتعديل هذه الدعوة');
+      window.location.href = 'my-invitations.html';
+      return;
+    }
+
+    slug = invData.slug || '';
+    document.getElementById('slugTop').textContent = slug ? (SITE_URL.replace('https://','') + '/' + slug) : '';
+    populateForm();
     listenRsvps();
     listenWishes();
     listenGallery();
+    listenViews();
   });
+
+  // ===== المشاهدات الفعلية (تتحدث لحظيًا مع كل زيارة للدعوة) =====
+  function listenViews(){
+    onValue(ref(db, 'invitations/' + invitationId + '/viewsCount'), (snap) => {
+      invData.viewsCount = snap.val() || 0;
+      renderInvitationStats();
+    });
+  }
 
   document.getElementById('logoutBtn').addEventListener('click', () => signOut(auth));
 
@@ -289,35 +329,80 @@
     });
   });
 
-  // ===== تحميل بيانات الدعوة =====
-  async function loadInvitation(){
-    const snap = await get(ref(db, 'invitations/' + slug));
-    invData = snap.exists() ? snap.val() : {};
-    document.getElementById('groomName').value = invData.groomName || '';
-    document.getElementById('brideName').value = invData.brideName || '';
-    document.getElementById('eventType').value = invData.eventType || 'wedding';
-    document.getElementById('eventDate').value = invData.eventDate || '';
-    document.getElementById('venueName').value = invData.venueName || '';
-    document.getElementById('venueMapUrl').value = invData.venueMapUrl || '';
-    document.getElementById('story').value = invData.story || '';
-    document.getElementById('aiText').value = invData.invitationText || '';
-    selectTheme(invData.theme || 'royal');
-    document.getElementById('publishToggle').checked = !!invData.published;
+  // ===== ملء النموذج ببيانات الدعوة الحالية (لا نبدأ من فراغ عند التعديل) =====
+  function populateForm(){
+    const couple = invData.couple || {};
+    const event = invData.event || {};
+    const design = invData.design || {};
+    const content = invData.content || {};
 
-    const verseEnabled = invData.religiousVerseEnabled !== undefined ? !!invData.religiousVerseEnabled : true;
+    document.getElementById('groomName').value = couple.groomName || '';
+    document.getElementById('brideName').value = couple.brideName || '';
+    document.getElementById('eventType').value = invData.eventType || event.type || 'wedding';
+
+    // event.date is stored as a timestamp (ms) + event.time as "HH:MM" separately;
+    // combine them into the single datetime-local input the form uses.
+    document.getElementById('eventDate').value = combineDateTime(event.date, event.time);
+
+    document.getElementById('venueName').value = event.venue || '';
+    document.getElementById('venueMapUrl').value = event.googleMapsUrl || '';
+    document.getElementById('story').value = content.loveStory || content.welcomeText || '';
+    document.getElementById('aiText').value = content.invitationText || '';
+    selectTheme(themeIdToKey(design.templateId));
+    document.getElementById('publishToggle').checked = invData.isPublished !== false;
+
+    const verseEnabled = content.religiousVerseEnabled !== undefined ? !!content.religiousVerseEnabled : true;
     document.getElementById('verseToggle').checked = verseEnabled;
-    document.getElementById('verseType').value = invData.religiousVerseType || 'quran';
+    document.getElementById('verseType').value = content.religiousVerseType || 'quran';
     document.getElementById('verseTypeWrap').style.display = verseEnabled ? 'block' : 'none';
     updateVersePreview();
 
-    if (invData.coverImageUrl) {
-      document.getElementById('coverPreview').innerHTML = `<img src="${invData.coverImageUrl}">`;
+    if (design.coverImage) {
+      document.getElementById('coverPreview').innerHTML = `<img src="${design.coverImage}">`;
     }
-    if (invData.songUrl) {
+    if (design.musicUrl) {
       const audio = document.getElementById('songPreview');
-      audio.src = invData.songUrl; audio.style.display = 'block';
+      audio.src = design.musicUrl; audio.style.display = 'block';
     }
     updateShareBox();
+    renderInvitationStats();
+  }
+
+  // "royal" / "romantic" / "modern" (and other template ids) -> the 3 theme
+  // buttons offered in this editor. Falls back to "royal" for unknown ids.
+  function themeIdToKey(templateId){
+    if (templateId === 'romantic' || templateId === 'blossom') return 'blossom';
+    if (templateId === 'modern') return 'modern';
+    return 'royal';
+  }
+  const THEME_TO_TEMPLATE = {
+    royal: { templateId: 'royal', templateFile: 'preview-royal' },
+    blossom: { templateId: 'romantic', templateFile: 'preview-romantic' },
+    modern: { templateId: 'modern', templateFile: 'preview-modern' }
+  };
+
+  function combineDateTime(dateMs, timeStr){
+    if (!dateMs) return '';
+    const d = new Date(dateMs);
+    if (isNaN(d.getTime())) return '';
+    const pad = n => String(n).padStart(2, '0');
+    const datePart = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+    const timePart = timeStr || `${pad(d.getHours())}:${pad(d.getMinutes())}`;
+    return `${datePart}T${timePart}`;
+  }
+
+  // ===== الإحصائيات الحقيقية: مشاهدات / تهاني / تأكيدات حضور =====
+  function renderInvitationStats(){
+    const bar = document.getElementById('invStatsBar');
+    if (!bar) return;
+    const views = invData.viewsCount || 0;
+    const attending = invData.attendingCount ?? invData.rsvpsCount ?? 0;
+    const wishes = invData.wishesCount || 0;
+    bar.innerHTML = `
+      <div class="inv-stat"><i class="fas fa-eye"></i><div><b>${views.toLocaleString('ar-EG')}</b><span>مشاهدة فعلية</span></div></div>
+      <div class="inv-stat"><i class="fas fa-user-check"></i><div><b>${attending.toLocaleString('ar-EG')}</b><span>تأكيد حضور</span></div></div>
+      <div class="inv-stat"><i class="fas fa-heart"></i><div><b>${wishes.toLocaleString('ar-EG')}</b><span>تهنئة</span></div></div>
+    `;
   }
 
   function selectTheme(theme){
@@ -346,21 +431,45 @@
 
   // ===== حفظ التفاصيل =====
   document.getElementById('saveDetails').addEventListener('click', async () => {
-    const theme = document.querySelector('.theme-opt.selected')?.dataset.theme || 'royal';
+    const themeKey = document.querySelector('.theme-opt.selected')?.dataset.theme || 'royal';
+    const themeInfo = THEME_TO_TEMPLATE[themeKey] || THEME_TO_TEMPLATE.royal;
+
+    const dtVal = document.getElementById('eventDate').value; // "YYYY-MM-DDTHH:MM"
+    let eventDateMs = invData.event?.date || null;
+    let eventTime = invData.event?.time || '';
+    if (dtVal) {
+      const d = new Date(dtVal);
+      if (!isNaN(d.getTime())) {
+        eventDateMs = d.getTime();
+        eventTime = dtVal.split('T')[1] || '';
+      }
+    }
+
     const payload = {
-      groomName: document.getElementById('groomName').value,
-      brideName: document.getElementById('brideName').value,
-      eventType: document.getElementById('eventType').value,
-      eventDate: document.getElementById('eventDate').value,
-      venueName: document.getElementById('venueName').value,
-      venueMapUrl: document.getElementById('venueMapUrl').value,
-      story: document.getElementById('story').value,
-      theme,
-      religiousVerseEnabled: document.getElementById('verseToggle').checked,
-      religiousVerseType: document.getElementById('verseType').value
+      'couple/groomName': document.getElementById('groomName').value.trim(),
+      'couple/brideName': document.getElementById('brideName').value.trim(),
+      'eventType': document.getElementById('eventType').value,
+      'event/date': eventDateMs,
+      'event/time': eventTime,
+      'event/venue': document.getElementById('venueName').value.trim(),
+      'event/googleMapsUrl': document.getElementById('venueMapUrl').value.trim(),
+      'content/loveStory': document.getElementById('story').value.trim(),
+      'content/religiousVerseEnabled': document.getElementById('verseToggle').checked,
+      'content/religiousVerseType': document.getElementById('verseType').value,
+      'design/templateId': themeInfo.templateId,
+      'design/templateFile': themeInfo.templateFile,
+      'weddingDate': eventDateMs,
+      'updatedAt': Date.now()
     };
-    await update(ref(db, 'invitations/' + slug), payload);
-    Object.assign(invData, payload);
+    await update(ref(db, 'invitations/' + invitationId), payload);
+
+    // Keep the in-memory copy in sync with what we just saved.
+    invData.couple = { ...(invData.couple||{}), groomName: payload['couple/groomName'], brideName: payload['couple/brideName'] };
+    invData.event = { ...(invData.event||{}), date: eventDateMs, time: eventTime, venue: payload['event/venue'], googleMapsUrl: payload['event/googleMapsUrl'] };
+    invData.content = { ...(invData.content||{}), loveStory: payload['content/loveStory'], religiousVerseEnabled: payload['content/religiousVerseEnabled'], religiousVerseType: payload['content/religiousVerseType'] };
+    invData.design = { ...(invData.design||{}), templateId: themeInfo.templateId, templateFile: themeInfo.templateFile };
+    invData.eventType = payload.eventType;
+
     const m = document.getElementById('detailsMsg');
     m.textContent = 'تم الحفظ بنجاح'; m.className = 'msg ok';
     setTimeout(() => m.textContent = '', 3000);
@@ -385,7 +494,8 @@
     m.textContent = 'جاري رفع الصورة...'; m.className = 'msg';
     try {
       const url = await uploadFile(file, 'cover');
-      await update(ref(db, 'invitations/' + slug), { coverImageUrl: url });
+      await update(ref(db, 'invitations/' + invitationId), { 'design/coverImage': url });
+      invData.design = { ...(invData.design||{}), coverImage: url };
       document.getElementById('coverPreview').innerHTML = `<img src="${url}">`;
       m.textContent = 'تم رفع صورة الغلاف'; m.className = 'msg ok';
     } catch { m.textContent = 'فشل رفع الصورة، حاول مرة أخرى'; m.className = 'msg error'; }
@@ -398,7 +508,8 @@
     m.textContent = 'جاري رفع الأغنية...'; m.className = 'msg';
     try {
       const url = await uploadFile(file, 'song');
-      await update(ref(db, 'invitations/' + slug), { songUrl: url });
+      await update(ref(db, 'invitations/' + invitationId), { 'design/musicUrl': url });
+      invData.design = { ...(invData.design||{}), musicUrl: url };
       const audio = document.getElementById('songPreview');
       audio.src = url; audio.style.display = 'block';
       m.textContent = 'تم رفع الأغنية'; m.className = 'msg ok';
@@ -430,33 +541,43 @@
   });
 
   document.getElementById('saveAiText').addEventListener('click', async () => {
-    await update(ref(db, 'invitations/' + slug), { invitationText: document.getElementById('aiText').value });
+    const text = document.getElementById('aiText').value;
+    await update(ref(db, 'invitations/' + invitationId), { 'content/invitationText': text });
+    invData.content = { ...(invData.content||{}), invitationText: text };
     const m = document.getElementById('aiMsg');
     m.textContent = 'تم حفظ نص الدعوة'; m.className = 'msg ok';
   });
 
   // ===== المشاركة والنشر =====
+  function invitationLiveUrl(){
+    // This is the URL that actually works today (reads live data from RTDB).
+    return slug
+      ? `${location.origin}${location.pathname.replace(/editor\.html.*/, '')}invite.html?slug=${encodeURIComponent(slug)}&id=${invitationId}`
+      : `${location.origin}${location.pathname.replace(/editor\.html.*/, '')}invite.html?id=${invitationId}`;
+  }
   function updateShareBox(){
-    document.getElementById('fullLink').textContent = SITE_URL.replace('https://','') + '/' + slug;
-    document.getElementById('openLinkBtn').href = SITE_URL + '/' + slug;
-    QRCode.toCanvas(document.getElementById('qrCanvas'), SITE_URL + '/' + slug, { width: 220, margin: 2 });
+    document.getElementById('fullLink').textContent = slug ? (SITE_URL.replace('https://','') + '/' + slug) : SITE_URL;
+    const url = invitationLiveUrl();
+    document.getElementById('openLinkBtn').href = url;
+    QRCode.toCanvas(document.getElementById('qrCanvas'), url, { width: 220, margin: 2 });
   }
   document.getElementById('publishToggle').addEventListener('change', async (e) => {
-    await update(ref(db, 'invitations/' + slug), { published: e.target.checked });
+    await update(ref(db, 'invitations/' + invitationId), { isPublished: e.target.checked, status: e.target.checked ? 'active' : 'draft' });
+    invData.isPublished = e.target.checked;
   });
   document.getElementById('copyLinkBtn').addEventListener('click', () => {
-    navigator.clipboard.writeText(SITE_URL + '/' + slug);
+    navigator.clipboard.writeText(invitationLiveUrl());
   });
   document.getElementById('downloadQrBtn').addEventListener('click', () => {
     const link = document.createElement('a');
-    link.download = slug + '-qr.png';
+    link.download = (slug || invitationId) + '-qr.png';
     link.href = document.getElementById('qrCanvas').toDataURL();
     link.click();
   });
 
-  // ===== تأكيدات الحضور =====
+  // ===== تأكيدات الحضور (مين جاي فعلاً) =====
   function listenRsvps(){
-    onValue(ref(db, 'invitations/' + slug + '/rsvps'), (snap) => {
+    onValue(ref(db, 'invitations/' + invitationId + '/rsvps'), (snap) => {
       const tbody = document.getElementById('rsvpTable');
       const empty = document.getElementById('rsvpEmpty');
       tbody.innerHTML = '';
@@ -468,12 +589,15 @@
         const tag = r.attending ? '<span class="tag yes">حاضر</span>' : '<span class="tag no">معتذر</span>';
         tbody.innerHTML += `<tr><td>${r.guestName||''}</td><td>${tag}</td><td>${r.guestsCount||1}</td><td>${new Date(r.createdAt||0).toLocaleDateString('ar-EG')}</td></tr>`;
       });
+      // Keep the top stats bar's "attending" number in sync with the real list.
+      invData.attendingCount = keys.reduce((sum,k) => sum + (data[k].attending ? (1 + (parseInt(data[k].guestsCount,10) || 0)) : 0), 0);
+      renderInvitationStats();
     });
   }
 
   // ===== تهاني الضيوف =====
   function listenWishes(){
-    onValue(ref(db, 'invitations/' + slug + '/wishes'), (snap) => {
+    onValue(ref(db, 'invitations/' + invitationId + '/wishes'), (snap) => {
       const tbody = document.getElementById('wishesTable');
       const empty = document.getElementById('wishesEmpty');
       tbody.innerHTML = '';
@@ -484,12 +608,14 @@
         const w = data[k];
         tbody.innerHTML += `<tr><td>${w.name||''}</td><td>${w.message||''}</td><td>${new Date(w.createdAt||0).toLocaleDateString('ar-EG')}</td></tr>`;
       });
+      invData.wishesCount = keys.length;
+      renderInvitationStats();
     });
   }
 
   // ===== ألبوم الصور =====
   function listenGallery(){
-    onValue(ref(db, 'invitations/' + slug + '/gallery'), (snap) => {
+    onValue(ref(db, 'invitations/' + invitationId + '/gallery'), (snap) => {
       const grid = document.getElementById('galleryGrid');
       const empty = document.getElementById('galleryEmpty');
       grid.innerHTML = '';
@@ -508,9 +634,9 @@
         grid.appendChild(div);
       });
       grid.querySelectorAll('[data-approve]').forEach(b => b.addEventListener('click', () =>
-        update(ref(db, `invitations/${slug}/gallery/${b.dataset.approve}`), { approved: true })));
+        update(ref(db, `invitations/${invitationId}/gallery/${b.dataset.approve}`), { approved: true })));
       grid.querySelectorAll('[data-delete]').forEach(b => b.addEventListener('click', () =>
-        remove(ref(db, `invitations/${slug}/gallery/${b.dataset.delete}`))));
+        remove(ref(db, `invitations/${invitationId}/gallery/${b.dataset.delete}`))));
     });
   }
 </script>

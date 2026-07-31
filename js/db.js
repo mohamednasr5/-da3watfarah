@@ -157,12 +157,22 @@ async function getUserInvitations() {
     if (!currentUserId) return [];
     
     try {
-        const snapshot = await window.rtdbOnce(`users/${currentUserId}/invitations`);
+        // IMPORTANT: read from the main "invitations" node (filtered by userId),
+        // NOT the "users/{uid}/invitations" mirror. Views/RSVPs/wishes are only
+        // ever incremented on the main node (by invite.html and incrementViewCount),
+        // so the mirror's counters stay stuck at 0 forever. Reading from the main
+        // node guarantees the dashboard always reflects the real, live numbers.
+        const snapshot = await window.firebaseDb
+            .ref('invitations')
+            .orderByChild('userId')
+            .equalTo(currentUserId)
+            .once('value');
         
-        if (snapshot) {
-            const invitations = Object.keys(snapshot).map(key => ({
+        if (snapshot.exists()) {
+            const data = snapshot.val();
+            const invitations = Object.keys(data).map(key => ({
                 id: key,
-                ...snapshot[key]
+                ...data[key]
             }));
             
             console.log(`✅ Loaded ${invitations.length} invitations`);
