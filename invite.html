@@ -529,6 +529,34 @@
             opacity: 0.9;
         }
         
+        /* Add to Google Calendar Button */
+        .add-calendar-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 14px;
+            padding: 10px 18px;
+            border-radius: 30px;
+            border: 1.5px solid currentColor;
+            background: transparent;
+            font-size: 0.9rem;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            text-decoration: none;
+            opacity: 0.9;
+            transition: all 0.25s ease;
+        }
+        
+        .add-calendar-btn:hover {
+            opacity: 1;
+            transform: translateY(-2px);
+        }
+        
+        .add-calendar-btn i {
+            font-size: 1rem;
+        }
+        
         /* RSVP Card */
         .rsvp-card {
             border-radius: 20px;
@@ -1238,6 +1266,10 @@
                             <i class="fas fa-location-dot"></i>
                             <span id="venueAddress"></span>
                         </div>
+                        <a href="#" class="add-calendar-btn" id="addToCalendarBtn" target="_blank" rel="noopener" style="display:none;">
+                            <i class="fas fa-calendar-plus"></i>
+                            <span>أضف التاريخ لتقويم Google</span>
+                        </a>
                     </div>
                 </div>
                 
@@ -1734,6 +1766,25 @@
             return null;
         }
 
+        // Build a Google Calendar "add event" link for the wedding date
+        function buildGoogleCalendarUrl(title, startDate, location, details) {
+            // Default duration: 3 hours if no explicit end time is stored
+            const endDate = new Date(startDate.getTime() + (3 * 60 * 60 * 1000));
+
+            // Google Calendar expects UTC timestamps in YYYYMMDDTHHMMSSZ format
+            const toGCalDate = (d) => d.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+
+            const params = new URLSearchParams({
+                action: 'TEMPLATE',
+                text: title || 'حفل الزفاف',
+                dates: `${toGCalDate(startDate)}/${toGCalDate(endDate)}`,
+                details: details || '',
+                location: location || ''
+            });
+
+            return `https://calendar.google.com/calendar/render?${params.toString()}`;
+        }
+
         // Format date to Arabic
         function formatDateArabic(timestamp) {
             if (!timestamp) return '';
@@ -2032,6 +2083,16 @@
             // Event name
             const eventName = event.eventName || data.eventName || 'حفل الزفاف';
             document.getElementById('eventName').textContent = eventName;
+
+            // Add to Google Calendar
+            if (weddingDateObj && !isNaN(weddingDateObj.getTime())) {
+                const calendarLocation = venueAddress || venueName || '';
+                const calendarDetails = (content.invitationText || data.invitationText || 'يسعدنا حضوركم لمشاركتنا فرحتنا في هذا اليوم المميز').replace(/<[^>]*>/g, '');
+                const calendarUrl = buildGoogleCalendarUrl(eventName, weddingDateObj, calendarLocation, calendarDetails);
+                const calendarBtn = document.getElementById('addToCalendarBtn');
+                calendarBtn.href = calendarUrl;
+                calendarBtn.style.display = 'inline-flex';
+            }
 
             // Google Maps
             const googleMapsUrl = event.googleMapsUrl || data.googleMapsUrl || data.venueMapUrl || '';
