@@ -658,6 +658,20 @@
                     <p>اضغط هنا أو اسحب ملف MP3 أو WAV لرفعه (حد أقصى 20MB)</p>
                     <input type="file" id="fileInput" class="upload-input" accept="audio/*" onchange="handleAudioUpload(this.files[0])">
                 </div>
+
+                <!-- Or add a direct link -->
+                <div style="display:flex; align-items:center; gap:10px; margin:16px 0; color:#9CA3AF;">
+                    <div style="flex:1;height:1px;background:rgba(255,255,255,0.1);"></div>
+                    <span>أو أضف رابط أغنية مباشر</span>
+                    <div style="flex:1;height:1px;background:rgba(255,255,255,0.1);"></div>
+                </div>
+                <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                    <input type="url" id="musicUrlInput" placeholder="https://example.com/song.mp3"
+                           style="flex:1; min-width:220px; padding:12px 16px; border-radius:10px; border:1px solid rgba(255,255,255,0.15); background:rgba(255,255,255,0.05); color:#fff;">
+                    <button class="btn btn-outline btn-sm" onclick="handleAudioLink()">
+                        <i class="fas fa-link"></i> إضافة الرابط
+                    </button>
+                </div>
                 
                 <!-- Uploaded Files List -->
                 <ul class="music-list" id="uploadedMusicList">

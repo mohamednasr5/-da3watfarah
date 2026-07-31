@@ -593,6 +593,12 @@
             loadGalleryImages();
             AOS.init({ duration: 600, once: true });
         });
+
+        // Auth resolves asynchronously; if this page's first load happened
+        // before window.currentUserId was set, reload the gallery once it is.
+        document.addEventListener('da3wat:authReady', function() {
+            loadGalleryImages();
+        });
         
         // ===================================
         // Upload Zone & Drag & Drop

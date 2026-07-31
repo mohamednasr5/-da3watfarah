@@ -27,6 +27,11 @@ function initAuthObserver() {
             if (user) {
                 currentUser = user;
                 currentUserId = user.uid;
+                // IMPORTANT: expose on window so every page (gallery.html, music.html,
+                // settings.html, ...) can read it. Without this, those pages always
+                // believed the visitor was logged out and silently skipped uploads/loads.
+                window.currentUser = user;
+                window.currentUserId = user.uid;
                 console.log('✅ User authenticated:', user.email);
                 
                 // Load user data
@@ -34,8 +39,15 @@ function initAuthObserver() {
                 
                 // Update UI with user info
                 updateUserUI(user);
+
+                // Let pages that already ran their own DOMContentLoaded logic
+                // (and found no user yet, due to the async auth check) know they
+                // can now (re)load their user-scoped data.
+                document.dispatchEvent(new CustomEvent('da3wat:authReady', { detail: { user } }));
             } else {
                 console.log('👤 No user signed in');
+                window.currentUser = null;
+                window.currentUserId = null;
                 // Redirect to login if not on auth pages
                 const currentPage = window.location.pathname.split('/').pop();
                 if (!currentPage.includes('login') && !currentPage.includes('register') && !currentPage.includes('index')) {
@@ -469,28 +481,59 @@ async function getTemplate(templateId) {
  * Upload file to R2 via Worker
  */
 async function uploadToR2(file, type = 'image') {
-    if (!window.r2Config) {
+    if (!window.r2Config || !window.r2Config.workerUrl) {
         console.error('❌ R2 config not found');
-        return { success: false, error: 'R2 not configured' };
+        return { success: false, error: 'خدمة رفع الملفات غير مهيأة (R2 config)' };
     }
-    
+
+    if (!file) {
+        return { success: false, error: 'لم يتم اختيار ملف' };
+    }
+
+    // Pre-flight validation matching the limits enforced by the worker,
+    // so the user gets an immediate, clear message instead of a network error.
+    const maxSizeMb = type === 'audio' ? 20 : 8;
+    if (file.size > maxSizeMb * 1024 * 1024) {
+        return { success: false, error: `حجم الملف كبير جداً (الحد الأقصى ${maxSizeMb}MB)` };
+    }
+
+    const folderMap = { image: 'images', audio: 'music', video: 'video' };
+    const folder = folderMap[type] || 'uploads';
+
     try {
         const formData = new FormData();
         formData.append('file', file);
         formData.append('type', type);
+        // The worker reads "folder" (not "type") to decide where to store the file.
+        formData.append('folder', folder);
         formData.append('userId', currentUserId || 'anonymous');
-        
-        const response = await fetch(`${window.r2Config.workerUrl}${window.r2Config.uploadEndpoint}`, {
-            method: 'POST',
-            body: formData
-        });
-        
-        if (!response.ok) {
-            throw new Error(`Upload failed: ${response.statusText}`);
+
+        // Guard against a hanging request (bad worker URL / network issue / CORS)
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 30000);
+
+        let response;
+        try {
+            response = await fetch(`${window.r2Config.workerUrl}${window.r2Config.uploadEndpoint}`, {
+                method: 'POST',
+                body: formData,
+                signal: controller.signal
+            });
+        } finally {
+            clearTimeout(timeout);
         }
-        
+
+        if (!response.ok) {
+            let serverMsg = '';
+            try {
+                const errJson = await response.json();
+                serverMsg = errJson.error || '';
+            } catch (_) { /* response wasn't JSON */ }
+            throw new Error(serverMsg || `فشل رفع الملف (${response.status})`);
+        }
+
         const result = await response.json();
-        
+
         if (result.success) {
             console.log('✅ File uploaded to R2:', result.url);
             return {
@@ -501,10 +544,13 @@ async function uploadToR2(file, type = 'image') {
         } else {
             throw new Error(result.error || 'Upload failed');
         }
-        
+
     } catch (error) {
         console.error('❌ R2 upload error:', error);
-        return { success: false, error: error.message };
+        const message = error.name === 'AbortError'
+            ? 'انتهت مهلة رفع الملف، تحقق من اتصال الإنترنت وحاول مرة أخرى'
+            : (error.message || 'فشل رفع الملف');
+        return { success: false, error: message };
     }
 }
 
