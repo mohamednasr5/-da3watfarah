@@ -67,12 +67,17 @@
           ".validate": "newData.isBoolean()"
         },
         "viewsCount": {
+          ".write": true,
+          ".validate": "newData.isNumber()"
+        },
+        "views": {
+          ".write": true,
           ".validate": "newData.isNumber()"
         },
         "rsvps": {
           ".read": true,
           "$rsvpId": {
-            ".write": "auth != null",
+            ".write": true,
             ".validate": "newData.hasChildren(['guestName', 'attendance'])",
             "guestName": {
               ".validate": "newData.isString() && newData.val().length > 0"
@@ -85,7 +90,7 @@
         "wishes": {
           ".read": true,
           "$wishId": {
-            ".write": "auth != null",
+            ".write": true,
             ".validate": "newData.hasChildren(['authorName', 'message'])",
             ".indexOn": ["createdAt"],
             "authorName": {
