@@ -749,7 +749,8 @@
         .inv-footer {
             text-align: center;
             padding: 50px 20px;
-            background: rgba(0,0,0,0.03);
+            background: #1A1A2E;
+            color: rgba(255, 255, 255, 0.85);
         }
         
         .footer-logo {
@@ -759,6 +760,17 @@
             gap: 8px;
             margin-bottom: 20px;
             font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.85);
+        }
+
+        .footer-logo a.footer-brand-link {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .footer-logo a.footer-brand-link:hover {
+            text-decoration: underline;
         }
         
         .footer-share {
@@ -769,6 +781,7 @@
             display: block;
             margin-bottom: 12px;
             font-weight: 600;
+            color: rgba(255, 255, 255, 0.85);
         }
         
         .share-buttons {
@@ -1155,7 +1168,7 @@
             <div class="footer-content">
                 <div class="footer-logo">
                     <span>💍</span>
-                    <span>صُنع بـ <i class="fas fa-heart text-red"></i> على <strong>دعوة فرح</strong></span>
+                    <span>صُنع بـ <i class="fas fa-heart text-red"></i> على <a href="https://da3watfarah.com/" target="_top" class="footer-brand-link">دعوة فرح</a></span>
                 </div>
                 <div class="footer-share">
                     <span>شارك الدعوة:</span>
@@ -1521,11 +1534,47 @@
             document.getElementById('errorContainer').style.display = 'flex';
         }
 
+        // ===================================
+        // Color customization
+        // Each template's CSS declares its default accent colors once in
+        // :root (--theme-primary / --theme-secondary) and then repeats those
+        // exact hex values throughout its rules. To make the couple's chosen
+        // color actually show up on the real invitation, we swap every
+        // occurrence of the template's default hex (and its rgba() form)
+        // for the color they picked in the wizard.
+        // ===================================
+        function hexToRgb(hex) {
+            let h = (hex || '').replace('#', '');
+            if (h.length === 3) h = h.split('').map(c => c + c).join('');
+            const num = parseInt(h, 16);
+            return [(num >> 16) & 255, (num >> 8) & 255, num & 255];
+        }
+
+        function swapColorInCss(css, oldHex, newHex) {
+            if (!oldHex || !newHex) return css;
+            const [or, og, ob] = hexToRgb(oldHex);
+            const [nr, ng, nb] = hexToRgb(newHex);
+            let out = css.split(oldHex.toLowerCase()).join(newHex)
+                         .split(oldHex.toUpperCase()).join(newHex);
+            const rgbaPattern = new RegExp(`rgba\\(\\s*${or}\\s*,\\s*${og}\\s*,\\s*${ob}\\s*,`, 'gi');
+            out = out.replace(rgbaPattern, `rgba(${nr}, ${ng}, ${nb},`);
+            return out;
+        }
+
+        function applyColorOverride(stylesText, newPrimary, newSecondary) {
+            let result = stylesText;
+            const primaryMatch = stylesText.match(/--theme-primary:\s*(#[0-9a-fA-F]{3,6})/);
+            const secondaryMatch = stylesText.match(/--theme-secondary:\s*(#[0-9a-fA-F]{3,6})/);
+            if (newPrimary && primaryMatch) result = swapColorInCss(result, primaryMatch[1], newPrimary);
+            if (newSecondary && secondaryMatch) result = swapColorInCss(result, secondaryMatch[1], newSecondary);
+            return result;
+        }
+
         // Apply theme styles
-        function applyTheme(templateKey) {
+        function applyTheme(templateKey, primaryColor, secondaryColor) {
             const template = TEMPLATES[templateKey] || TEMPLATES['preview-classic'];
             const themeStylesEl = document.getElementById('themeStyles');
-            themeStylesEl.textContent = template.styles;
+            themeStylesEl.textContent = applyColorOverride(template.styles, primaryColor, secondaryColor);
 
             // Add special effects container if needed
             if (template.hasFloatingHearts) {
@@ -1613,11 +1662,12 @@
             const design = data.design || {};
             const content = data.content || {};
 
-            // Determine template
-            const templateFile = design.templateFile || data.templateFile || 'preview-classic';
+            // Determine template (stored value may or may not include ".html")
+            const rawTemplateFile = design.templateFile || data.templateFile || 'preview-classic';
+            const templateFile = rawTemplateFile.replace(/\.html$/i, '');
             
-            // Apply theme
-            applyTheme(templateFile);
+            // Apply theme (with the couple's chosen accent colors, if any)
+            applyTheme(templateFile, design.primaryColor, design.secondaryColor);
 
             // Update page title and meta
             const groomName = couple.groomName || data.groomName || '';
@@ -2013,6 +2063,53 @@
         // Main Initialization
         // ===================================
         async function init() {
+            const params = new URLSearchParams(window.location.search);
+            const isPreviewMode = params.get('preview') === '1';
+
+            // Live-preview mode (used by the invitation wizard): read the
+            // data straight from sessionStorage instead of Firebase, so the
+            // preview reflects exactly what the user has typed so far, with
+            // the real template styling and chosen colors.
+            if (isPreviewMode) {
+                try {
+                    const raw = sessionStorage.getItem('farah_preview_data');
+                    const data = raw ? JSON.parse(raw) : null;
+
+                    if (!data) {
+                        showError('لا توجد بيانات معاينة بعد.');
+                        return;
+                    }
+
+                    invitationData = data;
+                    populateInvitationUI(data);
+
+                    const weddingDate = data.event?.date || data.event?.weddingDate;
+                    if (weddingDate) {
+                        initCountdown(new Date(weddingDate));
+                    }
+
+                    document.getElementById('invitationLoader').classList.add('hidden');
+                    document.getElementById('invitationContainer').classList.add('loaded');
+                    if (typeof AOS !== 'undefined') {
+                        AOS.init({ duration: 800, easing: 'ease-out', once: true });
+                    }
+
+                    // Listen for live updates from the wizard tab without a full reload
+                    window.addEventListener('message', (event) => {
+                        if (event.data && event.data.type === 'farah-preview-update') {
+                            invitationData = event.data.payload;
+                            populateInvitationUI(event.data.payload);
+                            const d = event.data.payload.event?.date;
+                            if (d) initCountdown(new Date(d));
+                        }
+                    });
+                } catch (error) {
+                    console.error('Error loading preview:', error);
+                    showError('تعذر تحميل المعاينة.');
+                }
+                return;
+            }
+
             // Get invitation identifier from URL
             const identifier = getInvitationIdentifier();
             

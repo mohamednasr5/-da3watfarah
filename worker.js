@@ -66,6 +66,15 @@ export default {
  */
 async function handleUpload(request, env, corsHeaders) {
     try {
+        if (!env.FARAH) {
+            console.error('R2 binding "FARAH" is missing on this deployed Worker.');
+            return errorResponse(
+                'R2 غير مربوط بهذا الـ Worker (binding "FARAH" غير موجود). تحقق من إعدادات Worker > Settings > Bindings على Cloudflare، أو أعد النشر باستخدام wrangler deploy.',
+                500,
+                corsHeaders
+            );
+        }
+
         const formData = await request.formData();
         const file = formData.get('file');
         const folder = formData.get('folder') || 'uploads';
@@ -80,32 +89,57 @@ async function handleUpload(request, env, corsHeaders) {
             return errorResponse('File too large. Maximum size is 10MB', 400, corsHeaders);
         }
         
-        // Validate file type
+        // Validate file type. Browsers/OS pickers sometimes send an empty or
+        // generic ("application/octet-stream") MIME type for perfectly valid
+        // images/audio (common on mobile), so we also accept based on the
+        // file extension as a fallback instead of hard-rejecting those files.
         const allowedTypes = [
             'image/jpeg',
+            'image/jpg',
             'image/png',
             'image/gif',
             'image/webp',
+            'image/heic',
+            'image/heif',
+            'image/svg+xml',
             'audio/mpeg',
             'audio/wav',
             'audio/mp3',
+            'audio/mp4',
+            'audio/x-m4a',
+            'audio/ogg',
             'video/mp4'
         ];
-        
-        if (!allowedTypes.includes(file.type)) {
+
+        const extension = (file.name.split('.').pop() || '').toLowerCase();
+        const allowedExtensions = [
+            'jpg', 'jpeg', 'png', 'gif', 'webp', 'heic', 'heif', 'svg',
+            'mp3', 'wav', 'm4a', 'ogg', 'mp4'
+        ];
+
+        const typeOk = allowedTypes.includes(file.type);
+        const extOk = allowedExtensions.includes(extension);
+
+        if (!typeOk && !extOk) {
             return errorResponse('File type not allowed', 400, corsHeaders);
         }
-        
+
         // Generate unique filename
         const timestamp = Date.now();
         const randomId = Math.random().toString(36).substring(2, 8);
-        const extension = file.name.split('.').pop();
-        const key = `${folder}/${timestamp}_${randomId}.${extension}`;
+        const key = `${folder}/${timestamp}_${randomId}.${extension || 'bin'}`;
         
         // Upload to R2
+        const extToMime = {
+            jpg: 'image/jpeg', jpeg: 'image/jpeg', png: 'image/png', gif: 'image/gif',
+            webp: 'image/webp', heic: 'image/heic', heif: 'image/heif', svg: 'image/svg+xml',
+            mp3: 'audio/mpeg', wav: 'audio/wav', m4a: 'audio/mp4', ogg: 'audio/ogg', mp4: 'video/mp4'
+        };
+        const contentType = file.type || extToMime[extension] || 'application/octet-stream';
+
         await env.FARAH.put(key, file.stream(), {
             httpMetadata: {
-                contentType: file.type,
+                contentType: contentType,
                 contentDisposition: `inline; filename="${file.name}"`
             }
         });
@@ -133,6 +167,10 @@ async function handleUpload(request, env, corsHeaders) {
  */
 async function handleDelete(request, env, corsHeaders) {
     try {
+        if (!env.FARAH) {
+            return errorResponse('R2 غير مربوط بهذا الـ Worker (binding "FARAH" غير موجود).', 500, corsHeaders);
+        }
+
         const { key } = await request.json();
         
         if (!key) {

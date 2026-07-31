@@ -1406,6 +1406,7 @@
             
             // Show live preview
             showLivePreview(template);
+            scheduleLivePreviewRefresh();
             
             console.log('Selected template:', template.nameAr);
         }
@@ -1483,6 +1484,7 @@
             document.querySelectorAll('.color-option').forEach(opt => opt.classList.remove('selected'));
             element.classList.add('selected');
             selectedColors = JSON.parse(element.dataset.colors);
+            scheduleLivePreviewRefresh();
         }
         
         // ===================================
@@ -1780,6 +1782,83 @@ ${venueName ? `- مكان الزفاف: ${venueName}` : ''}
         }
 
         // ===================================
+        // Live Preview (real template + real data)
+        // ===================================
+        function buildPreviewData() {
+            const val = (id) => document.getElementById(id)?.value?.trim() || '';
+            const dateVal = val('weddingDate');
+
+            return {
+                couple: {
+                    groomName: val('groomName'),
+                    groomFatherName: val('groomFatherName'),
+                    brideName: val('brideName'),
+                    brideFatherName: val('brideFatherName'),
+                    parentsNames: val('parentsNames')
+                },
+                event: {
+                    date: dateVal ? new Date(dateVal).getTime() : null,
+                    time: val('weddingTime'),
+                    venue: val('venueName'),
+                    address: val('venueAddress'),
+                    googleMapsUrl: val('googleMapsUrl')
+                },
+                design: {
+                    templateId: selectedTemplate?.id || 'classic',
+                    templateFile: (selectedTemplate?.previewFile || 'preview-classic.html').replace(/\.html$/i, ''),
+                    primaryColor: selectedColors.primary,
+                    secondaryColor: selectedColors.secondary,
+                    coverImage: uploadedCover,
+                    galleryImages: uploadedGallery,
+                    musicUrl: uploadedMusic
+                },
+                content: {
+                    welcomeText: val('welcomeText'),
+                    invitationText: val('invitationText'),
+                    loveStory: val('loveStory')
+                },
+                isPublished: true
+            };
+        }
+
+        // Push the current wizard data into the real invitation page (invite.html
+        // in ?preview=1 mode). The first call sets the iframe src; after that we
+        // just postMessage the fresh data so the preview updates instantly without
+        // a full reload/flicker as the user keeps typing.
+        let previewIframeReady = false;
+        function refreshLivePreview(iframeId) {
+            const iframe = document.getElementById(iframeId);
+            if (!iframe) return;
+
+            const data = buildPreviewData();
+            try {
+                sessionStorage.setItem('farah_preview_data', JSON.stringify(data));
+            } catch (e) { /* ignore quota errors */ }
+
+            if (!previewIframeReady || !iframe.src) {
+                iframe.src = 'invite.html?preview=1';
+                previewIframeReady = true;
+            } else {
+                iframe.contentWindow?.postMessage({ type: 'farah-preview-update', payload: data }, '*');
+            }
+        }
+
+        let livePreviewDebounce = null;
+        function scheduleLivePreviewRefresh() {
+            clearTimeout(livePreviewDebounce);
+            livePreviewDebounce = setTimeout(() => {
+                if (currentStep === 4) refreshLivePreview('finalPreviewIframe');
+            }, 400);
+        }
+
+        document.addEventListener('input', (e) => {
+            if (e.target.closest('#step4')) return; // step 4 has no editable fields itself
+            if (e.target.matches('#groomName, #groomFatherName, #brideName, #brideFatherName, #parentsNames, #weddingDate, #weddingTime, #venueName, #venueAddress, #googleMapsUrl, #welcomeText, #invitationText, #loveStory')) {
+                scheduleLivePreviewRefresh();
+            }
+        });
+
+        // ===================================
         // Generate Final Preview
         // ===================================
         function generateFinalPreview() {
@@ -1801,11 +1880,10 @@ ${venueName ? `- مكان الزفاف: ${venueName}` : ''}
                 </div>
             `;
             
-            // Load final preview with selected template
-            if (selectedTemplate) {
-                const finalIframe = document.getElementById('finalPreviewIframe');
-                finalIframe.src = selectedTemplate.previewFile;
-            }
+            // Load final preview with the REAL invitation template/colors + the
+            // data actually entered by the user (not the generic demo page).
+            previewIframeReady = false;
+            refreshLivePreview('finalPreviewIframe');
         }
         
         function formatDateForDisplay(dateStr) {
@@ -1865,7 +1943,7 @@ ${venueName ? `- مكان الزفاف: ${venueName}` : ''}
                     design: {
                         templateId: selectedTemplate?.id || 'classic',
                         templateName: selectedTemplate?.nameAr || 'كلاسيكي',
-                        templateFile: selectedTemplate?.previewFile || 'preview-classic.html',
+                        templateFile: (selectedTemplate?.previewFile || 'preview-classic.html').replace(/\.html$/i, ''),
                         primaryColor: selectedColors.primary,
                         secondaryColor: selectedColors.secondary,
                         fontFamily: selectedTemplate?.fontFamily || "'Tajawal', sans-serif",

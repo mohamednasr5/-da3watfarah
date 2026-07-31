@@ -568,7 +568,7 @@ async function deleteFromR2(fileKey) {
     
     try {
         const response = await fetch(`${window.r2Config.workerUrl}${window.r2Config.deleteEndpoint}`, {
-            method: 'POST',
+            method: 'DELETE',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ key: fileKey })
         });
