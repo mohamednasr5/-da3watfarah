@@ -454,6 +454,7 @@
         
         .countdown-timer {
             display: flex;
+            flex-direction: row-reverse;
             justify-content: center;
             gap: 15px;
             flex-wrap: wrap;
@@ -715,6 +716,75 @@
         .wish-form {
             max-width: 500px;
             margin: 0 auto 30px;
+        }
+
+        .voice-wish-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .voice-record-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: 2px solid var(--theme-primary, #D4AF37);
+            color: var(--theme-primary, #D4AF37);
+            background: transparent;
+            padding: 10px 18px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+
+        .voice-record-btn:hover {
+            background: var(--theme-primary, #D4AF37);
+            color: white;
+        }
+
+        .voice-record-btn.recording {
+            background: #E74C3C;
+            border-color: #E74C3C;
+            color: white;
+            animation: voiceRecordPulse 1.2s ease-in-out infinite;
+        }
+
+        @keyframes voiceRecordPulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.5); }
+            50% { box-shadow: 0 0 0 10px rgba(231, 76, 60, 0); }
+        }
+
+        .voice-wish-preview {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .voice-wish-preview audio {
+            flex: 1;
+            height: 40px;
+        }
+
+        .voice-wish-remove {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            background: #F3F4F6;
+            color: #EF4444;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .wish-audio-player {
+            width: 100%;
+            margin-top: 8px;
+            height: 40px;
         }
         
         /* Music Player */
@@ -1144,7 +1214,22 @@
                 </div>
                 <div class="form-group">
                     <label for="wishMessageInput">رسالة التهنئة</label>
-                    <textarea id="wishMessageInput" rows="3" placeholder="اكتب رسالة تهنئة..."></textarea>
+                    <textarea id="wishMessageInput" rows="3" placeholder="اكتب رسالة تهنئة... (أو سجّل تهنئة صوتية بدلاً من ذلك)"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>أو أرسل تهنئة صوتية</label>
+                    <div class="voice-wish-controls">
+                        <button type="button" class="btn btn-outline voice-record-btn" id="voiceRecordBtn">
+                            <i class="fas fa-microphone"></i>
+                            <span id="voiceRecordBtnLabel">تسجيل صوتي</span>
+                        </button>
+                        <div class="voice-wish-preview" id="voiceWishPreview" style="display:none;">
+                            <audio controls id="voiceWishAudioPlayer"></audio>
+                            <button type="button" class="voice-wish-remove" id="voiceWishRemoveBtn" title="حذف التسجيل">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
                 </div>
                 <button type="button" class="btn btn-primary" id="submitWishBtn">
                     <i class="fas fa-heart"></i>
@@ -1202,7 +1287,7 @@
     <!-- Firebase SDK (Modular) -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-        import { getDatabase, ref, get, push, set, update, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+        import { getDatabase, ref, get, push, set, update, onValue, increment } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
         // Firebase Configuration
         const firebaseConfig = {
@@ -1909,11 +1994,6 @@
                     createdAt: Date.now()
                 });
 
-                // Update RSVP count
-                await update(ref(db, `invitations/${window.currentInvitationId}`), {
-                    rsvpsCount: incrementRsvpCount()
-                });
-
                 document.getElementById('rsvpForm').style.display = 'none';
                 document.getElementById('rsvpSuccessMessage').classList.add('show');
             } catch (error) {
@@ -1922,11 +2002,81 @@
             }
         });
 
-        // Simulate server value increment (Firebase SDK needed for real ServerValue)
-        function incrementRsvpCount() {
-            // This would use firebase.database.ServerValue.increment(1) in a real scenario
-            // For now, we'll handle it differently
-            return null;
+        // ===================================
+        // Voice Wish Recording
+        // ===================================
+        let mediaRecorder = null;
+        let recordedChunks = [];
+        let recordedBlob = null;
+        let isRecording = false;
+
+        const voiceRecordBtn = document.getElementById('voiceRecordBtn');
+        const voiceRecordBtnLabel = document.getElementById('voiceRecordBtnLabel');
+        const voiceWishPreview = document.getElementById('voiceWishPreview');
+        const voiceWishAudioPlayer = document.getElementById('voiceWishAudioPlayer');
+        const voiceWishRemoveBtn = document.getElementById('voiceWishRemoveBtn');
+
+        voiceRecordBtn.addEventListener('click', async () => {
+            if (isRecording) {
+                mediaRecorder?.stop();
+                return;
+            }
+
+            if (!navigator.mediaDevices || !window.MediaRecorder) {
+                alert('التسجيل الصوتي غير مدعوم على هذا المتصفح، جرّب متصفح آخر مثل Chrome.');
+                return;
+            }
+
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                recordedChunks = [];
+                mediaRecorder = new MediaRecorder(stream);
+
+                mediaRecorder.ondataavailable = (e) => {
+                    if (e.data.size > 0) recordedChunks.push(e.data);
+                };
+
+                mediaRecorder.onstop = () => {
+                    recordedBlob = new Blob(recordedChunks, { type: 'audio/webm' });
+                    voiceWishAudioPlayer.src = URL.createObjectURL(recordedBlob);
+                    voiceWishPreview.style.display = 'flex';
+                    stream.getTracks().forEach(track => track.stop());
+
+                    isRecording = false;
+                    voiceRecordBtn.classList.remove('recording');
+                    voiceRecordBtnLabel.textContent = 'تسجيل صوتي';
+                };
+
+                mediaRecorder.start();
+                isRecording = true;
+                voiceRecordBtn.classList.add('recording');
+                voiceRecordBtnLabel.textContent = 'إيقاف التسجيل';
+            } catch (error) {
+                console.error('Mic access error:', error);
+                alert('تعذر الوصول إلى الميكروفون. يرجى السماح بالوصول والمحاولة مرة أخرى.');
+            }
+        });
+
+        voiceWishRemoveBtn.addEventListener('click', () => {
+            recordedBlob = null;
+            voiceWishAudioPlayer.src = '';
+            voiceWishPreview.style.display = 'none';
+        });
+
+        async function uploadVoiceWish(blob) {
+            const formData = new FormData();
+            formData.append('file', blob, `wish_${Date.now()}.webm`);
+            formData.append('folder', 'wishes-audio');
+
+            const response = await fetch(`${WORKER_URL}/api/upload`, {
+                method: 'POST',
+                body: formData
+            });
+
+            if (!response.ok) throw new Error('فشل رفع التسجيل الصوتي');
+            const result = await response.json();
+            if (!result.success) throw new Error(result.error || 'فشل رفع التسجيل الصوتي');
+            return result.url;
         }
 
         // Wishes submission
@@ -1934,27 +2084,48 @@
             const name = document.getElementById('wishNameInput').value.trim();
             const message = document.getElementById('wishMessageInput').value.trim();
 
-            if (!name || !message) {
-                alert('يرجى كتابة الاسم والرسالة');
+            if (!name) {
+                alert('يرجى كتابة اسمك');
+                return;
+            }
+            if (!message && !recordedBlob) {
+                alert('يرجى كتابة رسالة أو تسجيل تهنئة صوتية');
                 return;
             }
 
             if (!window.currentInvitationId) return;
 
+            const submitBtn = document.getElementById('submitWishBtn');
+            const originalContent = submitBtn.innerHTML;
+
             try {
-                await push(ref(db, `invitations/${window.currentInvitationId}/wishes`), {
+                let audioUrl = '';
+                if (recordedBlob) {
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري رفع التسجيل...';
+                    audioUrl = await uploadVoiceWish(recordedBlob);
+                }
+
+                const payload = {
                     name: name,
-                    message: message,
                     isVisible: true,
                     createdAt: Date.now()
-                });
+                };
+                if (message) payload.message = message;
+                if (audioUrl) payload.audioUrl = audioUrl;
+
+                await push(ref(db, `invitations/${window.currentInvitationId}/wishes`), payload);
 
                 document.getElementById('wishNameInput').value = '';
                 document.getElementById('wishMessageInput').value = '';
+                voiceWishRemoveBtn.click();
                 alert('شكراً لتهنئتك! 🎉');
             } catch (error) {
                 console.error('Error submitting wish:', error);
-                alert('حدث خطأ أثناء إرسال التهنئة.');
+                alert('حدث خطأ أثناء إرسال التهنئة. ' + (error.message || ''));
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalContent;
             }
         });
 
@@ -1976,17 +2147,27 @@
                         const card = document.createElement('div');
                         card.className = 'wish-card';
                         
-                        const firstChar = (wish.name || '?')[0].toUpperCase();
+                        const escapeHtml = (str) => (str || '').replace(/[&<>"']/g, (c) => ({
+                            '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+                        }[c]));
+
+                        const displayName = wish.name || wish.authorName || '؟';
+                        const firstChar = displayName[0].toUpperCase();
                         const colors = ['#E94560', '#1A1A3E', '#D4AF37', '#1B5E20', '#C17F59', '#FF6B8A'];
                         const avatarColor = colors[Math.floor(Math.random() * colors.length)];
                         
                         const timeAgo = formatTimeAgo(wish.createdAt);
+                        const messageHtml = wish.message ? `<p>${escapeHtml(wish.message)}</p>` : '';
+                        const audioHtml = wish.audioUrl
+                            ? `<audio class="wish-audio-player" controls src="${escapeHtml(wish.audioUrl)}"></audio>`
+                            : '';
                         
                         card.innerHTML = `
                             <div class="wish-avatar" style="background: ${avatarColor}">${firstChar}</div>
                             <div class="wish-content">
-                                <h4>${wish.name}</h4>
-                                <p>${wish.message}</p>
+                                <h4>${escapeHtml(displayName)}</h4>
+                                ${messageHtml}
+                                ${audioHtml}
                                 <span class="wish-time">${timeAgo}</span>
                             </div>
                         `;
