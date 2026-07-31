@@ -560,6 +560,95 @@
             gap: 15px;
         }
         
+        /* URL Link Input (alternative to file upload) */
+        .url-input-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 12px;
+        }
+        
+        .url-input-row .url-divider {
+            flex-shrink: 0;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        
+        .url-input-row input[type="url"] {
+            flex: 1;
+            padding: 10px 14px;
+            border: 1px solid #D1D5DB;
+            border-radius: var(--radius-md);
+            font-size: 0.9rem;
+            font-family: inherit;
+        }
+        
+        .url-input-row input[type="url"]:focus {
+            outline: none;
+            border-color: var(--primary-gold);
+        }
+        
+        .url-input-row button {
+            flex-shrink: 0;
+            padding: 10px 16px;
+            border: none;
+            border-radius: var(--radius-md);
+            background: var(--primary-gold);
+            color: #fff;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all var(--transition-fast);
+        }
+        
+        .url-input-row button:hover {
+            filter: brightness(1.05);
+            transform: translateY(-1px);
+        }
+        
+        /* AI Generate Button (next to textarea labels) */
+        .label-with-ai {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .ai-generate-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border: 1px solid var(--primary-gold);
+            border-radius: 20px;
+            background: rgba(212, 175, 55, 0.08);
+            color: var(--primary-gold);
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+        
+        .ai-generate-btn:hover:not(:disabled) {
+            background: var(--primary-gold);
+            color: #fff;
+        }
+        
+        .ai-generate-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .ai-generate-btn .fa-spinner {
+            animation: spin 0.8s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
         .preview-item {
             position: relative;
             aspect-ratio: 1;
@@ -889,7 +978,13 @@
                             </div>
                             
                             <div class="form-group full-width">
-                                <label><i class="fas fa-envelope-open-text"></i> نص الدعوة *</label>
+                                <div class="label-with-ai">
+                                    <label><i class="fas fa-envelope-open-text"></i> نص الدعوة *</label>
+                                    <button type="button" class="ai-generate-btn" id="aiGenerateBtn" onclick="generateInvitationTextAI()">
+                                        <i class="fas fa-wand-magic-sparkles"></i>
+                                        <span>توليد بالذكاء الاصطناعي</span>
+                                    </button>
+                                </div>
                                 <textarea class="form-control" id="invitationText" placeholder="يسرنا ويسعدنا أن ندعوكم لحضور زفاف..." required></textarea>
                             </div>
                             
@@ -906,6 +1001,11 @@
                                     <p>PNG, JPG حتى 5MB</p>
                                     <input type="file" id="coverInput" accept="image/*" hidden>
                                 </div>
+                                <div class="url-input-row">
+                                    <span class="url-divider">أو رابط مباشر:</span>
+                                    <input type="url" id="coverUrlInput" placeholder="https://example.com/image.jpg">
+                                    <button type="button" onclick="useCoverUrl()">استخدام الرابط</button>
+                                </div>
                                 <div class="upload-preview" id="coverPreview"></div>
                             </div>
                             
@@ -917,6 +1017,11 @@
                                     <p>يمكنك إضافة عدة صور</p>
                                     <input type="file" id="galleryInput" accept="image/*" multiple hidden>
                                 </div>
+                                <div class="url-input-row">
+                                    <span class="url-divider">أو رابط مباشر:</span>
+                                    <input type="url" id="galleryUrlInput" placeholder="https://example.com/image.jpg">
+                                    <button type="button" onclick="addGalleryUrl()">إضافة</button>
+                                </div>
                                 <div class="upload-preview" id="galleryPreview"></div>
                             </div>
                             
@@ -927,6 +1032,11 @@
                                     <h4>اختر موسيقى للدعوة</h4>
                                     <p>MP3 حتى 10MB</p>
                                     <input type="file" id="musicInput" accept="audio/*" hidden>
+                                </div>
+                                <div class="url-input-row">
+                                    <span class="url-divider">أو رابط مباشر:</span>
+                                    <input type="url" id="musicUrlInput" placeholder="https://example.com/song.mp3">
+                                    <button type="button" onclick="useMusicUrl()">استخدام الرابط</button>
                                 </div>
                                 <div id="musicPreview"></div>
                             </div>
@@ -1376,6 +1486,83 @@
         }
         
         // ===================================
+        // AI Text Generation for "نص الدعوة"
+        // ===================================
+        async function generateInvitationTextAI() {
+            const groomName = document.getElementById('groomName').value.trim();
+            const brideName = document.getElementById('brideName').value.trim();
+            const weddingDate = document.getElementById('weddingDate').value;
+            const venueName = document.getElementById('venueName')?.value.trim() || '';
+
+            if (!groomName || !brideName) {
+                db.showNotification('يرجى إدخال اسم العريس والعروس أولاً (الخطوة 1)', 'error');
+                return;
+            }
+
+            const btn = document.getElementById('aiGenerateBtn');
+            const btnText = btn.querySelector('span');
+            const originalText = btnText.textContent;
+            btn.disabled = true;
+            btn.querySelector('i').className = 'fas fa-spinner';
+            btnText.textContent = 'جاري التوليد...';
+
+            try {
+                let text = '';
+                if (window.nvidiaConfig?.apiKey && window.r2Config?.workerUrl) {
+                    try {
+                        const prompt = `اكتب نص دعوة زفاف احترافي وقصير باللغة العربية.
+التفاصيل:
+- اسم العريس: ${groomName}
+- اسم العروس: ${brideName}
+${weddingDate ? `- تاريخ الزفاف: ${weddingDate}` : ''}
+${venueName ? `- مكان الزفاف: ${venueName}` : ''}
+اكتب النص فقط بدون أي مقدمة أو شرح.`;
+
+                        const response = await fetch(`${window.r2Config.workerUrl}/api/ai/generate`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                prompt,
+                                model: 'meta/llama3-70b-instruct',
+                                max_tokens: 500,
+                                temperature: 0.7
+                            })
+                        });
+                        if (!response.ok) throw new Error(`API Error: ${response.statusText}`);
+                        const data = await response.json();
+                        text = data.text || data.content || data.generated_text || '';
+                    } catch (apiError) {
+                        console.warn('AI API unavailable, using template fallback:', apiError);
+                    }
+                }
+
+                if (!text) {
+                    text = generateInvitationTemplate({ groomName, brideName, weddingDate, venueName });
+                }
+
+                document.getElementById('invitationText').value = text;
+                db.showNotification(window.nvidiaConfig?.apiKey ? 'تم توليد النص بنجاح' : 'تم إنشاء نص جاهز (استخدم زر التوليد مرة أخرى لخيار آخر)', 'success');
+            } catch (error) {
+                console.error('AI generation error:', error);
+                db.showNotification('حدث خطأ أثناء توليد النص', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.querySelector('i').className = 'fas fa-wand-magic-sparkles';
+                btnText.textContent = originalText;
+            }
+        }
+
+        function generateInvitationTemplate({ groomName, brideName, weddingDate, venueName }) {
+            const dateStr = weddingDate ? new Date(weddingDate).toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric' }) : '';
+            const options = [
+                `يسرنا ويسعدنا دعوتكم لحضور حفل زفاف ${groomName} و${brideName}${dateStr ? `\nفي يوم ${dateStr}` : ''}${venueName ? `\nفي ${venueName}` : ''}\nحضوركم يزيدنا فخراً وسعادة بهذه المناسبة الغالية على قلوبنا`,
+                `بقلوب مفعمة بالفرح والسرور، ندعوكم لمشاركتنا أجمل لحظات حياتنا في حفل زفاف ${groomName} و${brideName}${dateStr ? `\nيوم ${dateStr}` : ''}${venueName ? ` بـ${venueName}` : ''}\nننتظر حضوركم الكريم لنكمل معاً فرحة هذا اليوم`,
+                `✨ دعوة خاصة لحضور حفل زفافنا ✨\n${groomName} و${brideName}${dateStr ? `\n📅 ${dateStr}` : ''}${venueName ? `\n📍 ${venueName}` : ''}\nيسعدنا تشريفكم لمشاركتنا هذه الفرحة الغالية`
+            ];
+            return options[Math.floor(Math.random() * options.length)];
+        }
+
+        // ===================================
         // Upload Handling
         // ===================================
         function initUploadAreas() {
@@ -1400,10 +1587,21 @@
             const galleryInput = document.getElementById('galleryInput');
             
             galleryArea.addEventListener('click', () => galleryInput.click());
-            galleryArea.addEventListener('change', async (e) => {
+            galleryArea.addEventListener('dragover', (e) => { e.preventDefault(); galleryArea.classList.add('dragover'); });
+            galleryArea.addEventListener('dragleave', () => galleryArea.classList.remove('dragover'));
+            galleryArea.addEventListener('drop', async (e) => {
+                e.preventDefault();
+                galleryArea.classList.remove('dragover');
+                for (const file of e.dataTransfer.files) {
+                    await handleGalleryUpload(file);
+                }
+            });
+            galleryInput.addEventListener('change', async (e) => {
                 for (const file of e.target.files) {
                     await handleGalleryUpload(file);
                 }
+                // Allow re-selecting the same file(s) again later
+                galleryInput.value = '';
             });
             
             // Music upload
@@ -1417,45 +1615,79 @@
         }
         
         async function handleCoverUpload(file) {
-            const result = await db.uploadToR2(file, 'image');
-            if (result.success) {
-                uploadedCover = result.url;
-                document.getElementById('coverPreview').innerHTML = `
-                    <div class="preview-item">
-                        <img src="${result.url}" alt="Cover">
-                        <button class="remove-btn" onclick="removeCover()"><i class="fas fa-times"></i></button>
-                    </div>
-                `;
-                db.showNotification('تم رفع صورة الغلاف بنجاح', 'success');
-            } else {
-                db.showNotification(result.error || 'فشل رفع الصورة', 'error');
+            const area = document.getElementById('coverUpload');
+            area.classList.add('dragover');
+            try {
+                const result = await db.uploadToR2(file, 'image');
+                if (result.success) {
+                    setCoverImage(result.url);
+                    db.showNotification('تم رفع صورة الغلاف بنجاح', 'success');
+                } else {
+                    db.showNotification(result.error || 'فشل رفع الصورة. جرّب استخدام رابط مباشر بدلاً من ذلك', 'error');
+                }
+            } catch (error) {
+                console.error('Cover upload error:', error);
+                db.showNotification('تعذر رفع الصورة. يمكنك استخدام خيار "رابط مباشر" بدلاً من ذلك', 'error');
+            } finally {
+                area.classList.remove('dragover');
             }
         }
         
         async function handleGalleryUpload(file) {
-            const result = await db.uploadToR2(file, 'image');
-            if (result.success) {
-                uploadedGallery.push(result.url);
-                renderGalleryPreview();
-                db.showNotification('تمت إضافة الصورة بنجاح', 'success');
+            try {
+                const result = await db.uploadToR2(file, 'image');
+                if (result.success) {
+                    uploadedGallery.push(result.url);
+                    renderGalleryPreview();
+                    db.showNotification('تمت إضافة الصورة بنجاح', 'success');
+                } else {
+                    db.showNotification(result.error || 'فشل رفع الصورة. جرّب استخدام رابط مباشر بدلاً من ذلك', 'error');
+                }
+            } catch (error) {
+                console.error('Gallery upload error:', error);
+                db.showNotification('تعذر رفع الصورة. يمكنك استخدام خيار "رابط مباشر" بدلاً من ذلك', 'error');
             }
         }
         
         async function handleMusicUpload(file) {
-            const result = await db.uploadToR2(file, 'audio');
-            if (result.success) {
-                uploadedMusic = result.url;
-                document.getElementById('musicPreview').innerHTML = `
-                    <div style="margin-top:15px;padding:15px;background:#F3F4F6;border-radius:var(--radius-md);display:flex;align-items:center;gap:10px;">
-                        <i class="fas fa-music" style="color:var(--primary-gold);font-size:1.5rem;"></i>
-                        <span>${file.name}</span>
-                        <button onclick="removeMusic()" style="margin-right:auto;color:#EF4444;border:none;background:none;cursor:pointer;">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                `;
-                db.showNotification('تم رفع الموسيقى بنجاح', 'success');
+            try {
+                const result = await db.uploadToR2(file, 'audio');
+                if (result.success) {
+                    setMusic(result.url, file.name);
+                    db.showNotification('تم رفع الموسيقى بنجاح', 'success');
+                } else {
+                    db.showNotification(result.error || 'فشل رفع الموسيقى. جرّب استخدام رابط مباشر بدلاً من ذلك', 'error');
+                }
+            } catch (error) {
+                console.error('Music upload error:', error);
+                db.showNotification('تعذر رفع الموسيقى. يمكنك استخدام خيار "رابط مباشر" بدلاً من ذلك', 'error');
             }
+        }
+        
+        // ===================================
+        // Cover / Gallery / Music - shared setters (used by both file upload & URL link)
+        // ===================================
+        function setCoverImage(url) {
+            uploadedCover = url;
+            document.getElementById('coverPreview').innerHTML = `
+                <div class="preview-item">
+                    <img src="${url}" alt="Cover" onerror="this.parentElement.innerHTML='<p style=&quot;color:#EF4444;padding:10px;&quot;>تعذر تحميل الصورة من هذا الرابط</p>'">
+                    <button class="remove-btn" onclick="removeCover()"><i class="fas fa-times"></i></button>
+                </div>
+            `;
+        }
+        
+        function setMusic(url, label) {
+            uploadedMusic = url;
+            document.getElementById('musicPreview').innerHTML = `
+                <div style="margin-top:15px;padding:15px;background:#F3F4F6;border-radius:var(--radius-md);display:flex;align-items:center;gap:10px;">
+                    <i class="fas fa-music" style="color:var(--primary-gold);font-size:1.5rem;"></i>
+                    <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${label || url}</span>
+                    <button onclick="removeMusic()" style="margin-right:auto;color:#EF4444;border:none;background:none;cursor:pointer;">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            `;
         }
         
         function removeCover() { 
@@ -1472,7 +1704,7 @@
             const container = document.getElementById('galleryPreview');
             container.innerHTML = uploadedGallery.map((url, index) => `
                 <div class="preview-item">
-                    <img src="${url}" alt="Gallery ${index + 1}">
+                    <img src="${url}" alt="Gallery ${index + 1}" onerror="this.style.opacity='0.3'">
                     <button class="remove-btn" onclick="removeGalleryImage(${index})"><i class="fas fa-times"></i></button>
                 </div>
             `).join('');
@@ -1481,6 +1713,55 @@
         function removeGalleryImage(index) {
             uploadedGallery.splice(index, 1);
             renderGalleryPreview();
+        }
+        
+        // ===================================
+        // URL Link Inputs (alternative to uploading a file)
+        // ===================================
+        function isValidUrl(value) {
+            try {
+                const u = new URL(value);
+                return u.protocol === 'http:' || u.protocol === 'https:';
+            } catch {
+                return false;
+            }
+        }
+        
+        function useCoverUrl() {
+            const input = document.getElementById('coverUrlInput');
+            const url = input.value.trim();
+            if (!url || !isValidUrl(url)) {
+                db.showNotification('يرجى إدخال رابط صحيح يبدأ بـ http:// أو https://', 'error');
+                return;
+            }
+            setCoverImage(url);
+            input.value = '';
+            db.showNotification('تم تعيين صورة الغلاف من الرابط', 'success');
+        }
+        
+        function addGalleryUrl() {
+            const input = document.getElementById('galleryUrlInput');
+            const url = input.value.trim();
+            if (!url || !isValidUrl(url)) {
+                db.showNotification('يرجى إدخال رابط صحيح يبدأ بـ http:// أو https://', 'error');
+                return;
+            }
+            uploadedGallery.push(url);
+            renderGalleryPreview();
+            input.value = '';
+            db.showNotification('تمت إضافة الصورة من الرابط', 'success');
+        }
+        
+        function useMusicUrl() {
+            const input = document.getElementById('musicUrlInput');
+            const url = input.value.trim();
+            if (!url || !isValidUrl(url)) {
+                db.showNotification('يرجى إدخال رابط صحيح يبدأ بـ http:// أو https://', 'error');
+                return;
+            }
+            setMusic(url, url.split('/').pop());
+            input.value = '';
+            db.showNotification('تم تعيين الموسيقى من الرابط', 'success');
         }
         
         // ===================================
