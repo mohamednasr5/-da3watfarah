@@ -90,6 +90,8 @@
         
         /* Main Container */
         .invitation-container {
+            position: relative;
+            z-index: 2;
             opacity: 0;
             transition: opacity 0.6s ease;
         }
@@ -862,6 +864,71 @@
             left: 25px;
             z-index: 100;
         }
+
+        /* Mobile Quick Actions Bar */
+        .mobile-quick-nav {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .mobile-quick-nav {
+                display: flex;
+                position: fixed;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                z-index: 200;
+                background: rgba(255, 255, 255, 0.96);
+                backdrop-filter: blur(10px);
+                box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+                padding: 8px 6px calc(8px + env(safe-area-inset-bottom, 0px));
+                gap: 4px;
+            }
+
+            .mqn-btn {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 4px;
+                padding: 8px 4px;
+                border: none;
+                background: transparent;
+                color: #555;
+                font-family: 'Tajawal', sans-serif;
+                text-decoration: none;
+                cursor: pointer;
+                touch-action: manipulation;
+                border-radius: 12px;
+                transition: background 0.15s, color 0.15s;
+            }
+
+            .mqn-btn:active {
+                background: var(--theme-light, rgba(212, 175, 55, 0.12));
+                color: var(--theme-primary, #D4AF37);
+            }
+
+            .mqn-btn i {
+                font-size: 1.2rem;
+            }
+
+            .mqn-btn span {
+                font-size: 0.72rem;
+                font-weight: 600;
+            }
+
+            /* Leave room at the bottom so the nav bar never covers content/footer */
+            body {
+                padding-bottom: 72px;
+            }
+
+            /* Move the music toggle above the quick-actions bar so they don't overlap */
+            .music-player {
+                bottom: 82px;
+                left: 15px;
+            }
+        }
         
         .music-toggle {
             width: 55px;
@@ -1139,7 +1206,7 @@
         <section class="inv-section gallery-section" id="gallerySection" style="display: none;" data-aos="fade-up">
             <div class="section-title">
                 <i class="fas fa-camera-retro"></i>
-                <h2>معرض الصور</h2>
+                <h2>ذكريات العريس والعروسة</h2>
             </div>
             
             <div class="gallery-grid" id="galleryGrid"></div>
@@ -1352,6 +1419,22 @@
             </div>
         </footer>
     </main>
+
+    <!-- Mobile Quick Actions Bar -->
+    <nav class="mobile-quick-nav" id="mobileQuickNav">
+        <button type="button" class="mqn-btn" onclick="scrollToSection('rsvpSection')">
+            <i class="fas fa-user-check"></i>
+            <span>سجل حضور</span>
+        </button>
+        <button type="button" class="mqn-btn" onclick="scrollToSection('wishesSection')">
+            <i class="fas fa-heart"></i>
+            <span>ابعت تهنئة</span>
+        </button>
+        <a class="mqn-btn" href="index.html">
+            <i class="fas fa-plus-circle"></i>
+            <span>اعمل دعوة</span>
+        </a>
+    </nav>
 
     <!-- Lightbox for Gallery -->
     <div class="lightbox" id="lightbox">
