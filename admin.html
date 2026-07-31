@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>لوحة المالك | دعوة فرح</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#0B0F0E;--panel:#152420;--panel2:#0F1B17;--gold:#C9A227;--gold-light:#E8C766;--text:#F5F1E8;--text-dim:#A9B3AC;--line:rgba(201,162,39,.22)}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:'Cairo',sans-serif;min-height:100vh}
+  header{display:flex;align-items:center;justify-content:space-between;padding:18px 5%;border-bottom:1px solid var(--line)}
+  .logo{font-family:'Amiri',serif;font-size:22px;color:var(--gold-light)}
+  .btn{padding:9px 18px;border-radius:999px;border:1px solid var(--line);background:none;color:var(--text);font-family:'Cairo';font-weight:700;font-size:13px;cursor:pointer}
+  .btn:hover{border-color:var(--gold)}
+  main{padding:30px 5%;max-width:1200px;margin:0 auto}
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:30px}
+  .stat{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px;text-align:center}
+  .stat b{display:block;font-family:'Amiri',serif;font-size:28px;color:var(--gold-light)}
+  .stat span{font-size:12.5px;color:var(--text-dim)}
+  @media(max-width:700px){.stats{grid-template-columns:1fr 1fr}}
+  input#search{width:100%;max-width:320px;padding:11px 14px;border-radius:10px;border:1px solid var(--line);background:var(--panel2);color:var(--text);margin-bottom:20px;font-family:'Cairo'}
+  table{width:100%;border-collapse:collapse;font-size:13.5px;background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  th,td{padding:14px 12px;border-bottom:1px solid var(--line);text-align:right}
+  th{color:var(--gold-light);background:var(--panel2)}
+  tr:last-child td{border-bottom:none}
+  .tag{padding:3px 10px;border-radius:999px;font-size:11px;font-weight:700}
+  .tag.pub{background:rgba(140,224,160,.15);color:#8CE0A0}
+  .tag.draft{background:rgba(169,179,172,.15);color:var(--text-dim)}
+  .row-actions{display:flex;gap:6px}
+  .row-actions button{font-size:11.5px;padding:6px 10px;border-radius:8px;border:none;cursor:pointer}
+  .gate{display:flex;align-items:center;justify-content:center;min-height:100vh;flex-direction:column;gap:14px}
+  .gate p{color:var(--text-dim);font-size:14px}
+</style>
+</head>
+<body>
+
+<div class="gate" id="gate">
+  <div class="logo">لوحة المالك</div>
+  <p>سجّل دخولك بحساب المالك للمتابعة</p>
+  <a href="login.html" class="btn">تسجيل الدخول</a>
+</div>
+
+<div id="dashboard" style="display:none">
+  <header>
+    <div class="logo">لوحة المالك — دعوة فرح</div>
+    <button class="btn" id="logoutBtn">تسجيل الخروج</button>
+  </header>
+  <main>
+    <div class="stats">
+      <div class="stat"><b id="statTotal">0</b><span>إجمالي الدعوات</span></div>
+      <div class="stat"><b id="statPublished">0</b><span>دعوات منشورة</span></div>
+      <div class="stat"><b id="statViews">0</b><span>إجمالي المشاهدات</span></div>
+      <div class="stat"><b id="statRsvp">0</b><span>تأكيدات حضور</span></div>
+    </div>
+    <input id="search" placeholder="ابحث بالاسم أو الرابط...">
+    <table>
+      <thead><tr><th>الرابط</th><th>الأسماء</th><th>النوع</th><th>الحالة</th><th>المشاهدات</th><th>تاريخ الإنشاء</th><th></th></tr></thead>
+      <tbody id="invTable"></tbody>
+    </table>
+  </main>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getDatabase, ref, get, remove, update } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+  // ===== إعدادات فايربيز — استبدل بالقيم الخاصة بمشروعك =====
+  const firebaseConfig = {
+    apiKey: "AIzaSyAIyJ_oZdA1VGDMfKwCUfQwdO5ZOoQy2DQ",
+    authDomain: "da3watfarah.firebaseapp.com",
+    databaseURL: "https://da3watfarah-default-rtdb.firebaseio.com",
+    projectId: "da3watfarah",
+    storageBucket: "da3watfarah.firebasestorage.app",
+    messagingSenderId: "818147201311",
+    appId: "1:818147201311:web:cb83942913bc2d6a86e02a",
+    measurementId: "G-J9D7R961V7"
+  };
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getDatabase(app);
+
+  // ملحوظة: لازم تضيف حساب المالك يدويًا في قاعدة البيانات:
+  // admins/{uid} = true  -- ضيفها من Firebase Console بعد ما تعمل حساب عادي من login.html
+
+  let allInvitations = {};
+
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) return;
+    const adminSnap = await get(ref(db, 'admins/' + user.uid));
+    if (!adminSnap.exists() || adminSnap.val() !== true) return; // مش أدمن، يفضل على شاشة الدخول
+    document.getElementById('gate').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'block';
+    loadInvitations();
+  });
+
+  document.getElementById('logoutBtn').addEventListener('click', () => signOut(auth).then(() => location.reload()));
+
+  const eventTypeLabels = { wedding: 'زفاف', engagement: 'خطوبة', katb_ketab: 'كتب كتاب' };
+
+  async function loadInvitations(){
+    const snap = await get(ref(db, 'invitations'));
+    allInvitations = snap.exists() ? snap.val() : {};
+    renderStats();
+    renderTable(Object.keys(allInvitations));
+  }
+
+  function renderStats(){
+    const entries = Object.entries(allInvitations);
+    document.getElementById('statTotal').textContent = entries.length;
+    document.getElementById('statPublished').textContent = entries.filter(([,v]) => v.published).length;
+    document.getElementById('statViews').textContent = entries.reduce((s,[,v]) => s + (v.views||0), 0);
+    document.getElementById('statRsvp').textContent = entries.reduce((s,[,v]) => s + (v.rsvps ? Object.keys(v.rsvps).length : 0), 0);
+  }
+
+  function renderTable(slugs){
+    const tbody = document.getElementById('invTable');
+    tbody.innerHTML = '';
+    slugs.sort((a,b) => (allInvitations[b].createdAt||0) - (allInvitations[a].createdAt||0)).forEach(slug => {
+      const inv = allInvitations[slug];
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td style="direction:ltr">${slug}</td>
+        <td>${inv.groomName||''} &amp; ${inv.brideName||''}</td>
+        <td>${eventTypeLabels[inv.eventType]||'-'}</td>
+        <td><span class="tag ${inv.published ? 'pub':'draft'}">${inv.published ? 'منشورة':'مسودة'}</span></td>
+        <td>${inv.views||0}</td>
+        <td>${inv.createdAt ? new Date(inv.createdAt).toLocaleDateString('ar-EG') : '-'}</td>
+        <td class="row-actions">
+          <button style="background:var(--gold-light)" data-open="${slug}">فتح</button>
+          <button style="background:#E88" data-del="${slug}">حذف</button>
+        </td>`;
+      tbody.appendChild(tr);
+    });
+    tbody.querySelectorAll('[data-open]').forEach(b => b.addEventListener('click', () =>
+      window.open('/' + b.dataset.open, '_blank')));
+    tbody.querySelectorAll('[data-del]').forEach(b => b.addEventListener('click', async () => {
+      if (!confirm('متأكد إنك عايز تحذف الدعوة دي نهائيًا؟')) return;
+      await remove(ref(db, 'invitations/' + b.dataset.del));
+      delete allInvitations[b.dataset.del];
+      renderStats();
+      renderTable(Object.keys(allInvitations));
+    }));
+  }
+
+  document.getElementById('search').addEventListener('input', (e) => {
+    const q = e.target.value.trim().toLowerCase();
+    const filtered = Object.keys(allInvitations).filter(slug => {
+      const inv = allInvitations[slug];
+      return slug.toLowerCase().includes(q) ||
+        (inv.groomName||'').toLowerCase().includes(q) ||
+        (inv.brideName||'').toLowerCase().includes(q);
+    });
+    renderTable(filtered);
+  });
+</script>
+
+</body>
+</html>

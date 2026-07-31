@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>معرض الصور | دعوة فرح</title>
     
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+    
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,35 +18,46 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
+    <!-- AOS Animation -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
+    
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/dashboard.css">
-    
-    <!-- AOS Animation Library -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
     
     <style>
         /* ===================================
            Gallery Page Specific Styles
            =================================== */
         
+        .main-content {
+            flex: 1;
+            margin-right: 280px;
+            padding: 30px;
+            min-height: 100vh;
+            transition: margin var(--transition-normal);
+        }
+        
+        @media (max-width: 1024px) {
+            .main-content {
+                margin-right: 0;
+                padding: 20px;
+            }
+        }
+        
         /* Page Header */
         .page-header {
-            background: linear-gradient(135deg, var(--bg-dark) 0%, #1a1a2e 100%);
-            padding: 30px;
-            border-radius: var(--radius-xl);
-            margin-bottom: 25px;
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
             flex-wrap: wrap;
-            gap: 20px;
+            gap: 15px;
         }
         
         .page-header h1 {
-            color: white;
-            font-size: 1.8rem;
-            font-weight: 700;
+            font-size: 1.75rem;
+            color: var(--text-primary);
             margin: 0;
             display: flex;
             align-items: center;
@@ -49,942 +65,382 @@
         }
         
         .page-header h1 i {
-            color: var(--primary-gold);
+            color: var(--gold);
         }
         
         .header-actions {
             display: flex;
-            gap: 12px;
-            align-items: center;
-        }
-        
-        /* Storage Usage Bar */
-        .storage-info {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 15px 20px;
-            border-radius: var(--radius-lg);
-            color: white;
-            min-width: 250px;
-        }
-        
-        .storage-label {
-            font-size: 0.85rem;
-            color: rgba(255, 255, 255, 0.7);
-            margin-bottom: 8px;
-            display: flex;
-            justify-content: space-between;
-        }
-        
-        .storage-bar {
-            height: 8px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 4px;
-            overflow: hidden;
-        }
-        
-        .storage-fill {
-            height: 100%;
-            background: var(--gradient-gold);
-            border-radius: 4px;
-            transition: width var(--transition-normal);
-        }
-        
-        .storage-details {
-            font-size: 0.75rem;
-            color: rgba(255, 255, 255, 0.6);
-            margin-top: 6px;
-        }
-        
-        /* Toolbar */
-        .gallery-toolbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 15px;
-            margin-bottom: 25px;
-            padding: 20px;
-            background: var(--bg-dark);
-            border-radius: var(--radius-lg);
-        }
-        
-        .toolbar-left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
+            gap: 10px;
             flex-wrap: wrap;
         }
         
-        .toolbar-right {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        
-        /* Search Box */
-        .search-box {
-            position: relative;
-        }
-        
-        .search-box input {
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            color: var(--text-primary);
-            padding: 10px 40px 10px 16px;
-            border-radius: var(--radius-md);
-            min-width: 220px;
-            transition: var(--transition-fast);
-        }
-        
-        .search-box input:focus {
-            outline: none;
-            border-color: var(--primary-gold);
-            background: rgba(255, 255, 255, 0.12);
-        }
-        
-        .search-box input::placeholder {
-            color: rgba(255, 255, 255, 0.4);
-        }
-        
-        .search-box i {
-            position: absolute;
-            left: 14px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: rgba(255, 255, 255, 0.4);
-        }
-        
-        /* Sort Dropdown */
-        .sort-dropdown {
-            position: relative;
-        }
-        
-        .sort-dropdown select {
-            appearance: none;
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            color: var(--text-primary);
-            padding: 10px 36px 10px 16px;
-            border-radius: var(--radius-md);
-            cursor: pointer;
-            font-family: inherit;
-        }
-        
-        .sort-dropdown select:focus {
-            outline: none;
-            border-color: var(--primary-gold);
-        }
-        
-        .sort-dropdown::after {
-            content: '\f078';
-            font-family: 'Font Awesome 6 Free';
-            font-weight: 900;
-            position: absolute;
-            left: 14px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: rgba(255, 255, 255, 0.4);
-            pointer-events: none;
-            font-size: 0.75rem;
-        }
-        
-        /* View Toggle */
-        .view-toggle {
-            display: flex;
-            background: rgba(255, 255, 255, 0.08);
-            border-radius: var(--radius-md);
-            overflow: hidden;
-        }
-        
-        .view-toggle button {
-            background: transparent;
-            border: none;
-            color: rgba(255, 255, 255, 0.5);
-            padding: 10px 14px;
-            cursor: pointer;
-            transition: var(--transition-fast);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .view-toggle button.active,
-        .view-toggle button:hover {
-            background: var(--primary-gold);
-            color: var(--bg-dark);
-        }
-        
-        /* Bulk Actions */
-        .bulk-actions {
-            display: none;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 20px;
-            background: rgba(212, 175, 55, 0.15);
-            border: 1px solid var(--primary-gold);
-            border-radius: var(--radius-md);
-            animation: slideDown 0.3s ease;
-        }
-        
-        .bulk-actions.show {
-            display: flex;
-        }
-        
-        .bulk-count {
-            color: var(--primary-gold);
-            font-weight: 600;
-        }
-        
-        .btn-bulk {
-            background: transparent;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            color: var(--text-primary);
-            padding: 8px 16px;
-            border-radius: var(--radius-md);
-            cursor: pointer;
-            font-family: inherit;
-            font-size: 0.85rem;
-            transition: var(--transition-fast);
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        
-        .btn-bulk:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: var(--primary-gold);
-        }
-        
-        .btn-bulk.danger:hover {
-            background: rgba(239, 68, 68, 0.2);
-            border-color: #ef4444;
-            color: #ef4444;
-        }
-        
-        /* Upload Area */
-        .upload-area {
-            border: 2px dashed rgba(212, 175, 55, 0.4);
+        /* Upload Zone */
+        .upload-zone {
+            border: 2px dashed var(--border-color);
             border-radius: var(--radius-xl);
             padding: 50px 30px;
             text-align: center;
-            background: rgba(212, 175, 55, 0.05);
+            background: var(--bg-light);
             cursor: pointer;
-            transition: var(--transition-normal);
+            transition: all 0.3s ease;
             margin-bottom: 30px;
             position: relative;
+            overflow: hidden;
         }
         
-        .upload-area:hover,
-        .upload-area.dragover {
-            border-color: var(--primary-gold);
-            background: rgba(212, 175, 55, 0.1);
-            transform: scale(1.01);
+        .upload-zone:hover,
+        .upload-zone.dragover {
+            border-color: var(--gold);
+            background: rgba(212, 175, 55, 0.05);
         }
         
-        .upload-area.dragover {
+        .upload-zone.dragover {
             transform: scale(1.02);
-            box-shadow: 0 0 30px rgba(212, 175, 55, 0.3);
         }
         
-        .upload-icon {
-            font-size: 3.5rem;
-            color: var(--primary-gold);
-            margin-bottom: 20px;
-        }
-        
-        .upload-text h3 {
-            color: var(--text-primary);
-            font-size: 1.3rem;
-            margin-bottom: 10px;
-        }
-        
-        .upload-text p {
-            color: var(--text-secondary);
-            font-size: 0.95rem;
-            margin-bottom: 20px;
-        }
-        
-        .upload-btn {
-            background: var(--gradient-gold);
-            color: var(--bg-dark);
-            border: none;
-            padding: 14px 32px;
-            border-radius: var(--radius-lg);
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            font-family: inherit;
-            transition: var(--transition-fast);
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .upload-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-lg);
-        }
-        
-        .upload-hint {
-            margin-top: 20px;
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-        }
-        
-        .upload-hint span {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            margin: 0 8px;
-            color: var(--primary-gold);
-        }
-        
-        #fileInput {
-            display: none;
-        }
-        
-        /* Upload Progress */
-        .upload-progress-container {
-            display: none;
-            margin-top: 25px;
-        }
-        
-        .upload-progress-container.show {
-            display: block;
-        }
-        
-        .progress-item {
-            background: var(--bg-dark);
-            border-radius: var(--radius-lg);
-            padding: 16px 20px;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-        
-        .progress-file-icon {
-            width: 45px;
-            height: 45px;
-            background: rgba(212, 175, 55, 0.15);
-            border-radius: var(--radius-md);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--primary-gold);
-            font-size: 1.2rem;
-        }
-        
-        .progress-file-icon.success {
-            background: rgba(34, 197, 94, 0.15);
-            color: #22c55e;
-        }
-        
-        .progress-file-icon.error {
-            background: rgba(239, 68, 68, 0.15);
-            color: #ef4444;
-        }
-        
-        .progress-info {
-            flex: 1;
-        }
-        
-        .progress-filename {
-            color: var(--text-primary);
-            font-weight: 500;
-            margin-bottom: 6px;
-            font-size: 0.95rem;
-        }
-        
-        .progress-bar-container {
-            height: 6px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 3px;
-            overflow: hidden;
-        }
-        
-        .progress-bar-fill {
-            height: 100%;
-            background: var(--gradient-gold);
-            border-radius: 3px;
-            transition: width 0.3s ease;
-            width: 0%;
-        }
-        
-        .progress-bar-fill.complete {
-            background: #22c55e;
-        }
-        
-        .progress-status {
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-            margin-top: 4px;
-        }
-        
-        .progress-status.success {
-            color: #22c55e;
-        }
-        
-        .progress-status.error {
-            color: #ef4444;
-        }
-        
-        .progress-percent {
-            color: var(--primary-gold);
-            font-weight: 600;
-            min-width: 45px;
-            text-align: left;
-        }
-        
-        /* Gallery Grid - Masonry Style */
-        .gallery-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 20px;
-            margin-bottom: 40px;
-        }
-        
-        .gallery-grid.list-view {
-            grid-template-columns: 1fr;
-        }
-        
-        .gallery-grid.list-view .gallery-item {
-            display: flex;
-            flex-direction: row;
-        }
-        
-        .gallery-grid.list-view .gallery-image-wrapper {
-            width: 150px;
-            height: 100px;
-            flex-shrink: 0;
-        }
-        
-        .gallery-grid.list-view .gallery-item-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-        
-        /* Gallery Item */
-        .gallery-item {
-            background: var(--bg-dark);
-            border-radius: var(--radius-lg);
-            overflow: hidden;
-            position: relative;
-            group: true;
-            transition: var(--transition-normal);
-            animation: fadeInUp 0.5s ease forwards;
-            opacity: 0;
-        }
-        
-        .gallery-item:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-lg);
-        }
-        
-        .gallery-item.selected {
-            outline: 3px solid var(--primary-gold);
-            outline-offset: 2px;
-        }
-        
-        .gallery-image-wrapper {
-            position: relative;
-            aspect-ratio: 1;
-            overflow: hidden;
-            cursor: pointer;
-        }
-        
-        .gallery-image {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform var(--transition-normal);
-        }
-        
-        .gallery-item:hover .gallery-image {
-            transform: scale(1.05);
-        }
-        
-        /* Cover Badge */
-        .cover-badge {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            background: var(--gradient-gold);
-            color: var(--bg-dark);
-            padding: 5px 12px;
-            border-radius: var(--radius-md);
-            font-size: 0.75rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            z-index: 5;
-        }
-        
-        /* Selection Checkbox */
-        .image-checkbox {
-            position: absolute;
-            top: 12px;
-            left: 12px;
-            width: 28px;
-            height: 28px;
-            background: rgba(0, 0, 0, 0.5);
-            border: 2px solid rgba(255, 255, 255, 0.5);
-            border-radius: 50%;
-            cursor: pointer;
-            z-index: 5;
-            opacity: 0;
-            transition: var(--transition-fast);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .gallery-item:hover .image-checkbox,
-        .image-checkbox.checked {
-            opacity: 1;
-        }
-        
-        .image-checkbox.checked {
-            background: var(--primary-gold);
-            border-color: var(--primary-gold);
-        }
-        
-        .image-checkbox i {
-            color: white;
-            font-size: 0.7rem;
-            opacity: 0;
-        }
-        
-        .image-checkbox.checked i {
-            opacity: 1;
-        }
-        
-        /* Image Overlay */
-        .image-overlay {
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, transparent 60%);
-            opacity: 0;
-            transition: var(--transition-normal);
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            padding: 20px;
-        }
-        
-        .gallery-item:hover .image-overlay {
-            opacity: 1;
-        }
-        
-        .overlay-actions {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 10px;
-        }
-        
-        .overlay-btn {
-            width: 38px;
-            height: 38px;
-            background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(10px);
-            border: none;
-            border-radius: 50%;
-            color: white;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: var(--transition-fast);
-        }
-        
-        .overlay-btn:hover {
-            background: var(--primary-gold);
-            color: var(--bg-dark);
-            transform: scale(1.1);
-        }
-        
-        .overlay-btn.delete:hover {
-            background: #ef4444;
-            color: white;
-        }
-        
-        .image-name {
-            color: white;
-            font-size: 0.9rem;
-            font-weight: 500;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        
-        .image-meta {
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 0.78rem;
-            display: flex;
-            gap: 10px;
-        }
-        
-        /* Gallery Item Content (for list view) */
-        .gallery-item-content {
-            padding: 15px 20px;
-            display: none;
-        }
-        
-        .list-view .gallery-item-content {
-            display: block;
-        }
-        
-        .item-title {
-            color: var(--text-primary);
-            font-weight: 600;
-            margin-bottom: 6px;
-        }
-        
-        .item-meta {
-            color: var(--text-secondary);
-            font-size: 0.85rem;
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-        
-        .item-meta span {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-        
-        .item-actions {
-            display: flex;
-            gap: 8px;
-            margin-top: 12px;
-        }
-        
-        .item-action-btn {
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            color: var(--text-primary);
-            padding: 6px 12px;
-            border-radius: var(--radius-md);
-            font-size: 0.8rem;
-            cursor: pointer;
-            font-family: inherit;
-            transition: var(--transition-fast);
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-        
-        .item-action-btn:hover {
-            background: var(--primary-gold);
-            color: var(--bg-dark);
-            border-color: var(--primary-gold);
-        }
-        
-        .item-action-btn.danger:hover {
-            background: #ef4444;
-            border-color: #ef4444;
-            color: white;
-        }
-        
-        /* Empty State */
-        .empty-gallery {
-            text-align: center;
-            padding: 80px 30px;
-            background: var(--bg-dark);
-            border-radius: var(--radius-xl);
-        }
-        
-        .empty-gallery i {
-            font-size: 5rem;
-            color: var(--primary-gold);
-            margin-bottom: 25px;
-            opacity: 0.5;
-        }
-        
-        .empty-gallery h3 {
-            color: var(--text-primary);
-            font-size: 1.5rem;
-            margin-bottom: 12px;
-        }
-        
-        .empty-gallery p {
-            color: var(--text-secondary);
-            max-width: 450px;
-            margin: 0 auto 25px;
-        }
-        
-        /* Lightbox Modal */
-        .lightbox-modal {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.95);
-            z-index: 9999;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-        
-        .lightbox-modal.show {
-            display: flex;
-        }
-        
-        .lightbox-content {
-            max-width: 90vw;
-            max-height: 90vh;
-            position: relative;
-        }
-        
-        .lightbox-image {
-            max-width: 100%;
-            max-height: 85vh;
-            object-fit: contain;
-            border-radius: var(--radius-lg);
-            animation: zoomIn 0.3s ease;
-        }
-        
-        .lightbox-close {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            width: 50px;
-            height: 50px;
-            background: rgba(255, 255, 255, 0.1);
-            border: none;
-            border-radius: 50%;
-            color: white;
-            font-size: 1.5rem;
-            cursor: pointer;
-            transition: var(--transition-fast);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .lightbox-close:hover {
-            background: #ef4444;
-            transform: rotate(90deg);
-        }
-        
-        .lightbox-nav {
-            position: fixed;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 55px;
-            height: 55px;
-            background: rgba(255, 255, 255, 0.1);
-            border: none;
-            border-radius: 50%;
-            color: white;
-            font-size: 1.3rem;
-            cursor: pointer;
-            transition: var(--transition-fast);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .lightbox-nav:hover {
-            background: var(--primary-gold);
-            color: var(--bg-dark);
-        }
-        
-        .lightbox-prev {
-            right: 20px;
-        }
-        
-        .lightbox-next {
-            left: 20px;
-        }
-        
-        .lightbox-info {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(10px);
-            padding: 15px 30px;
-            border-radius: var(--radius-lg);
-            color: white;
-            text-align: center;
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-        
-        .lightbox-info h4 {
-            margin: 0;
-            font-size: 1rem;
-        }
-        
-        .lightbox-info span {
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 0.85rem;
-        }
-        
-        .lightbox-actions {
-            display: flex;
-            gap: 10px;
-        }
-        
-        .lightbox-action-btn {
-            background: rgba(255, 255, 255, 0.15);
-            border: none;
-            color: white;
-            padding: 8px 14px;
-            border-radius: var(--radius-md);
-            cursor: pointer;
-            font-family: inherit;
-            font-size: 0.85rem;
-            transition: var(--transition-fast);
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        
-        .lightbox-action-btn:hover {
-            background: var(--primary-gold);
-            color: var(--bg-dark);
-        }
-        
-        .lightbox-action-btn.danger:hover {
-            background: #ef4444;
-        }
-        
-        /* Confirm Modal */
-        .confirm-modal {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(5px);
-            z-index: 10000;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-        
-        .confirm-modal.show {
-            display: flex;
-        }
-        
-        .confirm-dialog {
-            background: var(--bg-dark);
-            border-radius: var(--radius-xl);
-            padding: 35px;
-            max-width: 420px;
-            width: 100%;
-            text-align: center;
-            animation: slideIn 0.3s ease;
-        }
-        
-        .confirm-icon {
-            width: 70px;
-            height: 70px;
-            background: rgba(239, 68, 68, 0.15);
+        .upload-zone-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--gold), #d4a574);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             margin: 0 auto 20px;
             font-size: 2rem;
-            color: #ef4444;
+            color: white;
         }
         
-        .confirm-dialog h3 {
+        .upload-zone h3 {
             color: var(--text-primary);
-            margin-bottom: 12px;
-            font-size: 1.3rem;
+            margin-bottom: 10px;
+            font-size: 1.25rem;
         }
         
-        .confirm-dialog p {
+        .upload-zone p {
             color: var(--text-secondary);
-            margin-bottom: 25px;
-            line-height: 1.7;
-        }
-        
-        .confirm-buttons {
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-        }
-        
-        .btn-confirm {
-            padding: 12px 28px;
-            border-radius: var(--radius-md);
-            font-family: inherit;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition-fast);
-            border: none;
+            margin-bottom: 20px;
             font-size: 0.95rem;
         }
         
-        .btn-confirm-danger {
+        .upload-zone .browse-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 28px;
+            background: linear-gradient(135deg, var(--gold), #d4a574);
+            color: white;
+            border: none;
+            border-radius: var(--radius-lg);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .upload-zone .browse-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(212, 175, 55, 0.3);
+        }
+        
+        .upload-input {
+            display: none;
+        }
+        
+        /* Upload Progress */
+        .upload-progress-container {
+            display: none;
+            margin-bottom: 30px;
+        }
+        
+        .upload-progress-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 25px;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .progress-header h4 {
+            margin: 0;
+            color: var(--text-primary);
+        }
+        
+        .progress-percentage {
+            color: var(--gold);
+            font-weight: 700;
+        }
+        
+        .progress-bar-wrapper {
+            height: 10px;
+            background: var(--bg-light);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(135deg, var(--gold), #d4a574);
+            border-radius: 5px;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .progress-files {
+            margin-top: 15px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        
+        /* Gallery Grid */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .gallery-item {
+            background: white;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s ease;
+            position: relative;
+            group: true;
+        }
+        
+        .gallery-item:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .gallery-item-image {
+            position: relative;
+            aspect-ratio: 1;
+            overflow: hidden;
+            background: var(--bg-light);
+        }
+        
+        .gallery-item-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .gallery-item:hover .gallery-item-image img {
+            transform: scale(1.05);
+        }
+        
+        .gallery-item-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 50%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding: 15px;
+            gap: 8px;
+        }
+        
+        .gallery-item:hover .gallery-item-overlay {
+            opacity: 1;
+        }
+        
+        .overlay-btn {
+            width: 40px;
+            height: 40px;
+            background: white;
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--text-primary);
+        }
+        
+        .overlay-btn:hover {
+            background: var(--gold);
+            color: white;
+        }
+        
+        .overlay-btn.danger:hover {
             background: #ef4444;
             color: white;
         }
         
-        .btn-confirm-danger:hover {
-            background: #dc2626;
-            transform: translateY(-2px);
+        .gallery-item-info {
+            padding: 15px;
         }
         
-        .btn-confirm-cancel {
-            background: rgba(255, 255, 255, 0.1);
+        .gallery-item-name {
+            font-weight: 600;
             color: var(--text-primary);
+            margin-bottom: 5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         
-        .btn-confirm-cancel:hover {
-            background: rgba(255, 255, 255, 0.2);
+        .gallery-item-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        
+        .cover-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--gold);
+            color: white;
+            padding: 5px 12px;
+            border-radius: var(--radius-md);
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            z-index: 2;
+        }
+        
+        /* Empty State */
+        .empty-gallery {
+            text-align: center;
+            padding: 80px 30px;
+            background: white;
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .empty-gallery i {
+            font-size: 4rem;
+            color: var(--border-color);
+            margin-bottom: 20px;
+        }
+        
+        .empty-gallery h3 {
+            color: var(--text-primary);
+            margin-bottom: 10px;
+        }
+        
+        .empty-gallery p {
+            color: var(--text-secondary);
+            margin-bottom: 25px;
+        }
+        
+        /* Image Modal */
+        .image-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.9);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .image-modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            max-width: 90vw;
+            max-height: 90vh;
+            position: relative;
+        }
+        
+        .modal-content img {
+            max-width: 100%;
+            max-height: 85vh;
+            object-fit: contain;
+            border-radius: var(--radius-lg);
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: -45px;
+            left: 0;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        .modal-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 1.25rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .modal-nav:hover {
+            background: var(--gold);
+        }
+        
+        .modal-nav.prev {
+            right: -70px;
+        }
+        
+        .modal-nav.next {
+            left: -70px;
+        }
+        
+        /* Gallery Stats Bar */
+        .gallery-stats {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+        
+        .stat-chip {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            background: white;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            font-size: 0.95rem;
+        }
+        
+        .stat-chip i {
+            color: var(--gold);
+        }
+        
+        .stat-chip strong {
+            color: var(--text-primary);
         }
         
         /* Loading Skeleton */
         .gallery-skeleton {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 20px;
-        }
-        
-        .skeleton-item {
-            background: var(--bg-dark);
+            background: linear-gradient(90deg, var(--bg-light) 25%, #f0f0f0 50%, var(--bg-light) 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
             border-radius: var(--radius-lg);
-            overflow: hidden;
-        }
-        
-        .skeleton-image {
             aspect-ratio: 1;
-            background: linear-gradient(90deg, 
-                rgba(255, 255, 255, 0.05) 25%, 
-                rgba(255, 255, 255, 0.1) 50%, 
-                rgba(255, 255, 255, 0.05) 75%);
-            background-size: 200% 100%;
-            animation: shimmer 1.5s infinite;
-        }
-        
-        .skeleton-content {
-            padding: 15px;
-        }
-        
-        .skeleton-line {
-            height: 14px;
-            background: linear-gradient(90deg, 
-                rgba(255, 255, 255, 0.05) 25%, 
-                rgba(255, 255, 255, 0.1) 50%, 
-                rgba(255, 255, 255, 0.05) 75%);
-            background-size: 200% 100%;
-            animation: shimmer 1.5s infinite;
-            border-radius: 4px;
-            margin-bottom: 8px;
-        }
-        
-        .skeleton-line.short {
-            width: 60%;
         }
         
         @keyframes shimmer {
@@ -992,240 +448,91 @@
             100% { background-position: -200% 0; }
         }
         
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        @keyframes zoomIn {
-            from {
-                opacity: 0;
-                transform: scale(0.9);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-        
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: scale(0.95) translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1) translateY(0);
-            }
-        }
-        
-        /* Responsive Adjustments */
+        /* Responsive */
         @media (max-width: 768px) {
-            .page-header {
-                padding: 20px;
-                flex-direction: column;
-                align-items: stretch;
-            }
-            
-            .page-header h1 {
-                font-size: 1.4rem;
-            }
-            
-            .storage-info {
-                min-width: auto;
-            }
-            
-            .gallery-toolbar {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            
-            .toolbar-left,
-            .toolbar-right {
-                justify-content: space-between;
-            }
-            
-            .search-box input {
-                min-width: auto;
-                flex: 1;
-            }
-            
-            .upload-area {
-                padding: 35px 20px;
-            }
-            
-            .upload-icon {
-                font-size: 2.5rem;
-            }
-            
             .gallery-grid {
-                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-                gap: 12px;
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 15px;
             }
             
-            .bulk-actions {
-                flex-wrap: wrap;
+            .upload-zone {
+                padding: 30px 20px;
             }
             
-            .lightbox-info {
-                flex-direction: column;
-                gap: 12px;
-                width: calc(100% - 40px);
-            }
-            
-            .lightbox-nav {
-                width: 45px;
-                height: 45px;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .gallery-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 10px;
-            }
-            
-            .view-toggle {
-                display: none;
-            }
+            .modal-nav.prev { right: 10px; }
+            .modal-nav.next { left: 10px; }
         }
     </style>
 </head>
 <body class="dashboard-body">
     <!-- Dashboard Container -->
     <div class="dashboard-container">
-        <!-- Sidebar -->
+        <!-- Sidebar (loaded by sidebar.js) -->
         <aside class="sidebar" id="sidebar"></aside>
         
         <!-- Main Content -->
         <main class="main-content">
             <!-- Mobile Header -->
-            <header class="mobile-header">
-                <button id="mobileSidebarBtn" class="mobile-menu-btn">
-                    <i class="fas fa-bars"></i>
-                </button>
-                <h1>معرض الصور</h1>
-                <div class="mobile-header-spacer"></div>
-            </header>
+            <button class="mobile-menu-btn" id="mobileSidebarBtn">
+                <i class="fas fa-bars"></i>
+            </button>
             
             <!-- Page Header -->
-            <section class="page-header" data-aos="fade-down">
+            <div class="page-header">
                 <h1>
                     <i class="fas fa-images"></i>
                     معرض الصور
                 </h1>
-                
                 <div class="header-actions">
-                    <!-- Storage Usage -->
-                    <div class="storage-info">
-                        <div class="storage-label">
-                            <span><i class="fas fa-cloud"></i> مساحة التخزين</span>
-                            <span id="storageUsed">0 MB / 500 MB</span>
-                        </div>
-                        <div class="storage-bar">
-                            <div class="storage-fill" id="storageFill" style="width: 0%"></div>
-                        </div>
-                        <div class="storage-details">
-                            <span id="imageCount">0 صورة</span> • متاح <span id="storageAvailable">500 MB</span>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            
-            <!-- Bulk Actions Bar -->
-            <div class="bulk-actions" id="bulkActions">
-                <span class="bulk-count"><i class="fas fa-check-circle"></i> تم تحديد <span id="selectedCount">0</span></span>
-                <button class="btn-bulk" onclick="setSelectedAsCover()">
-                    <i class="fas fa-star"></i> تعيين كغلاف
-                </button>
-                <button class="btn-bulk danger" onclick="deleteSelected()">
-                    <i class="fas fa-trash-alt"></i> حذف المحدد
-                </button>
-                <button class="btn-bulk" onclick="clearSelection()">
-                    <i class="fas fa-times"></i> إلغاء التحديد
-                </button>
-            </div>
-            
-            <!-- Toolbar -->
-            <div class="gallery-toolbar" data-aos="fade-up">
-                <div class="toolbar-left">
-                    <!-- Search -->
-                    <div class="search-box">
-                        <input type="text" id="searchInput" placeholder="بحث في الصور...">
-                        <i class="fas fa-search"></i>
-                    </div>
-                    
-                    <!-- Sort -->
-                    <div class="sort-dropdown">
-                        <select id="sortSelect">
-                            <option value="newest">الأحدث أولاً</option>
-                            <option value="oldest">الأقدم أولاً</option>
-                            <option value="name-asc">الاسم (أ-ي)</option>
-                            <option value="name-desc">الاسم (ي-أ)</option>
-                            <option value="size-desc">الحجم (الأكبر)</option>
-                            <option value="size-asc">الحجم (الأصغر)</option>
-                        </select>
-                    </div>
-                </div>
-                
-                <div class="toolbar-right">
-                    <!-- Select All -->
-                    <button class="btn-bulk" id="selectAllBtn" onclick="toggleSelectAll()">
-                        <i class="fas fa-check-double"></i> تحديد الكل
+                    <button class="btn btn-outline" onclick="selectAllImages()">
+                        <i class="fas fa-check-double"></i>
+                        تحديد الكل
                     </button>
-                    
-                    <!-- View Toggle -->
-                    <div class="view-toggle">
-                        <button class="active" data-view="grid" onclick="setView('grid')">
-                            <i class="fas fa-th-large"></i>
-                        </button>
-                        <button data-view="list" onclick="setView('list')">
-                            <i class="fas fa-list"></i>
-                        </button>
-                    </div>
+                    <button class="btn btn-primary" onclick="document.getElementById('fileInput').click()">
+                        <i class="fas fa-plus"></i>
+                        رفع صورة
+                    </button>
                 </div>
             </div>
             
-            <!-- Upload Area -->
-            <div class="upload-area" id="uploadArea" data-aos="fade-up" data-aos-delay="100">
-                <input type="file" id="fileInput" multiple accept="image/*">
-                <div class="upload-icon">
+            <!-- Gallery Stats -->
+            <div class="gallery-stats" id="galleryStats">
+                <div class="stat-chip">
+                    <i class="fas fa-image"></i>
+                    <span>إجمالي الصور: <strong id="totalImages">0</strong></span>
+                </div>
+                <div class="stat-chip">
+                    <i class="fas fa-hdd"></i>
+                    <span>المساحة المستخدمة: <strong id="storageUsed">0 MB</strong></span>
+                </div>
+            </div>
+            
+            <!-- Upload Zone -->
+            <div class="upload-zone" id="uploadZone">
+                <div class="upload-zone-icon">
                     <i class="fas fa-cloud-upload-alt"></i>
                 </div>
-                <div class="upload-text">
-                    <h3>اسحب الصور هنا للرفع</h3>
-                    <p>أو انقر لاختيار الملفات من جهازك</p>
-                    <button class="upload-btn" onclick="document.getElementById('fileInput').click()">
-                        <i class="fas fa-plus"></i>
-                        اختر الصور
-                    </button>
-                </div>
-                <div class="upload-hint">
-                    <span><i class="fas fa-image"></i> صيغ مدعومة: JPG, PNG, GIF, WEBP</span>
-                    <span><i class="fas fa-hdd"></i> الحد الأقصى: 5 ميجابايت لكل صورة</span>
-                </div>
+                <h3>اسحب وأفلت الصور هنا</h3>
+                <p>أو اختر ملفات من جهازك (PNG, JPG, WEBP - حد أقصى 10MB لكل صورة)</p>
+                <button type="button" class="browse-btn" onclick="document.getElementById('fileInput').click()">
+                    <i class="fas fa-folder-open"></i>
+                    استعراض الملفات
+                </button>
+                <input type="file" id="fileInput" class="upload-input" multiple accept="image/*">
             </div>
             
             <!-- Upload Progress -->
             <div class="upload-progress-container" id="uploadProgressContainer">
-                <!-- Progress items will be added here dynamically -->
+                <div class="upload-progress-card">
+                    <div class="progress-header">
+                        <h4><i class="fas fa-spinner fa-spin"></i> جاري رفع الصور...</h4>
+                        <span class="progress-percentage" id="progressPercentage">0%</span>
+                    </div>
+                    <div class="progress-bar-wrapper">
+                        <div class="progress-bar" id="progressBar"></div>
+                    </div>
+                    <div class="progress-files" id="progressFiles"></div>
+                </div>
             </div>
             
             <!-- Gallery Grid -->
@@ -1233,340 +540,260 @@
                 <!-- Images will be loaded here -->
             </div>
             
-            <!-- Empty State (shown when no images) -->
+            <!-- Empty State -->
             <div class="empty-gallery" id="emptyGallery" style="display: none;">
                 <i class="fas fa-images"></i>
                 <h3>لا توجد صور بعد</h3>
-                <p>ابدأ برفع صور لحفلات الزفاف الخاصة بك. يمكنك استخدام هذه الصور في دعواتك وتخصيص التصميم.</p>
-                <button class="upload-btn" onclick="document.getElementById('fileInput').click()">
-                    <i class="fas fa-upload"></i>
+                <p>ابدأ برفع صورك لتظهر هنا في المعرض</p>
+                <button class="btn btn-primary" onclick="document.getElementById('fileInput').click()">
+                    <i class="fas fa-plus"></i>
                     رفع أول صورة
                 </button>
-            </div>
-            
-            <!-- Loading Skeleton -->
-            <div class="gallery-skeleton" id="loadingSkeleton">
-                <div class="skeleton-item"><div class="skeleton-image"></div></div>
-                <div class="skeleton-item"><div class="skeleton-image"></div></div>
-                <div class="skeleton-item"><div class="skeleton-image"></div></div>
-                <div class="skeleton-item"><div class="skeleton-image"></div></div>
-                <div class="skeleton-item"><div class="skeleton-image"></div></div>
-                <div class="skeleton-item"><div class="skeleton-image"></div></div>
             </div>
         </main>
     </div>
     
-    <!-- Lightbox Modal -->
-    <div class="lightbox-modal" id="lightboxModal">
-        <button class="lightbox-close" onclick="closeLightbox()">
-            <i class="fas fa-times"></i>
-        </button>
-        <button class="lightbox-nav lightbox-prev" onclick="navigateLightbox(-1)">
-            <i class="fas fa-chevron-right"></i>
-        </button>
-        <button class="lightbox-nav lightbox-next" onclick="navigateLightbox(1)">
-            <i class="fas fa-chevron-left"></i>
-        </button>
-        
-        <div class="lightbox-content">
-            <img src="" alt="" class="lightbox-image" id="lightboxImage">
-        </div>
-        
-        <div class="lightbox-info">
-            <div>
-                <h4 id="lightboxTitle">اسم الصورة</h4>
-                <span id="lightboxMeta">2000 × 1500 • 2.5 MB</span>
-            </div>
-            <div class="lightbox-actions">
-                <button class="lightbox-action-btn" onclick="downloadCurrentImage()">
-                    <i class="fas fa-download"></i> تحميل
-                </button>
-                <button class="lightbox-action-btn" onclick="setAsCoverFromLightbox()">
-                    <i class="fas fa-star"></i> غلاف
-                </button>
-                <button class="lightbox-action-btn danger" onclick="deleteFromLightbox()">
-                    <i class="fas fa-trash"></i> حذف
-                </button>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Confirm Delete Modal -->
-    <div class="confirm-modal" id="confirmModal">
-        <div class="confirm-dialog">
-            <div class="confirm-icon">
-                <i class="fas fa-exclamation-triangle"></i>
-            </div>
-            <h3>تأكيد الحذف</h3>
-            <p id="confirmMessage">هل أنت متأكد من حذف هذه الصورة؟ لا يمكن التراجع عن هذا الإجراء.</p>
-            <div class="confirm-buttons">
-                <button class="btn-confirm btn-confirm-danger" id="confirmDeleteBtn">نعم، احذف</button>
-                <button class="btn-confirm btn-confirm-cancel" onclick="closeConfirmModal()">إلغاء</button>
-            </div>
+    <!-- Image Preview Modal -->
+    <div class="image-modal" id="imageModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeImageModal()">
+                <i class="fas fa-times"></i>
+            </button>
+            <img id="modalImage" src="" alt="Preview">
+            <button class="modal-nav prev" onclick="navigateModal(-1)">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+            <button class="modal-nav next" onclick="navigateModal(1)">
+                <i class="fas fa-chevron-left"></i>
+            </button>
         </div>
     </div>
 
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
-    
-    <!-- AOS Animation Library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
-    
-    <!-- App Scripts -->
+    <!-- Scripts -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="js/firebase-config.js"></script>
     <script src="js/db.js"></script>
     <script src="js/sidebar.js"></script>
     
-    <!-- Gallery Script -->
     <script>
         // ===================================
-        // Gallery State Management
+        // Gallery Module - Global Variables
         // ===================================
-        const GalleryState = {
-            images: [],
-            filteredImages: [],
-            selectedImages: new Set(),
-            currentView: 'grid',
-            currentSort: 'newest',
-            currentLightboxIndex: 0,
-            isAllSelected: false,
-            storageUsed: 0,
-            storageLimit: 500 * 1024 * 1024, // 500MB in bytes
-            coverImageId: null,
-            invitationId: null
-        };
+        let galleryImages = [];
+        let currentModalIndex = 0;
+        let selectedImages = new Set();
+        const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+        const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
         
         // ===================================
         // Initialize Gallery
         // ===================================
         document.addEventListener('DOMContentLoaded', function() {
-            initAOS();
-            initUploadArea();
-            initEventListeners();
+            initUploadZone();
             loadGalleryImages();
+            AOS.init({ duration: 600, once: true });
         });
         
-        function initAOS() {
-            AOS.init({
-                duration: 600,
-                easing: 'ease-out-cubic',
-                once: true,
-                offset: 50
-            });
-        }
-        
         // ===================================
-        // Upload Area Functionality
+        // Upload Zone & Drag & Drop
         // ===================================
-        function initUploadArea() {
-            const uploadArea = document.getElementById('uploadArea');
+        function initUploadZone() {
+            const uploadZone = document.getElementById('uploadZone');
             const fileInput = document.getElementById('fileInput');
             
-            // Drag and drop events
-            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-                uploadArea.addEventListener(eventName, preventDefaults, false);
-            });
-            
-            function preventDefaults(e) {
-                e.preventDefault();
-                e.stopPropagation();
-            }
-            
-            ['dragenter', 'dragover'].forEach(eventName => {
-                uploadArea.addEventListener(eventName, () => {
-                    uploadArea.classList.add('dragover');
-                }, false);
-            });
-            
-            ['dragleave', 'drop'].forEach(eventName => {
-                uploadArea.addEventListener(eventName, () => {
-                    uploadArea.classList.remove('dragover');
-                }, false);
-            });
-            
-            uploadArea.addEventListener('drop', handleDrop, false);
-            uploadArea.addEventListener('click', (e) => {
-                if (e.target === uploadArea || e.target.closest('.upload-text') || e.target.closest('.upload-icon') || e.target.closest('.upload-hint')) {
+            // Click to upload
+            uploadZone.addEventListener('click', function(e) {
+                if (e.target.tagName !== 'BUTTON') {
                     fileInput.click();
                 }
             });
             
-            fileInput.addEventListener('change', handleFileSelect);
-        }
-        
-        function handleDrop(e) {
-            const files = e.dataTransfer.files;
-            handleFiles(files);
-        }
-        
-        function handleFileSelect(e) {
-            const files = e.target.files;
-            handleFiles(files);
-            e.target.value = ''; // Reset input
-        }
-        
-        function handleFiles(files) {
-            // Validate files
-            const validFiles = [];
-            const errors = [];
-            
-            Array.from(files).forEach(file => {
-                // Check file type
-                if (!file.type.startsWith('image/')) {
-                    errors.push(`"${file.name}" ليس ملف صورة`);
-                    return;
-                }
-                
-                // Check file size (max 5MB)
-                if (file.size > 5 * 1024 * 1024) {
-                    errors.push(`"${file.name}" يتجاوز الحد المسموح (5 ميجابايت)`);
-                    return;
-                }
-                
-                validFiles.push(file);
+            // File input change
+            fileInput.addEventListener('change', function(e) {
+                handleFiles(e.target.files);
+                this.value = ''; // Reset input
             });
             
-            // Show validation errors
-            if (errors.length > 0) {
-                db.showNotification(errors.join('<br>'), 'error');
-            }
+            // Drag events
+            uploadZone.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                this.classList.add('dragover');
+            });
             
-            if (validFiles.length > 0) {
-                uploadFiles(validFiles);
-            }
+            uploadZone.addEventListener('dragleave', function(e) {
+                e.preventDefault();
+                this.classList.remove('dragover');
+            });
+            
+            uploadZone.addEventListener('drop', function(e) {
+                e.preventDefault();
+                this.classList.remove('dragover');
+                handleFiles(e.dataTransfer.files);
+            });
         }
         
-        async function uploadFiles(files) {
-            const progressContainer = document.getElementById('uploadProgressContainer');
-            progressContainer.classList.add('show');
+        // ===================================
+        // Handle File Upload
+        // ===================================
+        async function handleFiles(files) {
+            if (!files || files.length === 0) return;
+            if (!window.currentUserId) {
+                window.db.showNotification('يجب تسجيل الدخول أولاً', 'error');
+                return;
+            }
             
-            const total = files.length;
+            // Validate files
+            const validFiles = Array.from(files).filter(file => {
+                if (!ALLOWED_TYPES.includes(file.type)) {
+                    window.db.showNotification(`نوع الملف غير مدعوم: ${file.name}`, 'error');
+                    return false;
+                }
+                if (file.size > MAX_FILE_SIZE) {
+                    window.db.showNotification(`حجم الملف كبير جداً: ${file.name} (الحد الأقصى 10MB)`, 'error');
+                    return false;
+                }
+                return true;
+            });
             
-            for (let i = 0; i < files.length; i++) {
-                const file = files[i];
-                const progressItem = createProgressItem(file);
-                progressContainer.appendChild(progressItem);
+            if (validFiles.length === 0) return;
+            
+            // Show progress
+            showUploadProgress(validFiles.length);
+            
+            // Upload files
+            let successCount = 0;
+            for (let i = 0; i < validFiles.length; i++) {
+                updateProgress(i, validFiles.length, validFiles[i].name);
                 
                 try {
-                    // Simulate progress
-                    simulateProgress(progressItem, file);
-                    
-                    // Upload to R2
-                    const result = await db.uploadToR2(file, 'image');
+                    const result = await window.db.uploadToR2(validFiles[i], 'image');
                     
                     if (result.success) {
-                        updateProgressComplete(progressItem, true);
-                        
-                        // Add to gallery state
-                        const imageData = {
-                            id: generateUniqueId(),
+                        // Save to Firebase
+                        await saveImageToFirebase({
                             url: result.url,
                             key: result.key,
-                            name: file.name,
-                            size: file.size,
-                            type: file.type,
-                            uploadedAt: Date.now(),
-                            isCover: false
-                        };
-                        
-                        GalleryState.images.unshift(imageData);
-                        saveImagesToStorage();
-                        renderGallery();
-                        updateStorageInfo();
-                        
+                            name: validFiles[i].name,
+                            size: validFiles[i].size,
+                            type: validFiles[i].type,
+                            uploadedAt: Date.now()
+                        });
+                        successCount++;
                     } else {
-                        updateProgressComplete(progressItem, false, result.error);
+                        console.error('Upload failed:', result.error);
                     }
-                    
                 } catch (error) {
-                    updateProgressComplete(progressItem, false, error.message);
+                    console.error('Error uploading file:', error);
                 }
+                
+                await new Promise(resolve => setTimeout(resolve, 300)); // Small delay
             }
             
-            db.showNotification(`تم رفع ${files.length} صورة بنجاح`, 'success');
-        }
-        
-        function createProgressItem(file) {
-            const item = document.createElement('div');
-            item.className = 'progress-item';
-            item.id = `progress-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-            item.innerHTML = `
-                <div class="progress-file-icon">
-                    <i class="fas fa-image"></i>
-                </div>
-                <div class="progress-info">
-                    <div class="progress-filename">${file.name}</div>
-                    <div class="progress-bar-container">
-                        <div class="progress-bar-fill"></div>
-                    </div>
-                    <div class="progress-status">جاري الرفع...</div>
-                </div>
-                <div class="progress-percent">0%</div>
-            `;
-            return item;
-        }
-        
-        function simulateProgress(item, file) {
-            const fill = item.querySelector('.progress-bar-fill');
-            const percent = item.querySelector('.progress-percent');
-            let progress = 0;
+            // Hide progress and reload
+            hideUploadProgress();
+            await loadGalleryImages();
             
-            const interval = setInterval(() => {
-                if (progress < 90) {
-                    progress += Math.random() * 15;
-                    if (progress > 90) progress = 90;
-                    fill.style.width = `${progress}%`;
-                    percent.textContent = `${Math.round(progress)}%`;
-                }
-            }, 200);
-            
-            item.dataset.interval = interval;
-        }
-        
-        function updateProgressItem(item, success, error = null) {
-            clearInterval(parseInt(item.dataset.interval));
-            
-            const fill = item.querySelector('.progress-bar-fill');
-            const percent = item.querySelector('.progress-percent');
-            const status = item.querySelector('.progress-status');
-            const icon = item.querySelector('.progress-file-icon');
-            
-            if (success) {
-                fill.style.width = '100%';
-                fill.classList.add('complete');
-                percent.textContent = '100%';
-                status.textContent = 'تم الرفع بنجاح ✓';
-                status.className = 'progress-status success';
-                icon.innerHTML = '<i class="fas fa-check"></i>';
-                icon.classList.add('success');
-            } else {
-                fill.style.width = '100%';
-                fill.style.background = '#ef4444';
-                percent.textContent = 'خطأ';
-                status.textContent = error || 'فشل الرفع';
-                status.className = 'progress-status error';
-                icon.innerHTML = '<i class="fas fa-times"></i>';
-                icon.classList.add('error');
+            if (successCount > 0) {
+                window.db.showNotification(`تم رفع ${successCount} صورة بنجاح`, 'success');
             }
         }
         
         // ===================================
-        // Gallery Rendering
+        // Upload Progress UI
         // ===================================
-        function renderGallery() {
+        function showUploadProgress(totalFiles) {
+            const container = document.getElementById('uploadProgressContainer');
+            container.style.display = 'block';
+            document.getElementById('uploadZone').style.display = 'none';
+        }
+        
+        function updateProgress(current, total, fileName) {
+            const percentage = Math.round((current / total) * 100);
+            document.getElementById('progressBar').style.width = percentage + '%';
+            document.getElementById('progressPercentage').textContent = percentage + '%';
+            document.getElementById('progressFiles').textContent = `جاري رفع: ${fileName} (${current}/${total})`;
+        }
+        
+        function hideUploadProgress() {
+            const container = document.getElementById('uploadProgressContainer');
+            container.style.display = 'none';
+            document.getElementById('uploadZone').style.display = 'block';
+            document.getElementById('progressBar').style.width = '0%';
+        }
+        
+        // ===================================
+        // Save Image to Firebase
+        // ===================================
+        async function saveImageToFirebase(imageData) {
+            if (!window.currentUserId) return;
+            
+            try {
+                const imageRef = window.firebaseDb.ref(`users/${window.currentUserId}/gallery`).push();
+                await imageRef.set({
+                    ...imageData,
+                    isCover: false
+                });
+                return imageRef.key;
+            } catch (error) {
+                console.error('Error saving image:', error);
+                throw error;
+            }
+        }
+        
+        // ===================================
+        // Load Gallery Images from Firebase
+        // ===================================
+        async function loadGalleryImages() {
             const grid = document.getElementById('galleryGrid');
             const emptyState = document.getElementById('emptyGallery');
-            const skeleton = document.getElementById('loadingSkeleton');
             
-            // Hide loading skeleton
-            skeleton.style.display = 'none';
+            if (!window.currentUserId) {
+                showEmptyState();
+                return;
+            }
             
-            // Apply filters and sorting
-            applyFiltersAndSort();
+            try {
+                // Show loading skeleton
+                grid.innerHTML = Array(6).fill('').map(() => `
+                    <div class="gallery-item">
+                        <div class="gallery-skeleton"></div>
+                    </div>
+                `).join('');
+                
+                const snapshot = await window.rtdbOnce(`users/${window.currentUserId}/gallery`);
+                
+                if (snapshot) {
+                    galleryImages = Object.keys(snapshot).map(key => ({
+                        id: key,
+                        ...snapshot[key]
+                    }));
+                    
+                    updateStats(galleryImages);
+                    
+                    if (galleryImages.length === 0) {
+                        showEmptyState();
+                    } else {
+                        renderGallery(galleryImages);
+                    }
+                } else {
+                    galleryImages = [];
+                    showEmptyState();
+                }
+            } catch (error) {
+                console.error('Error loading gallery:', error);
+                window.db.showNotification('حدث خطأ في تحميل الصور', 'error');
+                showEmptyState();
+            }
+        }
+        
+        // ===================================
+        // Render Gallery Grid
+        // ===================================
+        function renderGallery(images) {
+            const grid = document.getElementById('galleryGrid');
+            const emptyState = document.getElementById('emptyGallery');
             
-            if (GalleryState.filteredImages.length === 0 && GalleryState.images.length === 0) {
+            if (images.length === 0) {
                 grid.innerHTML = '';
                 emptyState.style.display = 'block';
                 return;
@@ -1574,506 +801,182 @@
             
             emptyState.style.display = 'none';
             
-            grid.innerHTML = GalleryState.filteredImages.map((image, index) => `
-                <div class="gallery-item ${GalleryState.selectedImages.has(image.id) ? 'selected' : ''}" 
-                     data-id="${image.id}"
-                     style="animation-delay: ${index * 0.05}s"
-                     data-aos="fade-up"
-                     data-aos-delay="${Math.min(index * 50, 300)}">
-                    <div class="gallery-image-wrapper" onclick="openLightbox(${GalleryState.filteredImages.indexOf(image)})">
-                        ${image.isCover ? '<div class="cover-badge"><i class="fas fa-star"></i> صورة الغلاف</div>' : ''}
-                        <div class="image-checkbox ${GalleryState.selectedImages.has(image.id) ? 'checked' : ''}" 
-                             onclick="event.stopPropagation(); toggleImageSelection('${image.id}')">
-                            <i class="fas fa-check"></i>
-                        </div>
-                        <img src="${image.url}" alt="${image.name}" class="gallery-image" loading="lazy">
-                        <div class="image-overlay">
-                            <div class="overlay-actions">
-                                <button class="overlay-btn" onclick="event.stopPropagation(); downloadImage('${image.id}')" title="تحميل">
-                                    <i class="fas fa-download"></i>
-                                </button>
-                                <button class="overlay-btn" onclick="event.stopPropagation(); setAsCover('${image.id}')" title="تعيين كغلاف">
-                                    <i class="fas fa-star"></i>
-                                </button>
-                                <button class="overlay-btn delete" onclick="event.stopPropagation(); confirmDelete('${image.id}')" title="حذف">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </div>
-                            <div class="image-name">${image.name}</div>
-                            <div class="image-meta">
-                                <span>${formatFileSize(image.size)}</span>
-                                <span>${formatDateAr(image.uploadedAt)}</span>
-                            </div>
+            grid.innerHTML = images.map((img, index) => `
+                <div class="gallery-item" data-id="${img.id}" data-aos="fade-up" data-aos-delay="${index * 50}">
+                    ${img.isCover ? '<div class="cover-badge"><i class="fas fa-star"></i> الغلاف</div>' : ''}
+                    <div class="gallery-item-image">
+                        <img src="${img.url}" alt="${img.name}" loading="lazy" 
+                             onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect fill=%22%23f0f0f0%22 width=%22100%22 height=%22100%22/><text x=%2250%22 y=%2250%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23999%22 font-size=%2212%22>No Image</text></svg>'">
+                        <div class="gallery-item-overlay">
+                            <button class="overlay-btn" onclick="previewImage(${index})" title="عرض">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="overlay-btn" onclick="setAsCover('${img.id}')" title="تعيين كغلاف">
+                                <i class="fas fa-star"></i>
+                            </button>
+                            <button class="overlay-btn" onclick="downloadImage('${img.url}', '${img.name}')" title="تحميل">
+                                <i class="fas fa-download"></i>
+                            </button>
+                            <button class="overlay-btn danger" onclick="deleteImage('${img.id}', '${img.key}')" title="حذف">
+                                <i class="fas fa-trash"></i>
+                            </button>
                         </div>
                     </div>
-                    <div class="gallery-item-content">
-                        <div class="item-title">${image.name}</div>
-                        <div class="item-meta">
-                            <span><i class="fas fa-ruler-combined"></i> ${formatFileSize(image.size)}</span>
-                            <span><i class="fas fa-calendar"></i> ${formatDateAr(image.uploadedAt)}</span>
-                        </div>
-                        <div class="item-actions">
-                            <button class="item-action-btn" onclick="downloadImage('${image.id}')">
-                                <i class="fas fa-download"></i> تحميل
-                            </button>
-                            <button class="item-action-btn" onclick="setAsCover('${image.id}')">
-                                <i class="fas fa-star"></i> غلاف
-                            </button>
-                            <button class="item-action-btn danger" onclick="confirmDelete('${image.id}')">
-                                <i class="fas fa-trash"></i> حذف
-                            </button>
+                    <div class="gallery-item-info">
+                        <div class="gallery-item-name">${img.name}</div>
+                        <div class="gallery-item-meta">
+                            <span>${formatFileSize(img.size)}</span>
+                            <span>${formatDate(img.uploadedAt)}</span>
                         </div>
                     </div>
                 </div>
             `).join('');
             
             // Refresh AOS
-            setTimeout(() => AOS.refresh(), 100);
+            AOS.refresh();
         }
-        
-        function applyFiltersAndSort() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            
-            // Filter
-            GalleryState.filteredImages = GalleryState.images.filter(image => {
-                return image.name.toLowerCase().includes(searchTerm);
-            });
-            
-            // Sort
-            switch (GalleryState.currentSort) {
-                case 'newest':
-                    GalleryState.filteredImages.sort((a, b) => b.uploadedAt - a.uploadedAt);
-                    break;
-                case 'oldest':
-                    GalleryState.filteredImages.sort((a, b) => a.uploadedAt - b.uploadedAt);
-                    break;
-                case 'name-asc':
-                    GalleryState.filteredImages.sort((a, b) => a.name.localeCompare(b.name, 'ar'));
-                    break;
-                case 'name-desc':
-                    GalleryState.filteredImages.sort((a, b) => b.name.localeCompare(a.name, 'ar'));
-                    break;
-                case 'size-desc':
-                    GalleryState.filteredImages.sort((a, b) => b.size - a.size);
-                    break;
-                case 'size-asc':
-                    GalleryState.filteredImages.sort((a, b) => a.size - b.size);
-                    break;
-            }
-        }
-        
-        // ===================================
-        // Event Listeners
-        // ===================================
-        function initEventListeners() {
-            // Search
-            document.getElementById('searchInput').addEventListener('input', debounce(renderGallery, 300));
-            
-            // Sort
-            document.getElementById('sortSelect').addEventListener('change', (e) => {
-                GalleryState.currentSort = e.target.value;
-                renderGallery();
-            });
-        }
-        
-        // ===================================
-        // Selection Management
-        // ===================================
-        function toggleImageSelection(imageId) {
-            if (GalleryState.selectedImages.has(imageId)) {
-                GalleryState.selectedImages.delete(imageId);
-            } else {
-                GalleryState.selectedImages.add(imageId);
-            }
-            
-            updateSelectionUI();
-        }
-        
-        function toggleSelectAll() {
-            if (GalleryState.isAllSelected) {
-                GalleryState.selectedImages.clear();
-                GalleryState.isAllSelected = false;
-            } else {
-                GalleryState.filteredImages.forEach(img => GalleryState.selectedImages.add(img.id));
-                GalleryState.isAllSelected = true;
-            }
-            
-            updateSelectionUI();
-            renderGallery();
-        }
-        
-        function clearSelection() {
-            GalleryState.selectedImages.clear();
-            GalleryState.isAllSelected = false;
-            updateSelectionUI();
-            renderGallery();
-        }
-        
-        function updateSelectionUI() {
-            const bulkActions = document.getElementById('bulkActions');
-            const selectedCount = document.getElementById('selectedCount');
-            const selectAllBtn = document.getElementById('selectAllBtn');
-            
-            selectedCount.textContent = GalleryState.selectedImages.size;
-            
-            if (GalleryState.selectedImages.size > 0) {
-                bulkActions.classList.add('show');
-            } else {
-                bulkActions.classList.remove('show');
-            }
-            
-            selectAllBtn.innerHTML = GalleryState.isAllSelected ? 
-                '<i class="fas fa-times"></i> إلغاء الكل' : 
-                '<i class="fas fa-check-double"></i> تحديد الكل';
-            
-            // Update checkbox states in DOM
-            document.querySelectorAll('.image-checkbox').forEach(cb => {
-                const itemId = cb.closest('.gallery-item').dataset.id;
-                if (GalleryState.selectedImages.has(itemId)) {
-                    cb.classList.add('checked');
-                } else {
-                    cb.classList.remove('checked');
-                }
-            });
-            
-            document.querySelectorAll('.gallery-item').forEach(item => {
-                if (GalleryState.selectedImages.has(item.dataset.id)) {
-                    item.classList.add('selected');
-                } else {
-                    item.classList.remove('selected');
-                }
-            });
-        }
-        
-        // ===================================
-        // View Toggle
-        // ===================================
-        function setView(view) {
-            GalleryState.currentView = view;
-            
-            const grid = document.getElementById('galleryGrid');
-            const buttons = document.querySelectorAll('.view-toggle button');
-            
-            buttons.forEach(btn => {
-                btn.classList.toggle('active', btn.dataset.view === view);
-            });
-            
-            if (view === 'list') {
-                grid.classList.add('list-view');
-            } else {
-                grid.classList.remove('list-view');
-            }
-        }
-        
-        // ===================================
-        // Lightbox Functions
-        // ===================================
-        function openLightbox(index) {
-            GalleryState.currentLightboxIndex = index;
-            const image = GalleryState.filteredImages[index];
-            
-            if (!image) return;
-            
-            const modal = document.getElementById('lightboxModal');
-            const lightboxImage = document.getElementById('lightboxImage');
-            const lightboxTitle = document.getElementById('lightboxTitle');
-            const lightboxMeta = document.getElementById('lightboxMeta');
-            
-            lightboxImage.src = image.url;
-            lightboxImage.alt = image.name;
-            lightboxTitle.textContent = image.name;
-            lightboxMeta.textContent = `${formatFileSize(image.size)} • ${formatDateAr(image.uploadedAt)}`;
-            
-            modal.classList.add('show');
-            document.body.style.overflow = 'hidden';
-        }
-        
-        function closeLightbox() {
-            const modal = document.getElementById('lightboxModal');
-            modal.classList.remove('show');
-            document.body.style.overflow = '';
-        }
-        
-        function navigateLightbox(direction) {
-            const newIndex = GalleryState.currentLightboxIndex + direction;
-            
-            if (newIndex >= 0 && newIndex < GalleryState.filteredImages.length) {
-                openLightbox(newIndex);
-            }
-        }
-        
-        function getCurrentLightboxImage() {
-            return GalleryState.filteredImages[GalleryState.currentLightboxIndex];
-        }
-        
-        // Keyboard navigation for lightbox
-        document.addEventListener('keydown', (e) => {
-            const modal = document.getElementById('lightboxModal');
-            if (!modal.classList.contains('show')) return;
-            
-            switch (e.key) {
-                case 'Escape':
-                    closeLightbox();
-                    break;
-                case 'ArrowLeft':
-                    navigateLightbox(1); // RTL: left goes forward
-                    break;
-                case 'ArrowRight':
-                    navigateLightbox(-1); // RTL: right goes backward
-                    break;
-            }
-        });
-        
-        // Close lightbox on backdrop click
-        document.getElementById('lightboxModal').addEventListener('click', (e) => {
-            if (e.target === e.currentTarget) {
-                closeLightbox();
-            }
-        });
         
         // ===================================
         // Image Actions
         // ===================================
-        function downloadImage(imageId) {
-            const image = GalleryState.images.find(img => img.id === imageId);
-            if (!image) return;
+        
+        // Preview Image in Modal
+        function previewImage(index) {
+            currentModalIndex = index;
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImage');
             
+            modalImg.src = galleryImages[index].url;
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeImageModal() {
+            document.getElementById('imageModal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+        
+        function navigateModal(direction) {
+            currentModalIndex += direction;
+            if (currentModalIndex < 0) currentModalIndex = galleryImages.length - 1;
+            if (currentModalIndex >= galleryImages.length) currentModalIndex = 0;
+            
+            document.getElementById('modalImage').src = galleryImages[currentModalIndex].url;
+        }
+        
+        // Set as Cover
+        async function setAsCover(imageId) {
+            if (!window.currentUserId) return;
+            
+            try {
+                // Remove cover from all images
+                const snapshot = await window.rtdbOnce(`users/${window.currentUserId}/gallery`);
+                if (snapshot) {
+                    Object.keys(snapshot).forEach(key => {
+                        window.firebaseDb.ref(`users/${window.currentUserId}/gallery/${key}/isCover`).set(false);
+                    });
+                }
+                
+                // Set new cover
+                await window.rtdbUpdate(`users/${window.currentUserId}/gallery/${imageId}`, { isCover: true });
+                
+                await loadGalleryImages();
+                window.db.showNotification('تم تعيين الصورة كغلاف', 'success');
+            } catch (error) {
+                console.error('Error setting cover:', error);
+                window.db.showNotification('حدث خطأ', 'error');
+            }
+        }
+        
+        // Delete Image
+        async function deleteImage(imageId, r2Key) {
+            if (!confirm('هل أنت متأكد من حذف هذه الصورة؟')) return;
+            if (!window.currentUserId) return;
+            
+            try {
+                // Delete from R2
+                if (r2Key) {
+                    await window.db.deleteFromR2(r2Key);
+                }
+                
+                // Delete from Firebase
+                await window.rtdbRemove(`users/${window.currentUserId}/gallery/${imageId}`);
+                
+                await loadGalleryImages();
+                window.db.showNotification('تم حذف الصورة بنجاح', 'success');
+            } catch (error) {
+                console.error('Error deleting image:', error);
+                window.db.showNotification('حدث خطأ في حذف الصورة', 'error');
+            }
+        }
+        
+        // Download Image
+        function downloadImage(url, filename) {
             const link = document.createElement('a');
-            link.href = image.url;
-            link.download = image.name;
+            link.href = url;
+            link.download = filename || 'image.jpg';
             link.target = '_blank';
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
-            
-            db.showNotification('جاري تحميل الصورة...', 'info');
         }
         
-        function downloadCurrentImage() {
-            const image = getCurrentLightboxImage();
-            if (image) {
-                downloadImage(image.id);
-            }
-        }
-        
-        async function setAsCover(imageId) {
-            // Remove cover from previous
-            GalleryState.images.forEach(img => img.isCover = false);
-            
-            // Set new cover
-            const image = GalleryState.images.find(img => img.id === imageId);
-            if (image) {
-                image.isCover = true;
-                GalleryState.coverImageId = imageId;
-                saveImagesToStorage();
-                renderGallery();
-                db.showNotification('تم تعيين الصورة كغلاف', 'success');
-            }
-        }
-        
-        function setAsCoverFromLightbox() {
-            const image = getCurrentLightboxImage();
-            if (image) {
-                setAsCover(image.id);
-            }
-        }
-        
-        function setSelectedAsCover() {
-            if (GalleryState.selectedImages.size === 1) {
-                const id = Array.from(GalleryState.selectedImages)[0];
-                setAsCover(id);
-                clearSelection();
-            } else if (GalleryState.selectedImages.size > 1) {
-                db.showNotification('يمكن اختيار صورة غلاف واحدة فقط', 'error');
-            }
-        }
-        
-        let pendingDeleteId = null;
-        let pendingDeleteMultiple = false;
-        
-        function confirmDelete(imageId) {
-            pendingDeleteId = imageId;
-            pendingDeleteMultiple = false;
-            
-            const modal = document.getElementById('confirmModal');
-            const message = document.getElementById('confirmMessage');
-            const confirmBtn = document.getElementById('confirmDeleteBtn');
-            
-            message.textContent = 'هل أنت متأكد من حذف هذه الصورة؟ لا يمكن التراجع عن هذا الإجراء.';
-            confirmBtn.onclick = executeDelete;
-            
-            modal.classList.add('show');
-        }
-        
-        function confirmDeleteMultiple() {
-            pendingDeleteMultiple = true;
-            
-            const modal = document.getElementById('confirmModal');
-            const message = document.getElementById('confirmMessage');
-            const confirmBtn = document.getElementById('confirmDeleteBtn');
-            
-            message.textContent = `هل أنت متأكد من حذف ${GalleryState.selectedImages.size} صورة؟ لا يمكن التراجع عن هذا الإجراء.`;
-            confirmBtn.onclick = executeDeleteMultiple;
-            
-            modal.classList.add('show');
-        }
-        
-        function deleteSelected() {
-            if (GalleryState.selectedImages.size > 0) {
-                confirmDeleteMultiple();
-            }
-        }
-        
-        async function executeDelete() {
-            if (!pendingDeleteId) return;
-            
-            const image = GalleryState.images.find(img => img.id === pendingDeleteId);
-            
-            if (image && image.key) {
-                await db.deleteFromR2(image.key);
-            }
-            
-            GalleryState.images = GalleryState.images.filter(img => img.id !== pendingDeleteId);
-            GalleryState.selectedImages.delete(pendingDeleteId);
-            
-            saveImagesToStorage();
-            renderGallery();
-            updateStorageInfo();
-            closeConfirmModal();
-            closeLightbox();
-            
-            db.showNotification('تم حذف الصورة بنجاح', 'success');
-        }
-        
-        async function executeDeleteMultiple() {
-            const idsToDelete = Array.from(GalleryState.selectedImages);
-            
-            for (const id of idsToDelete) {
-                const image = GalleryState.images.find(img => img.id === id);
-                
-                if (image && image.key) {
-                    await db.deleteFromR2(image.key);
-                }
-                
-                GalleryState.images = GalleryState.images.filter(img => img.id !== id);
-            }
-            
-            GalleryState.selectedImages.clear();
-            GalleryState.isAllSelected = false;
-            
-            saveImagesToStorage();
-            renderGallery();
-            updateStorageInfo();
-            closeConfirmModal();
-            
-            db.showNotification(`تم حذف ${idsToDelete.length} صورة بنجاح`, 'success');
-        }
-        
-        function deleteFromLightbox() {
-            const image = getCurrentLightboxImage();
-            if (image) {
-                confirmDelete(image.id);
-            }
-        }
-        
-        function closeConfirmModal() {
-            document.getElementById('confirmModal').classList.remove('show');
-            pendingDeleteId = null;
-            pendingDeleteMultiple = false;
+        // Select All Images
+        function selectAllImages() {
+            const items = document.querySelectorAll('.gallery-item');
+            items.forEach(item => item.classList.toggle('selected'));
         }
         
         // ===================================
-        // Storage Info
+        // Stats & Helpers
         // ===================================
-        function updateStorageInfo() {
-            const totalSize = GalleryState.images.reduce((sum, img) => sum + (img.size || 0), 0);
-            GalleryState.storageUsed = totalSize;
+        function updateStats(images) {
+            document.getElementById('totalImages').textContent = images.length;
             
-            const usedMB = (totalSize / (1024 * 1024)).toFixed(1);
-            const limitMB = (GalleryState.storageLimit / (1024 * 1024)).toFixed(0);
-            const availableMB = ((GalleryState.storageLimit - totalSize) / (1024 * 1024)).toFixed(1);
-            const percentage = Math.min((totalSize / GalleryState.storageLimit) * 100, 100);
-            
-            document.getElementById('storageUsed').textContent = `${usedMB} MB / ${limitMB} MB`;
-            document.getElementById('storageFill').style.width = `${percentage}%`;
-            document.getElementById('storageAvailable').textContent = `${availableMB} MB`;
-            document.getElementById('imageCount').textContent = `${GalleryState.images.length} صورة`;
+            const totalSize = images.reduce((sum, img) => sum + (img.size || 0), 0);
+            document.getElementById('storageUsed').textContent = formatFileSize(totalSize);
         }
         
-        // ===================================
-        // Local Storage Persistence
-        // ===================================
-        function saveImagesToStorage() {
-            try {
-                localStorage.setItem('da3watfarah_gallery_images', JSON.stringify(GalleryState.images));
-                localStorage.setItem('da3watfarah_gallery_cover', GalleryState.coverImageId || '');
-            } catch (e) {
-                console.warn('Could not save to localStorage:', e);
-            }
-        }
-        
-        function loadGalleryImages() {
-            try {
-                const saved = localStorage.getItem('da3watfarah_gallery_images');
-                const savedCover = localStorage.getItem('da3watfarah_gallery_cover');
-                
-                if (saved) {
-                    GalleryState.images = JSON.parse(saved);
-                    GalleryState.coverImageId = savedCover || null;
-                }
-                
-                renderGallery();
-                updateStorageInfo();
-            } catch (e) {
-                console.error('Error loading gallery:', e);
-                renderGallery();
-                updateStorageInfo();
-            }
-        }
-        
-        // ===================================
-        // Utility Functions
-        // ===================================
-        function generateUniqueId() {
-            return Date.now().toString(36) + Math.random().toString(36).substr(2, 9);
+        function showEmptyState() {
+            document.getElementById('galleryGrid').innerHTML = '';
+            document.getElementById('emptyGallery').style.display = 'block';
+            document.getElementById('totalImages').textContent = '0';
+            document.getElementById('storageUsed').textContent = '0 MB';
         }
         
         function formatFileSize(bytes) {
             if (!bytes) return '0 B';
-            const units = ['B', 'KB', 'MB', 'GB'];
-            const i = Math.floor(Math.log(bytes) / Math.log(1024));
-            return (bytes / Math.pow(1024, i)).toFixed(i > 0 ? 1 : 0) + ' ' + units[i];
+            const k = 1024;
+            const sizes = ['B', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
         }
         
-        function formatDateAr(timestamp) {
+        function formatDate(timestamp) {
             if (!timestamp) return '';
-            const date = new Date(timestamp);
-            return date.toLocaleDateString('ar-SA', {
+            return new Date(timestamp).toLocaleDateString('ar-SA', {
                 year: 'numeric',
                 month: 'short',
                 day: 'numeric'
             });
         }
         
-        function debounce(func, wait) {
-            let timeout;
-            return function executedFunction(...args) {
-                const later = () => {
-                    clearTimeout(timeout);
-                    func(...args);
-                };
-                clearTimeout(timeout);
-                timeout = setTimeout(later, wait);
-            };
-        }
-        
-        // Listen for user data loaded event to potentially sync with RTDB
-        document.addEventListener('userDataLoaded', async function(e) {
-            // Could sync images with user's invitation data here
-            console.log('User data loaded, ready for gallery operations');
+        // Keyboard navigation for modal
+        document.addEventListener('keydown', function(e) {
+            const modal = document.getElementById('imageModal');
+            if (!modal.classList.contains('active')) return;
+            
+            if (e.key === 'Escape') closeImageModal();
+            if (e.key === 'ArrowLeft') navigateModal(1); // RTL
+            if (e.key === 'ArrowRight') navigateModal(-1);
         });
         
-        console.log('✅ Gallery module initialized');
+        // Close modal on backdrop click
+        document.getElementById('imageModal').addEventListener('click', function(e) {
+            if (e.target === this) closeImageModal();
+        });
+        
+        console.log('✅ Gallery page initialized');
     </script>
 </body>
 </html>

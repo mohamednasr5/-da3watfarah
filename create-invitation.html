@@ -22,7 +22,7 @@
     
     <style>
         .create-page {
-            max-width: 900px;
+            max-width: 1200px;
             margin: 0 auto;
         }
         
@@ -40,6 +40,8 @@
             align-items: center;
             margin-bottom: 40px;
             position: relative;
+            flex-wrap: wrap;
+            gap: 10px;
         }
         
         .wiz-step {
@@ -160,11 +162,23 @@
             resize: vertical;
         }
         
-        /* Template Selection */
+        /* ===================================
+           Enhanced Template Selection
+           =================================== */
+        .templates-section-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .templates-section-header p {
+            color: var(--text-secondary);
+            margin-top: 10px;
+        }
+        
         .templates-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
+            gap: 25px;
             margin-top: 20px;
         }
         
@@ -173,37 +187,87 @@
             border-radius: var(--radius-lg);
             overflow: hidden;
             cursor: pointer;
-            transition: all var(--transition-normal);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             background: white;
-            box-shadow: var(--shadow-sm);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            position: relative;
         }
         
         .template-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-md);
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
         }
         
         .template-card.selected {
             border-color: var(--primary-gold);
-            box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.2);
+            box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.25), 0 15px 35px rgba(212, 175, 55, 0.2);
+        }
+        
+        .template-preview-wrapper {
+            position: relative;
+            height: 220px;
+            overflow: hidden;
+            background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
         }
         
         .template-preview {
-            height: 180px;
-            background-size: cover;
-            background-position: center;
-            position: relative;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform-origin: center;
+            transition: transform 0.5s ease;
+        }
+        
+        .template-card:hover .template-preview {
+            transform: scale(1.05);
+        }
+        
+        /* Template Preview Overlay */
+        .template-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 50%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding-bottom: 15px;
+        }
+        
+        .template-card:hover .template-overlay {
+            opacity: 1;
+        }
+        
+        .preview-btn {
+            background: white;
+            color: var(--text-primary);
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transform: translateY(10px);
+            transition: transform 0.3s ease;
+        }
+        
+        .template-card:hover .preview-btn {
+            transform: translateY(0);
         }
         
         .template-info {
-            padding: 15px;
+            padding: 18px;
             text-align: center;
+            background: white;
         }
         
         .template-info h4 {
             font-weight: 700;
             color: var(--text-primary);
-            margin-bottom: 5px;
+            margin-bottom: 6px;
+            font-size: 1.1rem;
         }
         
         .template-info p {
@@ -214,14 +278,205 @@
         
         .template-badge {
             position: absolute;
-            top: 10px;
-            left: 10px;
-            padding: 5px 10px;
-            border-radius: var(--radius-md);
+            top: 12px;
+            right: 12px;
+            padding: 5px 12px;
+            border-radius: 20px;
             font-size: 0.75rem;
-            font-weight: 600;
-            background: var(--primary-gold);
+            font-weight: 700;
+            z-index: 2;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        
+        .badge-new {
+            background: linear-gradient(135deg, #10B981, #059669);
             color: white;
+        }
+        
+        .badge-popular {
+            background: linear-gradient(135deg, #EF4444, #DC2626);
+            color: white;
+        }
+        
+        .badge-premium {
+            background: linear-gradient(135deg, #D4AF37, #B8860B);
+            color: white;
+        }
+        
+        /* Selected Checkmark */
+        .template-check {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            width: 32px;
+            height: 32px;
+            background: var(--primary-gold);
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+            z-index: 3;
+            box-shadow: 0 2px 8px rgba(212, 175, 55, 0.4);
+            animation: checkPop 0.3s ease;
+        }
+        
+        @keyframes checkPop {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        
+        .template-card.selected .template-check {
+            display: flex;
+        }
+        
+        /* Template Preview Modal */
+        .preview-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            backdrop-filter: blur(5px);
+        }
+        
+        .preview-modal.active {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .preview-modal-content {
+            background: white;
+            border-radius: var(--radius-lg);
+            width: 100%;
+            max-width: 450px;
+            max-height: 90vh;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);
+        }
+        
+        .preview-modal-header {
+            background: var(--bg-dark);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .preview-modal-header h4 {
+            margin: 0;
+            font-size: 1rem;
+        }
+        
+        .preview-modal-close {
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+        
+        .preview-modal-close:hover {
+            background: rgba(255,255,255,0.2);
+        }
+        
+        .preview-modal-body {
+            height: 70vh;
+            overflow-y: auto;
+        }
+        
+        .preview-modal-body iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        .preview-modal-footer {
+            padding: 15px 20px;
+            background: var(--bg-secondary);
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+        
+        .btn-select-template {
+            background: var(--primary-gold);
+            color: var(--bg-dark);
+            border: none;
+            padding: 12px 30px;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+        
+        .btn-select-template:hover {
+            background: #C9A227;
+            transform: translateY(-2px);
+        }
+        
+        /* Live Preview Panel */
+        .live-preview-container {
+            display: none;
+            margin-top: 30px;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            border: 2px solid var(--primary-gold);
+        }
+        
+        .live-preview-container.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+        
+        .live-preview-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        
+        .live-preview-header h4 {
+            margin: 0;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .live-preview-header h4 i {
+            color: var(--primary-gold);
+        }
+        
+        .live-preview-frame {
+            background: white;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            height: 500px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        
+        .live-preview-frame iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
         }
         
         /* Color Options */
@@ -244,7 +499,7 @@
         
         .color-option:hover,
         .color-option.selected {
-            transform: scale(1.1);
+            transform: scale(1.15);
             border-color: var(--text-primary);
         }
         
@@ -410,6 +665,35 @@
             background: linear-gradient(135deg, #059669, #047857);
         }
         
+        /* Success Animation */
+        .success-animation {
+            text-align: center;
+            padding: 40px;
+        }
+        
+        .success-animation i {
+            font-size: 4rem;
+            color: #10B981;
+            margin-bottom: 20px;
+            animation: bounceIn 0.6s ease;
+        }
+        
+        @keyframes bounceIn {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        
+        .success-animation h2 {
+            color: var(--text-primary);
+            margin-bottom: 10px;
+        }
+        
+        .success-animation p {
+            color: var(--text-secondary);
+            margin-bottom: 25px;
+        }
+        
         @media (max-width: 768px) {
             .form-grid {
                 grid-template-columns: 1fr;
@@ -417,15 +701,25 @@
             
             .templates-grid {
                 grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .wizard-steps {
-                flex-wrap: wrap;
-                gap: 10px;
+                gap: 15px;
             }
             
             .wiz-step-line {
                 display: none;
+            }
+            
+            .template-preview-wrapper {
+                height: 160px;
+            }
+            
+            .live-preview-frame {
+                height: 350px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .templates-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -559,15 +853,27 @@
                         </div>
                     </div>
 
-                    <!-- Step 2: Template Selection -->
+                    <!-- Step 2: Template Selection (Enhanced) -->
                     <div class="wizard-content" id="step2">
-                        <h3 style="margin-bottom: 25px;"><i class="fas fa-palette" style="color: var(--primary-gold);"></i> اختر قالب الدعوة</h3>
+                        <div class="templates-section-header">
+                            <h3 style="margin-bottom: 10px;"><i class="fas fa-palette" style="color: var(--primary-gold);"></i> اختر قالب الدعوة</h3>
+                            <p>اختر التصميم الذي يعكس ذوقكما الخاص - اضغط على أي قالب للمعاينة</p>
+                        </div>
                         
                         <div class="templates-grid" id="templatesGrid">
-                            <!-- Will be loaded from RTDB -->
-                            <div class="loading-spinner">
-                                <div class="spinner"></div>
-                                <p>جاري تحميل القوالب...</p>
+                            <!-- Templates will be loaded here -->
+                        </div>
+                        
+                        <!-- Live Preview Panel -->
+                        <div class="live-preview-container" id="livePreviewContainer">
+                            <div class="live-preview-header">
+                                <h4><i class="fas fa-eye"></i> معاينة القالب: <span id="selectedTemplateName">-</span></h4>
+                                <button onclick="openFullPreview()" class="btn-wizard btn-prev" style="padding: 8px 16px; font-size: 0.85rem;">
+                                    <i class="fas fa-expand"></i> معاينة كاملة
+                                </button>
+                            </div>
+                            <div class="live-preview-frame">
+                                <iframe id="livePreviewIframe" src="" title="Template Preview"></iframe>
                             </div>
                         </div>
                     </div>
@@ -643,6 +949,16 @@
                     <div class="wizard-content" id="step4">
                         <h3 style="margin-bottom: 25px;"><i class="fas fa-eye" style="color: var(--primary-gold);"></i> المعاينة والنشر</h3>
                         
+                        <!-- Final Preview with User Data -->
+                        <div style="background: var(--bg-secondary); border-radius: var(--radius-lg); padding: 20px; margin-bottom: 25px;">
+                            <h4 style="margin-bottom: 15px; color: var(--text-primary);">
+                                <i class="fas fa-mobile-alt" style="color: var(--primary-gold);"></i> معاينة الدعوة النهائية
+                            </h4>
+                            <div class="live-preview-frame" style="height: 550px;">
+                                <iframe id="finalPreviewIframe" src="" title="Final Invitation Preview"></iframe>
+                            </div>
+                        </div>
+                        
                         <div class="url-preview">
                             <h3><i class="fas fa-link"></i> رابط الدعوة</h3>
                             <div class="url-display" id="previewUrl">da3watfarah.com/--</div>
@@ -655,7 +971,7 @@
                                 <button class="btn-wizard btn-prev" onclick="goToStep(3)">
                                     <i class="fas fa-arrow-right"></i> رجوع للتعديل
                                 </button>
-                                <button class="btn-wizard btn-publish" onclick="publishInvitation()">
+                                <button class="btn-wizard btn-publish" onclick="publishInvitation()" id="publishBtn">
                                     <i class="fas fa-paper-plane"></i> نشر الدعوة
                                 </button>
                             </div>
@@ -677,6 +993,29 @@
         </main>
     </div>
 
+    <!-- Template Preview Modal -->
+    <div class="preview-modal" id="previewModal">
+        <div class="preview-modal-content">
+            <div class="preview-modal-header">
+                <h4 id="modalTemplateName">معاينة القالب</h4>
+                <button class="preview-modal-close" onclick="closePreviewModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="preview-modal-body">
+                <iframe id="modalPreviewIframe" src=""></iframe>
+            </div>
+            <div class="preview-modal-footer">
+                <button class="btn-select-template" onclick="selectFromModal()">
+                    <i class="fas fa-check"></i> اختيار هذا القالب
+                </button>
+                <button class="btn-wizard btn-prev" onclick="closePreviewModal()" style="padding: 12px 24px;">
+                    إغلاق
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
@@ -691,12 +1030,100 @@
     <script src="js/sidebar.js"></script>
     
     <script>
+        // ===================================
+        // Global State
+        // ===================================
         let currentStep = 1;
         let selectedTemplate = null;
         let selectedColors = { primary: '#8B4513', secondary: '#D4AF37' };
         let uploadedCover = null;
         let uploadedGallery = [];
         let uploadedMusic = null;
+        let modalTemplateId = null;
+        
+        // ===================================
+        // Templates Configuration (Local)
+        // ===================================
+        const TEMPLATES_CONFIG = [
+            {
+                id: 'modern',
+                nameAr: 'عصري',
+                nameEn: 'Modern',
+                category: 'حديث وأنيق',
+                previewFile: 'preview-modern.html',
+                thumbnail: 'https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=400&q=80',
+                colors: { primary: '#1A1A2E', secondary: '#E94560' },
+                isNew: true,
+                isPopular: true,
+                isPremium: false,
+                fontFamily: "'Tajawal', sans-serif"
+            },
+            {
+                id: 'classic',
+                nameAr: 'كلاسيكي',
+                nameEn: 'Classic',
+                category: 'كلاسيكي فاخر',
+                previewFile: 'preview-classic.html',
+                thumbnail: 'https://images.unsplash.com/photo-1519741497674-611481863552?w=400&q=80',
+                colors: { primary: '#8B4513', secondary: '#D4AF37' },
+                isNew: false,
+                isPopular: true,
+                isPremium: false,
+                fontFamily: "'Aref Ruqaa', serif"
+            },
+            {
+                id: 'royal',
+                nameAr: 'ملكي',
+                nameEn: 'Royal',
+                category: 'ملكي فاخر',
+                previewFile: 'preview-royal.html',
+                thumbnail: 'https://images.unsplash.com/photo-1465495976277-438128d18efc?w=400&q=80',
+                colors: { primary: '#1A1A3E', secondary: '#D4AF37' },
+                isNew: true,
+                isPopular: false,
+                isPremium: true,
+                fontFamily: "'Amiri', serif"
+            },
+            {
+                id: 'romantic',
+                nameAr: 'رومانسي',
+                nameEn: 'Romantic',
+                category: 'رومانسي رقيق',
+                previewFile: 'preview-romantic.html',
+                thumbnail: 'https://images.unsplash.com/photo-1519741497674-611481863552?w=400&q=80',
+                colors: { primary: '#D4A5A5', secondary: '#E8B4BC' },
+                isNew: false,
+                isPopular: true,
+                isPremium: false,
+                fontFamily: "'Tajawal', sans-serif"
+            },
+            {
+                id: 'islamic',
+                nameAr: 'إسلامي',
+                nameEn: 'Islamic',
+                category: 'إسلامي أصيل',
+                previewFile: 'preview-islamic.html',
+                thumbnail: 'https://images.unsplash.com/photo-1564769625905-50e93615e189?w=400&q=80',
+                colors: { primary: '#1B5E20', secondary: '#D4AF37' },
+                isNew: true,
+                isPopular: false,
+                isPremium: false,
+                fontFamily: "'Amiri', serif"
+            },
+            {
+                id: 'bohemian',
+                nameAr: 'بوهيمي',
+                nameEn: 'Bohemian',
+                category: 'بوهيمي عصري',
+                previewFile: 'preview-bohemian.html',
+                thumbnail: 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=400&q=80',
+                colors: { primary: '#C17F59', secondary: '#9CAF88' },
+                isNew: true,
+                isPopular: false,
+                isPremium: false,
+                fontFamily: "'Tajawal', sans-serif"
+            }
+        ];
         
         document.addEventListener('DOMContentLoaded', function() {
             AOS.init({ duration: 600, once: true });
@@ -751,7 +1178,7 @@
             
             // Generate preview on last step
             if (step === 4) {
-                generatePreview();
+                generateFinalPreview();
             }
             
             currentStep = step;
@@ -775,14 +1202,26 @@
                     const venueName = document.getElementById('venueName').value.trim();
                     const venueAddress = document.getElementById('venueAddress').value.trim();
                     
-                    return groomName && brideName && weddingDate && weddingTime && venueName && venueAddress;
+                    if (!groomName || !brideName || !weddingDate || !weddingTime || !venueName || !venueAddress) {
+                        db.showNotification('يرجى ملء جميع الحقول المطلوبة (*)', 'error');
+                        return false;
+                    }
+                    return true;
                     
                 case 2:
-                    return selectedTemplate !== null;
+                    if (!selectedTemplate) {
+                        db.showNotification('يرجى اختيار قالب للدعوة', 'error');
+                        return false;
+                    }
+                    return true;
                     
                 case 3:
                     const invitationText = document.getElementById('invitationText').value.trim();
-                    return invitationText.length > 0;
+                    if (!invitationText) {
+                        db.showNotification('يرجى كتابة نص الدعوة', 'error');
+                        return false;
+                    }
+                    return true;
                     
                 default:
                     return true;
@@ -790,53 +1229,145 @@
         }
         
         // ===================================
-        // Template Loading
+        // Template Loading & Selection (Enhanced)
         // ===================================
-        async function loadTemplates() {
+        function loadTemplates() {
             const grid = document.getElementById('templatesGrid');
             
-            try {
-                const templates = await db.getTemplates();
-                
-                if (templates.length === 0) {
-                    grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #6B7280;">لا توجد قوالب متاحة</p>';
-                    return;
+            // Use local templates configuration first
+            renderTemplates(TEMPLATES_CONFIG);
+            
+            // Try to load from RTDB as well (for future dynamic templates)
+            db.getTemplates().then(rtdbTemplates => {
+                if (rtdbTemplates && rtdbTemplates.length > 0) {
+                    // Merge with local config or use RTDB templates
+                    console.log('Loaded additional templates from RTDB:', rtdbTemplates.length);
                 }
-                
-                grid.innerHTML = templates.map(template => `
-                    <div class="template-card ${selectedTemplate?.id === template.id ? 'selected' : ''}" 
-                         onclick="selectTemplate('${template.id}', this)"
-                         data-template-id="${template.id}">
-                        <div class="template-preview" style="background: linear-gradient(135deg, ${template.colors.primary}, ${template.colors.secondary});">
-                            ${template.isNew ? '<span class="template-badge">جديد</span>' : ''}
-                            ${template.isPopular ? '<span class="template-badge" style="left:auto;right:10px;background:#EF4444">شائع</span>' : ''}
-                        </div>
-                        <div class="template-info">
-                            <h4>${template.nameAr}</h4>
-                            <p>${template.category}</p>
-                        </div>
-                    </div>
-                `).join('');
-                
-            } catch (error) {
-                console.error('Error loading templates:', error);
-                grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #EF4444;">حدث خطأ في تحميل القوالب</p>';
-            }
+            }).catch(err => {
+                console.log('Using local templates configuration');
+            });
         }
         
-        function selectTemplate(templateId, element) {
+        function renderTemplates(templates) {
+            const grid = document.getElementById('templatesGrid');
+            
+            grid.innerHTML = templates.map(template => `
+                <div class="template-card ${selectedTemplate?.id === template.id ? 'selected' : ''}" 
+                     data-template-id="${template.id}"
+                     onclick="selectTemplate('${template.id}')">
+                    <div class="template-check">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <div class="template-preview-wrapper">
+                        <img class="template-preview" src="${template.thumbnail}" alt="${template.nameAr}">
+                        <div class="template-overlay">
+                            <span class="preview-btn" onclick="event.stopPropagation(); openPreviewModal('${template.id}')">
+                                <i class="fas fa-eye"></i> معاينة
+                            </span>
+                        </div>
+                        ${template.isNew ? '<span class="template-badge badge-new">جديد ✓</span>' : ''}
+                        ${template.isPopular ? '<span class="template-badge badge-popular">⭐ شائع</span>' : ''}
+                        ${template.isPremium ? '<span class="template-badge badge-premium">👑 مميز</span>' : ''}
+                    </div>
+                    <div class="template-info">
+                        <h4>${template.nameAr}</h4>
+                        <p>${template.category}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function selectTemplate(templateId) {
+            // Find template in config
+            const template = TEMPLATES_CONFIG.find(t => t.id === templateId);
+            if (!template) return;
+            
             // Remove selection from others
             document.querySelectorAll('.template-card').forEach(card => card.classList.remove('selected'));
             
             // Add selection to clicked
-            element.classList.add('selected');
+            const selectedCard = document.querySelector(`[data-template-id="${templateId}"]`);
+            if (selectedCard) {
+                selectedCard.classList.add('selected');
+            }
             
-            // Find template data
-            db.getTemplate(templateId).then(template => {
-                selectedTemplate = template;
-                console.log('Selected template:', template.nameAr);
-            });
+            // Set selected template
+            selectedTemplate = template;
+            
+            // Show live preview
+            showLivePreview(template);
+            
+            console.log('Selected template:', template.nameAr);
         }
+        
+        function showLivePreview(template) {
+            const container = document.getElementById('livePreviewContainer');
+            const iframe = document.getElementById('livePreviewIframe');
+            const nameSpan = document.getElementById('selectedTemplateName');
+            
+            // Update template name
+            nameSpan.textContent = template.nameAr;
+            
+            // Load preview in iframe
+            iframe.src = template.previewFile;
+            
+            // Show container with animation
+            container.classList.add('active');
+        }
+        
+        // ===================================
+        // Preview Modal Functions
+        // ===================================
+        function openPreviewModal(templateId) {
+            const template = TEMPLATES_CONFIG.find(t => t.id === templateId);
+            if (!template) return;
+            
+            modalTemplateId = templateId;
+            
+            const modal = document.getElementById('previewModal');
+            const iframe = document.getElementById('modalPreviewIframe');
+            const title = document.getElementById('modalTemplateName');
+            
+            title.textContent = `معاينة القالب ${template.nameAr}`;
+            iframe.src = template.previewFile;
+            
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closePreviewModal() {
+            const modal = document.getElementById('previewModal');
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+            modalTemplateId = null;
+        }
+        
+        function selectFromModal() {
+            if (modalTemplateId) {
+                selectTemplate(modalTemplateId);
+                closePreviewModal();
+            }
+        }
+        
+        function openFullPreview() {
+            if (selectedTemplate) {
+                openPreviewModal(selectedTemplate.id);
+            }
+        }
+        
+        // Close modal on escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closePreviewModal();
+            }
+        });
+        
+        // Close modal on backdrop click
+        document.getElementById('previewModal').addEventListener('click', (e) => {
+            if (e.target.id === 'previewModal') {
+                closePreviewModal();
+            }
+        });
         
         function selectColor(element) {
             document.querySelectorAll('.color-option').forEach(opt => opt.classList.remove('selected'));
@@ -927,8 +1458,15 @@
             }
         }
         
-        function removeCover() { uploadedCover = null; document.getElementById('coverPreview').innerHTML = ''; }
-        function removeMusic() { uploadedMusic = null; document.getElementById('musicPreview').innerHTML = ''; }
+        function removeCover() { 
+            uploadedCover = null; 
+            document.getElementById('coverPreview').innerHTML = ''; 
+        }
+        
+        function removeMusic() { 
+            uploadedMusic = null; 
+            document.getElementById('musicPreview').innerHTML = ''; 
+        }
         
         function renderGalleryPreview() {
             const container = document.getElementById('galleryPreview');
@@ -946,84 +1484,173 @@
         }
         
         // ===================================
-        // Generate Preview
+        // Generate Final Preview
         // ===================================
-        function generatePreview() {
+        function generateFinalPreview() {
             const slug = document.getElementById('customSlug').value.trim() || 
                          `${document.getElementById('groomName').value}&${document.getElementById('brideName').value}`;
             
+            // Update URL preview
             document.getElementById('previewUrl').textContent = `da3watfarah.com/${slug}`;
             
+            // Update summary
             document.getElementById('invitationSummary').innerHTML = `
-                <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:15px;text-align:right;">
-                    <div><strong>العريس:</strong> ${document.getElementById('groomName').value}</div>
-                    <div><strong>العروس:</strong> ${document.getElementById('brideName').value}</div>
-                    <div><strong>التاريخ:</strong> ${document.getElementById('weddingDate').value}</div>
-                    <div><strong>الوقت:</strong> ${document.getElementById('weddingTime').value}</div>
-                    <div><strong>القاعة:</strong> ${document.getElementById('venueName').value}</div>
-                    <div><strong>القالب:</strong> ${selectedTemplate?.nameAr || '-'}</div>
+                <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:15px;text-align:right;background:rgba(255,255,255,0.1);padding:20px;border-radius:var(--radius-md);">
+                    <div><strong style="color:#D4AF37;">العريس:</strong> <span style="color:white;">${document.getElementById('groomName').value}</span></div>
+                    <div><strong style="color:#D4AF37;">العروس:</strong> <span style="color:white;">${document.getElementById('brideName').value}</span></div>
+                    <div><strong style="color:#D4AF37;">التاريخ:</strong> <span style="color:white;">${formatDateForDisplay(document.getElementById('weddingDate').value)}</span></div>
+                    <div><strong style="color:#D4AF37;">الوقت:</strong> <span style="color:white;">${document.getElementById('weddingTime').value}</span></div>
+                    <div><strong style="color:#D4AF37;">القاعة:</strong> <span style="color:white;">${document.getElementById('venueName').value}</span></div>
+                    <div><strong style="color:#D4AF37;">القالب:</strong> <span style="color:white;">${selectedTemplate?.nameAr || '-'}</span></div>
                 </div>
             `;
+            
+            // Load final preview with selected template
+            if (selectedTemplate) {
+                const finalIframe = document.getElementById('finalPreviewIframe');
+                finalIframe.src = selectedTemplate.previewFile;
+            }
+        }
+        
+        function formatDateForDisplay(dateStr) {
+            if (!dateStr) return '-';
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('ar-SA', { year: 'numeric', month: 'long', day: 'numeric' });
         }
         
         // ===================================
-        // Publish Invitation
+        // Publish Invitation (Enhanced)
         // ===================================
         async function publishInvitation() {
-            const slug = document.getElementById('customSlug').value.trim() || 
-                         `${document.getElementById('groomName').value}&${document.getElementById('brideName').value}`;
+            const publishBtn = document.getElementById('publishBtn');
+            const originalContent = publishBtn.innerHTML;
             
-            // Check slug availability
-            const isAvailable = await db.isSlugAvailable(slug);
-            if (!isAvailable) {
-                db.showNotification('هذا الرابط مستخدم بالفعل، اختر رابط آخر', 'error');
-                return;
+            // Validate all steps
+            for (let i = 1; i <= 3; i++) {
+                if (!validateStep(i)) {
+                    goToStep(i);
+                    return;
+                }
             }
             
-            const invitationData = {
-                couple: {
-                    groomName: document.getElementById('groomName').value.trim(),
-                    groomFatherName: document.getElementById('groomFatherName').value.trim(),
-                    brideName: document.getElementById('brideName').value.trim(),
-                    brideFatherName: document.getElementById('brideFatherName').value.trim(),
-                    parentsNames: document.getElementById('parentsNames').value.trim()
-                },
-                event: {
-                    date: new Date(document.getElementById('weddingDate').value).getTime(),
-                    time: document.getElementById('weddingTime').value,
-                    venue: document.getElementById('venueName').value.trim(),
-                    address: document.getElementById('venueAddress').value.trim(),
-                    googleMapsUrl: document.getElementById('googleMapsUrl').value.trim()
-                },
-                design: {
-                    templateId: selectedTemplate?.id || 'classic',
-                    primaryColor: selectedColors.primary,
-                    secondaryColor: selectedColors.secondary,
-                    fontFamily: selectedTemplate?.fontFamily || "'Tajawal', sans-serif",
-                    coverImage: uploadedCover,
-                    galleryImages: uploadedGallery,
-                    musicUrl: uploadedMusic
-                },
-                content: {
-                    welcomeText: document.getElementById('welcomeText').value.trim(),
-                    invitationText: document.getElementById('invitationText').value.trim(),
-                    loveStory: document.getElementById('loveStory').value.trim()
-                },
-                slug: slug
-            };
-            
-            db.showNotification('جاري نشر الدعوة...', 'info');
-            
-            const result = await db.createInvitation(invitationData);
-            
-            if (result.success) {
-                db.showNotification('تم نشر الدعوة بنجاح! 🎉', 'success');
+            try {
+                // Show loading state
+                publishBtn.disabled = true;
+                publishBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري النشر...';
                 
-                setTimeout(() => {
-                    window.location.href = `my-invitations.html?new=${result.invitationId}`;
-                }, 1500);
-            } else {
-                db.showNotification(result.error || 'حدث خطأ في النشر', 'error');
+                const slug = document.getElementById('customSlug').value.trim() || 
+                             `${document.getElementById('groomName').value}&${document.getElementById('brideName').value}`;
+                
+                // Check slug availability
+                const isAvailable = await db.isSlugAvailable(slug);
+                if (!isAvailable) {
+                    db.showNotification('هذا الرابط مستخدم بالفعل، اختر رابط آخر', 'error');
+                    publishBtn.disabled = false;
+                    publishBtn.innerHTML = originalContent;
+                    return;
+                }
+                
+                // Prepare invitation data with template info
+                const invitationData = {
+                    couple: {
+                        groomName: document.getElementById('groomName').value.trim(),
+                        groomFatherName: document.getElementById('groomFatherName').value.trim(),
+                        brideName: document.getElementById('brideName').value.trim(),
+                        brideFatherName: document.getElementById('brideFatherName').value.trim(),
+                        parentsNames: document.getElementById('parentsNames').value.trim()
+                    },
+                    event: {
+                        date: new Date(document.getElementById('weddingDate').value).getTime(),
+                        time: document.getElementById('weddingTime').value,
+                        venue: document.getElementById('venueName').value.trim(),
+                        address: document.getElementById('venueAddress').value.trim(),
+                        googleMapsUrl: document.getElementById('googleMapsUrl').value.trim()
+                    },
+                    design: {
+                        templateId: selectedTemplate?.id || 'classic',
+                        templateName: selectedTemplate?.nameAr || 'كلاسيكي',
+                        templateFile: selectedTemplate?.previewFile || 'preview-classic.html',
+                        primaryColor: selectedColors.primary,
+                        secondaryColor: selectedColors.secondary,
+                        fontFamily: selectedTemplate?.fontFamily || "'Tajawal', sans-serif",
+                        coverImage: uploadedCover,
+                        galleryImages: uploadedGallery,
+                        musicUrl: uploadedMusic
+                    },
+                    content: {
+                        welcomeText: document.getElementById('welcomeText').value.trim(),
+                        invitationText: document.getElementById('invitationText').value.trim(),
+                        loveStory: document.getElementById('loveStory').value.trim()
+                    },
+                    slug: slug
+                };
+                
+                db.showNotification('جاري إنشاء الدعوة...', 'info');
+                
+                // Create invitation in Firebase
+                const result = await db.createInvitation(invitationData);
+                
+                if (result.success) {
+                    // Show success state
+                    showSuccessState(result.invitationId, slug);
+                } else {
+                    throw new Error(result.error || 'حدث خطأ في إنشاء الدعوة');
+                }
+                
+            } catch (error) {
+                console.error('Publish error:', error);
+                db.showNotification(error.message || 'حدث خطأ في النشر، يرجى المحاولة مرة أخرى', 'error');
+                publishBtn.disabled = false;
+                publishBtn.innerHTML = originalContent;
+            }
+        }
+        
+        function showSuccessState(invitationId, slug) {
+            const wizardContent = document.querySelector('.wizard-content.active');
+            
+            wizardContent.innerHTML = `
+                <div class="success-animation">
+                    <i class="fas fa-check-circle"></i>
+                    <h2>تم إنشاء الدعوة بنجاح! 🎉</h2>
+                    <p>دعوتكم جاهزة الآن ويمكنك مشاركتها مع الضيوف</p>
+                    
+                    <div style="background:linear-gradient(135deg,var(--primary-gold),#C9A227);padding:25px;border-radius:var(--radius-lg);max-width:500px;margin:0 auto 25px;">
+                        <p style="color:rgba(255,255,255,0.9);margin-bottom:10px;font-size:0.9rem;">رابط الدعوة:</p>
+                        <div style="background:rgba(255,255,255,0.2);padding:15px;border-radius:var(--radius-md);font-family:monospace;direction:ltr;text-align:center;color:white;font-size:1.1rem;word-break:break-all;">
+                            da3watfarah.com/${slug}
+                        </div>
+                    </div>
+                    
+                    <div style="display:flex;gap:15px;justify-content:center;flex-wrap:wrap;">
+                        <a href="invite.html?id=${invitationId}" target="_blank" class="btn-wizard btn-next" style="padding:14px 28px;">
+                            <i class="fas fa-external-link-alt"></i> عرض الدعوة
+                        </a>
+                        <a href="my-invitations.html" class="btn-wizard btn-publish" style="padding:14px 28px;">
+                            <i class="fas fa-list"></i> دعواتي
+                        </a>
+                        <button onclick="location.reload()" class="btn-wizard btn-prev" style="padding:14px 28px;">
+                            <i class="fas fa-plus"></i> دعوة جديدة
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            // Hide navigation
+            document.querySelector('.wizard-nav').style.display = 'none';
+            
+            db.showNotification('تم نشر الدعوة بنجاح! 🎉', 'success');
+        }
+        
+        // ===================================
+        // Logout Function
+        // ===================================
+        function logout() {
+            if (window.firebaseAuth) {
+                window.firebaseAuth.signOut().then(() => {
+                    window.location.href = 'login.html';
+                }).catch(err => {
+                    console.error('Logout error:', err);
+                });
             }
         }
     </script>
