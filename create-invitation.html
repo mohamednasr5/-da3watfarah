@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إنشاء دعوة جديدة | دعوة فرح</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=Amiri:wght@400;700&family=Aref+Ruqaa:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- AOS Animation -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    
+    <style>
+        .create-page {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        /* Wizard Steps */
+        .wizard-container {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .wizard-steps {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+        
+        .wiz-step {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 20px;
+            border-radius: var(--radius-xl);
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+            font-weight: 600;
+            z-index: 1;
+        }
+        
+        .wiz-step.active {
+            background: var(--primary-gold);
+            color: white;
+        }
+        
+        .wiz-step.completed {
+            background: rgba(16, 185, 129, 0.15);
+            color: #059669;
+        }
+        
+        .wiz-step-number {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: currentColor;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+        
+        .wiz-step-line {
+            width: 60px;
+            height: 3px;
+            background: var(--bg-secondary);
+            border-radius: 2px;
+            margin: 0 10px;
+        }
+        
+        .wiz-step-line.completed {
+            background: #10B981;
+        }
+        
+        /* Wizard Content */
+        .wizard-content {
+            display: none;
+        }
+        
+        .wizard-content.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Form Styles */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+        }
+        
+        .form-group label i {
+            color: var(--primary-gold);
+            margin-left: 5px;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid #E5E7EB;
+            border-radius: var(--radius-md);
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all var(--transition-fast);
+            background: white;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-gold);
+            box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.1);
+        }
+        
+        .form-control::placeholder {
+            color: #9CA3AF;
+        }
+        
+        textarea.form-control {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        /* Template Selection */
+        .templates-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .template-card {
+            border: 3px solid transparent;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            background: white;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .template-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .template-card.selected {
+            border-color: var(--primary-gold);
+            box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.2);
+        }
+        
+        .template-preview {
+            height: 180px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+        
+        .template-info {
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .template-info h4 {
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 5px;
+        }
+        
+        .template-info p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+        
+        .template-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            padding: 5px 10px;
+            border-radius: var(--radius-md);
+            font-size: 0.75rem;
+            font-weight: 600;
+            background: var(--primary-gold);
+            color: white;
+        }
+        
+        /* Color Options */
+        .color-options {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+        
+        .color-option {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 4px solid transparent;
+            transition: all var(--transition-fast);
+            position: relative;
+        }
+        
+        .color-option:hover,
+        .color-option.selected {
+            transform: scale(1.1);
+            border-color: var(--text-primary);
+        }
+        
+        .color-option.selected::after {
+            content: '✓';
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        
+        /* Upload Area */
+        .upload-area {
+            border: 3px dashed #D1D5DB;
+            border-radius: var(--radius-lg);
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            background: var(--bg-secondary);
+        }
+        
+        .upload-area:hover {
+            border-color: var(--primary-gold);
+            background: rgba(212, 175, 55, 0.05);
+        }
+        
+        .upload-area.dragover {
+            border-color: var(--primary-gold);
+            background: rgba(212, 175, 55, 0.1);
+        }
+        
+        .upload-area i {
+            font-size: 3rem;
+            color: var(--primary-gold);
+            margin-bottom: 15px;
+        }
+        
+        .upload-area h4 {
+            color: var(--text-primary);
+            margin-bottom: 10px;
+        }
+        
+        .upload-area p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin: 0;
+        }
+        
+        .upload-preview {
+            margin-top: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+        }
+        
+        .preview-item {
+            position: relative;
+            aspect-ratio: 1;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            border: 2px solid #E5E7EB;
+        }
+        
+        .preview-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .preview-item .remove-btn {
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: #EF4444;
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+        }
+        
+        /* Preview URL */
+        .url-preview {
+            background: linear-gradient(135deg, var(--bg-dark), #2d2d44);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            text-align: center;
+            color: white;
+            margin-top: 30px;
+        }
+        
+        .url-preview h3 {
+            margin-bottom: 15px;
+        }
+        
+        .url-display {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px 25px;
+            border-radius: var(--radius-md);
+            font-family: monospace;
+            direction: ltr;
+            text-align: left;
+            margin-bottom: 20px;
+            word-break: break-all;
+        }
+        
+        /* Navigation Buttons */
+        .wizard-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #E5E7EB;
+        }
+        
+        .btn-wizard {
+            padding: 12px 30px;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            border: none;
+        }
+        
+        .btn-prev {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+        }
+        
+        .btn-prev:hover {
+            background: #D1D5DB;
+        }
+        
+        .btn-next {
+            background: var(--primary-gold);
+            color: var(--bg-dark);
+        }
+        
+        .btn-next:hover {
+            background: #C9A227;
+        }
+        
+        .btn-publish {
+            background: linear-gradient(135deg, #10B981, #059669);
+            color: white;
+        }
+        
+        .btn-publish:hover {
+            background: linear-gradient(135deg, #059669, #047857);
+        }
+        
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .templates-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .wizard-steps {
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+            
+            .wiz-step-line {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body class="dashboard-body">
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar"></aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-header">
+                <div class="header-right">
+                    <button class="mobile-menu-btn" id="mobileSidebarBtn">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h1 class="page-title">إنشاء دعوة جديدة</h1>
+                </div>
+                
+                <div class="header-left">
+                    <button class="header-btn notification-btn">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge">3</span>
+                    </button>
+                    
+                    <div class="user-dropdown">
+                        <button class="user-btn">
+                            <div class="user-avatar-small"><i class="fas fa-user"></i></div>
+                            <span class="user-name" id="userName">مستخدم</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="dropdown-menu">
+                            <a href="overview.html"><i class="fas fa-home"></i> نظرة عامة</a>
+                            <hr>
+                            <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</a>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Create Invitation Content -->
+            <div class="content-wrapper">
+                <div class="create-page wizard-container" data-aos="fade-up">
+                    
+                    <!-- Wizard Steps -->
+                    <div class="wizard-steps">
+                        <div class="wiz-step active" data-step="1" onclick="goToStep(1)">
+                            <span class="wiz-step-number">1</span>
+                            <span>البيانات الأساسية</span>
+                        </div>
+                        <div class="wiz-step-line"></div>
+                        
+                        <div class="wiz-step" data-step="2" onclick="goToStep(2)">
+                            <span class="wiz-step-number">2</span>
+                            <span>اختيار القالب</span>
+                        </div>
+                        <div class="wiz-step-line"></div>
+                        
+                        <div class="wiz-step" data-step="3" onclick="goToStep(3)">
+                            <span class="wiz-step-number">3</span>
+                            <span>المحتوى والتصميم</span>
+                        </div>
+                        <div class="wiz-step-line"></div>
+                        
+                        <div class="wiz-step" data-step="4" onclick="goToStep(4)">
+                            <span class="wiz-step-number">4</span>
+                            <span>المعاينة والنشر</span>
+                        </div>
+                    </div>
+
+                    <!-- Step 1: Basic Info -->
+                    <div class="wizard-content active" id="step1">
+                        <h3 style="margin-bottom: 25px;"><i class="fas fa-user-group" style="color: var(--primary-gold);"></i> البيانات الأساسية</h3>
+                        
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label><i class="fas fa-user"></i> اسم العريس *</label>
+                                <input type="text" class="form-control" id="groomName" placeholder="أدخل اسم العريس" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label><i class="fas fa-user"></i> اسم العروس *</label>
+                                <input type="text" class="form-control" id="brideName" placeholder="أدخل اسم العروس" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label><i class="fas fa-user-tie"></i> اسم أب العريس</label>
+                                <input type="text" class="form-control" id="groomFatherName" placeholder="اختياري">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label><i class="fas fa-user"></i> اسم أب العروس</label>
+                                <input type="text" class="form-control" id="brideFatherName" placeholder="اختياري">
+                            </div>
+                            
+                            <div class="form-group full-width">
+                                <label><i class="fas fa-users"></i> أسماء الوالدين كاملاً</label>
+                                <input type="text" class="form-control" id="parentsNames" placeholder="مثال: محمد أحمد & فاطمة علي">
+                            </div>
+                            
+                            <div class="form-group full-width">
+                                <label><i class="fas fa-calendar-alt"></i> تاريخ الزفاف *</label>
+                                <input type="date" class="form-control" id="weddingDate" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label><i class="fas fa-clock"></i> الوقت *</label>
+                                <input type="time" class="form-control" id="weddingTime" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label><i class="fas fa-map-marker-alt"></i> اسم القاعة *</label>
+                                <input type="text" class="form-control" id="venueName" placeholder="اسم الفندق أو القاعة" required>
+                            </div>
+                            
+                            <div class="form-group full-width">
+                                <label><i class="fas fa-location-dot"></i> العنوان *</label>
+                                <input type="text" class="form-control" id="venueAddress" placeholder="العنوان الكامل" required>
+                            </div>
+                            
+                            <div class="form-group full-width">
+                                <label><i class="fab fa-google"></i> رابط Google Maps</label>
+                                <input type="url" class="form-control" id="googleMapsUrl" placeholder="https://maps.google.com/?q=...">
+                            </div>
+                            
+                            <div class="form-group full-width">
+                                <label><i class="fas fa-link"></i> الرابط المخصص (Slug)</label>
+                                <input type="text" class="form-control" id="customSlug" placeholder="mohamed&mona" dir="ltr">
+                                <small style="color: #6B7280;">سيكون رابط الدعوة: da3watfarah.com/{slug}</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Template Selection -->
+                    <div class="wizard-content" id="step2">
+                        <h3 style="margin-bottom: 25px;"><i class="fas fa-palette" style="color: var(--primary-gold);"></i> اختر قالب الدعوة</h3>
+                        
+                        <div class="templates-grid" id="templatesGrid">
+                            <!-- Will be loaded from RTDB -->
+                            <div class="loading-spinner">
+                                <div class="spinner"></div>
+                                <p>جاري تحميل القوالب...</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Content & Design -->
+                    <div class="wizard-content" id="step3">
+                        <h3 style="margin-bottom: 25px;"><i class="fas fa-pen-fancy" style="color: var(--primary-gold);"></i> المحتوى والتصميم</h3>
+                        
+                        <div class="form-grid">
+                            <div class="form-group full-width">
+                                <label><i class="fas fa-star-and-crescent"></i> نص الترحيب (آية قرآنية)</label>
+                                <textarea class="form-control" id="welcomeText" placeholder="﴿وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُم مِّنْ أَنفُسِكُمْ أَزْوَاجًا﴾"></textarea>
+                            </div>
+                            
+                            <div class="form-group full-width">
+                                <label><i class="fas fa-envelope-open-text"></i> نص الدعوة *</label>
+                                <textarea class="form-control" id="invitationText" placeholder="يسرنا ويسعدنا أن ندعوكم لحضور زفاف..." required></textarea>
+                            </div>
+                            
+                            <div class="form-group full-width">
+                                <label><i class="fas fa-heart"></i> قصة الحب (اختياري)</label>
+                                <textarea class="form-control" id="loveStory" placeholder="اكتب قصة تعارفكما..."></textarea>
+                            </div>
+                            
+                            <div class="form-group full-width">
+                                <label><i class="fas fa-image"></i> صورة الغلاف</label>
+                                <div class="upload-area" id="coverUpload">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <h4>اسحب الصورة هنا أو اضغط للرفع</h4>
+                                    <p>PNG, JPG حتى 5MB</p>
+                                    <input type="file" id="coverInput" accept="image/*" hidden>
+                                </div>
+                                <div class="upload-preview" id="coverPreview"></div>
+                            </div>
+                            
+                            <div class="form-group full-width">
+                                <label><i class="fas fa-images"></i> صور المعرض</label>
+                                <div class="upload-area" id="galleryUpload">
+                                    <i class="fas fa-images"></i>
+                                    <h4>اضف صور للمعرض</h4>
+                                    <p>يمكنك إضافة عدة صور</p>
+                                    <input type="file" id="galleryInput" accept="image/*" multiple hidden>
+                                </div>
+                                <div class="upload-preview" id="galleryPreview"></div>
+                            </div>
+                            
+                            <div class="form-group full-width">
+                                <label><i class="fas fa-music"></i> موسيقى الخلفية</label>
+                                <div class="upload-area" id="musicUpload">
+                                    <i class="fas fa-music"></i>
+                                    <h4>اختر موسيقى للدعوة</h4>
+                                    <p>MP3 حتى 10MB</p>
+                                    <input type="file" id="musicInput" accept="audio/*" hidden>
+                                </div>
+                                <div id="musicPreview"></div>
+                            </div>
+                            
+                            <div class="form-group full-width">
+                                <label><i class="fas fa-palette"></i> الألوان</label>
+                                <div class="color-options">
+                                    <div class="color-option selected" data-colors='{"primary":"#8B4513","secondary":"#D4AF37"}' style="background: linear-gradient(135deg, #8B4513, #D4AF37);" onclick="selectColor(this)"></div>
+                                    <div class="color-option" data-colors='{"primary":"#1A1A2E","secondary":"#E94560"}' style="background: linear-gradient(135deg, #1A1A2E, #E94560);" onclick="selectColor(this)"></div>
+                                    <div class="color-option" data-colors='{"primary":"#D4A5A5","secondary":"#E8B4BC"}' style="background: linear-gradient(135deg, #D4A5A5, #E8B4BC);" onclick="selectColor(this)"></div>
+                                    <div class="color-option" data-colors='{"primary":"#1B5E20","secondary":"#D4AF37"}' style="background: linear-gradient(135deg, #1B5E20, #D4AF37);" onclick="selectColor(this)"></div>
+                                    <div class="color-option" data-colors='{"primary":"#C17F59","secondary":"#9CAF88"}' style="background: linear-gradient(135deg, #C17F59, #9CAF88);" onclick="selectColor(this)"></div>
+                                    <div class="color-option" data-colors='{"primary":"#1A1A3E","secondary":"#D4AF37"}' style="background: linear-gradient(135deg, #1A1A3E, #D4AF37);" onclick="selectColor(this)"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 4: Preview & Publish -->
+                    <div class="wizard-content" id="step4">
+                        <h3 style="margin-bottom: 25px;"><i class="fas fa-eye" style="color: var(--primary-gold);"></i> المعاينة والنشر</h3>
+                        
+                        <div class="url-preview">
+                            <h3><i class="fas fa-link"></i> رابط الدعوة</h3>
+                            <div class="url-display" id="previewUrl">da3watfarah.com/--</div>
+                            
+                            <div id="invitationSummary" style="text-align: right; margin: 20px 0;">
+                                <!-- Summary will be populated -->
+                            </div>
+                            
+                            <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+                                <button class="btn-wizard btn-prev" onclick="goToStep(3)">
+                                    <i class="fas fa-arrow-right"></i> رجوع للتعديل
+                                </button>
+                                <button class="btn-wizard btn-publish" onclick="publishInvitation()">
+                                    <i class="fas fa-paper-plane"></i> نشر الدعوة
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Navigation Buttons -->
+                    <div class="wizard-nav">
+                        <button class="btn-wizard btn-prev" id="prevBtn" onclick="prevStep()" style="visibility: hidden;">
+                            <i class="fas fa-arrow-right"></i> السابق
+                        </button>
+                        <button class="btn-wizard btn-next" id="nextBtn" onclick="nextStep()">
+                            التالي <i class="fas fa-arrow-left"></i>
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+    
+    <!-- AOS Animation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    
+    <!-- App Scripts -->
+    <script src="js/firebase-config.js"></script>
+    <script src="js/db.js"></script>
+    <script src="js/sidebar.js"></script>
+    
+    <script>
+        let currentStep = 1;
+        let selectedTemplate = null;
+        let selectedColors = { primary: '#8B4513', secondary: '#D4AF37' };
+        let uploadedCover = null;
+        let uploadedGallery = [];
+        let uploadedMusic = null;
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            AOS.init({ duration: 600, once: true });
+            loadTemplates();
+            initUploadAreas();
+        });
+        
+        // ===================================
+        // Navigation Functions
+        // ===================================
+        function goToStep(step) {
+            if (step < 1 || step > 4) return;
+            
+            // Validate current step before proceeding
+            if (step > currentStep && !validateStep(currentStep)) {
+                db.showNotification('يرجى ملء جميع الحقول المطلوبة', 'error');
+                return;
+            }
+            
+            // Update steps UI
+            document.querySelectorAll('.wiz-step').forEach((el, index) => {
+                const stepNum = index + 1;
+                el.classList.remove('active', 'completed');
+                
+                if (stepNum === step) {
+                    el.classList.add('active');
+                } else if (stepNum < step) {
+                    el.classList.add('completed');
+                }
+            });
+            
+            // Update lines
+            document.querySelectorAll('.wiz-step-line').forEach((line, index) => {
+                line.classList.toggle('completed', index < step - 1);
+            });
+            
+            // Show/hide content
+            document.querySelectorAll('.wizard-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(`step${step}`).classList.add('active');
+            
+            // Update navigation buttons
+            document.getElementById('prevBtn').style.visibility = step === 1 ? 'hidden' : 'visible';
+            
+            const nextBtn = document.getElementById('nextBtn');
+            if (step === 4) {
+                nextBtn.style.display = 'none';
+            } else {
+                nextBtn.style.display = 'inline-flex';
+            }
+            
+            // Generate preview on last step
+            if (step === 4) {
+                generatePreview();
+            }
+            
+            currentStep = step;
+        }
+        
+        function nextStep() {
+            goToStep(currentStep + 1);
+        }
+        
+        function prevStep() {
+            goToStep(currentStep - 1);
+        }
+        
+        function validateStep(step) {
+            switch(step) {
+                case 1:
+                    const groomName = document.getElementById('groomName').value.trim();
+                    const brideName = document.getElementById('brideName').value.trim();
+                    const weddingDate = document.getElementById('weddingDate').value;
+                    const weddingTime = document.getElementById('weddingTime').value;
+                    const venueName = document.getElementById('venueName').value.trim();
+                    const venueAddress = document.getElementById('venueAddress').value.trim();
+                    
+                    return groomName && brideName && weddingDate && weddingTime && venueName && venueAddress;
+                    
+                case 2:
+                    return selectedTemplate !== null;
+                    
+                case 3:
+                    const invitationText = document.getElementById('invitationText').value.trim();
+                    return invitationText.length > 0;
+                    
+                default:
+                    return true;
+            }
+        }
+        
+        // ===================================
+        // Template Loading
+        // ===================================
+        async function loadTemplates() {
+            const grid = document.getElementById('templatesGrid');
+            
+            try {
+                const templates = await db.getTemplates();
+                
+                if (templates.length === 0) {
+                    grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #6B7280;">لا توجد قوالب متاحة</p>';
+                    return;
+                }
+                
+                grid.innerHTML = templates.map(template => `
+                    <div class="template-card ${selectedTemplate?.id === template.id ? 'selected' : ''}" 
+                         onclick="selectTemplate('${template.id}', this)"
+                         data-template-id="${template.id}">
+                        <div class="template-preview" style="background: linear-gradient(135deg, ${template.colors.primary}, ${template.colors.secondary});">
+                            ${template.isNew ? '<span class="template-badge">جديد</span>' : ''}
+                            ${template.isPopular ? '<span class="template-badge" style="left:auto;right:10px;background:#EF4444">شائع</span>' : ''}
+                        </div>
+                        <div class="template-info">
+                            <h4>${template.nameAr}</h4>
+                            <p>${template.category}</p>
+                        </div>
+                    </div>
+                `).join('');
+                
+            } catch (error) {
+                console.error('Error loading templates:', error);
+                grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #EF4444;">حدث خطأ في تحميل القوالب</p>';
+            }
+        }
+        
+        function selectTemplate(templateId, element) {
+            // Remove selection from others
+            document.querySelectorAll('.template-card').forEach(card => card.classList.remove('selected'));
+            
+            // Add selection to clicked
+            element.classList.add('selected');
+            
+            // Find template data
+            db.getTemplate(templateId).then(template => {
+                selectedTemplate = template;
+                console.log('Selected template:', template.nameAr);
+            });
+        }
+        
+        function selectColor(element) {
+            document.querySelectorAll('.color-option').forEach(opt => opt.classList.remove('selected'));
+            element.classList.add('selected');
+            selectedColors = JSON.parse(element.dataset.colors);
+        }
+        
+        // ===================================
+        // Upload Handling
+        // ===================================
+        function initUploadAreas() {
+            // Cover upload
+            const coverArea = document.getElementById('coverUpload');
+            const coverInput = document.getElementById('coverInput');
+            
+            coverArea.addEventListener('click', () => coverInput.click());
+            coverArea.addEventListener('dragover', (e) => { e.preventDefault(); coverArea.classList.add('dragover'); });
+            coverArea.addEventListener('dragleave', () => coverArea.classList.remove('dragover'));
+            coverArea.addEventListener('drop', async (e) => {
+                e.preventDefault();
+                coverArea.classList.remove('dragover');
+                if (e.dataTransfer.files[0]) await handleCoverUpload(e.dataTransfer.files[0]);
+            });
+            coverInput.addEventListener('change', async (e) => {
+                if (e.target.files[0]) await handleCoverUpload(e.target.files[0]);
+            });
+            
+            // Gallery upload
+            const galleryArea = document.getElementById('galleryUpload');
+            const galleryInput = document.getElementById('galleryInput');
+            
+            galleryArea.addEventListener('click', () => galleryInput.click());
+            galleryArea.addEventListener('change', async (e) => {
+                for (const file of e.target.files) {
+                    await handleGalleryUpload(file);
+                }
+            });
+            
+            // Music upload
+            const musicArea = document.getElementById('musicUpload');
+            const musicInput = document.getElementById('musicInput');
+            
+            musicArea.addEventListener('click', () => musicInput.click());
+            musicInput.addEventListener('change', async (e) => {
+                if (e.target.files[0]) await handleMusicUpload(e.target.files[0]);
+            });
+        }
+        
+        async function handleCoverUpload(file) {
+            const result = await db.uploadToR2(file, 'image');
+            if (result.success) {
+                uploadedCover = result.url;
+                document.getElementById('coverPreview').innerHTML = `
+                    <div class="preview-item">
+                        <img src="${result.url}" alt="Cover">
+                        <button class="remove-btn" onclick="removeCover()"><i class="fas fa-times"></i></button>
+                    </div>
+                `;
+                db.showNotification('تم رفع صورة الغلاف بنجاح', 'success');
+            } else {
+                db.showNotification(result.error || 'فشل رفع الصورة', 'error');
+            }
+        }
+        
+        async function handleGalleryUpload(file) {
+            const result = await db.uploadToR2(file, 'image');
+            if (result.success) {
+                uploadedGallery.push(result.url);
+                renderGalleryPreview();
+                db.showNotification('تمت إضافة الصورة بنجاح', 'success');
+            }
+        }
+        
+        async function handleMusicUpload(file) {
+            const result = await db.uploadToR2(file, 'audio');
+            if (result.success) {
+                uploadedMusic = result.url;
+                document.getElementById('musicPreview').innerHTML = `
+                    <div style="margin-top:15px;padding:15px;background:#F3F4F6;border-radius:var(--radius-md);display:flex;align-items:center;gap:10px;">
+                        <i class="fas fa-music" style="color:var(--primary-gold);font-size:1.5rem;"></i>
+                        <span>${file.name}</span>
+                        <button onclick="removeMusic()" style="margin-right:auto;color:#EF4444;border:none;background:none;cursor:pointer;">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                `;
+                db.showNotification('تم رفع الموسيقى بنجاح', 'success');
+            }
+        }
+        
+        function removeCover() { uploadedCover = null; document.getElementById('coverPreview').innerHTML = ''; }
+        function removeMusic() { uploadedMusic = null; document.getElementById('musicPreview').innerHTML = ''; }
+        
+        function renderGalleryPreview() {
+            const container = document.getElementById('galleryPreview');
+            container.innerHTML = uploadedGallery.map((url, index) => `
+                <div class="preview-item">
+                    <img src="${url}" alt="Gallery ${index + 1}">
+                    <button class="remove-btn" onclick="removeGalleryImage(${index})"><i class="fas fa-times"></i></button>
+                </div>
+            `).join('');
+        }
+        
+        function removeGalleryImage(index) {
+            uploadedGallery.splice(index, 1);
+            renderGalleryPreview();
+        }
+        
+        // ===================================
+        // Generate Preview
+        // ===================================
+        function generatePreview() {
+            const slug = document.getElementById('customSlug').value.trim() || 
+                         `${document.getElementById('groomName').value}&${document.getElementById('brideName').value}`;
+            
+            document.getElementById('previewUrl').textContent = `da3watfarah.com/${slug}`;
+            
+            document.getElementById('invitationSummary').innerHTML = `
+                <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:15px;text-align:right;">
+                    <div><strong>العريس:</strong> ${document.getElementById('groomName').value}</div>
+                    <div><strong>العروس:</strong> ${document.getElementById('brideName').value}</div>
+                    <div><strong>التاريخ:</strong> ${document.getElementById('weddingDate').value}</div>
+                    <div><strong>الوقت:</strong> ${document.getElementById('weddingTime').value}</div>
+                    <div><strong>القاعة:</strong> ${document.getElementById('venueName').value}</div>
+                    <div><strong>القالب:</strong> ${selectedTemplate?.nameAr || '-'}</div>
+                </div>
+            `;
+        }
+        
+        // ===================================
+        // Publish Invitation
+        // ===================================
+        async function publishInvitation() {
+            const slug = document.getElementById('customSlug').value.trim() || 
+                         `${document.getElementById('groomName').value}&${document.getElementById('brideName').value}`;
+            
+            // Check slug availability
+            const isAvailable = await db.isSlugAvailable(slug);
+            if (!isAvailable) {
+                db.showNotification('هذا الرابط مستخدم بالفعل، اختر رابط آخر', 'error');
+                return;
+            }
+            
+            const invitationData = {
+                couple: {
+                    groomName: document.getElementById('groomName').value.trim(),
+                    groomFatherName: document.getElementById('groomFatherName').value.trim(),
+                    brideName: document.getElementById('brideName').value.trim(),
+                    brideFatherName: document.getElementById('brideFatherName').value.trim(),
+                    parentsNames: document.getElementById('parentsNames').value.trim()
+                },
+                event: {
+                    date: new Date(document.getElementById('weddingDate').value).getTime(),
+                    time: document.getElementById('weddingTime').value,
+                    venue: document.getElementById('venueName').value.trim(),
+                    address: document.getElementById('venueAddress').value.trim(),
+                    googleMapsUrl: document.getElementById('googleMapsUrl').value.trim()
+                },
+                design: {
+                    templateId: selectedTemplate?.id || 'classic',
+                    primaryColor: selectedColors.primary,
+                    secondaryColor: selectedColors.secondary,
+                    fontFamily: selectedTemplate?.fontFamily || "'Tajawal', sans-serif",
+                    coverImage: uploadedCover,
+                    galleryImages: uploadedGallery,
+                    musicUrl: uploadedMusic
+                },
+                content: {
+                    welcomeText: document.getElementById('welcomeText').value.trim(),
+                    invitationText: document.getElementById('invitationText').value.trim(),
+                    loveStory: document.getElementById('loveStory').value.trim()
+                },
+                slug: slug
+            };
+            
+            db.showNotification('جاري نشر الدعوة...', 'info');
+            
+            const result = await db.createInvitation(invitationData);
+            
+            if (result.success) {
+                db.showNotification('تم نشر الدعوة بنجاح! 🎉', 'success');
+                
+                setTimeout(() => {
+                    window.location.href = `my-invitations.html?new=${result.invitationId}`;
+                }, 1500);
+            } else {
+                db.showNotification(result.error || 'حدث خطأ في النشر', 'error');
+            }
+        }
+    </script>
+</body>
+</html>

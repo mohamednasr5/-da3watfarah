@@ -1,0 +1,3102 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>كاتب AI | دعوة فرح</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=Amiri:wght@400;700&family=Aref+Ruqaa:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    
+    <style>
+        /* ===================================
+           AI Writer Specific Styles
+           =================================== */
+        
+        /* Page Header */
+        .ai-page-header {
+            background: linear-gradient(135deg, var(--bg-dark) 0%, #1a1a2e 100%);
+            padding: 30px;
+            border-radius: var(--radius-xl);
+            margin-bottom: 25px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .ai-page-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.1) 0%, transparent 50%);
+            animation: pulse-glow 4s ease-in-out infinite;
+        }
+        
+        @keyframes pulse-glow {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 1; }
+        }
+        
+        .ai-header-content {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .ai-icon-wrapper {
+            width: 70px;
+            height: 70px;
+            background: var(--gradient-gold);
+            border-radius: var(--radius-xl);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            box-shadow: 0 8px 30px rgba(212, 175, 55, 0.4);
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+        
+        .ai-title-section h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 5px;
+        }
+        
+        .ai-title-section p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+        
+        /* Text Type Tabs */
+        .text-type-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            padding: 15px;
+            background: var(--bg-dark);
+            border-radius: var(--radius-lg);
+        }
+        
+        .type-tab {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            background: transparent;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius-md);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            font-family: var(--font-tajawal);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .type-tab:hover {
+            border-color: var(--primary-gold);
+            color: var(--primary-gold);
+            transform: translateY(-2px);
+        }
+        
+        .type-tab.active {
+            background: var(--gradient-gold);
+            border-color: var(--primary-gold);
+            color: var(--bg-dark);
+            font-weight: 700;
+        }
+        
+        .type-tab i {
+            font-size: 1.1rem;
+        }
+        
+        /* Main Content Grid */
+        .ai-main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+        
+        @media (max-width: 1024px) {
+            .ai-main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Input Section Card */
+        .input-card {
+            background: var(--bg-dark);
+            border-radius: var(--radius-xl);
+            padding: 25px;
+            box-shadow: var(--shadow-md);
+        }
+        
+        .card-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .card-title i {
+            width: 40px;
+            height: 40px;
+            background: var(--gradient-gold);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--bg-dark);
+            font-size: 1rem;
+        }
+        
+        .card-title h3 {
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+        
+        /* Form Groups */
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            color: var(--text-primary);
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+        
+        .form-group label i {
+            margin-left: 8px;
+            color: var(--primary-gold);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 14px 18px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius-md);
+            color: white;
+            font-family: var(--font-tajawal);
+            font-size: 1rem;
+            transition: all var(--transition-fast);
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-gold);
+            background: rgba(212, 175, 55, 0.05);
+            box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.1);
+        }
+        
+        .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+        }
+        
+        textarea.form-control {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        /* Select Styling */
+        select.form-control {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23D4AF37' viewBox='0 0 24 24'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: left 15px center;
+            background-size: 24px;
+            padding-left: 45px;
+        }
+        
+        /* Option Cards for Tone & Length */
+        .option-cards {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        
+        .option-card {
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            text-align: center;
+        }
+        
+        .option-card:hover {
+            border-color: rgba(212, 175, 55, 0.5);
+            background: rgba(212, 175, 55, 0.05);
+        }
+        
+        .option-card.selected {
+            border-color: var(--primary-gold);
+            background: rgba(212, 175, 55, 0.15);
+        }
+        
+        .option-card i {
+            display: block;
+            font-size: 1.3rem;
+            color: var(--primary-gold);
+            margin-bottom: 6px;
+        }
+        
+        .option-card span {
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        /* Generate Button */
+        .generate-btn {
+            width: 100%;
+            padding: 18px 30px;
+            background: var(--gradient-gold);
+            border: none;
+            border-radius: var(--radius-lg);
+            color: var(--bg-dark);
+            font-family: var(--font-tajawal);
+            font-size: 1.1rem;
+            font-weight: 800;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            transition: all var(--transition-normal);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .generate-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .generate-btn:hover::before {
+            left: 100%;
+        }
+        
+        .generate-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.4);
+        }
+        
+        .generate-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .generate-btn.loading {
+            pointer-events: none;
+        }
+        
+        /* Loading Spinner in Button */
+        .btn-spinner {
+            width: 22px;
+            height: 22px;
+            border: 3px solid rgba(26, 26, 46, 0.3);
+            border-top-color: var(--bg-dark);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Output Section Card */
+        .output-card {
+            background: var(--bg-dark);
+            border-radius: var(--radius-xl);
+            padding: 25px;
+            box-shadow: var(--shadow-md);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Output Header */
+        .output-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .output-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .action-btn {
+            padding: 8px 14px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius-md);
+            color: var(--text-secondary);
+            font-family: var(--font-tajawal);
+            font-size: 0.85rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all var(--transition-fast);
+        }
+        
+        .action-btn:hover {
+            border-color: var(--primary-gold);
+            color: var(--primary-gold);
+            background: rgba(212, 175, 55, 0.1);
+        }
+        
+        .action-btn.primary {
+            background: var(--gradient-gold);
+            border-color: var(--primary-gold);
+            color: var(--bg-dark);
+            font-weight: 600;
+        }
+        
+        .action-btn.primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
+        }
+        
+        /* Output Content Area */
+        .output-content {
+            flex: 1;
+            min-height: 300px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px dashed rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            position: relative;
+        }
+        
+        .output-text {
+            color: var(--text-primary);
+            font-family: var(--font-amiri);
+            font-size: 1.15rem;
+            line-height: 2;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+        
+        .output-text.editable {
+            outline: none;
+            border: 2px solid var(--primary-gold);
+            background: rgba(212, 175, 55, 0.05);
+            padding: 18px;
+            border-radius: var(--radius-md);
+            min-height: 250px;
+        }
+        
+        /* Empty State */
+        .empty-output {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            min-height: 250px;
+            color: var(--text-secondary);
+            text-align: center;
+        }
+        
+        .empty-output i {
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+        
+        .empty-output h4 {
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+        
+        .empty-output p {
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+        
+        /* Loading State in Output */
+        .loading-output {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            min-height: 250px;
+        }
+        
+        .ai-loading-animation {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            margin-bottom: 20px;
+        }
+        
+        .ai-loading-animation .orbit {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 3px solid transparent;
+            border-top-color: var(--primary-gold);
+            border-radius: 50%;
+            animation: orbit-spin 1.5s linear infinite;
+        }
+        
+        .ai-loading-animation .orbit:nth-child(2) {
+            width: 70%;
+            height: 70%;
+            top: 15%;
+            right: 15%;
+            animation-duration: 1.2s;
+            animation-direction: reverse;
+            border-top-color: #fff;
+        }
+        
+        .ai-loading-animation .orbit:nth-child(3) {
+            width: 40%;
+            height: 40%;
+            top: 30%;
+            right: 30%;
+            animation-duration: 0.8s;
+            border-right-color: var(--primary-gold);
+            border-top-color: transparent;
+        }
+        
+        .ai-loading-animation .center-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.5rem;
+            color: var(--primary-gold);
+            animation: pulse 1s ease-in-out infinite;
+        }
+        
+        @keyframes orbit-spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            50% { opacity: 0.5; transform: translate(-50%, -50%) scale(0.9); }
+        }
+        
+        .loading-text {
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-weight: 600;
+        }
+        
+        .loading-subtext {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin-top: 8px;
+        }
+        
+        /* Character Count */
+        .char-count {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .char-count span {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+        
+        .char-count strong {
+            color: var(--primary-gold);
+        }
+        
+        /* Templates Section */
+        .templates-section {
+            margin-top: 30px;
+        }
+        
+        .templates-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .template-card {
+            background: var(--bg-dark);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .template-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--gradient-gold);
+            transform: scaleY(0);
+            transition: transform var(--transition-normal);
+        }
+        
+        .template-card:hover {
+            border-color: var(--primary-gold);
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .template-card:hover::before {
+            transform: scaleY(1);
+        }
+        
+        .template-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(212, 175, 55, 0.15);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 12px;
+        }
+        
+        .template-icon i {
+            font-size: 1.2rem;
+            color: var(--primary-gold);
+        }
+        
+        .template-card h4 {
+            color: white;
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        
+        .template-card p {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            line-height: 1.6;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .template-tag {
+            display: inline-block;
+            padding: 4px 10px;
+            background: rgba(212, 175, 55, 0.15);
+            color: var(--primary-gold);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-top: 12px;
+        }
+        
+        /* History Section */
+        .history-section {
+            margin-top: 30px;
+        }
+        
+        .history-list {
+            max-height: 400px;
+            overflow-y: auto;
+            margin-top: 20px;
+        }
+        
+        .history-item {
+            background: var(--bg-dark);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            margin-bottom: 12px;
+            transition: all var(--transition-fast);
+            cursor: pointer;
+        }
+        
+        .history-item:hover {
+            border-color: rgba(212, 175, 55, 0.3);
+            background: rgba(212, 175, 55, 0.05);
+        }
+        
+        .history-item-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .history-type-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 12px;
+            background: rgba(212, 175, 55, 0.15);
+            color: var(--primary-gold);
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .history-date {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+        }
+        
+        .history-preview {
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .history-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        
+        .history-btn {
+            padding: 6px 12px;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: var(--radius-sm);
+            color: var(--text-secondary);
+            font-family: var(--font-tajawal);
+            font-size: 0.8rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all var(--transition-fast);
+        }
+        
+        .history-btn:hover {
+            border-color: var(--primary-gold);
+            color: var(--primary-gold);
+        }
+        
+        .history-btn.danger:hover {
+            border-color: #ef4444;
+            color: #ef4444;
+        }
+        
+        /* Empty History State */
+        .empty-history {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-secondary);
+        }
+        
+        .empty-history i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            opacity: 0.4;
+        }
+        
+        /* Toast Notification */
+        .toast-notification {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--bg-dark);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius-lg);
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 9999;
+            opacity: 0;
+            transition: all var(--transition-normal);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .toast-notification.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+        
+        .toast-notification.success {
+            border-color: #22c55e;
+        }
+        
+        .toast-notification.success i {
+            color: #22c55e;
+        }
+        
+        .toast-notification.error {
+            border-color: #ef4444;
+        }
+        
+        .toast-notification.error i {
+            color: #ef4444;
+        }
+        
+        .toast-notification.info {
+            border-color: var(--primary-gold);
+        }
+        
+        .toast-notification.info i {
+            color: var(--primary-gold);
+        }
+        
+        .toast-notification span {
+            color: var(--text-primary);
+            font-size: 0.95rem;
+        }
+        
+        /* Section Title */
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+        
+        .section-title i {
+            color: var(--primary-gold);
+            font-size: 1.3rem;
+        }
+        
+        .section-title h2 {
+            color: white;
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+        
+        .section-subtitle {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+        
+        /* Typing Animation */
+        .typing-cursor {
+            display: inline-block;
+            width: 2px;
+            height: 1.2em;
+            background: var(--primary-gold);
+            margin-right: 2px;
+            animation: blink 0.8s infinite;
+            vertical-align: middle;
+        }
+        
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+        
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .ai-header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .text-type-tabs {
+                justify-content: center;
+            }
+            
+            .type-tab {
+                padding: 10px 15px;
+                font-size: 0.85rem;
+            }
+            
+            .type-tab span {
+                display: none;
+            }
+            
+            .option-cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .output-actions {
+                justify-content: center;
+            }
+        }
+        
+        /* Scrollbar Styling */
+        .history-list::-webkit-scrollbar,
+        textarea::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .history-list::-webkit-scrollbar-track,
+        textarea::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 3px;
+        }
+        
+        .history-list::-webkit-scrollbar-thumb,
+        textarea::-webkit-scrollbar-thumb {
+            background: rgba(212, 175, 55, 0.3);
+            border-radius: 3px;
+        }
+        
+        .history-list::-webkit-scrollbar-thumb:hover,
+        textarea::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-gold);
+        }
+    </style>
+</head>
+<body class="dashboard-body">
+    <!-- Dashboard Container -->
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar"></aside>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Mobile Header -->
+            <header class="mobile-header">
+                <button class="mobile-menu-btn" id="mobileSidebarBtn">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h1>كاتب AI</h1>
+                <div class="mobile-spacer"></div>
+            </header>
+            
+            <!-- AI Writer Content -->
+            <div class="content-area">
+                <!-- Page Header -->
+                <div class="ai-page-header" data-aos="fade-up">
+                    <div class="ai-header-content">
+                        <div class="ai-icon-wrapper">
+                            <i class="fas fa-wand-magic-sparkles"></i>
+                        </div>
+                        <div class="ai-title-section">
+                            <h1>كاتب الذكاء الاصطناعي</h1>
+                            <p>أنشئ نصوص دعوة زفاف احترافية في ثوانٍ معدودة</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Text Type Tabs -->
+                <div class="text-type-tabs" data-aos="fade-up" data-aos-delay="100">
+                    <button class="type-tab active" data-type="invitation" onclick="selectTextType(this)">
+                        <i class="fas fa-envelope-heart"></i>
+                        <span>نص الدعوة</span>
+                    </button>
+                    <button class="type-tab" data-type="quran" onclick="selectTextType(this)">
+                        <i class="fas fa-book-quran"></i>
+                        <span>آية قرآنية</span>
+                    </button>
+                    <button class="type-tab" data-type="love-story" onclick="selectTextType(this)">
+                        <i class="fas fa-heart"></i>
+                        <span>قصة حب</span>
+                    </button>
+                    <button class="type-tab" data-type="poem" onclick="selectTextType(this)">
+                        <i class="fas feather"></i>
+                        <span>شعر/قصيدة</span>
+                    </button>
+                    <button class="type-tab" data-type="thank-you" onclick="selectTextType(this)">
+                        <i class="fas fa-hands-praying"></i>
+                        <span>رسالة شكر</span>
+                    </button>
+                </div>
+                
+                <!-- Main Grid: Input + Output -->
+                <div class="ai-main-grid">
+                    <!-- Input Section -->
+                    <div class="input-card" data-aos="fade-right" data-aos-delay="150">
+                        <div class="card-title">
+                            <i class="fas fa-sliders"></i>
+                            <h3>إعدادات التوليد</h3>
+                        </div>
+                        
+                        <form id="aiForm" onsubmit="return false;">
+                            <!-- Couple Names -->
+                            <div class="form-group">
+                                <label>
+                                    <i class="fas fa-user-group"></i>
+                                    أسماء العروسين
+                                </label>
+                                <input type="text" 
+                                       class="form-control" 
+                                       id="groomName" 
+                                       placeholder="اسم العريس"
+                                       value="">
+                                <input type="text" 
+                                       class="form-control" 
+                                       id="brideName" 
+                                       placeholder="اسم العروسة"
+                                       style="margin-top: 10px;"
+                                       value="">
+                            </div>
+                            
+                            <!-- Wedding Details -->
+                            <div class="form-group">
+                                <label>
+                                    <i class="fas fa-calendar-days"></i>
+                                    تفاصيل الزفاف
+                                </label>
+                                <input type="text" 
+                                       class="form-control" 
+                                       id="weddingDate" 
+                                       placeholder="تاريخ الزفاف (مثال: 15 رمضان 1446)"
+                                       value="">
+                                <input type="text" 
+                                       class="form-control" 
+                                       id="weddingLocation" 
+                                       placeholder="مكان الزفاف"
+                                       style="margin-top: 10px;"
+                                       value="">
+                            </div>
+                            
+                            <!-- Tone Selection -->
+                            <div class="form-group">
+                                <label>
+                                    <i class="fas fa-palette"></i>
+                                    نغمة النص
+                                </label>
+                                <div class="option-cards" id="toneOptions">
+                                    <div class="option-card selected" data-tone="formal" onclick="selectTone(this)">
+                                        <i class="fas fa-user-tie"></i>
+                                        <span>رسمي</span>
+                                    </div>
+                                    <div class="option-card" data-tone="romantic" onclick="selectTone(this)">
+                                        <i class="fas fa-heart-pulse"></i>
+                                        <span>رومانسي</span>
+                                    </div>
+                                    <div class="option-card" data-tone="fun" onclick="selectTone(this)">
+                                        <i class="fas fa-face-laugh-beam"></i>
+                                        <span>مرح</span>
+                                    </div>
+                                    <div class="option-card" data-tone="traditional" onclick="selectTone(this)">
+                                        <i class="fas fa-mosque"></i>
+                                        <span>تقليدي</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Length Selection -->
+                            <div class="form-group">
+                                <label>
+                                    <i class="fas fa-ruler-horizontal"></i>
+                                    طول النص
+                                </label>
+                                <div class="option-cards" id="lengthOptions">
+                                    <div class="option-card" data-length="short" onclick="selectLength(this)">
+                                        <i class="fas fa-minimize"></i>
+                                        <span>قصير</span>
+                                    </div>
+                                    <div class="option-card selected" data-length="medium" onclick="selectLength(this)">
+                                        <i class="fas fa-arrows-left-right"></i>
+                                        <span>متوسط</span>
+                                    </div>
+                                    <div class="option-card" data-length="long" onclick="selectLength(this)">
+                                        <i class="fas fa-maximize"></i>
+                                        <span>طويل</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Additional Context -->
+                            <div class="form-group">
+                                <label>
+                                    <i class="fas fa-message"></i>
+                                    سياق إضافي (اختياري)
+                                </label>
+                                <textarea class="form-control" 
+                                          id="additionalContext" 
+                                          placeholder="أضف أي تفاصيل إضافية تريد تضمينها في النص..."
+                                          rows="3"></textarea>
+                            </div>
+                            
+                            <!-- Generate Button -->
+                            <button type="submit" class="generate-btn" id="generateBtn" onclick="generateText()">
+                                <i class="fas fa-wand-magic-sparkles"></i>
+                                <span>توليد النص بالذكاء الاصطناعي</span>
+                            </button>
+                        </form>
+                    </div>
+                    
+                    <!-- Output Section -->
+                    <div class="output-card" data-aos="fade-left" data-aos-delay="200">
+                        <div class="output-header">
+                            <div class="card-title" style="margin-bottom: 0; padding-bottom: 0; border: none;">
+                                <i class="fas fa-file-lines"></i>
+                                <h3>النتيجة</h3>
+                            </div>
+                            <div class="output-actions" id="outputActions" style="display: none;">
+                                <button class="action-btn" onclick="copyToClipboard()" title="نسخ">
+                                    <i class="fas fa-copy"></i>
+                                    نسخ
+                                </button>
+                                <button class="action-btn" id="editBtn" onclick="toggleEditMode()" title="تعديل">
+                                    <i class="fas fa-pen-to-square"></i>
+                                    تعديل
+                                </button>
+                                <button class="action-btn" onclick="regenerateText()" title="إعادة التوليد">
+                                    <i class="fas fa-rotate"></i>
+                                    إعادة
+                                </button>
+                                <button class="action-btn" onclick="saveToHistory()" title="حفظ">
+                                    <i class="fas fa-bookmark"></i>
+                                    حفظ
+                                </button>
+                                <button class="action-btn primary" onclick="useInInvitation()" title="استخدام في الدعوة">
+                                    <i class="fas fa-paper-plane"></i>
+                                    استخدام
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Output Content Area -->
+                        <div class="output-content" id="outputContent">
+                            <div class="empty-output" id="emptyState">
+                                <i class="fas fa-sparkles"></i>
+                                <h4>جاهز للبدء!</h4>
+                                <p>اختر نوع النص واضبط الإعدادات، ثم اضغط على زر التوليد</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Character Count -->
+                        <div class="char-count" id="charCount" style="display: none;">
+                            <span>عدد الأحرف: <strong id="charCountNum">0</strong></span>
+                            <span>عدد الكلمات: <strong id="wordCountNum">0</strong></span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Templates Section -->
+                <div class="templates-section" data-aos="fade-up" data-aos-delay="250">
+                    <div class="section-title">
+                        <i class="fas fa-layer-group"></i>
+                        <h2>قوالب جاهزة</h2>
+                    </div>
+                    <p class="section-subtitle">اختر قالباً جاهزاً للبدء بسرعة أو للإلهام</p>
+                    
+                    <div class="templates-grid" id="templatesGrid">
+                        <!-- Templates will be loaded here -->
+                    </div>
+                </div>
+                
+                <!-- History Section -->
+                <div class="history-section" data-aos="fade-up" data-aos-delay="300">
+                    <div class="section-title">
+                        <i class="fas fa-clock-rotate-left"></i>
+                        <h2>سجل التوليدات</h2>
+                    </div>
+                    <p class="section-subtitle">جميع النصوص التي قمت بتوليدها وحفظها</p>
+                    
+                    <div class="history-list" id="historyList">
+                        <!-- History items will be loaded here -->
+                        <div class="empty-history" id="emptyHistory">
+                            <i class="fas fa-folder-open"></i>
+                            <p>لا توجد نصوص محفوظة بعد</p>
+                            <small>ستظهر هنا النصوص التي تقوم بحفظها</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Toast Notification -->
+    <div class="toast-notification" id="toastNotification">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMessage">تم بنجاح!</span>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+    
+    <!-- AOS Animation Library -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    
+    <!-- App Scripts -->
+    <script src="js/firebase-config.js"></script>
+    <script src="js/db.js"></script>
+    <script src="js/sidebar.js"></script>
+    
+    <!-- AI Writer Script -->
+    <script>
+        // ===================================
+        // AI Writer Module - Global State
+        // ===================================
+        const AIWriter = {
+            currentType: 'invitation',
+            currentTone: 'formal',
+            currentLength: 'medium',
+            generatedText: '',
+            isEditing: false,
+            isGenerating: false,
+            history: []
+        };
+        
+        // NVIDIA Config (for future API integration)
+        window.nvidiaConfig = {
+            apiKey: '',
+            baseUrl: 'https://integrate.api.nvidia.com/v1',
+            model: 'meta/llama3-70b-instruct'
+        };
+        
+        // ===================================
+        // Text Templates Database
+        // ===================================
+        const textTemplates = {
+            invitation: {
+                formal: {
+                    short: `بسم الله الرحمن الرحيم
+
+يسرّ {groom} و{bride} أن يدعواكم لحضور حفل زفافهما السعيد
+
+التاريخ: {date}
+المكان: {location}
+
+نتشرف بوجودكم بيننا`,
+                    medium: `بسم الله الرحمن الرحيم
+
+{groom_name}
+و
+{bride_name}
+
+يدعوانكم لتشاركوهما فرحة عرسهما السعيد وتكونوا من الضيوف الكرام
+
+📅 موعدنا: {date}
+📍 مكاننا: {location}
+
+"وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُم مِّنْ أَنفُسِكُمْ أَزْوَاجًا لِّتَسْكُنُوا إِلَيْهَا وَجَعَلَ بَيْنَكُم مَّوَدَّةً وَرَحْمَةً"
+
+نتطلع لرؤيتكم`,
+                    long: `✨ بسم الله الرحمن الرحيم ✨
+
+═════════════════════════
+
+🤵 {groom_name}
+💍 و 💍
+👰 {bride_name}
+
+═════════════════════════
+
+بحمد الله وتوفيقه، نسرّ أن ندعوكم لمشاركتنا أفراحنا
+في هذا اليوم المبارك الذي يجمع قلبينا
+
+📆 التاريخ: {date}
+🏛️ القاعة: {location}
+
+═════════════════════════
+
+"رَبَّنَا هَبْ لَنَا مِنْ أَزْوَاجِنَا وَذُرِّيَّاتِنَا قُرَّةَ أَعْيُنٍ وَاجْعَلْنَا لِلْمُتَّقِينَ إِمَامًا"
+
+═════════════════════════
+
+🕌 صلاة المغرب: [وقت الصلاة]
+🎉 الحفل الرئيسي: [وقت الحفل]
+
+نتشرف بحضوركم الكريم وتواجدكم بيننا
+لنملأ هذا اليوم بالفرح والسعادة
+
+مع خالص الشكر والتقدير
+💌 {groom} و {bride}`
+                },
+                romantic: {
+                    short: `في يوم ملؤه الحب والفرح...
+
+{groom} ❤️ {bride}
+
+يدعوانكم لحضور زفافهما
+
+📅 {date}
+📍 {location}`,
+                    medium: `❤️ عندما تتحد الروحان... ❤️
+
+{groom_name}
+&
+{bride_name}
+
+في رحلة حب جميلة، قررا أن يكملا طريقهما معاً
+ويسعدان بدعوتكم لمشاركتهما هذه اللحظات الخاصة
+
+🗓️ {date}
+📍 {location}
+
+"الحب لا ينظر بعين واحدة، بل بقلبين"
+
+ننتظركم بحفاوة 🌹`,
+                    long: `🌹 قصة حب كتبتها الأقدار 🌹
+
+═════════════════════════
+
+من أول نظرة... إلى حياة مشتركة
+
+{groom_name}
+❤️
+{bride_name}
+
+═════════════════════════
+
+في يوم سيبقى محفوراً في ذاكرة القلب...
+نحتفل بوصول قصة حبنا إلى أجمل محطاتها
+
+📅 عندما يتوقف الزمن: {date}
+📍 حيث يلتقي الحب: {location}
+
+═════════════════════════
+
+"الحب الحقيقي هو ذلك الذي لا يعرف المستحيل"
+"ومن أحب شيئاً أكثر من الذكر"
+
+═════════════════════════
+
+🌟 برنامج الاحتفال:
+• استقبال الضيوف
+• حفلة الغداء
+• سهرة سعيدة
+
+انضموا إلينا لنحتفل معاً ببدء فصل جديد
+فصل مليء بالحب والأمل والسعادة
+
+بحب وامتنان،
+{groom} & {bride} 💕`
+                },
+                fun: {
+                    short: `🎉 أخيراً!
+
+{groom} + {bride} = ❤️
+
+زفاف! تعالوا نحتفل!
+
+📅 {date}
+📍 {location}`,
+                    medium: `🚨 خبر عاجل! 🚨
+
+العازب/ة: {groom_name}
+قرر/ت أن:
+✅ يتزوج/تزوج!
+🤵 من: {bride_name}
+
+📅 متى؟ {date}
+📍 أين؟ {location}
+
+⚠️ تحذير: قد يحتوي هذا الحفل على:
+• ضحك حتى البكاء 🤣
+• طعام لذيذ 😋
+• فرح لا ينتهي 🎉
+
+حضوركم إجباري! 😉`,
+                    long: `🎊 أعلنوا يا الناس! 🎊
+
+═════════════════════════
+
+بعد سنوات من البحث عن النصف الآخر...
+وألف "لماذا متزوج/ة بعد؟" 😂
+
+{groom_name}
+💍
+{bride_name}
+
+قرروا أن:
+"يكفينا صراحة، نتزوج!" 
+
+═════════════════════════
+
+📅 الموعد الرسمي: {date}
+📍 موقع الجريمة (الزفاف): {location}
+
+═════════════════════════
+
+⚠️ تنبيهات مهمة:
+✓ جهزوا أجمل الملابس
+✓ احضروا بطون فارغة (الأكل كثير!)
+✓ اتركوا الهموم في البيت
+✓ جاهزوا أجمل الابتسامات 📸
+
+🎁 الهدايا: حضوركم يكفينا (بس ما ي拒ع الهدايا 😜)
+
+═════════════════════════
+
+"زواج سعيد... إن شاء الله!"
+
+مع حب،
+العرسان المستقبليان 💑`
+                },
+                traditional: {
+                    short: `الحمد لله رب العالمين
+
+ندعوكم لحضور زفاف
+ابنهما/ابنتيهما
+{groom} و {bride}
+
+{date}
+{location}`,
+                    medium: `﷽
+
+السادة / السيدات الكرام
+
+تحية طيبة وبعد،
+
+نيابة عن عائلتينا الكريمتين،
+ندعوكم لحضور حفل زفاف ابني/ابنتنا
+
+{groom_name}
+و
+{bride_name}
+
+في يوم {date}
+بإذن الله تعالى
+
+المكان: {location}
+
+وسيكون تشرف بحضوركم الكريم
+
+وتقبلوا فائق الاحترام والتقدير`,
+                    long: `﷽
+
+═════════════════════════
+
+بسم الله الرحمن الرحيم
+والصلاة والسلام على أشرف المرسلين
+
+═════════════════════════
+
+السادة / السيدات الكرام
+وفقهم الله لما فيه الخير
+
+السلام عليكم ورحمة الله وبركاته،
+
+أما بعد،
+
+فإنه يشرفنا ويسعدنا دعوتكم الكريمة
+لحضور حفل زفاف ابني/ابنتنا الغالي/ة
+
+{groom_name}
+ابن/ابنة
+[اسم الأب]
+و
+{bride_name}
+ابنة/ابن
+[اسم الأب]
+
+═════════════════════════
+
+📅 يوم: {date}
+📍 القاعة: {location}
+
+═════════════════════════
+
+"وَأَنشَأْنَا أَزْوَاجًا وَجَعَلْنَا النَّوْمَ سُكَنًا"
+
+═════════════════════════
+
+🕌 صلاة المغرب: [الوقت]
+🍽️ العشاء: [الوقت]
+🎉 الحفل: [الوقت]
+
+═════════════════════════
+
+نتشرف بتشريفكم الكريم
+وحضوركم الغالي بيننا
+
+وتفضلوا بقبول فائق الاحترام والتقدير
+
+والسلام عليكم ورحمة الله وبركاته
+
+العائلتان الكريمتان`
+                }
+            },
+            quran: {
+                formal: {
+                    short: `"وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُم مِّنْ أَنفُسِكُمْ أَزْوَاجًا لِّتَسْكُنُوا إِلَيْهَا وَجَعَلَ بَيْنَكُم مَّوَدَّةً وَرَحْمَةً"`
+                    ,medium: `"وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُم مِّنْ أَنفُسِكُمْ أَزْوَاجًا لِّتَسْكُنُوا إِلَيْهَا وَجَعَلَ بَيْنَكُم مَّوَدَّةً وَرَحْمَةً ۚ إِنَّ فِي ذَٰلِكَ لَآيَاتٍ لِّقَوْمٍ يَتَفَكَّرُونَ"
+
+سورة الروم - الآية 21`
+                    ,long: `"وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُم مِّنْ أَنفُسِكُمْ أَزْوَاجًا لِّتَسْكُنُوا إِلَيْهَا وَجَعَلَ بَيْنَكُم مَّوَدَّةً وَرَحْمَةً ۚ إِنَّ فِي ذَٰلِكَ لَآيَاتٍ لِّقَوْمٍ يَتَفَكَّرُونَ"
+
+سورة الروم - الآية 21
+
+---
+
+"وَاللَّهُ جَعَلَ لَكُم مِّنْ أَنفُسِكُمْ أَزْوَاجًا وَجَعَلَ لَكُم مِّنْ أَزْوَاجِكُم بَنِينَ وَحَفَدَةً وَرَزَقَكُم مِّنَ الطَّيِّبَاتِ"
+
+سورة النحل - الآية 72
+
+---
+
+"هُنَّ لِبَاسٌ لَّكُمْ وَأَنتُمْ لِبَاسٌ لَّهُنَّ"
+
+سورة البقرة - الآية 187`
+                },
+                romantic: {
+                    short: `"وَمِنْ كُلِّ شَيْءٍ خَلَقْنَا زَوْجَيْنِ لَعَلَّكُمْ تَذَكَّرُونَ"`
+                    ,medium: `"وَمِنْ كُلِّ شَيْءٍ خَلَقْنَا زَوْجَيْنِ لَعَلَّكُمْ تَذَكَّرُونَ"
+
+سورة الذاريات - الآية 49
+
+"أَنِّي مَسَّنِيَ الضُّرُّ وَأَنتَ أَرْحَمُ الرَّاحِمِينَ"`
+
+                    ,long: `"وَمِنْ كُلِّ شَيْءٍ خَلَقْنَا زَوْجَيْنِ لَعَلَّكُمْ تَذَكَّرُونَ"
+
+سورة الذاريات - الآية 49
+
+---
+
+"وَهُوَ الَّذِي أَنشَأَكُم مِّن نَّفْسٍ وَاحِدَةٍ فَمُسْتَقَرٌّ وَمُسْتَوْدَعٌ"
+
+سورة الأنعام - الآية 98
+
+---
+
+"وَخَلَقَكُمْ مِنْهَا زَوْجَهَا وَبَثَّ مِنْهُمَا رِجَالًا كَثِيرًا وَنِسَاءً"
+
+سورة النساء - الآية 1`
+                },
+                fun: {
+                    short: `"وَأَسْبَغَ عَلَيْكُمْ نِعَمَهُ ظَاهِرَةً وَبَاطِنَةً"`
+                    ,medium: `"وَأَسْبَغَ عَلَيْكُمْ نِعَمَهُ ظَاهِرَةً وَبَاطِنَةً"
+
+لقمان 20 - ومن أعظم النعم: الزواج! 😄`
+
+                    ,long: `"رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ"
+
+البقرة 201 - والحسنة في الدنيا تبدأ بالزفاف! 🎉
+
+---
+
+"وَقُل رَّبِّ زِدْنِي عِلْمًا"
+
+طه 114 - علمنا كيف نكون زوجين سعيدين! 💑`
+                },
+                traditional: {
+                    short: `"رَبَّنَا هَبْ لَنَا مِنْ أَزْوَاجِنَا وَذُرِّيَّاتِنَا قُرَّةَ أَعْيُنٍ"`
+                    ,medium: `"رَبَّنَا هَبْ لَنَا مِنْ أَزْوَاجِنَا وَذُرِّيَّاتِنَا قُرَّةَ أَعْيُنٍ وَاجْعَلْنَا لِلْمُتَّقِينَ إِمَامًا"
+
+سورة الفرقان - الآية 74`
+
+                    ,long: `"رَبَّنَا هَبْ لَنَا مِنْ أَزْوَاجِنَا وَذُرِّيَّاتِنَا قُرَّةَ أَعْيُنٍ وَاجْعَلْنَا لِلْمُتَّقِينَ إِمَامًا"
+
+سورة الفرقان - الآية 74
+
+---
+
+"وَالَّذِينَ يَقُولُونَ رَبَّنَا هَبْ لَنَا مِنْ أَزْوَاجِنَا وَذُرِّيَّاتِنَا قُرَّةَ أَعْيِنٍ وَاجْعَلْنَا لِلْمُتَّقِينَ إِمَامًا"
+
+سورة الفرقان - الآية 74
+
+---
+
+"وَأَنكِحُوا الْأَيَامَىٰ مِنكُمْ وَالصَّالِحِينَ مِنْ عِبَادِكُمْ وَإِمَائِكُمْ"
+
+سورة النور - الآية 32`
+                }
+            },
+            'love-story': {
+                formal: {
+                    short: `قصة حب {groom} و {bride}
+
+بدأت رحلتهما معاً في [تاريخ اللقاء]
+وها هم اليوم يكتبون فصلاً جديداً من حياتهم المشتركة
+
+{date} - {location}`,
+                    medium: `📖 قصة حب {groom_name} و {bride_name}
+
+في يوم من الأيام، قدر الله أن تلتقي طريقهما...
+ومنذ تلك اللحظة، أصبحا لا يستغنيان عن بعض
+
+📍 حيث التقيا: [مكان اللقاء]
+📅 متى كان ذلك: [تاريخ]
+
+اليوم، وبعد رحلة جميلة من الحب والتفاهم،
+يقرران رسمياً البدء في حياة جديدة معاً
+
+🎊 زفافنا: {date}
+📍 المكان: {location}
+
+نتشرف بدعوتكم لمشاركتنا هذه المناسبة السعيدة`,
+                    long: `📖 قصة حب كتبتها الأقدار 📖
+
+═════════════════════════
+
+الفصل الأول: البداية
+
+في [سنة/تاريخ]، وعلى غير توقع،
+كانت هناك لحظة غيّرت كل شيء...
+
+{groom_name} التقى {bride_name}
+في [مكان/مناسبة اللقاء الأول]
+
+═════════════════════════
+
+الفصل الثاني: التعارف
+
+مع كل لقاء جديد، اكتشفوا المزيد عن بعضهم...
+الاهتمامات المشتركة، الأحلام المتشابهة،
+والقلوب التي تدق بإيقاع واحد
+
+═════════════════════════
+
+الفصل الثالث: القرار
+
+وبعد [مدة] من المعرفة الجميلة،
+قررا أن يكونا شريكين في هذه الحياة
+
+═════════════════════════
+
+الفصل الرابع: الزفاف 🎊
+
+📅 {date}
+📍 {location}
+
+═════════════════════════
+
+نفتخر بدعوتكم لتكونوا جزءاً من هذه القصة الجميلة
+ولتشهدوا على بداية فصل جديد مليء بالحب والسعادة
+
+مع خالص الحب،
+{groom} & {bride} 💕`
+                },
+                romantic: {
+                    short: `💕 كيف التقينا...
+
+{groom} & {bride}
+
+كانت البداية مجرد نظرة...
+وانتهت بقصة حب مدى الحياة
+
+نحتفل بحبنا: {date}`
+                    ,medium: `🌹 قصة حبنا 🌹
+
+{groom_name} + {bride_name} = ❤️
+
+بدأت قصتنا في [تاريخ/مناسبة]
+حيث كانت البداية بسيطة...
+لكن الحب كان أكبر من أي تخيل
+
+كل يوم معاً هو هدية
+وكل لحظة هي ذكرى جميلة
+
+═══════════════
+
+اليوم نحتفل بحبنا
+📅 {date}
+📍 {location}
+
+═══════════════
+
+تعالوا شاهدوا بأنفسكم
+كيف يمكن للحب أن يصنع المعجزات 💕`
+
+                    ,long: `🌹 عندما التقت روحانا... 🌹
+
+═════════════════════════
+
+{groom_name}
+&
+{bride_name}
+
+═════════════════════════
+
+في عالم مليء بالمليارات من الناس...
+وجدنا بعضنا البعض
+
+ليس صدفة... بل قدرة إلهية
+
+═════════════════════════
+
+📖 فصول قصتنا:
+
+الفصل الأول: النظرة الأولى ✨
+[وصف اللقاء الأول]
+
+الفصل الثاني: الكلمة الأولى 💬
+[وصف بداية المحادثة]
+
+الفصل الثالث: أول موعد 🌙
+[وصف أول موعد]
+
+الفصل الرابع: "أحبك" ❤️
+[وصف moment الإعتراف بالحب]
+
+الفصل الخامس: الخطوبة 💍
+[وصف moment الخطوبة]
+
+الفصل السادس: الزفاف 👰🤵
+[اليوم الذي نحتفل به!]
+
+═════════════════════════
+
+📅 {date}
+📍 {location}
+
+═════════════════════════
+
+"الحب ليس بالنظر إلى بعضنا البعض،
+بل النظر في الاتجاه نفسه"
+
+انضموا إلينا لنحتفل معاً
+بأجمل قصة حب... قصتنا 💕`
+                },
+                fun: {
+                    short: `😂 كيف وقعنا في الحب!
+
+{groom} & {bride}
+
+الحقيقة: [قصة مضحكة مبسطة]
+
+زفافنا: {date} 🎉`
+                    ,medium: `🤣 قصة حب (محرجة قليلاً) 🤣
+
+{groom_name} و {bride_name}
+
+كيف بدأت القصة:
+[أضف قصة مضحكة عن اللقاء الأول]
+
+الحقيقة المفضلة لدينا:
+[شيء مضحك عن العلاقة]
+
+═══════════════
+
+ومع كل هذا... ما زلنا نحب بعض! 😂
+
+📅 زفافنا: {date}
+📍 أين: {location}
+
+═══════════════
+
+تعالوا تضحكوا معنا (علينا) في زفافنا! 🎉`
+
+                    ,long: `🎭 القصة الكاملة (النسخة المضحكة) 🎭
+
+═════════════════════════
+
+{groom_name}
+💍
+{bride_name}
+
+═════════════════════════
+
+⚠️ تحذير: قد تحتوي القصة التالية على:
+• محتوى مضحج جداً
+• لحظات محرجة
+• اعترافات خطيرة 😂
+
+═════════════════════════
+
+📖 الفصل الأول: الكارثة الأولى
+
+[اضف قصة مضحكة عن اللقاء الأول - مثال:
+"كان أول لقاء في مكان ما، وحدث شيء مضحك..."]
+
+═════════════════════════
+
+📖 الفصل الثاني: "هل هذا الشخص مجنون؟"
+
+[مرحلة التعارف والمواقف المضحكة]
+
+═════════════════════════
+
+📖 الفصل الثالث: "أوه، ربما ليس مجنوناً"
+
+[مرحلة الوقوع في الحب]
+
+═════════════════════════
+
+📖 الفصل الرابع: "حسناً، سأتزوجه/ها"
+
+[قرار الزواج]
+
+═════════════════════════
+
+🎊 والآن... الزفاف! 🎊
+
+📅 {date}
+📍 {location}
+
+═════════════════════════
+
+تعالوا احتفلوا معنا!
+(واسمعوا باقي القصص المضحكة 😜)
+
+الحب ي conquers كل شيء... حتى الجنون! 💕`
+                },
+                traditional: {
+                    short: `قصة {groom} و {bride}
+
+بتوفيق من الله، جمعهما القدر
+وها هم اليوم يكملان مسيرتهما معاً
+
+{date} - {location}`,
+                    medium: `📜 قصة توفيق {groom_name} و {bride_name}
+
+بإذن الله تعالى، وفي وقت قدره الخالق،
+التقى هذان الشابان الطيبان
+
+🔸 أصل العريس: [العائلة/المدينة]
+🔸 أصل العروسة: [العائلة/المدينة]
+
+وبعد فترة من التعارف على السنة الحسنة،
+قررا أن يكملا طريقهما معاً بإذن الله
+
+📅 {date}
+📍 {location}
+
+ندعوكم لمشاركتنا هذه الفرحة المباركة`,
+                    long: `📜 قصة خير وتوفيق 📜
+
+═════════════════════════
+
+بسم الله الرحمن الرحيم
+
+{groom_name}
+ابن [اسم الوالد]
+من عائلة [اسم العائلة]
+
+و
+
+{bride_name}
+ابنة [اسم الوالد]
+من عائلة [اسم العائلة]
+
+═════════════════════════
+
+📖 كيف كانت البداية:
+
+بإذن الله تعالى، وفي ظروف قدرها الرحمن،
+تمت معرفة هذين الشابين الطيبين على بعضهما
+
+[تفاصيل كيف تمت المعرفة - الخطة، الأهل، الصدفة...]
+
+═════════════════════════
+
+📖 مرحلة الخطوبة:
+
+وبعد أن رضي الله عن هذه المعرفة،
+تمت الخطوبة المباركة في [تاريخ الخطوبة]
+بحضور الأهل والأحبة
+
+═════════════════════════
+
+📖 الزفاف المبارك:
+
+والآن، وبحمد الله، نحتفل بهذا الزفاف المبارك
+
+📅 {date}
+📍 {location}
+
+═════════════════════════
+
+"وَأَنكِحُوا الْأَيَامَىٰ مِنكُمْ وَالصَّالِحِينَ مِنْ عِبَادِكُمْ وَإِمَائِكُمْ"
+
+═════════════════════════
+
+نتشرف بدعوتكم الكريمة
+لمشاركتنا هذه المناسبة السعيدة
+
+والسلام عليكم ورحمة الله وبركاته`
+                }
+            },
+            poem: {
+                formal: {
+                    short: `في يومٍ مليءٍ بالأفراحِ
+يجتمعُ الحبُّ والأرواحِ
+
+{groom} و {bride}
+على موعدٍ مع السعادة
+
+{date} - {location}`,
+                    medium: `✨ قصيدة الفرح ✨
+
+بِسْمِ اللهِ الْمَجِيدِ الرَّحْمَنِ الرَّحِيمِ
+نَبْدَأُ الْكَلَامَ بِخَيْرِ اسْمٍ عَلِيمِ
+
+الْيَوْمَ عُرْسٌ يَجْمَعُ الأَحِبَّةَ
+فِي فَرْحَةٍ مَا بَيْنَنَا مُنْتَهَى
+
+{groom_name} مَعَ {bride_name}
+عَلَى مَوْعِدٍ مَعَ السَّعَادَةِ
+
+📅 {date}
+📍 {location}`
+
+                    ,long: `📜 قصيدة العرس الكبرى 📜
+
+═════════════════════════
+
+الحَمْدُ للهِ الَّذِي بِفَضْلِهِ تَصِلُ الأَحِبَّةُ
+وَبِبَرِكَتِهِ تَجْتَمِعُ القُلُوبُ عَلَى المَحَبَّةِ
+
+أَقُولُ وَالْقَلْبُ يَخْفِقُ مِنَ الفَرَحِ
+وَالعَيْنُ تَذْرِفُ الدَّمْعَ مِنَ الإِنْصَافِ
+
+الْيَوْمَ يَوْمُ عُرْسٍ قَدِ ارْتَقَى
+وَجَمَعَ الشَّمْلَ بَعْدَ مَا قَدْ تَشَتَّتَ
+
+═════════════════════════
+
+فَيَا وَيْحَتَا لِيَوْمٍ قَدْ حَلَّ بِنَا
+حَيْثُ الْفَرَحُ يَمْلَأُ الأَرْجَاءَ جَمْعَاءَ
+
+{groom_name} قَدْ آنَ لَهُ أَنْ يَتَّحِدَ
+مَعَ حَبِيبَتِهِ {bride_name} عَلَى مِنْوَالِ السَّعَادَةِ
+
+═════════════════════════
+
+فَيَا أَيُّهَا الحَاضِرُونَ اشْهَدُوا
+وَيَا أَيُّهَا الغَائِبُونَ ابْكُوا أَسَفًا
+عَلَى فَوَاتِ هَذَا الْمَشْهَدِ الأَسْنَى
+
+═════════════════════════
+
+📅 الْمَوْعِدُ: {date}
+📍 الْمَكَانُ: {location}
+
+═════════════════════════
+
+وَاللهُ يَجْمَعُنَا عَلَى خَيْرٍ
+فِي دُنْيَا وَآخِرَةٍ يَا رَبِّ العَالَمِينَ`
+                },
+                romantic: {
+                    short: `حبيبتي...
+
+أنتِ نور عيني وروحي
+معكِ أصبحت الحياة جنّة
+
+نحتفل بحبنا: {date} 💕`
+                    ,medium: `🌹 قصيدة حب 🌹
+
+يَا زَهْرَةً فِي حَدِيقَةِ العُمْرِ نَادِيَةً
+أَنْتِ الحَيَاةُ وَأَنْتِ قَلْبِي وَرُوحِي
+
+مَعَكِ يَا حَبِيبَتِي أَشْعُرُ بِالأُنْسِ
+وَدُونَكِ الدُّنْيَا لَا تَسَاوِي شَيْئًا
+
+{groom_name} ❤️ {bride_name}
+
+نَحْتَفِلُ بِحُبِّنَا
+📅 {date}
+📍 {location}`
+
+                    ,long: `💕 رسالة حب من القلب 💕
+
+═════════════════════════
+
+إِلَى رُوحِي وَقَلْبِي وَنَفْسِي...
+إِلَيْكِ يَا {bride_name}
+
+═════════════════════════
+
+أَنْتِ...
+النَّجْمَةُ الَّتِي تُضِيءُ لَيْلِي
+الرَّوْحُ الَّتِي تُعْطِينِي الحَيَاة
+القَلْبُ الَّذِي يَنْبِضُ مِنْ أَجْلِكِ
+
+═════════════════════════
+
+مُنْذُ أَنْ دَخَلْتِ حَيَاتِي...
+تَغَيَّرَ كُلُّ شَيْءٍ إِلَى الأَفْضَل
+أَصْبَحَتِ الأَيَّامُ أَجْمَل
+وَاللَّيَالِي أَرَقَّ
+
+═════════════════════════
+
+وَالْيَوْمَ...
+أُرِيدُ أَنْ أَقُولَ لِلْعَالَمِ كُلِّهِ
+أَنِّي أُحِبُّكِ
+وَسَأُحِبُّكِ
+إِلَى أَبْعَدِ مَا تَصِلُ إِلَيْهِ الرُّوحُ
+
+═════════════════════════
+
+📅 نَحْتَفِلُ بِاتِّحَادِنَا: {date}
+📍 حَيْثُ يَلْتَقِي الحُبُّ: {location}
+
+═════════════════════════
+
+بِحُبٍّ لَا يَنْتَهِي...
+{groom_name} 💕`
+                },
+                fun: {
+                    short: `هي دي قصتي 😂
+
+كنت عزب... ولقيتها!
+الحمد لله اللي رزقني فيها
+
+زفافنا: {date} 🎉`
+                    ,medium: `🤣 قصيدة (شكلها) 🤣
+
+يَا عَيْنِي عَلَى الزَّوَاجِ يَا وَلَدِي
+صِرْتَ رَجُلًا (نَظَرِيًّا) 😂
+
+{groom_name} و {bride_name}
+فِي يَوْمِ فَرْحٍ وَنَوْلَةٍ
+
+📅 {date}
+📍 {location}
+
+وَالله يُعِينُكِ يَا {bride}! 😜`
+
+                    ,long: `🎭 ملحمة الزفاف (النسخة الكوميدية) 🎭
+
+═════════════════════════
+
+يَا وَيْلِي مِنَ الزَّوَاجِ يَا وَيْلِي
+صِرْتُ أُفَكِّرُ فِي المَصَارِيفِ وَالعَيَالِي
+
+كُنْتُ حُرًّا طَلْقًا... وَالْيَوْمَ؟
+أَصْبَحْتُ "مَسْكُون" بِإِذْنِ السَّيِّدَة! 😂
+
+═════════════════════════
+
+{groom_name} (الضَّحِيَّة)
++
+{bride_name} (الْمُنَفِّذَة)
+
+= زَوَاجٌ مَسْخُوطٌ عَلَيْهِ رَبِّي (إِنْ شَاءَ الله)
+
+═════════════════════════
+
+فِي هَذَا اليَوْمِ المُبَارَكِ (وَالمُكْلِف)
+نَحْتَفِلُ بِبِدَايَةِ رِحْلَةٍ جَدِيدَة
+
+رِحْلَةٌ سَتَتَضَمَّنُ:
+• نِقَاشَاتٍ عَلَى الأَغْطِيَة 🛏️
+• مَنْ يَنَامُ فِي الجَانِبِ الأَيْسَر 😴
+• وَمَنْ يَتَحَكَّمُ فِي الرِّمُوت 📺
+
+═════════════════════════
+
+📅 مَوْعِدُ التَّنْفِيذ: {date}
+📍 مَكَانُ الجَرِيمَة: {location}
+
+═════════════════════════
+
+تَعَالَوْا شَاهِدُوا (وَاضْحَكُوا عَلَيْنَا)!
+وَالله يُيَسِّرُ لَنَا وَلَكُم 🤣💕`
+                },
+                traditional: {
+                    short: `قَصِيدَةٌ فِي رِثَاءِ العُزُوبَةِ
+
+وَفِي فَرَحٍ بِالزَّوَاجِ نَعْتَمِدُ
+الله يَجْمَعُ شَمْلَنَا عَلَى الخَيْرِ
+
+{groom} و {bride}
+{date} - {location}`,
+                    medium: `📜 قصيدة عرس 📜
+
+الحَمْدُ للهِ عَلَى نِعَمِهِ الْعِظَامِ
+الَّذِي جَمَعَ الشَّمْلَ بَعْدَ التَّشَتُّتِ وَالْوِصَامِ
+
+الْيَوْمَ عُرْسٌ قَدِ ارْتَقَى شَأْنُهُ
+وَجَمَعَ الأَحِبَّةَ فِي يَوْمٍ مَزْرِيِّ بِالأَنْعَامِ
+
+{groom_name} مَعَ {bride_name}
+عَلَى مِنْوَالِ السَّعَادَةِ وَالإِحْكَامِ
+
+📅 {date}
+📍 {location}`
+
+                    ,long: `📜 القصيدة الكبرى 📜
+
+═════════════════════════
+
+بِسْمِ اللهِ الرَّحْمَنِ الرَّحِيمِ
+وَالصَّلَاةُ وَالسَّلَامُ عَلَى النَّبِيِّ الكَرِيمِ
+
+═════════════════════════
+
+الحَمْدُ للهِ وَحْدَهُ ذِي الْجَلَالِ
+وَالكِبْرِيَاءِ وَشَانِهِ البَهِيِّ الجَمَالِ
+
+أَحْمَدُهُ عَلَى مَا أَوْلَى وَأَنْعَمَ
+وَأَسْأَلُهُ مِنْ فَضْلِهِ أَنْ يَتَكَرَّمَ
+
+═════════════════════════
+
+وَبَعْدُ... فَالْحَمْدُ للهِ الَّذِي بِفَضْلِهِ
+تَتِمُّ الأُمُورُ وَتَسُودُ المَوَدَّةُ وَتَزْدَكِي
+
+═════════════════════════
+
+الْيَوْمَ يَوْمُ مُنَاسَبَةٍ سَعِيدَةٍ
+حَيْثُ يَجْتَمِعُ الأَحِبَّةُ فِي وِفَاقٍ وَمَئُوبَةٍ
+
+{groom_name} الابْنُ البَارُّ
+قَدْ آنَ لَهُ أَنْ يَرْبِطَ قَلْبَهُ
+بِقَلْبِ {bride_name} الابْنَةِ البَارَّةِ
+
+═════════════════════════
+
+فَيَا بَاغِيَ الخَيْرِ أَقْبِلْ
+وَيَا طَالِبَ البَرَكَةِ تَحَضَّرْ
+
+📅 الْمَوْعِدُ: {date}
+📍 الْمَكَانُ: {location}
+
+═════════════════════════
+
+وَصَلُّوا عَلَى النَّبِيِّ
+وَالله يَجْمَعُنَا عَلَى الخَيْرِ
+
+وَالسَّلَامُ عَلَيْكُمْ وَرَحْمَةُ اللهِ وَبَرَكَاتُهُ`
+                }
+            },
+            'thank-you': {
+                formal: {
+                    short: `شكراً جزيلاً لحضوركم
+
+{groom} و {bride}
+يشكرانكم على مشاركتهم فرحة زفافهما
+
+كان وجودكم بيننا مصدر سرور`,
+                    medium: `شكراً جزيلاً
+
+السادة / السيدات الكرام،
+
+نقدم لكم خالص شكرنا وتقديرنا
+على تشريفكم بحضور حفل زفافنا
+
+{groom_name}
+و
+{bride_name}
+
+كان وجودكم الكريم بيننا
+مصدر سرور وفخر لنا جميعاً
+
+نتمنى لكم دوام الصحة والسعادة
+وشكراً مرة أخرى`
+
+                    ,long: `رسالة شكر وتقدير
+
+═════════════════════════
+
+بسم الله الرحمن الرحيم
+
+السادة والسيدات الكرام،
+وفقهم الله لما فيه الخير
+
+السلام عليكم ورحمة الله وبركاته،
+
+═════════════════════════
+
+بعد التحية الطيبة،
+
+نود أن نعبر عن عميق امتناننا وشكرنا الجزيل
+لحضوركم الكريم وتشريفكم لحفل زفافنا السعيد
+
+{groom_name}
+و
+{bride_name}
+
+═════════════════════════
+
+لقد كان يومًا لا يُنسى بفضل تواجدكم
+وتهانيكم الحارة وكلماتكم الطيبة
+
+═════════════════════════
+
+نسأل الله تعالى أن يجعل ذلك في ميزان حسناتكم
+وأن يكافئكم على هذه الابتسامة التي وضعتمها على وجوهنا
+
+═════════════════════════
+
+"مَنْ لَا يَشْكُرُ النَّاسَ لَا يَشْكُرُ الله"
+
+═════════════════════════
+
+مع خالص الشكر والتقدير،
+
+{groom} و {bride}
+
+والعائلتان الكريمتان`
+                },
+                romantic: {
+                    short: `شكراً من القلب 💕
+
+{groom} & {bride}
+
+شكراً لكل من جعل يومنا مميزاً
+حبكم يملأ قلوبنا 🌹`,
+                    medium: `🌹 شكراً من كل القلب 🌹
+
+إلى كل من شاركنا هذا اليوم الجميل...
+
+شكراً لأنكم كنتم هنا
+شكراً لابتساماتكم
+شكراً لدعواتكم
+شكراً لحبكم
+
+{groom_name} ❤️ {bride_name}
+
+يومنا كان أجمل بسبكم 💕`
+
+                    ,long: `💕 رسالة حب وشكر 💕
+
+═════════════════════════
+
+إلى كل شخص جعل يومنا خاصاً...
+
+═════════════════════════
+
+شكراً...
+
+لأمي وأبي - على كل شيء ❤️
+لأهلي وأصدقائي - على الدعم 🤝
+لجميع الحاضرين - على الحضور 🌟
+ولكل من فكر فيّ ولو للحظة 💭
+
+═════════════════════════
+
+{groom_name}
+و
+{bride_name}
+
+═════════════════════════
+
+اليوم كان حلماً أصبح واقعاً
+وأنتم كنتم جزءاً من هذا الحلم الجميل
+
+═════════════════════════
+
+كل ابتسامة رأيناها
+كل دعوة سمعناها
+كل عناق تلقيناه
+كل لحظة عشناها معكم
+
+═════════════════════════
+
+كلها ستظل في قلوبنا للأبد
+
+═════════════════════════
+
+"الحب هو الشكر"
+
+شكراً من كل قلوبنا 💕
+
+{groom} & {bride}`
+                },
+                fun: {
+                    short: `وصلنا! 🎉
+
+شكراً لكل اللي جاء (واللي ما جاء برضو 😂)
+
+{groom} & {bride}
+نجحنا! (لحد الآن 😜)`
+                    ,medium: `🤣 شكراً يا جماعة! 🤣
+
+الحمد لله خلصنا!
+والنجاح (بنسبة كبيرة) بسببكم 😉
+
+شكراً لـ:
+• اللي جاء في الوقت ✓
+• اللي جاء متأخر (أحسن ما جيتوا!) ✓
+• اللي ضحك على نكاتنا ✓
+• اللي تصامم وضحك ✓
+
+{groom} & {bride}
+
+شكراً من القلب (والكبد والكلية)! 😂💕`
+
+                    ,long: `🎊 تقرير ما بعد الزفاف 🎊
+
+═════════════════════════
+
+السلام عليكم ورحمة الله وبركاته
+
+═════════════════════════
+
+نود أن نعلن نجاح العملية! 😂
+
+{groom_name} و {bride_name}
+متزوجين رسمياً (والحمد لله!)
+
+═════════════════════════
+
+📊 إحصائيات الزفاف:
+
+✓ عدد الحاضرين: [كثير!] 
+✓ عدد الضحكات: [أكثر!]
+✓ عدد الصور: [لا نهائي 📸]
+✓ نسبة النجاح: 100%
+
+═════════════════════════
+
+🏆 جوائز خاصة:
+
+🥇 أجمل هدية: [اسم]
+🥈 أطول كلمة: [اسم]  
+🥉 أكثر واحد ضحك: [اسم]
+⚡ أسرع أحد أكل: [اسم]
+
+═════════════════════════
+
+شكراً لكل من:
+• جاء وساعد ✓
+• جاء وما ساعد (مقبول) ✓
+• ما جاء (غفرنا لك) ✓
+• جاء ونصور (شكراً على الصور) ✓
+
+═════════════════════════
+
+{groom} & {bride}
+
+"الزفاف نجاح وأنتم السبب! 💕"
+(والطباخ أيضاً 😋)`
+                },
+                traditional: {
+                    short: `جزاكم الله خيراً
+
+شكراً لتشريفكم حضور زفافنا
+
+{groom} و {bride}
+يدعوان لكم بالتوفيق والسعادة`,
+                    medium: `جزاكم الله خيراً الجزاء
+
+السادة والسيدات الكرام،
+
+نقدم لكم خالص شكرنا وتقديرنا
+على تشريفكم بحضور حفل زفاف أبنائنا
+
+{groom_name}
+و
+{bride_name}
+
+أسأل الله أن يجزيكم خير الجزاء
+وأن يبارك فيكم وفي أوقاتكم
+
+مع خالص الشكر والتقدير،
+
+العائلتان الكريمتان`
+
+                    ,long: `شكر وتقدير
+
+═════════════════════════
+
+بسم الله الرحمن الرحيم
+
+السلام عليكم ورحمة الله وبركاته
+
+═════════════════════════
+
+السادة والسيدات الكرام،
+أيدهم الله وأعزهم،
+
+═════════════════════════
+
+بعد التحية الطيبة والسلام،
+
+نرفع إليكم أطيب التحايا وأزكاها،
+ونشكركم جزيل الشكر على تشريفكم الكريم
+بحضور حفل زفاف أبنائنا:
+
+{groom_name}
+و
+{bride_name}
+
+═════════════════════════
+
+لقد كان يومًا مباركًا ببركتكم ودعواتكم
+وقد أسعدنا جداً وجودكم بيننا
+
+═════════════════════════
+
+"مَنْ صَنَعَ إِلَيْكُمْ مَعْرُوفًا فَكَافِئُوهُ"
+
+═════════════════════════
+
+نسأل الله العظيم أن يثيبكم أجر الدنيا والآخرة
+وأن يجعل ذلك في ميزان حسناتكم
+وأن يبارك في أوقاتكم وأعمالكم وأهليكم
+
+═════════════════════════
+
+وتفضلوا بقبول فائق الاحترام والتقدير،
+
+والسلام عليكم ورحمة الله وبركاته
+
+العائلتان الكريمتان`
+                }
+            }
+        };
+        
+        // ===================================
+        // Pre-made Templates for Quick Use
+        // ===================================
+        const quickTemplates = [
+            {
+                id: 1,
+                icon: 'fa-envelope-open-text',
+                title: 'دعوة زفاف كلاسيكية',
+                description: 'نص دعوة رسمي وأنيق مناسب لجميع الأذواق',
+                category: 'invitation',
+                tone: 'formal',
+                preview: 'بسم الله الرحمن الرحيم\n\nيسرّ العروسين أن يدعواكم...'
+            },
+            {
+                id: 2,
+                icon: 'fa-heart',
+                title: 'دعوة رومانسية',
+                description: 'نص دعوة مليء بالعاطفة والكلمات الجميلة',
+                category: 'invitation',
+                tone: 'romantic',
+                preview: 'في يوم ملؤه الحب والفرح...\n\nيدعوانكم لحضور زفافهما...'
+            },
+            {
+                id: 3,
+                icon: 'fa-mosque',
+                title: 'دعوة إسلامية تقليدية',
+                description: 'نص دعوة بأسلوب إصلاحي تقليدي راقي',
+                category: 'invitation',
+                tone: 'traditional',
+                preview: 'الحمد لله رب العالمين\n\nندعوكم لحضور زفاف...'
+            },
+            {
+                id: 4,
+                icon: 'fa-face-laugh-squint',
+                title: 'دعوة مرحة',
+                description: 'نص دعوة ممتع ومضحك للعرسان المرحين',
+                category: 'invitation',
+                tone: 'fun',
+                preview: '🎉 أخيراً!\n\nزفاف! تعالوا نحتفل!'
+            },
+            {
+                id: 5,
+                icon: 'fa-book-quran',
+                title: 'آيات زفاف',
+                description: 'مجموعة مختارة من الآيات القرآنية المناسبة',
+                category: 'quran',
+                tone: 'formal',
+                preview: '"وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُم مِّنْ أَنفُسِكُم..."'
+            },
+            {
+                id: 6,
+                icon: 'fa-feather-pointed',
+                title: 'قصيدة فرح',
+                description: 'قصيدة شعرية جميلة للمناسبة',
+                category: 'poem',
+                tone: 'romantic',
+                preview: 'يَا زَهْرَةً فِي حَدِيقَةِ العُمْرِ...\n\nأَنْتِ الحَيَاةُ...'
+            },
+            {
+                id: 7,
+                icon: 'fa-book-open',
+                title: 'قصة لقاء',
+                description: 'قالب لكتابة قصة كيف تعارف العروسان',
+                category: 'love-story',
+                tone: 'romantic',
+                preview: '📖 قصة حبنا...\n\nبدأت قصتنا في...'
+            },
+            {
+                id: 8,
+                icon: 'fa-hands-holding-circle',
+                title: 'رسالة شكر',
+                description: 'نص شكر وتقدير للضيوف بعد الزفاف',
+                category: 'thank-you',
+                tone: 'formal',
+                preview: 'شكراً جزيلاً لحضوركم...\n\nيشكرانكم على مشاركتهم...'
+            }
+        ];
+        
+        // ===================================
+        // Initialize Page
+        // ===================================
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize AOS animations
+            if (typeof AOS !== 'undefined') {
+                AOS.init({
+                    duration: 800,
+                    easing: 'ease-out-cubic',
+                    once: true,
+                    offset: 50
+                });
+            }
+            
+            // Load templates
+            loadTemplates();
+            
+            // Load history from RTDB
+            loadHistory();
+            
+            console.log('✅ AI Writer module initialized');
+        });
+        
+        // ===================================
+        // Text Type Selection
+        // ===================================
+        function selectTextType(element) {
+            // Remove active from all tabs
+            document.querySelectorAll('.type-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Add active to clicked tab
+            element.classList.add('active');
+            
+            // Update current type
+            AIWriter.currentType = element.dataset.type;
+            
+            // Show notification
+            showToast(`تم اختيار: ${element.querySelector('span').textContent}`, 'info');
+        }
+        
+        // ===================================
+        // Tone Selection
+        // ===================================
+        function selectTone(element) {
+            document.querySelectorAll('#toneOptions .option-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            element.classList.add('selected');
+            AIWriter.currentTone = element.dataset.tone;
+        }
+        
+        // ===================================
+        // Length Selection
+        // ===================================
+        function selectLength(element) {
+            document.querySelectorAll('#lengthOptions .option-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            element.classList.add('selected');
+            AIWriter.currentLength = element.dataset.length;
+        }
+        
+        // ===================================
+        // Generate Text (Simulated AI)
+        // ===================================
+        async function generateText() {
+            if (AIWriter.isGenerating) return;
+            
+            // Get form values
+            const groomName = document.getElementById('groomName').value || '[اسم العريس]';
+            const brideName = document.getElementById('brideName').value || '[اسم العروسة]';
+            const weddingDate = document.getElementById('weddingDate').value || '[تاريخ الزفاف]';
+            const weddingLocation = document.getElementById('weddingLocation').value || '[مكان الزفاف]';
+            const additionalContext = document.getElementById('additionalContext').value;
+            
+            // Validate at least names
+            if (!document.getElementById('groomName').value && !document.getElementById('brideName').value) {
+                showToast('يرجى إدخال اسم واحد على الأقل', 'error');
+                return;
+            }
+            
+            // Set generating state
+            AIWriter.isGenerating = true;
+            const generateBtn = document.getElementById('generateBtn');
+            generateBtn.classList.add('loading');
+            generateBtn.disabled = true;
+            generateBtn.innerHTML = '<div class="btn-spinner"></div><span>جاري التوليد...</span>';
+            
+            // Show loading state in output
+            showLoadingOutput();
+            
+            try {
+                // Simulate API delay (2-3 seconds)
+                await new Promise(resolve => setTimeout(resolve, 2000 + Math.random() * 1000));
+                
+                // Get template based on selections
+                let template = getTemplateForGeneration(
+                    AIWriter.currentType,
+                    AIWriter.currentTone,
+                    AIWriter.currentLength
+                );
+                
+                // Replace placeholders
+                template = template
+                    .replace(/\{groom_name\}/gi, groomName)
+                    .replace(/\{bride_name\}/gi, brideName)
+                    .replace(/\{groom\}/gi, groomName)
+                    .replace(/\{bride\}/gi, brideName)
+                    .replace(/\{date\}/gi, weddingDate)
+                    .replace(/\{location\}/gi, weddingLocation);
+                
+                // Add additional context if provided
+                if (additionalContext) {
+                    template += '\n\n---\nملاحظات إضافية:\n' + additionalContext;
+                }
+                
+                // Store generated text
+                AIWriter.generatedText = template;
+                
+                // Display with typing effect
+                await displayWithTypingEffect(template);
+                
+                // Show output actions
+                document.getElementById('outputActions').style.display = 'flex';
+                document.getElementById('charCount').style.display = 'flex';
+                updateCharCount();
+                
+                showToast('تم توليد النص بنجاح!', 'success');
+                
+            } catch (error) {
+                console.error('Error generating text:', error);
+                showErrorState('حدث خطأ أثناء التوليد. يرجى المحاولة مرة أخرى.');
+                showToast('حدث خطأ أثناء التوليد', 'error');
+            } finally {
+                // Reset button state
+                AIWriter.isGenerating = false;
+                generateBtn.classList.remove('loading');
+                generateBtn.disabled = false;
+                generateBtn.innerHTML = '<i class="fas fa-wand-magic-sparkles"></i><span>توليد النص بالذكاء الاصطناعي</span>';
+            }
+        }
+        
+        // ===================================
+        // Get Template for Generation
+        // ===================================
+        function getTemplateForGeneration(type, tone, length) {
+            // Check if template exists
+            if (textTemplates[type] && textTemplates[type][tone] && textTemplates[type][tone][length]) {
+                return textTemplates[type][tone][length];
+            }
+            
+            // Fallback logic
+            const availableTypes = Object.keys(textTemplates);
+            if (!availableTypes.includes(type)) {
+                type = 'invitation';
+            }
+            
+            const availableTones = Object.keys(textTemplates[type]);
+            if (!availableTones.includes(tone)) {
+                tone = availableTones[0];
+            }
+            
+            const availableLengths = Object.keys(textTemplates[type][tone]);
+            if (!availableLengths.includes(length)) {
+                length = availableLengths.includes('medium') ? 'medium' : availableLengths[0];
+            }
+            
+            return textTemplates[type][tone][length];
+        }
+        
+        // ===================================
+        // Display Functions
+        // ===================================
+        function showLoadingOutput() {
+            const outputContent = document.getElementById('outputContent');
+            outputContent.innerHTML = `
+                <div class="loading-output">
+                    <div class="ai-loading-animation">
+                        <div class="orbit"></div>
+                        <div class="orbit"></div>
+                        <div class="orbit"></div>
+                        <div class="center-icon">✨</div>
+                    </div>
+                    <div class="loading-text">جاري التوليد بالذكاء الاصطناعي...</div>
+                    <div class="loading-subtext">يتم صياغة أفضل نص لمناسبتك</div>
+                </div>
+            `;
+        }
+        
+        function showErrorState(message) {
+            const outputContent = document.getElementById('outputContent');
+            outputContent.innerHTML = `
+                <div class="empty-output">
+                    <i class="fas fa-exclamation-triangle" style="color: #ef4444;"></i>
+                    <h4>حدث خطأ</h4>
+                    <p>${message}</p>
+                </div>
+            `;
+        }
+        
+        async function displayWithTypingEffect(text) {
+            const outputContent = document.getElementById('outputContent');
+            outputContent.innerHTML = '<div class="output-text" id="outputText"><span class="typing-cursor"></span></div>';
+            
+            const outputText = document.getElementById('outputText');
+            let currentIndex = 0;
+            const chunkSize = 3; // Characters per frame
+            
+            return new Promise((resolve) => {
+                function typeChunk() {
+                    if (currentIndex < text.length) {
+                        const chunk = text.substring(currentIndex, currentIndex + chunkSize);
+                        // Insert before cursor
+                        const cursor = outputText.querySelector('.typing-cursor');
+                        if (cursor) {
+                            cursor.insertAdjacentText('beforebegin', chunk);
+                        } else {
+                            outputText.textContent += chunk;
+                        }
+                        currentIndex += chunkSize;
+                        
+                        // Scroll to bottom
+                        outputContent.scrollTop = outputContent.scrollHeight;
+                        
+                        setTimeout(typeChunk, 20);
+                    } else {
+                        // Remove cursor when done
+                        const cursor = outputText.querySelector('.typing-cursor');
+                        if (cursor) cursor.remove();
+                        resolve();
+                    }
+                }
+                
+                typeChunk();
+            });
+        }
+        
+        function updateCharCount() {
+            const text = AIWriter.generatedText;
+            document.getElementById('charCountNum').textContent = text.length;
+            document.getElementById('wordCountNum').textContent = text.trim().split(/\s+/).filter(w => w).length;
+        }
+        
+        // ===================================
+        // Action Buttons
+        // ===================================
+        async function copyToClipboard() {
+            if (!AIWriter.generatedText) return;
+            
+            try {
+                await navigator.clipboard.writeText(AIWriter.generatedText);
+                showToast('تم نسخ النص بنجاح!', 'success');
+            } catch (err) {
+                // Fallback method
+                const textarea = document.createElement('textarea');
+                textarea.value = AIWriter.generatedText;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                showToast('تم نسخ النص!', 'success');
+            }
+        }
+        
+        function toggleEditMode() {
+            const outputContent = document.getElementById('outputContent');
+            const editBtn = document.getElementById('editBtn');
+            const outputText = document.getElementById('outputText');
+            
+            if (AIWriter.isEditing) {
+                // Save edited text
+                AIWriter.generatedText = outputText.textContent;
+                
+                // Switch back to view mode
+                outputText.classList.remove('editable');
+                outputText.contentEditable = 'false';
+                editBtn.innerHTML = '<i class="fas fa-pen-to-square"></i> تعديل';
+                
+                updateCharCount();
+                showToast('تم حفظ التعديلات', 'success');
+            } else {
+                // Enter edit mode
+                outputText.classList.add('editable');
+                outputText.contentEditable = 'true';
+                outputText.focus();
+                editBtn.innerHTML = '<i class="fas fa-check"></i> حفظ';
+                
+                showToast('وضع التعديل مفعل', 'info');
+            }
+            
+            AIWriter.isEditing = !AIWriter.isEditing;
+        }
+        
+        function regenerateText() {
+            if (confirm('هل تريد إعادة توليد النص؟')) {
+                generateText();
+            }
+        }
+        
+        async function saveToHistory() {
+            if (!AIWriter.generatedText) return;
+            
+            const historyItem = {
+                id: Date.now(),
+                type: AIWriter.currentType,
+                tone: AIWriter.currentTone,
+                length: AIWriter.currentLength,
+                text: AIWriter.generatedText,
+                createdAt: new Date().toISOString(),
+                groomName: document.getElementById('groomName').value,
+                brideName: document.getElementById('brideName').value
+            };
+            
+            try {
+                // Save to RTDB if user is logged in
+                if (window.currentUserId) {
+                    await window.rtdbSet(
+                        `users/${window.currentUserId}/ai-history/${historyItem.id}`,
+                        historyItem
+                    );
+                }
+                
+                // Add to local history
+                AIWriter.history.unshift(historyItem);
+                
+                // Refresh history display
+                renderHistory();
+                
+                showToast('تم حفظ النص في السجل', 'success');
+            } catch (error) {
+                console.error('Error saving to history:', error);
+                showToast('حدث خطأ أثناء الحفظ', 'error');
+            }
+        }
+        
+        function useInInvitation() {
+            if (!AIWriter.generatedText) return;
+            
+            // Store in sessionStorage for create-invitation page
+            sessionStorage.setItem('aiGeneratedText', AIWriter.generatedText);
+            
+            showToast('جاري التحويل...', 'info');
+            
+            // Redirect after short delay
+            setTimeout(() => {
+                window.location.href = 'create-invitation.html';
+            }, 500);
+        }
+        
+        // ===================================
+        // Templates Loading
+        // ===================================
+        function loadTemplates() {
+            const templatesGrid = document.getElementById('templatesGrid');
+            
+            templatesGrid.innerHTML = quickTemplates.map(template => `
+                <div class="template-card" onclick="useTemplate('${template.category}', '${template.tone}')">
+                    <div class="template-icon">
+                        <i class="fas ${template.icon}"></i>
+                    </div>
+                    <h4>${template.title}</h4>
+                    <p>${template.description}</p>
+                    <span class="template-tag">${getCategoryName(template.category)}</span>
+                </div>
+            `).join('');
+        }
+        
+        function getCategoryName(category) {
+            const names = {
+                invitation: 'دعوة',
+                quran: 'قرآن',
+                'love-story': 'قصة حب',
+                poem: 'شعر',
+                'thank-you': 'شكر'
+            };
+            return names[category] || category;
+        }
+        
+        function useTemplate(category, tone) {
+            // Set the type tab
+            document.querySelectorAll('.type-tab').forEach(tab => {
+                tab.classList.toggle('active', tab.dataset.type === category);
+            });
+            AIWriter.currentType = category;
+            
+            // Set the tone option
+            document.querySelectorAll('#toneOptions .option-card').forEach(card => {
+                card.classList.toggle('selected', card.dataset.tone === tone);
+            });
+            AIWriter.currentTone = tone;
+            
+            // Scroll to form
+            document.querySelector('.input-card').scrollIntoView({ behavior: 'smooth' });
+            
+            showToast('تم اختيار القالب! اضغط توليد للمتابعة', 'success');
+        }
+        
+        // ===================================
+        // History Management
+        // ===================================
+        async function loadHistory() {
+            try {
+                if (window.currentUserId) {
+                    const snapshot = await window.rtdbOnce(`users/${window.currentUserId}/ai-history`);
+                    
+                    if (snapshot) {
+                        AIWriter.history = Object.keys(snapshot)
+                            .map(key => ({
+                                id: key,
+                                ...snapshot[key]
+                            }))
+                            .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                        
+                        renderHistory();
+                    }
+                }
+            } catch (error) {
+                console.log('No saved history or error loading:', error.message);
+            }
+        }
+        
+        function renderHistory() {
+            const historyList = document.getElementById('historyList');
+            const emptyHistory = document.getElementById('emptyHistory');
+            
+            if (AIWriter.history.length === 0) {
+                emptyHistory.style.display = 'block';
+                return;
+            }
+            
+            emptyHistory.style.display = 'none';
+            
+            // Keep empty history element, add items before it
+            const existingItems = historyList.querySelectorAll('.history-item');
+            existingItems.forEach(item => item.remove());
+            
+            AIWriter.history.forEach(item => {
+                const historyItem = document.createElement('div');
+                historyItem.className = 'history-item';
+                historyItem.innerHTML = `
+                    <div class="history-item-header">
+                        <span class="history-type-badge">
+                            <i class="fas ${getTypeIcon(item.type)}"></i>
+                            ${getTypeName(item.type)}
+                        </span>
+                        <span class="history-date">${formatDate(item.createdAt)}</span>
+                    </div>
+                    <div class="history-preview">${escapeHtml(item.text.substring(0, 150))}${item.text.length > 150 ? '...' : ''}</div>
+                    <div class="history-actions">
+                        <button class="history-btn" onclick="loadFromHistory(${item.id})">
+                            <i class="fas fa-eye"></i>
+                            عرض
+                        </button>
+                        <button class="history-btn" onclick="copyHistoryItem(${item.id})">
+                            <i class="fas fa-copy"></i>
+                            نسخ
+                        </button>
+                        <button class="history-btn danger" onclick="deleteHistoryItem(${item.id})">
+                            <i class="fas fa-trash"></i>
+                            حذف
+                        </button>
+                    </div>
+                `;
+                
+                historyList.insertBefore(historyItem, emptyHistory);
+            });
+        }
+        
+        function getTypeIcon(type) {
+            const icons = {
+                invitation: 'fa-envelope-heart',
+                quran: 'fa-book-quran',
+                'love-story': 'fa-heart',
+                poem: 'fa-feather',
+                'thank-you': 'fa-hands-praying'
+            };
+            return icons[type] || 'fa-file';
+        }
+        
+        function getTypeName(type) {
+            const names = {
+                invitation: 'نص دعوة',
+                quran: 'آية قرآنية',
+                'love-story': 'قصة حب',
+                poem: 'شعر/قصيدة',
+                'thank-you': 'رسالة شكر'
+            };
+            return names[type] || type;
+        }
+        
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('ar-SA', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+        
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        async function loadFromHistory(id) {
+            const item = AIWriter.history.find(h => h.id === id);
+            if (!item) return;
+            
+            // Load into output
+            AIWriter.generatedText = item.text;
+            AIWriter.currentType = item.type;
+            AIWriter.currentTone = item.tone;
+            AIWriter.currentLength = item.length;
+            
+            // Update UI tabs
+            document.querySelectorAll('.type-tab').forEach(tab => {
+                tab.classList.toggle('active', tab.dataset.type === item.type);
+            });
+            
+            // Display text
+            const outputContent = document.getElementById('outputContent');
+            outputContent.innerHTML = `<div class="output-text" id="outputText">${escapeHtml(item.text)}</div>`;
+            
+            // Show actions
+            document.getElementById('outputActions').style.display = 'flex';
+            document.getElementById('charCount').style.display = 'flex';
+            updateCharCount();
+            
+            showToast('تم تحميل النص من السجل', 'success');
+        }
+        
+        async function copyHistoryItem(id) {
+            const item = AIWriter.history.find(h => h.id === id);
+            if (!item) return;
+            
+            try {
+                await navigator.clipboard.writeText(item.text);
+                showToast('تم نسخ النص!', 'success');
+            } catch (err) {
+                showToast('حدث خطأ أثناء النسخ', 'error');
+            }
+        }
+        
+        async function deleteHistoryItem(id) {
+            if (!confirm('هل أنت متأكد من حذف هذا النص؟')) return;
+            
+            try {
+                // Delete from RTDB
+                if (window.currentUserId) {
+                    await window.rtdbRemove(`users/${window.currentUserId}/ai-history/${id}`);
+                }
+                
+                // Remove from local history
+                AIWriter.history = AIWriter.history.filter(h => h.id !== id);
+                
+                // Re-render
+                renderHistory();
+                
+                showToast('تم حذف النص', 'success');
+            } catch (error) {
+                console.error('Error deleting:', error);
+                showToast('حدث خطأ أثناء الحذف', 'error');
+            }
+        }
+        
+        // ===================================
+        // Toast Notification
+        // ===================================
+        function showToast(message, type = 'info') {
+            const toast = document.getElementById('toastNotification');
+            const toastMessage = document.getElementById('toastMessage');
+            
+            // Set message and type
+            toastMessage.textContent = message;
+            toast.className = 'toast-notification ' + type;
+            
+            // Set icon based on type
+            const icon = toast.querySelector('i');
+            const icons = {
+                success: 'fa-check-circle',
+                error: 'fa-exclamation-circle',
+                info: 'fa-info-circle'
+            };
+            icon.className = 'fas ' + (icons[type] || icons.info);
+            
+            // Show
+            setTimeout(() => toast.classList.add('show'), 10);
+            
+            // Hide after 3 seconds
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3500);
+        }
+        
+        // ===================================
+        // Future: Real NVIDIA API Integration
+        // ===================================
+        async function generateWithNVIDIA(prompt) {
+            /**
+             * This function is prepared for future integration with NVIDIA's AI API.
+             * To enable it, set your API key in window.nvidiaConfig.apiKey
+             */
+            
+            if (!window.nvidiaConfig?.apiKey) {
+                console.warn('NVIDIA API key not configured. Using template-based generation.');
+                return null;
+            }
+            
+            try {
+                const response = await fetch(`${window.nvidiaConfig.baseUrl}/chat/completions`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${window.nvidiaConfig.apiKey}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        model: window.nvidiaConfig.model,
+                        messages: [
+                            {
+                                role: 'system',
+                                content: 'أنت كاتب محترف متخصص في كتابة نصوص دعوات الزفاف باللغة العربية. تكتب بأسلوب راقي وجميل.'
+                            },
+                            {
+                                role: 'user',
+                                content: prompt
+                            }
+                        ],
+                        temperature: 0.7,
+                        max_tokens: 1024
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`API Error: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                return data.choices[0]?.message?.content;
+                
+            } catch (error) {
+                console.error('NVIDIA API Error:', error);
+                return null;
+            }
+        }
+        
+        console.log('✅ AI Writer page loaded successfully');
+    </script>
+</body>
+</html>
