@@ -118,6 +118,19 @@
         <label>قصتكم / كلمة للضيوف</label>
         <textarea id="story" placeholder="اكتبوا كلمة قصيرة لضيوفكم..."></textarea>
 
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+          <input type="checkbox" id="verseToggle" style="width:auto;margin:0">
+          <span>تفعيل الآية الدينية في أعلى الدعوة</span>
+        </label>
+        <div id="verseTypeWrap" style="display:none;margin-top:10px">
+          <label>نوع الآية</label>
+          <select id="verseType">
+            <option value="quran">آية قرآنية</option>
+            <option value="bible">آية من الكتاب المقدس</option>
+          </select>
+          <div id="verseAyahPreview" style="margin-top:10px;padding:14px;border:1px dashed var(--line);border-radius:10px;font-size:13.5px;color:var(--text-dim);line-height:1.9"></div>
+        </div>
+
         <label>التصميم</label>
         <div class="theme-picker">
           <div class="theme-opt royal" data-theme="royal">الملكي</div>
@@ -291,6 +304,12 @@
     selectTheme(invData.theme || 'royal');
     document.getElementById('publishToggle').checked = !!invData.published;
 
+    const verseEnabled = invData.religiousVerseEnabled !== undefined ? !!invData.religiousVerseEnabled : true;
+    document.getElementById('verseToggle').checked = verseEnabled;
+    document.getElementById('verseType').value = invData.religiousVerseType || 'quran';
+    document.getElementById('verseTypeWrap').style.display = verseEnabled ? 'block' : 'none';
+    updateVersePreview();
+
     if (invData.coverImageUrl) {
       document.getElementById('coverPreview').innerHTML = `<img src="${invData.coverImageUrl}">`;
     }
@@ -310,6 +329,21 @@
     el.addEventListener('click', () => selectTheme(el.dataset.theme));
   });
 
+  // ===== الآية الدينية (قرآنية / مسيحية) =====
+  const QURAN_VERSE_PREVIEW = 'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ\n"وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُم مِّنْ أَنفُسِكُمْ أَزْوَاجًا لِّتَسْكُنُوا إِلَيْهَا وَجَعَلَ بَيْنَكُم مَّوَدَّةً وَرَحْمَةً"\nصدق الله العظيم';
+  const BIBLE_VERSE_PREVIEW = '"المحبة تتأنى وترفق... المحبة لا تسقط أبداً" (١ كورنثوس ١٣: ٤، ٨)\n"الذي جمعه الله لا يفرقه إنسان" (متى ١٩: ٦)';
+
+  function updateVersePreview(){
+    const box = document.getElementById('verseAyahPreview');
+    const type = document.getElementById('verseType').value;
+    box.textContent = type === 'bible' ? BIBLE_VERSE_PREVIEW : QURAN_VERSE_PREVIEW;
+  }
+
+  document.getElementById('verseToggle').addEventListener('change', (e) => {
+    document.getElementById('verseTypeWrap').style.display = e.target.checked ? 'block' : 'none';
+  });
+  document.getElementById('verseType').addEventListener('change', updateVersePreview);
+
   // ===== حفظ التفاصيل =====
   document.getElementById('saveDetails').addEventListener('click', async () => {
     const theme = document.querySelector('.theme-opt.selected')?.dataset.theme || 'royal';
@@ -321,7 +355,9 @@
       venueName: document.getElementById('venueName').value,
       venueMapUrl: document.getElementById('venueMapUrl').value,
       story: document.getElementById('story').value,
-      theme
+      theme,
+      religiousVerseEnabled: document.getElementById('verseToggle').checked,
+      religiousVerseType: document.getElementById('verseType').value
     };
     await update(ref(db, 'invitations/' + slug), payload);
     Object.assign(invData, payload);

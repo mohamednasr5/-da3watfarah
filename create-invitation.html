@@ -973,7 +973,20 @@
                         
                         <div class="form-grid">
                             <div class="form-group full-width">
-                                <label><i class="fas fa-star-and-crescent"></i> نص الترحيب (آية قرآنية)</label>
+                                <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+                                    <input type="checkbox" id="religiousVerseToggle" checked style="width:auto;margin:0">
+                                    <span><i class="fas fa-star-and-crescent"></i> تفعيل الآية الدينية في أعلى الدعوة</span>
+                                </label>
+                                <div id="religiousVerseTypeWrap" style="margin-top:10px">
+                                    <select class="form-control" id="religiousVerseType">
+                                        <option value="quran">آية قرآنية</option>
+                                        <option value="bible">آية من الكتاب المقدس</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group full-width">
+                                <label><i class="fas fa-star-and-crescent"></i> نص الترحيب (اتركه فارغًا لاستخدام الآية الدينية أعلاه تلقائيًا)</label>
                                 <textarea class="form-control" id="welcomeText" placeholder="﴿وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُم مِّنْ أَنفُسِكُمْ أَزْوَاجًا﴾"></textarea>
                             </div>
                             
@@ -1567,6 +1580,19 @@ ${venueName ? `- مكان الزفاف: ${venueName}` : ''}
         // ===================================
         // Upload Handling
         // ===================================
+        // ===================================
+        // Religious verse toggle (Quran / Bible)
+        // ===================================
+        function initReligiousVerseToggle() {
+            const toggle = document.getElementById('religiousVerseToggle');
+            const wrap = document.getElementById('religiousVerseTypeWrap');
+            if (!toggle || !wrap) return;
+            const sync = () => { wrap.style.display = toggle.checked ? 'block' : 'none'; };
+            toggle.addEventListener('change', sync);
+            sync();
+        }
+        document.addEventListener('DOMContentLoaded', initReligiousVerseToggle);
+
         function initUploadAreas() {
             // Cover upload
             const coverArea = document.getElementById('coverUpload');
@@ -1815,7 +1841,9 @@ ${venueName ? `- مكان الزفاف: ${venueName}` : ''}
                 content: {
                     welcomeText: val('welcomeText'),
                     invitationText: val('invitationText'),
-                    loveStory: val('loveStory')
+                    loveStory: val('loveStory'),
+                    religiousVerseEnabled: document.getElementById('religiousVerseToggle')?.checked ?? true,
+                    religiousVerseType: document.getElementById('religiousVerseType')?.value || 'quran'
                 },
                 isPublished: true
             };
@@ -1954,7 +1982,9 @@ ${venueName ? `- مكان الزفاف: ${venueName}` : ''}
                     content: {
                         welcomeText: document.getElementById('welcomeText').value.trim(),
                         invitationText: document.getElementById('invitationText').value.trim(),
-                        loveStory: document.getElementById('loveStory').value.trim()
+                        loveStory: document.getElementById('loveStory').value.trim(),
+                        religiousVerseEnabled: document.getElementById('religiousVerseToggle').checked,
+                        religiousVerseType: document.getElementById('religiousVerseType').value
                     },
                     slug: slug
                 };
