@@ -54,7 +54,7 @@ function checkAuthState() {
                 console.log('🔄 Redirecting to dashboard...');
                 showNotification('تم تسجيل الدخول بنجاح! جاري التحويل...', 'success');
                 setTimeout(() => {
-                    window.location.href = 'dashboard.html';
+                    window.location.href = 'overview.html';
                 }, 500);
             }
         } else {
@@ -111,7 +111,7 @@ function initLoginForm() {
             
             // Redirect to dashboard after short delay
             setTimeout(() => {
-                window.location.href = 'dashboard.html';
+                window.location.href = 'overview.html';
             }, 1500);
             
         } catch (error) {
@@ -300,7 +300,7 @@ async function handleGoogleSignIn() {
         
         // Redirect to dashboard after short delay
         setTimeout(() => {
-            window.location.href = 'dashboard.html';
+            window.location.href = 'overview.html';
         }, 1500);
         
     } catch (error) {
