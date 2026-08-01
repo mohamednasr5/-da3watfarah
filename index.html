@@ -81,6 +81,7 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/landing.css">
+    <link rel="stylesheet" href="css/df-footer.css">
 </head>
 <body>
     <!-- Navigation -->
@@ -759,54 +760,19 @@
     </section>
 
     <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-grid">
-                <div class="footer-brand">
-                    <a href="#" class="logo">
-                        <span class="logo-icon">💍</span>
-                        <span class="logo-text">دعوة<span class="gold">فرح</span></span>
-                    </a>
-                    <p>المنصة الأولى لدعوات الزفاف الإلكترونية في العالم العربي. نساعدك في صنع ذكرى لا تُنسى.</p>
-                    <div class="social-links footer-social">
-                        <a href="https://instagram.com/da3watfarah" target="_blank" rel="noopener" title="Instagram">
-                            <i class="fab fa-instagram"></i>
-                            <span>Instagram</span>
-                        </a>
-                        <a href="https://twitter.com/da3watfarah" target="_blank" rel="noopener" title="Twitter/X">
-                            <i class="fab fa-x-twitter"></i>
-                            <span>Twitter</span>
-                        </a>
-                        <a href="https://tiktok.com/@da3watfarah" target="_blank" rel="noopener" title="TikTok">
-                            <i class="fab fa-tiktok"></i>
-                            <span>TikTok</span>
-                        </a>
-                        <a href="https://snapchat.com/add/da3watfarah" target="_blank" rel="noopener" title="Snapchat">
-                            <i class="fab fa-snapchat"></i>
-                            <span>Snapchat</span>
-                        </a>
+    <footer class="df-footer">
+        <div class="df-footer-container">
+            <div class="df-footer-col df-footer-col-legal">
+                <div class="df-footer-share">
+                    <span>شارك الدعوة:</span>
+                    <div class="df-share-icons">
+                        <button class="df-icon-btn df-icon-copy" onclick="copyInvitationLink()" title="نسخ الرابط"><i class="fas fa-copy"></i></button>
+                        <a class="df-icon-btn df-icon-telegram" href="javascript:void(0)" onclick="shareOnTelegram()" title="تيليجرام"><i class="fab fa-telegram-plane"></i></a>
+                        <a class="df-icon-btn df-icon-twitter" href="javascript:void(0)" onclick="shareOnTwitter()" title="تويتر"><i class="fab fa-twitter"></i></a>
+                        <a class="df-icon-btn df-icon-whatsapp" href="javascript:void(0)" onclick="shareOnWhatsApp()" title="واتساب"><i class="fab fa-whatsapp"></i></a>
                     </div>
                 </div>
-                
-                <div class="footer-links">
-                    <h4>روابط سريعة</h4>
-                    <ul>
-                        <li><a href="#">الرئيسية</a></li>
-                        <li><a href="#features">المميزات</a></li>
-                        <li><a href="#templates">القوالب</a></li>
-                        <li><a href="#pricing">الأسعار</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-links">
-                    <h4>الدعم</h4>
-                    <ul>
-                        <li><a href="https://wa.me/201279934735" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i> واتساب</a></li>
-                        <li><a href="https://m.me/844143088781265" target="_blank" rel="noopener"><i class="fab fa-facebook-messenger"></i> ماسنجر</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-links">
+                <div class="df-footer-box df-footer-legal">
                     <h4>قانوني</h4>
                     <ul>
                         <li><a href="legal/privacy.html">سياسة الخصوصية</a></li>
@@ -814,25 +780,34 @@
                         <li><a href="legal/refund.html">سياسة الاسترداد</a></li>
                     </ul>
                 </div>
-                
-                <div class="footer-newsletter">
-                    <h4>النشرة البريدية</h4>
-                    <p>اشترك لتصلك آخر التحديثات والعروض</p>
-                    <form class="newsletter-form">
-                        <input type="email" placeholder="بريدك الإلكتروني">
-                        <button type="submit"><i class="fas-paper-plane"></i></button>
-                    </form>
+            </div>
+
+            <div class="df-footer-col df-footer-col-support">
+                <div class="df-footer-box df-footer-support">
+                    <h4>الدعم</h4>
+                    <div class="df-support-buttons">
+                        <a href="https://m.me/844143088781265" target="_blank" rel="noopener" class="df-support-btn df-support-messenger"><i class="fab fa-facebook-messenger"></i> ماسنجر</a>
+                        <a href="https://wa.me/201279934735" target="_blank" rel="noopener" class="df-support-btn df-support-whatsapp"><i class="fab fa-whatsapp"></i> واتساب</a>
+                    </div>
                 </div>
             </div>
-            
-            <div class="footer-bottom">
-                <p>&copy; 2025 دعوة فرح. جميع الحقوق محفوظة.</p>
-                <div class="footer-bottom-links">
-                    <a href="legal/terms.html">شروط الاستخدام</a>
-                    <a href="legal/privacy.html">سياسة الخصوصية</a>
-                    <a href="legal/refund.html">سياسة الاسترداد</a>
+
+            <div class="df-footer-col df-footer-col-brand">
+                <div class="df-footer-brand">
+                    <span>💍</span>
+                    <span>صُنع بـ <i class="fas fa-heart df-heart"></i> على <a href="https://da3watfarah.com/">دعوة فرح</a></span>
+                </div>
+                <div class="df-footer-box df-footer-social">
+                    <a href="https://snapchat.com/add/da3watfarah" target="_blank" rel="noopener" title="Snapchat"><i class="fab fa-snapchat"></i></a>
+                    <a href="https://tiktok.com/@da3watfarah" target="_blank" rel="noopener" title="TikTok"><i class="fab fa-tiktok"></i></a>
+                    <a href="https://twitter.com/da3watfarah" target="_blank" rel="noopener" title="X"><i class="fab fa-x-twitter"></i></a>
+                    <a href="https://instagram.com/da3watfarah" target="_blank" rel="noopener" title="Instagram"><i class="fab fa-instagram"></i></a>
                 </div>
             </div>
+        </div>
+
+        <div class="df-footer-bottom">
+            <p>&copy; 2025 دعوة فرح. جميع الحقوق محفوظة.</p>
         </div>
     </footer>
 
@@ -972,5 +947,6 @@
         detectCountryAndUpdatePrices();
     });
     </script>
+    <script src="js/df-footer.js"></script>
 </body>
 </html>
