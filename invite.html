@@ -44,10 +44,19 @@
             margin: 0;
             padding: 0;
         }
-        
+
+        html {
+            overflow-x: hidden;
+            width: 100%;
+            max-width: 100%;
+        }
+
         body {
             font-family: 'Tajawal', sans-serif;
             overflow-x: hidden;
+            width: 100%;
+            max-width: 100%;
+            position: relative;
         }
         
         /* Loading Screen */
@@ -95,6 +104,9 @@
             position: relative;
             z-index: 2;
             opacity: 0;
+            width: 100%;
+            max-width: 100%;
+            overflow-x: hidden;
             transition: opacity 0.6s ease;
         }
         
@@ -237,6 +249,137 @@
         .event-type-katb_ketab .countdown-number { color: #0F766E !important; }
         .event-type-engagement .btn-primary { background: linear-gradient(135deg, #B76E79, #E8B4B8) !important; }
         .event-type-katb_ketab .btn-primary { background: linear-gradient(135deg, #0F766E, #14B8A6) !important; }
+
+        /* ===================================
+           Occasion Hero Motif (rings joining / crescent)
+           One signature animated element per section, layered
+           on top of whichever of the 6 base templates is chosen,
+           so خطوبة / كتب كتاب / فرح each feel visually distinct.
+           =================================== */
+        .occasion-motif {
+            position: relative;
+            width: 130px;
+            height: 64px;
+            margin: 0 auto 14px;
+        }
+
+        .occasion-motif .rings-wrap {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .occasion-motif .ring {
+            position: absolute;
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            border: 4px solid #D4AF37;
+            box-shadow: 0 0 12px rgba(212,175,55,0.5);
+        }
+
+        .occasion-motif .ring-a { animation: ringJoinA 3.4s ease-in-out infinite; }
+        .occasion-motif .ring-b { animation: ringJoinB 3.4s ease-in-out infinite; }
+
+        @keyframes ringJoinA {
+            0%, 100% { transform: translateX(-20px) rotate(-6deg); }
+            45%, 55% { transform: translateX(-9px) rotate(0deg); }
+        }
+        @keyframes ringJoinB {
+            0%, 100% { transform: translateX(20px) rotate(6deg); }
+            45%, 55% { transform: translateX(9px) rotate(0deg); }
+        }
+
+        .occasion-motif .ring-spark {
+            position: absolute;
+            top: 2px;
+            font-size: 1rem;
+            opacity: 0;
+            animation: ringSpark 3.4s ease-in-out infinite;
+        }
+
+        @keyframes ringSpark {
+            0%, 40%, 100% { opacity: 0; transform: scale(0.5) translateY(4px); }
+            50% { opacity: 1; transform: scale(1.15) translateY(-6px); }
+            60% { opacity: 0; transform: scale(0.8) translateY(-10px); }
+        }
+
+        /* Engagement palette */
+        .event-type-engagement .occasion-motif .ring {
+            border-color: #B76E79;
+            box-shadow: 0 0 12px rgba(183,110,121,0.55);
+        }
+
+        /* Wedding keeps the classic gold rings */
+        .event-type-wedding .occasion-motif .ring {
+            border-color: #D4AF37;
+            box-shadow: 0 0 12px rgba(212,175,55,0.5);
+        }
+
+        /* Katb Ketab: crescent + shimmering line motif instead of rings */
+        .occasion-motif .katb-motif {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .occasion-motif .katb-crescent {
+            font-size: 1.9rem;
+            color: #14B8A6;
+            filter: drop-shadow(0 0 8px rgba(20,184,166,0.6));
+            animation: katbGlow 2.6s ease-in-out infinite;
+        }
+        .occasion-motif .katb-line {
+            width: 46px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #14B8A6, transparent);
+            background-size: 200% 100%;
+            animation: katbShimmer 2.4s linear infinite;
+        }
+        @keyframes katbGlow {
+            0%, 100% { transform: scale(1); opacity: 0.9; }
+            50% { transform: scale(1.12); opacity: 1; }
+        }
+        @keyframes katbShimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        @media (max-width: 480px) {
+            .occasion-motif { width: 108px; height: 54px; }
+            .occasion-motif .ring { width: 38px; height: 38px; border-width: 3px; }
+        }
+
+        /* Occasion floating particles: hearts / gems / crescents themed per section */
+        .occasion-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 2;
+            overflow: hidden;
+        }
+        .occasion-particle {
+            position: absolute;
+            bottom: -40px;
+            opacity: 0;
+            animation-name: occasionParticleFloat;
+            animation-timing-function: ease-in;
+            animation-iteration-count: infinite;
+            filter: drop-shadow(0 0 4px rgba(0,0,0,0.15));
+        }
+        @keyframes occasionParticleFloat {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.85; }
+            85% { opacity: 0.85; }
+            100% { transform: translateY(-108vh) rotate(360deg); opacity: 0; }
+        }
 
         .bismillah-text {
             font-family: 'Amiri', serif;
@@ -1503,6 +1646,7 @@
             
             <div class="cover-content">
                 <div class="occasion-badge" id="occasionBadge" style="display:none;"></div>
+                <div class="occasion-motif" id="occasionMotif" aria-hidden="true"></div>
                 <div class="bismillah-text" id="bismillahText" data-aos="fade-down">
                     بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
                 </div>
@@ -2269,6 +2413,62 @@
             }
         }
 
+        // ===================================
+        // Per-Occasion Hero Motif + Particles
+        // Gives خطوبة / كتب كتاب / فرح each a distinct signature
+        // animation on top of whichever of the 6 base designs
+        // the couple picked.
+        // ===================================
+        function renderOccasionMotif(eventType) {
+            const el = document.getElementById('occasionMotif');
+            if (!el) return;
+            if (eventType === 'katb_ketab') {
+                el.innerHTML = `
+                    <div class="katb-motif">
+                        <span class="katb-line"></span>
+                        <span class="katb-crescent"><i class="fas fa-moon"></i></span>
+                        <span class="katb-line"></span>
+                    </div>`;
+            } else {
+                // engagement + wedding: two rings gently coming together
+                el.innerHTML = `
+                    <div class="rings-wrap">
+                        <span class="ring ring-a"></span>
+                        <span class="ring ring-b"></span>
+                        <span class="ring-spark">✨</span>
+                    </div>`;
+            }
+        }
+
+        function addOccasionParticles(eventType) {
+            // Avoid stacking duplicates if this ever runs twice
+            const existing = document.getElementById('occasionParticles');
+            if (existing) existing.remove();
+
+            const configs = {
+                wedding: ['💍', '❤️', '✨'],
+                engagement: ['💎', '💍', '❤️'],
+                katb_ketab: ['✨', '🌙', '📖']
+            };
+            const emojis = configs[eventType] || configs.wedding;
+
+            const container = document.createElement('div');
+            container.className = 'occasion-particles';
+            container.id = 'occasionParticles';
+            const count = window.innerWidth < 480 ? 9 : 13;
+            for (let i = 0; i < count; i++) {
+                const p = document.createElement('span');
+                p.className = 'occasion-particle';
+                p.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                p.style.left = (2 + Math.random() * 92) + '%';
+                p.style.fontSize = (13 + Math.random() * 9) + 'px';
+                p.style.animationDelay = (Math.random() * 10) + 's';
+                p.style.animationDuration = (10 + Math.random() * 6) + 's';
+                container.appendChild(p);
+            }
+            document.body.insertBefore(container, document.body.firstChild);
+        }
+
         // Add floating hearts effect (Romantic)
         function addFloatingHearts() {
             const container = document.createElement('div');
@@ -2380,6 +2580,8 @@
             };
             const typeMeta = EVENT_TYPE_META[eventType] || EVENT_TYPE_META.wedding;
             document.getElementById('invitationContainer').classList.add(`event-type-${eventType}`);
+            renderOccasionMotif(eventType);
+            addOccasionParticles(eventType);
 
             // Determine template (stored value may or may not include ".html")
             const rawTemplateFile = design.templateFile || data.templateFile || 'preview-classic';
