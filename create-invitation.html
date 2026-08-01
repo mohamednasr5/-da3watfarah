@@ -336,6 +336,48 @@
             background: linear-gradient(135deg, #D4AF37, #B8860B);
             color: white;
         }
+
+        .badge-vip {
+            background: linear-gradient(135deg, #1A1A2E, #2D2D44);
+            color: #F4E4BC;
+            border: 1px solid #D4AF37;
+        }
+
+        /* VIP requirement banner shown when arriving from a VIP-exclusive design */
+        .vip-required-banner {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            background: linear-gradient(135deg, #1A1A2E, #2D2D44);
+            color: #F4E4BC;
+            border: 1px solid #D4AF37;
+            border-radius: var(--radius-md);
+            padding: 16px 20px;
+            margin: 0 auto 24px;
+            max-width: 800px;
+        }
+
+        .vip-required-banner i.fa-crown {
+            font-size: 1.6rem;
+            color: #D4AF37;
+            flex-shrink: 0;
+        }
+
+        .vip-required-banner strong {
+            color: #D4AF37;
+        }
+
+        .vip-required-banner .vip-close {
+            margin-inline-start: auto;
+            background: none;
+            border: none;
+            color: #F4E4BC;
+            cursor: pointer;
+            font-size: 1.1rem;
+            opacity: .7;
+        }
+
+        .vip-required-banner .vip-close:hover { opacity: 1; }
         
         /* Selected Checkmark */
         .template-check {
@@ -1334,7 +1376,7 @@
                 prev_btn: 'السابق', next_btn: 'التالي',
                 modal_default_title: 'معاينة القالب',
                 select_template_btn: 'اختيار هذا القالب', close_btn: 'إغلاق',
-                preview_btn: 'معاينة', badge_new: 'جديد ✓', badge_popular: '⭐ شائع', badge_premium: '👑 مميز',
+                preview_btn: 'معاينة', badge_new: 'جديد ✓', badge_popular: '⭐ شائع', badge_premium: '👑 مميز', badge_vip: '👑 حصري VIP',
                 modal_preview_prefix: 'معاينة القالب',
                 fill_required: 'يرجى ملء جميع الحقول المطلوبة',
                 fill_required_star: 'يرجى ملء جميع الحقول المطلوبة (*)',
@@ -1456,7 +1498,7 @@
                 prev_btn: 'Previous', next_btn: 'Next',
                 modal_default_title: 'Template Preview',
                 select_template_btn: 'Select This Template', close_btn: 'Close',
-                preview_btn: 'Preview', badge_new: 'New ✓', badge_popular: '⭐ Popular', badge_premium: '👑 Premium',
+                preview_btn: 'Preview', badge_new: 'New ✓', badge_popular: '⭐ Popular', badge_premium: '👑 Premium', badge_vip: '👑 VIP Exclusive',
                 modal_preview_prefix: 'Preview:',
                 fill_required: 'Please fill in all required fields',
                 fill_required_star: 'Please fill in all required fields (*)',
@@ -1578,6 +1620,61 @@
                     window.switchLang(saved);
                 }
             } catch (e) {}
+        });
+
+        // ===================================
+        // VIP-exclusive design arrival handling
+        // — Visitors land here from a VIP demo (vip/*) with ?vip=1&source=<name>
+        //   in the URL. We remember that this session must publish on the VIP
+        //   plan (reusing the existing preselected-plan mechanism) and show an
+        //   upfront banner explaining the requirement and price, instead of
+        //   only surfacing it at the very end of the wizard.
+        // ===================================
+        window.__vipGate = { required: false, source: null };
+
+        (function initVipGate() {
+            try {
+                const params = new URLSearchParams(window.location.search);
+                const fromVip = params.get('vip') === '1';
+                const sourceParam = params.get('source');
+
+                if (fromVip) {
+                    localStorage.setItem('da3wa_selected_plan', 'vip');
+                    if (sourceParam) localStorage.setItem('da3wa_vip_source_template', sourceParam);
+                }
+
+                const storedSource = localStorage.getItem('da3wa_vip_source_template');
+                if (fromVip || storedSource) {
+                    window.__vipGate = { required: true, source: sourceParam || storedSource || null };
+                }
+            } catch (e) {}
+        })();
+
+        function renderVipBanner(containerSelector) {
+            if (!window.__vipGate || !window.__vipGate.required) return '';
+            const name = window.__vipGate.source ? `"${window.__vipGate.source}"` : '';
+            return `
+                <div class="vip-required-banner" id="vipRequiredBanner">
+                    <i class="fas fa-crown"></i>
+                    <div>
+                        <strong>هذا التصميم ${name} حصري لمشتركي باقة VIP.</strong>
+                        لنشر دعوتك بهذا التصميم لا بد من الاشتراك بباقة VIP
+                        (<strong>400 ج.م / 500 ر.س / $25</strong> مدى الحياة). يمكنك إكمال التصميم الآن وسنطلب الدفع عند النشر.
+                    </div>
+                    <button type="button" class="vip-close" onclick="document.getElementById('vipRequiredBanner').remove()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            `;
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            if (window.__vipGate && window.__vipGate.required) {
+                const wizardBody = document.querySelector('.wizard-body') || document.querySelector('.wizard-content.active');
+                if (wizardBody) {
+                    wizardBody.insertAdjacentHTML('afterbegin', renderVipBanner());
+                }
+            }
         });
 
         // ===================================
@@ -2124,6 +2221,7 @@
                         ${template.isNew ? `<span class="template-badge badge-new">${L('badge_new')}</span>` : ''}
                         ${template.isPopular ? `<span class="template-badge badge-popular">${L('badge_popular')}</span>` : ''}
                         ${template.isPremium ? `<span class="template-badge badge-premium">${L('badge_premium')}</span>` : ''}
+                        ${template.isVip ? `<span class="template-badge badge-vip">${L('badge_vip')}</span>` : ''}
                     </div>
                     <div class="template-info">
                         <h4>${ciLang() === 'en' && template.nameEn ? template.nameEn : template.nameAr}</h4>
@@ -2862,6 +2960,8 @@ ${venueName ? `- مكان الزفاف: ${venueName}` : ''}
                     <p>دعوتك جاهزة الآن! لكي تظهر للعالم كله، يرجى اختيار باقة الدفع ثم إتمام الدفع — بعدها ستتم مراجعتها ونشرها من قبل الإدارة.</p>
                 </div>
 
+                ${renderVipBanner()}
+
                 <div id="planGrid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;max-width:800px;margin:0 auto 10px;"></div>
             `;
 
@@ -2949,6 +3049,8 @@ ${venueName ? `- مكان الزفاف: ${venueName}` : ''}
                     الباقة المختارة: <strong>${plan.label}</strong> —
                     المبلغ المطلوب: <strong style="color:var(--primary-gold);">$${plan.usd} / ${plan.sar} ر.س / ${plan.egp} ج.م</strong>
                 </p>
+
+                ${plan.id === 'vip' ? renderVipBanner() : ''}
 
                 <div id="paymentMethodsList" style="display:flex;flex-direction:column;gap:16px;max-width:640px;"></div>
             `;

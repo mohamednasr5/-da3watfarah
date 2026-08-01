@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>باقة VIP الحصرية | دعوة فرح</title>
+<meta name="description" content="تصاميم دعوات حصرية لمشتركي VIP — زفاف، خطوبة، حناء، عيد ميلاد، مولود، وحفلات التخرج.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="assets/vip.css">
+
+<style>
+    body { margin: 0; }
+    .vip-topnav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 18px 30px;
+        background: var(--bg-dark);
+        position: relative;
+        z-index: 3;
+    }
+    .vip-topnav .logo {
+        color: #fff;
+        text-decoration: none;
+        font-weight: 800;
+        font-size: 1.2rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .vip-topnav .logo .gold { color: var(--primary-gold); }
+    .vip-topnav a.back {
+        color: #cfcfe0;
+        text-decoration: none;
+        font-size: .9rem;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .vip-topnav a.back:hover { color: #fff; }
+</style>
+</head>
+<body class="vip-hub-body">
+
+    <div class="vip-topnav">
+        <a href="/" class="logo"><span>💍</span> دعوة<span class="gold">فرح</span></a>
+        <a href="/" class="back"><i class="fas fa-arrow-right"></i> الرئيسية</a>
+    </div>
+
+    <section class="vip-hero">
+        <span class="vip-hero-badge"><i class="fas fa-crown"></i> VIP حصري</span>
+        <h1>تصاميم دعوات <span>حصرية</span> لمشتركي VIP</h1>
+        <p>مجموعة قوالب فاخرة مصممة خصيصًا لكل مناسبة — من الزفاف والخطوبة إلى الحناء وأعياد الميلاد والمواليد وحفلات التخرج. متاحة فقط لمشتركي باقة VIP.</p>
+
+        <div class="vip-plan-card">
+            <span class="vip-plan-tag">🎖️ VIP حصري</span>
+            <div class="vip-plan-icon"><i class="fas fa-gem"></i></div>
+            <h3>VIP</h3>
+            <div class="vip-plan-price">400 <span>ج.م مدى الحياة</span></div>
+            <p class="vip-plan-note">تجربة استثنائية كاملة — كل تصاميم VIP + كل ميزات بريميوم + نطاق مخصص + إزالة الشعار + دعم أولوية</p>
+            <a href="#templates" class="vip-plan-cta">تصفح تصاميم VIP</a>
+        </div>
+    </section>
+
+    <nav class="vip-tabs" id="vipTabs">
+        <button type="button" class="vip-tab active" data-filter="all">الكل</button>
+        <button type="button" class="vip-tab" data-filter="wedding">زفاف</button>
+        <button type="button" class="vip-tab" data-filter="engagement">خطوبة</button>
+        <button type="button" class="vip-tab" data-filter="henna">حناء</button>
+        <button type="button" class="vip-tab" data-filter="birthday">عيد ميلاد</button>
+        <button type="button" class="vip-tab" data-filter="newborn">مولود</button>
+        <button type="button" class="vip-tab" data-filter="graduation">تخرج</button>
+    </nav>
+
+    <main class="vip-grid" id="templates"></main>
+
+    <script>
+        // ===================================================
+        // VIP templates data — one entry per demo folder under vip/*
+        // ===================================================
+        var VIP_TEMPLATES = [{"id": "graduation", "name": "حفل التخرج", "category": "graduation", "categoryLabel": "تخرج", "file": "حفلة تخرج/demo-graduation/demo-graduation.html", "video": "حفلة تخرج/demo-graduation/video.webm"}, {"id": "henna-night", "name": "ليلة الحناء", "category": "henna", "categoryLabel": "حناء", "file": "حناء/demo-henna-night/demo-henna-night.html", "video": "حناء/demo-henna-night/video.webm"}, {"id": "starry-night", "name": "ليلة النجوم", "category": "engagement", "categoryLabel": "خطوبة", "file": "خطوبة/demo-starry-night/demo-starry-night.html", "video": "خطوبة/demo-starry-night/video.webm"}, {"id": "the-ring", "name": "الخاتم", "category": "engagement", "categoryLabel": "خطوبة", "file": "خطوبة/demo-the-ring/demo-the-ring.html", "video": "خطوبة/demo-the-ring/video.webm"}, {"id": "editorial-noir", "name": "الأسود التحريري", "category": "wedding", "categoryLabel": "زفاف", "file": "زفاف/demo-editorial-noir/demo-editorial-noir.html", "video": null}, {"id": "garden-blush", "name": "حديقة الورد", "category": "wedding", "categoryLabel": "زفاف", "file": "زفاف/demo-garden-blush/demo-garden-blush.html", "video": null}, {"id": "gate-of-joy", "name": "بوابة الفرح", "category": "wedding", "categoryLabel": "زفاف", "file": "زفاف/demo-gate-of-joy/demo-gate-of-joy.html", "video": "زفاف/demo-gate-of-joy/video.webm"}, {"id": "grand-hall", "name": "القاعة الكبرى", "category": "wedding", "categoryLabel": "زفاف", "file": "زفاف/demo-grand-hall/demo-grand-hall.html", "video": "زفاف/demo-grand-hall/video.webm"}, {"id": "moon-stars", "name": "القمر والنجوم", "category": "wedding", "categoryLabel": "زفاف", "file": "زفاف/demo-moon-stars/demo-moon-stars.html", "video": "زفاف/demo-moon-stars/video.webm"}, {"id": "royal-maroon", "name": "الملكي الخمري", "category": "wedding", "categoryLabel": "زفاف", "file": "زفاف/demo-royal-maroon/demo-royal-maroon.html", "video": null}, {"id": "the-doves", "name": "الحمائم البيضاء", "category": "wedding", "categoryLabel": "زفاف", "file": "زفاف/demo-the-doves/demo-the-doves.html", "video": "زفاف/demo-the-doves/video.webm"}, {"id": "wax-seal", "name": "ختم الشمع", "category": "wedding", "categoryLabel": "زفاف", "file": "زفاف/demo-wax-seal/demo-wax-seal.html", "video": "زفاف/demo-wax-seal/vedio.webm"}, {"id": "white-hall", "name": "القاعة البيضاء", "category": "wedding", "categoryLabel": "زفاف", "file": "زفاف/demo-white-hall/demo-white-hall.html", "video": "زفاف/demo-white-hall/vedio.webm"}, {"id": "castle-magic", "name": "قصر السحر", "category": "birthday", "categoryLabel": "عيد ميلاد", "file": "عيد ميلاد/demo-castle-magic/demo-castle-magic.html", "video": "عيد ميلاد/demo-castle-magic/video.webm"}, {"id": "neon-glow", "name": "توهج نيون", "category": "birthday", "categoryLabel": "عيد ميلاد", "file": "عيد ميلاد/demo-neon-glow/demo-neon-glow.html", "video": "عيد ميلاد/demo-neon-glow/video.webm"}, {"id": "clouds", "name": "الغيوم", "category": "newborn", "categoryLabel": "مولود", "file": "مولود/demo-clouds/demo-clouds.html", "video": "مولود/demo-clouds/video.webm"}, {"id": "rosebud", "name": "برعم الورد", "category": "newborn", "categoryLabel": "مولود", "file": "مولود/demo-rosebud/demo-rosebud.html", "video": "مولود/demo-rosebud/video.webm"}]
+;
+
+        var grid = document.getElementById('templates');
+        var tabs = document.getElementById('vipTabs');
+
+        function cardHtml(t) {
+            var fileUrl = encodeURI(t.file);
+            var videoUrl = t.video ? encodeURI(t.video) : null;
+            var media = videoUrl
+                ? '<video src="' + videoUrl + '" muted loop playsinline preload="metadata" onmouseover="this.play()" onmouseout="this.pause();this.currentTime=0;"></video>'
+                : '<div class="vip-card-fallback"><i class="fas fa-gem"></i></div>';
+
+            return (
+                '<div class="vip-card" data-category="' + t.category + '">' +
+                    '<div class="vip-card-media">' +
+                        media +
+                        '<span class="vip-card-ribbon"><i class="fas fa-crown"></i> VIP حصري</span>' +
+                    '</div>' +
+                    '<div class="vip-card-body">' +
+                        '<span class="vip-card-cat">' + t.categoryLabel + '</span>' +
+                        '<h4>' + t.name + '</h4>' +
+                        '<div class="vip-card-actions">' +
+                            '<a class="vip-btn-preview" href="' + fileUrl + '" target="_blank" rel="noopener">معاينة</a>' +
+                            '<button type="button" class="vip-btn-use" data-id="' + t.id + '" data-name="' + t.name + '">استخدام الآن</button>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>'
+            );
+        }
+
+        function render(filter) {
+            var list = filter === 'all' ? VIP_TEMPLATES : VIP_TEMPLATES.filter(function (t) { return t.category === filter; });
+            grid.innerHTML = list.length
+                ? list.map(cardHtml).join('')
+                : '<p class="vip-empty">لا توجد تصاميم في هذا القسم بعد.</p>';
+
+            grid.querySelectorAll('.vip-btn-use').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    var name = btn.getAttribute('data-name');
+                    try {
+                        localStorage.setItem('da3wa_selected_plan', 'vip');
+                        localStorage.setItem('da3wa_vip_source_template', name);
+                    } catch (e) {}
+                    window.location.href = '/create-invitation.html?vip=1&source=' + encodeURIComponent(name);
+                });
+            });
+        }
+
+        tabs.addEventListener('click', function (e) {
+            var btn = e.target.closest('.vip-tab');
+            if (!btn) return;
+            tabs.querySelectorAll('.vip-tab').forEach(function (b) { b.classList.remove('active'); });
+            btn.classList.add('active');
+            render(btn.getAttribute('data-filter'));
+        });
+
+        render('all');
+    </script>
+</body>
+</html>
