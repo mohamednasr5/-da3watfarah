@@ -122,6 +122,40 @@
         .form-group.full-width {
             grid-column: 1 / -1;
         }
+
+        .event-type-select {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .event-type-option {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 14px 10px;
+            border: 2px solid #E5E7EB;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text-primary, #333);
+            transition: all .2s;
+        }
+
+        .event-type-option input {
+            display: none;
+        }
+
+        .event-type-option:has(input:checked) {
+            border-color: var(--primary-gold, #D4AF37);
+            background: rgba(212, 175, 55, 0.1);
+            color: var(--primary-gold, #B8960C);
+        }
+
+        @media (max-width: 600px) {
+            .event-type-select { grid-template-columns: 1fr; }
+        }
         
         .form-group label {
             display: block;
@@ -938,6 +972,24 @@
                         <h3 style="margin-bottom: 25px;"><i class="fas fa-user-group" style="color: var(--primary-gold);"></i> البيانات الأساسية</h3>
                         
                         <div class="form-grid">
+                            <div class="form-group full-width">
+                                <label><i class="fas fa-heart"></i> نوع الدعوة *</label>
+                                <div class="event-type-select" id="eventTypeSelect">
+                                    <label class="event-type-option">
+                                        <input type="radio" name="eventTypeRadio" value="wedding" checked>
+                                        <span><i class="fas fa-rings-wedding"></i> دعوة فرح</span>
+                                    </label>
+                                    <label class="event-type-option">
+                                        <input type="radio" name="eventTypeRadio" value="engagement">
+                                        <span><i class="fas fa-gem"></i> دعوة خطوبة</span>
+                                    </label>
+                                    <label class="event-type-option">
+                                        <input type="radio" name="eventTypeRadio" value="katb_ketab">
+                                        <span><i class="fas fa-book-quran"></i> دعوة كتب كتاب</span>
+                                    </label>
+                                </div>
+                            </div>
+
                             <div class="form-group">
                                 <label><i class="fas fa-user"></i> اسم العريس *</label>
                                 <input type="text" class="form-control" id="groomName" placeholder="أدخل اسم العريس" required>
@@ -964,7 +1016,7 @@
                             </div>
                             
                             <div class="form-group full-width">
-                                <label><i class="fas fa-calendar-alt"></i> تاريخ الزفاف *</label>
+                                <label id="weddingDateFieldLabel"><i class="fas fa-calendar-alt"></i> تاريخ الزفاف *</label>
                                 <input type="date" class="form-control" id="weddingDate" required>
                             </div>
                             
@@ -974,7 +1026,7 @@
                             </div>
                             
                             <div class="form-group">
-                                <label><i class="fas fa-map-marker-alt"></i> اسم القاعة *</label>
+                                <label id="venueNameFieldLabel"><i class="fas fa-map-marker-alt"></i> اسم القاعة *</label>
                                 <input type="text" class="form-control" id="venueName" placeholder="اسم الفندق أو القاعة" required>
                             </div>
                             
@@ -1315,10 +1367,75 @@
             }
         ];
         
+        // ===================================
+        // Invitation type (wedding / engagement / katb_ketab)
+        // ===================================
+        const EVENT_TYPE_FIELD_META = {
+            wedding: {
+                dateLabel: '<i class="fas fa-calendar-alt"></i> تاريخ الزفاف *',
+                venueLabel: '<i class="fas fa-map-marker-alt"></i> اسم القاعة *'
+            },
+            engagement: {
+                dateLabel: '<i class="fas fa-calendar-alt"></i> تاريخ الخطوبة *',
+                venueLabel: '<i class="fas fa-map-marker-alt"></i> مكان حفل الخطوبة *'
+            },
+            katb_ketab: {
+                dateLabel: '<i class="fas fa-calendar-alt"></i> تاريخ كتب الكتاب *',
+                venueLabel: '<i class="fas fa-map-marker-alt"></i> مكان كتب الكتاب *'
+            }
+        };
+
+        function currentEventType() {
+            const checked = document.querySelector('input[name="eventTypeRadio"]:checked');
+            return checked ? checked.value : 'wedding';
+        }
+
+        function setEventType(type) {
+            const radio = document.querySelector(`input[name="eventTypeRadio"][value="${type}"]`);
+            if (radio) radio.checked = true;
+            applyEventTypeFieldLabels();
+        }
+
+        function applyEventTypeFieldLabels() {
+            const meta = EVENT_TYPE_FIELD_META[currentEventType()] || EVENT_TYPE_FIELD_META.wedding;
+            document.getElementById('weddingDateFieldLabel').innerHTML = meta.dateLabel;
+            document.getElementById('venueNameFieldLabel').innerHTML = meta.venueLabel;
+        }
+
+        // Prefill the wizard with text generated by the AI writer (ai-writer.html),
+        // including the invitation type that was selected there.
+        function prefillFromAIWriter() {
+            const aiText = localStorage.getItem('aiGeneratedText');
+            const aiType = localStorage.getItem('aiGeneratedEventType');
+            if (aiText) {
+                const invitationTextEl = document.getElementById('invitationText');
+                if (invitationTextEl && !invitationTextEl.value) invitationTextEl.value = aiText;
+                localStorage.removeItem('aiGeneratedText');
+            }
+            if (aiType) {
+                setEventType(aiType);
+                localStorage.removeItem('aiGeneratedEventType');
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             AOS.init({ duration: 600, once: true });
             loadTemplates();
             initUploadAreas();
+
+            // Preselect invitation type from URL (?type=engagement|katb_ketab|wedding)
+            const urlType = new URLSearchParams(window.location.search).get('type');
+            if (urlType && EVENT_TYPE_FIELD_META[urlType]) {
+                setEventType(urlType);
+            } else {
+                applyEventTypeFieldLabels();
+            }
+
+            document.querySelectorAll('input[name="eventTypeRadio"]').forEach(radio => {
+                radio.addEventListener('change', applyEventTypeFieldLabels);
+            });
+
+            prefillFromAIWriter();
         });
         
         // ===================================
@@ -1921,6 +2038,7 @@ ${venueName ? `- مكان الزفاف: ${venueName}` : ''}
                     parentsNames: val('parentsNames')
                 },
                 event: {
+                    eventType: currentEventType(),
                     date: dateVal ? new Date(dateVal).getTime() : null,
                     time: val('weddingTime'),
                     venue: val('venueName'),
@@ -2121,12 +2239,14 @@ ${venueName ? `- مكان الزفاف: ${venueName}` : ''}
                         parentsNames: document.getElementById('parentsNames').value.trim()
                     },
                     event: {
+                        eventType: currentEventType(),
                         date: new Date(document.getElementById('weddingDate').value).getTime(),
                         time: document.getElementById('weddingTime').value,
                         venue: document.getElementById('venueName').value.trim(),
                         address: document.getElementById('venueAddress').value.trim(),
                         googleMapsUrl: document.getElementById('googleMapsUrl').value.trim()
                     },
+                    eventType: currentEventType(),
                     design: {
                         templateId: selectedTemplate?.id || 'classic',
                         templateName: selectedTemplate?.nameAr || 'كلاسيكي',

@@ -26,6 +26,18 @@
     };
     const DEFAULT_THEME = { primary: '#8B4513', secondary: '#D4AF37' };
 
+    const EVENT_TYPE_BADGES = {
+        wedding: { label: '💍 فرح', color: '#D4AF37' },
+        engagement: { label: '💎 خطوبة', color: '#B76E79' },
+        katb_ketab: { label: '📖 كتب كتاب', color: '#0F766E' }
+    };
+    function getEventType(inv) {
+        return (inv.event && inv.event.eventType) || inv.eventType || 'wedding';
+    }
+
+    let allLoadedInvitations = [];
+    let currentTypeFilter = 'all';
+
     function escapeHtml(str) {
         return (str || '').replace(/[&<>"']/g, (c) => ({
             '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
@@ -55,6 +67,8 @@
             ? `background-image: url('${cover.replace(/'/g, "%27")}')`
             : `background: linear-gradient(145deg, ${theme.primary}, ${theme.secondary})`;
 
+        const typeInfo = EVENT_TYPE_BADGES[getEventType(inv)] || EVENT_TYPE_BADGES.wedding;
+
         const card = document.createElement('a');
         card.href = invitationUrl(inv);
         card.target = '_blank';
@@ -64,6 +78,7 @@
         card.setAttribute('data-aos-delay', String(Math.min(index * 80, 400)));
         card.innerHTML = `
             <div class="real-invitation-thumb" style="${thumbStyle}">
+                <span style="position:absolute;top:14px;right:14px;background:rgba(0,0,0,.45);color:#fff;font-size:.75rem;font-weight:700;padding:5px 12px;border-radius:999px;border:1px solid ${typeInfo.color}">${typeInfo.label}</span>
                 <div class="real-invitation-overlay">
                     <h3>${escapeHtml(names)}</h3>
                 </div>
@@ -125,12 +140,8 @@
 
             // Most-viewed invitations first
             invitations.sort((a, b) => (b.viewsCount || 0) - (a.viewsCount || 0));
-            invitations = invitations.slice(0, MAX_CARDS);
-
-            grid.innerHTML = '';
-            invitations.forEach((inv, i) => grid.appendChild(buildCard(inv, i)));
-
-            if (typeof AOS !== 'undefined') AOS.refresh();
+            allLoadedInvitations = invitations;
+            renderFiltered(grid);
 
         } catch (error) {
             console.warn('⚠️ Could not load real invitations:', error);
@@ -138,10 +149,40 @@
         }
     }
 
+    function renderFiltered(grid) {
+        let list = allLoadedInvitations;
+        if (currentTypeFilter !== 'all') {
+            list = list.filter(inv => getEventType(inv) === currentTypeFilter);
+        }
+        list = list.slice(0, MAX_CARDS);
+
+        if (!list.length) {
+            renderEmpty(grid);
+            return;
+        }
+
+        grid.innerHTML = '';
+        list.forEach((inv, i) => grid.appendChild(buildCard(inv, i)));
+        if (typeof AOS !== 'undefined') AOS.refresh();
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
         const grid = document.getElementById(GRID_ID);
         if (grid) renderSkeleton(grid);
         loadRealInvitations();
+
+        const filterBar = document.getElementById('realInvitationsFilter');
+        if (filterBar) {
+            filterBar.addEventListener('click', (e) => {
+                const btn = e.target.closest('[data-type]');
+                if (!btn) return;
+                filterBar.querySelectorAll('[data-type]').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentTypeFilter = btn.dataset.type;
+                const g = document.getElementById(GRID_ID);
+                if (g) renderFiltered(g);
+            });
+        }
     });
 })();
 

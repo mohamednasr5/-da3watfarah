@@ -887,6 +887,103 @@ input, textarea {
 }
 
 /* ===================================
+   Event Categories Section (3 sections:
+   فرح / خطوبة / كتب كتاب)
+   =================================== */
+.categories {
+    padding: 100px 0;
+    background: var(--bg-secondary);
+}
+
+.categories-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+}
+
+.category-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 50px 30px;
+    border-radius: var(--radius-lg);
+    background: var(--bg-primary);
+    box-shadow: var(--shadow-sm);
+    text-decoration: none;
+    color: inherit;
+    overflow: hidden;
+    transition: all var(--transition-normal);
+    border: 1px solid transparent;
+}
+
+.category-card:hover {
+    transform: translateY(-10px);
+    box-shadow: var(--shadow-lg);
+}
+
+.category-card .category-icon {
+    width: 84px;
+    height: 84px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: white;
+    margin-bottom: 22px;
+}
+
+.category-card h3 {
+    font-family: var(--font-amiri, inherit);
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+.category-card p {
+    color: var(--text-secondary);
+    font-size: .95rem;
+    margin-bottom: 22px;
+}
+
+.category-card .category-link {
+    font-weight: 700;
+    font-size: .9rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.category-card.cat-wedding .category-icon { background: linear-gradient(135deg, #D4AF37, #B8960C); }
+.category-card.cat-wedding { border-color: rgba(212,175,55,.25); }
+.category-card.cat-wedding .category-link { color: #B8960C; }
+
+.category-card.cat-engagement .category-icon { background: linear-gradient(135deg, #B76E79, #E8B4B8); }
+.category-card.cat-engagement { border-color: rgba(183,110,121,.25); }
+.category-card.cat-engagement .category-link { color: #B76E79; }
+
+.category-card.cat-katb_ketab .category-icon { background: linear-gradient(135deg, #0F766E, #14B8A6); }
+.category-card.cat-katb_ketab { border-color: rgba(15,118,110,.25); }
+.category-card.cat-katb_ketab .category-link { color: #0F766E; }
+
+@media (max-width: 900px) {
+    .categories-grid { grid-template-columns: 1fr; }
+}
+
+/* Type filter tabs above the real-invitations grid */
+.real-invitations-filter {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 35px;
+}
+
+.real-invitations-filter .filter-btn.type-engagement.active { background: #B76E79; border-color: #B76E79; }
+.real-invitations-filter .filter-btn.type-katb_ketab.active { background: #0F766E; border-color: #0F766E; }
+
+/* ===================================
    Real Invitations Showcase Section
    =================================== */
 .real-invitations {

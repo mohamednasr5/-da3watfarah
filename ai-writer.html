@@ -644,29 +644,57 @@
                     </div>
                     
                     <form id="writerForm">
+                        <!-- Invitation Type -->
+                        <div class="form-group">
+                            <label>نوع الدعوة <span class="required">*</span></label>
+                            <div class="style-options" id="eventTypeOptions">
+                                <div class="style-option">
+                                    <input type="radio" name="eventType" value="wedding" id="typeWedding" checked>
+                                    <label for="typeWedding" class="style-option-label">
+                                        <i class="fas fa-rings-wedding"></i>
+                                        <span>دعوة فرح</span>
+                                    </label>
+                                </div>
+                                <div class="style-option">
+                                    <input type="radio" name="eventType" value="engagement" id="typeEngagement">
+                                    <label for="typeEngagement" class="style-option-label">
+                                        <i class="fas fa-gem"></i>
+                                        <span>دعوة خطوبة</span>
+                                    </label>
+                                </div>
+                                <div class="style-option">
+                                    <input type="radio" name="eventType" value="katb_ketab" id="typeKatbKetab">
+                                    <label for="typeKatbKetab" class="style-option-label">
+                                        <i class="fas fa-book-quran"></i>
+                                        <span>كتب كتاب</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Groom Name -->
                         <div class="form-group">
-                            <label>اسم العريس <span class="required">*</span></label>
+                            <label id="groomNameLabel">اسم العريس <span class="required">*</span></label>
                             <input type="text" class="form-control" id="groomName" 
                                    placeholder="مثال: أحمد محمد" required>
                         </div>
                         
                         <!-- Bride Name -->
                         <div class="form-group">
-                            <label>اسم العروس <span class="required">*</span></label>
+                            <label id="brideNameLabel">اسم العروس <span class="required">*</span></label>
                             <input type="text" class="form-control" id="brideName" 
                                    placeholder="مثال: سارة علي" required>
                         </div>
                         
                         <!-- Wedding Date -->
                         <div class="form-group">
-                            <label>تاريخ الزفاف</label>
+                            <label id="weddingDateLabel">تاريخ الزفاف</label>
                             <input type="date" class="form-control" id="weddingDate">
                         </div>
                         
                         <!-- Wedding Location -->
                         <div class="form-group">
-                            <label>مكان الزفاف</label>
+                            <label id="weddingLocationLabel">مكان الزفاف</label>
                             <input type="text" class="form-control" id="weddingLocation" 
                                    placeholder="مثال: فندق الريتز، الرياض">
                         </div>
@@ -716,7 +744,7 @@
                         <!-- Templates Quick Access -->
                         <div class="templates-section">
                             <label style="font-weight: 600; color: var(--text-primary);">نصوص جاهزة:</label>
-                            <div class="template-chips">
+                            <div class="template-chips" id="templateChips">
                                 <span class="template-chip" onclick="useTemplate('traditional')">دعوة تقليدية</span>
                                 <span class="template-chip" onclick="useTemplate('modern')">دعوة عصرية</span>
                                 <span class="template-chip" onclick="useTemplate('islamic')">دعوة إسلامية</span>
@@ -805,10 +833,65 @@
             simple: 'بسيط ومباشر، يستخدم لغة سهلة وواضحة ومفهومة للجميع',
             poetic: 'شعري وجميل، يستخدم المحسنات البديعية والأسلوب الأدبي الراقي'
         };
+
+        // ===================================
+        // Event type metadata (wedding / engagement / katb_ketab)
+        // Drives labels, prompt wording and fallback templates
+        // ===================================
+        const EVENT_TYPE_META = {
+            wedding: {
+                pageTitle: 'اكتب نص دعوة زفافك الاحترافية في ثوانٍ معدودة',
+                groomLabel: 'اسم العريس',
+                brideLabel: 'اسم العروس',
+                dateLabel: 'تاريخ الزفاف',
+                locationLabel: 'مكان الزفاف',
+                occasionNoun: 'حفل الزفاف',
+                promptNoun: 'دعوة زفاف',
+                dateNoun: 'تاريخ الزفاف',
+                locationNoun: 'مكان الزفاف'
+            },
+            engagement: {
+                pageTitle: 'اكتب نص دعوة خطوبتك المميزة في ثوانٍ معدودة',
+                groomLabel: 'اسم العريس',
+                brideLabel: 'اسم العروس',
+                dateLabel: 'تاريخ الخطوبة',
+                locationLabel: 'مكان حفل الخطوبة',
+                occasionNoun: 'حفل الخطوبة',
+                promptNoun: 'دعوة خطوبة',
+                dateNoun: 'تاريخ الخطوبة',
+                locationNoun: 'مكان حفل الخطوبة'
+            },
+            katb_ketab: {
+                pageTitle: 'اكتب نص دعوة كتب الكتاب الخاصة بكم في ثوانٍ معدودة',
+                groomLabel: 'اسم العريس',
+                brideLabel: 'اسم العروس',
+                dateLabel: 'تاريخ كتب الكتاب',
+                locationLabel: 'مكان كتب الكتاب',
+                occasionNoun: 'حفل كتب الكتاب',
+                promptNoun: 'دعوة كتب كتاب',
+                dateNoun: 'تاريخ كتب الكتاب',
+                locationNoun: 'مكان كتب الكتاب'
+            }
+        };
+
+        function currentEventType() {
+            const checked = document.querySelector('input[name="eventType"]:checked');
+            return checked ? checked.value : 'wedding';
+        }
+
+        function applyEventTypeLabels() {
+            const meta = EVENT_TYPE_META[currentEventType()];
+            document.querySelector('.ai-header-text p').textContent = meta.pageTitle;
+            document.getElementById('groomNameLabel').innerHTML = `${meta.groomLabel} <span class="required">*</span>`;
+            document.getElementById('brideNameLabel').innerHTML = `${meta.brideLabel} <span class="required">*</span>`;
+            document.getElementById('weddingDateLabel').textContent = meta.dateLabel;
+            document.getElementById('weddingLocationLabel').textContent = meta.locationLabel;
+        }
         
-        // Ready-made templates
+        // Ready-made templates, organized per invitation type
         const templates = {
-            traditional: `بسم الله الرحمن الرحيم
+            wedding: {
+                traditional: `بسم الله الرحمن الرحيم
 
 الحمد لله رب العالمين والصلاة والسلام على أشرف المرسلين
 
@@ -824,7 +907,7 @@
 
 ننتظر تشريفكم لتشاركوا فرحتنا`,
 
-            modern: `✨ أنتم مدعوون لفرحة العمر! ✨
+                modern: `✨ أنتم مدعوون لفرحة العمر! ✨
 
 {groomName} 💍 {brideName}
 
@@ -833,7 +916,7 @@
 
 تعالوا نحتفل معاً ببدء رحلة جديدة مليئة بالحب والسعادة ❤️`,
 
-            islamic: `﴿ وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُم مِّنْ أَنفُسِكُمْ أَزْوَاجًا لِّتَسْكُنُوا إِلَيْهَا وَجَعَلَ بَيْنَكُم مَّوَدَّةً وَرَحْمَةً ﴾
+                islamic: `﴿ وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُم مِّنْ أَنفُسِكُمْ أَزْوَاجًا لِّتَسْكُنُوا إِلَيْهَا وَجَعَلَ بَيْنَكُم مَّوَدَّةً وَرَحْمَةً ﴾
 
 بحمد الله وتوفيقه
 
@@ -845,7 +928,7 @@
 {weddingDate}
 {location}`,
 
-            short: `{groomName} 💕 {brideName}
+                short: `{groomName} 💕 {brideName}
 
 زفافنا قريب! 🎉
 
@@ -853,6 +936,97 @@
 {location}
 
 نتطلع لرؤيتكم هناك!`
+            },
+            engagement: {
+                traditional: `بسم الله الرحمن الرحيم
+
+يسعدنا دعوتكم لمشاركتنا فرحة خطوبة
+
+{groomName}
+و
+{brideName}
+
+في يوم {weddingDate}
+
+في {location}
+
+حضوركم يزيد الفرحة بهجة`,
+
+                modern: `💍 خُطوة أولى نحو حكاية عمر! 💍
+
+{groomName} 🤍 {brideName}
+
+📅 {weddingDate}
+📍 {location}
+
+كونوا معنا في أجمل بداية ✨`,
+
+                islamic: `﴿ رَبَّنَا هَبْ لَنَا مِنْ أَزْوَاجِنَا وَذُرِّيَّاتِنَا قُرَّةَ أَعْيُنٍ ﴾
+
+بحمد الله وتوفيقه، يسرنا دعوتكم لحفل خطوبة
+
+{groomName}
+{brideName}
+
+{weddingDate}
+{location}`,
+
+                short: `{groomName} 💍 {brideName}
+
+خطوبتنا قريبة! 🤍
+
+{weddingDate}
+{location}
+
+بانتظار حضوركم`
+            },
+            katb_ketab: {
+                traditional: `بسم الله الرحمن الرحيم
+
+الحمد لله الذي جمع بين القلوب بالمودة والرحمة
+
+يسرنا دعوتكم لحضور حفل عقد قران
+
+{groomName}
+و
+{brideName}
+
+في يوم {weddingDate}
+
+في {location}
+
+ندعوكم لمشاركتنا هذه اللحظة المباركة`,
+
+                modern: `📖 لحظة توثيق عهدنا! 📖
+
+{groomName} 🤍 {brideName}
+
+📅 {weddingDate}
+📍 {location}
+
+يشرفنا حضوركم في هذا اليوم المبارك`,
+
+                islamic: `﴿ وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُم مِّنْ أَنفُسِكُمْ أَزْوَاجًا لِّتَسْكُنُوا إِلَيْهَا وَجَعَلَ بَيْنَكُم مَّوَدَّةً وَرَحْمَةً ﴾
+
+بحمد الله وتوفيقه
+
+{groomName}
+{brideName}
+
+يعقدان قرانهما الشريف
+
+{weddingDate}
+{location}`,
+
+                short: `{groomName} 📖 {brideName}
+
+كتب كتابنا قريب! 🤍
+
+{weddingDate}
+{location}
+
+يسعدنا حضوركم`
+            }
         };
         
         // ===================================
@@ -870,6 +1044,11 @@
         function initForm() {
             const form = document.getElementById('writerForm');
             form.addEventListener('submit', handleGenerate);
+
+            document.querySelectorAll('input[name="eventType"]').forEach(radio => {
+                radio.addEventListener('change', applyEventTypeLabels);
+            });
+            applyEventTypeLabels();
         }
         
         async function handleGenerate(e) {
@@ -878,6 +1057,7 @@
             if (isGenerating) return;
             
             // Get form values
+            const eventType = currentEventType();
             const groomName = document.getElementById('groomName').value.trim();
             const brideName = document.getElementById('brideName').value.trim();
             const weddingDate = document.getElementById('weddingDate').value;
@@ -893,6 +1073,7 @@
             
             // Start generating
             await generateText({
+                eventType,
                 groomName,
                 brideName,
                 weddingDate,
@@ -976,27 +1157,29 @@
         
         // Build the prompt for AI
         function buildPrompt(params) {
-            return `اكتب نص دعوة زفاف احترافي باللغة العربية بالأسلوب ${styleDescriptions[params.writingStyle]}.
+            const meta = EVENT_TYPE_META[params.eventType || 'wedding'];
+            return `اكتب نص ${meta.promptNoun} احترافي باللغة العربية بالأسلوب ${styleDescriptions[params.writingStyle]}، خاص بمناسبة ${meta.occasionNoun} فقط (وليس نص زفاف عام إن لم تكن المناسبة زفافاً).
 
 التفاصيل:
 - اسم العريس: ${params.groomName}
 - اسم العروس: ${params.brideName}
-${params.weddingDate ? `- تاريخ الزفاف: ${params.weddingDate}` : ''}
-${params.weddingLocation ? `- مكان الزفاف: ${params.weddingLocation}` : ''}
+${params.weddingDate ? `- ${meta.dateNoun}: ${params.weddingDate}` : ''}
+${params.weddingLocation ? `- ${meta.locationNoun}: ${params.weddingLocation}` : ''}
 ${params.additionalDetails ? `- تفاصيل إضافية: ${params.additionalDetails}` : ''}
 
 المطلوب:
-1. اكتب نص كامل ومتكامل للدعوة
+1. اكتب نص كامل ومتكامل لـ ${meta.promptNoun}
 2. استخدم أسلوب ${styleDescriptions[params.writingStyle]}
 3. اجعل النص مناسباً للعرض في بطاقة دعوة إلكترونية
-4 أضف بعض التعبئات المناسبة للمناسبة
+4. استخدم كلمات ومفردات مناسبة تحديداً لـ ${meta.occasionNoun} (لا تستخدم كلمة "زفاف" أو "عروسين رسمياً" إن كانت المناسبة خطوبة أو كتب كتاب)
 
 اكتب النص فقط بدون أي مقدمة أو شرح:`;
         }
         
         // Fallback template generation
         function generateFromTemplate(params) {
-            let text = templates[params.writingStyle === 'poetic' ? 'traditional' : 
+            const typeTemplates = templates[params.eventType] || templates.wedding;
+            let text = typeTemplates[params.writingStyle === 'poetic' ? 'traditional' : 
                          params.writingStyle === 'simple' ? 'modern' : 'traditional'];
             
             // Replace placeholders
@@ -1087,13 +1270,14 @@ ${params.additionalDetails ? `- تفاصيل إضافية: ${params.additionalDe
             
             // Save to localStorage for editor to pick up
             localStorage.setItem('aiGeneratedText', generatedText);
+            localStorage.setItem('aiGeneratedEventType', currentEventType());
             
             window.db.showNotification('تم حفظ النص! يمكنك استخدامه في محرر الدعوة', 'success');
             
             // Optionally redirect to editor
             setTimeout(() => {
                 if (confirm('هل تريد الانتقال إلى محرر الدعوة لاستخدام هذا النص؟')) {
-                    window.location.href = 'create-invitation.html';
+                    window.location.href = `create-invitation.html?type=${currentEventType()}`;
                 }
             }, 1500);
         }
@@ -1107,12 +1291,14 @@ ${params.additionalDetails ? `- تفاصيل إضافية: ${params.additionalDe
         // Template Quick Use
         // ===================================
         function useTemplate(templateKey) {
+            const eventType = currentEventType();
             const groomName = document.getElementById('groomName').value || '[اسم العريس]';
             const brideName = document.getElementById('brideName').value || '[اسم العروس]';
             const weddingDate = document.getElementById('weddingDate').value;
             const weddingLocation = document.getElementById('weddingLocation').value || '[المكان]';
             
-            let text = templates[templateKey] || templates.traditional;
+            const typeTemplates = templates[eventType] || templates.wedding;
+            let text = typeTemplates[templateKey] || typeTemplates.traditional;
             
             text = text.replace('{groomName}', groomName)
                        .replace('{brideName}', brideName)
@@ -1121,7 +1307,7 @@ ${params.additionalDetails ? `- تفاصيل إضافية: ${params.additionalDe
             
             displayWithTypingEffect(text);
             enableOutputButtons(true);
-            saveToHistory(text, { groomName, brideName, writingStyle: templateKey });
+            saveToHistory(text, { eventType, groomName, brideName, writingStyle: templateKey });
         }
         
         // ===================================

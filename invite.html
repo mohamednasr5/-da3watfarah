@@ -192,6 +192,52 @@
             max-width: 700px;
         }
         
+        .occasion-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 20px;
+            margin-bottom: 18px;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(6px);
+            border: 1px solid rgba(255,255,255,0.35);
+            font-size: 0.9rem;
+            font-weight: 700;
+            letter-spacing: .5px;
+        }
+
+        /* =========================================================
+           Per-occasion identity layer (engagement: rose gold / katb
+           ketab: emerald). Overrides the --theme-primary/secondary
+           custom properties set by the chosen visual template, so
+           every button, countdown number, border and accent across
+           the page (they all reference these vars) shifts to the
+           occasion's palette automatically — giving each of the
+           three sections (فرح / خطوبة / كتب كتاب) its own distinct
+           identity on top of any of the base designs.
+           ========================================================= */
+        #invitationContainer.event-type-engagement {
+            --theme-primary: #B76E79;
+            --theme-secondary: #E8B4B8;
+        }
+        #invitationContainer.event-type-katb_ketab {
+            --theme-primary: #0F766E;
+            --theme-secondary: #14B8A6;
+        }
+        .event-type-engagement .occasion-badge { background: rgba(232,180,184,0.25); border-color: rgba(232,180,184,0.5); }
+        .event-type-katb_ketab .occasion-badge { background: rgba(15,118,110,0.25); border-color: rgba(15,118,110,0.5); }
+        .event-type-engagement #eventIcon { background: linear-gradient(135deg, #B76E79, #E8B4B8); }
+        .event-type-katb_ketab #eventIcon { background: linear-gradient(135deg, #0F766E, #14B8A6); }
+        .event-type-engagement .decorative-line { background: linear-gradient(90deg, transparent, #B76E79, transparent) !important; }
+        .event-type-katb_ketab .decorative-line { background: linear-gradient(90deg, transparent, #0F766E, transparent) !important; }
+        .event-type-engagement .section-title i { color: #B76E79 !important; }
+        .event-type-katb_ketab .section-title i { color: #0F766E !important; }
+        .event-type-engagement .countdown-number { color: #B76E79 !important; }
+        .event-type-katb_ketab .countdown-number { color: #0F766E !important; }
+        .event-type-engagement .btn-primary { background: linear-gradient(135deg, #B76E79, #E8B4B8) !important; }
+        .event-type-katb_ketab .btn-primary { background: linear-gradient(135deg, #0F766E, #14B8A6) !important; }
+
         .bismillah-text {
             font-family: 'Amiri', serif;
             font-size: 1.8rem;
@@ -1220,6 +1266,35 @@
         
         .text-red { color: #e74c3c; }
 
+        /* Brand social icons under "صُنع بـ" */
+        .footer-brand-social {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 14px;
+            flex-wrap: wrap;
+        }
+
+        .footer-brand-social a {
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.08);
+            color: rgba(255,255,255,0.85);
+            font-size: 1rem;
+            text-decoration: none;
+            transition: transform .2s, background .2s, color .2s;
+        }
+
+        .footer-brand-social a:hover {
+            transform: scale(1.1);
+            background: #D4AF37;
+            color: #1A1A2E;
+        }
+
         /* CTA */
         .inv-cta-section {
             text-align: center;
@@ -1427,6 +1502,7 @@
             </div>
             
             <div class="cover-content">
+                <div class="occasion-badge" id="occasionBadge" style="display:none;"></div>
                 <div class="bismillah-text" id="bismillahText" data-aos="fade-down">
                     بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
                 </div>
@@ -1706,6 +1782,12 @@
                 <div class="footer-logo">
                     <span>💍</span>
                     <span>صُنع بـ <i class="fas fa-heart text-red"></i> على <a href="https://da3watfarah.com/" target="_top" class="footer-brand-link">دعوة فرح</a></span>
+                </div>
+                <div class="footer-brand-social">
+                    <a href="https://instagram.com/da3watfarah" target="_blank" rel="noopener" title="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="https://twitter.com/da3watfarah" target="_blank" rel="noopener" title="Twitter/X"><i class="fab fa-x-twitter"></i></a>
+                    <a href="https://tiktok.com/@da3watfarah" target="_blank" rel="noopener" title="TikTok"><i class="fab fa-tiktok"></i></a>
+                    <a href="https://snapchat.com/add/da3watfarah" target="_blank" rel="noopener" title="Snapchat"><i class="fab fa-snapchat"></i></a>
                 </div>
                 <div class="footer-share">
                     <span>شارك الدعوة:</span>
@@ -2261,6 +2343,44 @@
             const design = data.design || {};
             const content = data.content || {};
 
+            // Determine invitation type (wedding / engagement / katb_ketab) and its content meta.
+            // Drives the hero badge, default titles, event card label, countdown title and RSVP copy.
+            const eventType = event.eventType || data.eventType || 'wedding';
+            const EVENT_TYPE_META = {
+                wedding: {
+                    badgeLabel: '💍 دعوة زفاف',
+                    pageTitlePrefix: 'دعوة زفاف',
+                    heroDefaultTitle: 'يدعوانكم لمشاركتهما فرحة الزفاف',
+                    ogDescriptionDefault: 'ندعوكم لحضور زفافنا',
+                    eventNameDefault: 'حفل الزفاف',
+                    countdownTitle: 'العد التنازلي للفرح',
+                    rsvpSubtitle: 'يسعدنا أن تؤكدوا حضوركم معنا في هذا اليوم المميز',
+                    iconClass: 'fa-ring'
+                },
+                engagement: {
+                    badgeLabel: '💎 دعوة خطوبة',
+                    pageTitlePrefix: 'دعوة خطوبة',
+                    heroDefaultTitle: 'يدعوانكم لمشاركتهما فرحة الخطوبة',
+                    ogDescriptionDefault: 'ندعوكم لحضور حفل خطوبتنا',
+                    eventNameDefault: 'حفل الخطوبة',
+                    countdownTitle: 'العد التنازلي للخطوبة',
+                    rsvpSubtitle: 'يسعدنا أن تؤكدوا حضوركم معنا في هذه البداية الجميلة',
+                    iconClass: 'fa-gem'
+                },
+                katb_ketab: {
+                    badgeLabel: '📖 دعوة كتب كتاب',
+                    pageTitlePrefix: 'دعوة كتب كتاب',
+                    heroDefaultTitle: 'يدعوانكم لمشاركتهما فرحة كتب الكتاب',
+                    ogDescriptionDefault: 'ندعوكم لحضور حفل كتب كتابنا',
+                    eventNameDefault: 'حفل كتب الكتاب',
+                    countdownTitle: 'العد التنازلي لكتب الكتاب',
+                    rsvpSubtitle: 'يسعدنا أن تؤكدوا حضوركم معنا في هذه اللحظة المباركة',
+                    iconClass: 'fa-book-quran'
+                }
+            };
+            const typeMeta = EVENT_TYPE_META[eventType] || EVENT_TYPE_META.wedding;
+            document.getElementById('invitationContainer').classList.add(`event-type-${eventType}`);
+
             // Determine template (stored value may or may not include ".html")
             const rawTemplateFile = design.templateFile || data.templateFile || 'preview-classic';
             const templateFile = rawTemplateFile.replace(/\.html$/i, '');
@@ -2271,9 +2391,16 @@
             // Update page title and meta
             const groomName = couple.groomName || data.groomName || '';
             const brideName = couple.brideName || data.brideName || '';
-            document.getElementById('pageTitle').textContent = `دعوة زفاف ${groomName} و ${brideName}`;
-            document.getElementById('ogTitle').textContent = `دعوة زفاف ${groomName} و ${brideName}`;
-            document.getElementById('ogDescription').textContent = content.invitationText || data.invitationText || 'ندعوكم لحضور زفافنا';
+            document.getElementById('pageTitle').textContent = `${typeMeta.pageTitlePrefix} ${groomName} و ${brideName}`;
+            document.getElementById('ogTitle').textContent = `${typeMeta.pageTitlePrefix} ${groomName} و ${brideName}`;
+            document.getElementById('ogDescription').textContent = content.invitationText || data.invitationText || typeMeta.ogDescriptionDefault;
+
+            // Occasion badge on the cover
+            const badgeEl = document.getElementById('occasionBadge');
+            if (badgeEl) {
+                badgeEl.textContent = typeMeta.badgeLabel;
+                badgeEl.style.display = 'inline-flex';
+            }
 
             // Cover image
             const coverImage = design.coverImage || data.coverImage || data.coverImageUrl || '';
@@ -2297,16 +2424,8 @@
             }
 
             // Wedding title
-            const weddingTitle = content.weddingTitle || data.weddingTitle || 'يدعوانكم لمشاركتهما فرحة الزفاف';
+            const weddingTitle = content.weddingTitle || data.weddingTitle || typeMeta.heroDefaultTitle;
             document.getElementById('weddingTitle').querySelector('span').textContent = weddingTitle;
-
-            // Event type label
-            const eventType = event.eventType || data.eventType || 'wedding';
-            const eventTypeLabels = { 
-                wedding: 'دعوة زفاف', 
-                engagement: 'دعوة خطوبة', 
-                katb_ketab: 'دعوة كتب كتاب' 
-            };
 
             // Welcome section: religious verse (Quranic ayah or Bible verse), toggleable
             const DEFAULT_QURAN_VERSE_HTML =
@@ -2384,9 +2503,21 @@
                 document.getElementById('venueAddressRow').style.display = 'flex';
             }
 
-            // Event name
-            const eventName = event.eventName || data.eventName || 'حفل الزفاف';
+            // Event name + icon (defaults follow the invitation type)
+            const eventName = event.eventName || data.eventName || typeMeta.eventNameDefault;
             document.getElementById('eventName').textContent = eventName;
+            const eventIconEl = document.querySelector('#eventIcon i');
+            if (eventIconEl) {
+                eventIconEl.className = `fas ${typeMeta.iconClass}`;
+            }
+            const countdownTitleEl = document.querySelector('.countdown-title');
+            if (countdownTitleEl) {
+                countdownTitleEl.textContent = typeMeta.countdownTitle;
+            }
+            const rsvpSubtitleEl = document.querySelector('#rsvpHeader p');
+            if (rsvpSubtitleEl) {
+                rsvpSubtitleEl.textContent = typeMeta.rsvpSubtitle;
+            }
 
             // Add to Google Calendar
             if (weddingDateObj && !isNaN(weddingDateObj.getTime())) {

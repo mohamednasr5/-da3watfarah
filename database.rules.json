@@ -114,6 +114,25 @@
               ".validate": "!newData.exists() || newData.isBoolean()"
             }
           }
+        },
+        "gallery": {
+          ".read": true,
+          "$galleryId": {
+            ".write": true,
+            ".validate": "newData.hasChild('url')",
+            "url": {
+              ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 2000"
+            },
+            "guestName": {
+              ".validate": "!newData.exists() || (newData.isString() && newData.val().length <= 200)"
+            },
+            "approved": {
+              ".validate": "!newData.exists() || newData.isBoolean()"
+            },
+            "createdAt": {
+              ".validate": "!newData.exists() || newData.isNumber()"
+            }
+          }
         }
       }
     },

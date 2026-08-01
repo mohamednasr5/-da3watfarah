@@ -35,6 +35,9 @@
   .tag.pending{background:rgba(232,183,102,.18);color:var(--orange)}
   .tag.rejected{background:rgba(232,136,136,.18);color:var(--red)}
   .tag.draft{background:rgba(169,179,172,.15);color:var(--text-dim)}
+  .tag.type-wedding{background:rgba(201,162,39,.18);color:var(--gold-light)}
+  .tag.type-engagement{background:rgba(183,110,121,.2);color:#E8B4B8}
+  .tag.type-katb_ketab{background:rgba(15,118,110,.2);color:#5EEAD4}
   .row-actions{display:flex;gap:6px;flex-wrap:wrap}
   .row-actions button, .row-actions a{font-size:11px;padding:6px 10px;border-radius:8px;border:none;cursor:pointer;text-decoration:none;color:#0B0F0E;font-weight:700;font-family:'Cairo'}
   .gate{display:flex;align-items:center;justify-content:center;min-height:100vh;flex-direction:column;gap:14px}
@@ -100,6 +103,12 @@
       <div class="stat"><b id="statRsvp">0</b><span>تأكيدات حضور</span></div>
     </div>
 
+    <div class="stats" style="grid-template-columns:repeat(3,1fr);margin-bottom:24px">
+      <div class="stat"><b id="statWedding">0</b><span>💍 دعوات الفرح</span></div>
+      <div class="stat"><b id="statEngagement">0</b><span>💎 دعوات الخطوبة</span></div>
+      <div class="stat"><b id="statKatbKetab">0</b><span>📖 دعوات كتب الكتاب</span></div>
+    </div>
+
     <div class="toolbar">
       <div class="tabs" id="tabs">
         <button class="tab active" data-filter="all">الكل</button>
@@ -111,11 +120,20 @@
       <input id="search" placeholder="ابحث بالاسم أو الرابط...">
     </div>
 
+    <div class="toolbar">
+      <div class="tabs" id="typeTabs">
+        <button class="tab active" data-type="all">كل الأقسام</button>
+        <button class="tab" data-type="wedding">💍 الفرح</button>
+        <button class="tab" data-type="engagement">💎 الخطوبة</button>
+        <button class="tab" data-type="katb_ketab">📖 كتب الكتاب</button>
+      </div>
+    </div>
+
     <div class="table-wrap">
       <table>
         <thead>
           <tr>
-            <th>الرابط</th><th>الأسماء</th><th>الباقة</th><th>حالة الدفع</th>
+            <th>القسم</th><th>الرابط</th><th>الأسماء</th><th>الباقة</th><th>حالة الدفع</th>
             <th>الإيصال</th><th>حالة النشر</th><th>المشاهدات</th><th>تاريخ الإنشاء</th><th>إجراءات</th>
           </tr>
         </thead>
@@ -138,6 +156,13 @@
       <div class="m-section">
         <h4>بيانات أساسية (قابلة للتعديل)</h4>
         <div class="m-grid">
+          <div class="m-field"><label>القسم / نوع المناسبة</label>
+            <select id="editEventType" style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid var(--line);background:var(--panel2);color:var(--text);font-family:'Cairo';font-size:13px">
+              <option value="wedding">💍 دعوة فرح</option>
+              <option value="engagement">💎 دعوة خطوبة</option>
+              <option value="katb_ketab">📖 دعوة كتب كتاب</option>
+            </select>
+          </div>
           <div class="m-field"><label>اسم العريس</label><input id="editGroomName"></div>
           <div class="m-field"><label>اسم العروسة</label><input id="editBrideName"></div>
           <div class="m-field"><label>الرابط (slug)</label><input id="editSlug" style="direction:ltr"></div>
@@ -214,7 +239,15 @@
 
   let allInvitations = {}; // keyed by invitationId (push key from db.js)
   let currentFilter = 'all';
+  let currentTypeFilter = 'all';
   let currentSearch = '';
+
+  const EVENT_TYPE_TAGS = {
+    wedding: { text: '💍 فرح', cls: 'type-wedding' },
+    engagement: { text: '💎 خطوبة', cls: 'type-engagement' },
+    katb_ketab: { text: '📖 كتب كتاب', cls: 'type-katb_ketab' }
+  };
+  function getEventType(inv){ return inv.event?.eventType || inv.eventType || 'wedding'; }
 
   onAuthStateChanged(auth, async (user) => {
     if (!user) return;
@@ -289,6 +322,9 @@
     document.getElementById('statPublished').textContent = entries.filter(([,v]) => v.isPublished).length;
     document.getElementById('statViews').textContent = entries.reduce((s,[,v]) => s + (v.viewsCount||0), 0);
     document.getElementById('statRsvp').textContent = entries.reduce((s,[,v]) => s + (v.rsvpsCount||0), 0);
+    document.getElementById('statWedding').textContent = entries.filter(([,v]) => getEventType(v) === 'wedding').length;
+    document.getElementById('statEngagement').textContent = entries.filter(([,v]) => getEventType(v) === 'engagement').length;
+    document.getElementById('statKatbKetab').textContent = entries.filter(([,v]) => getEventType(v) === 'katb_ketab').length;
   }
 
   function matchesFilter(inv){
@@ -302,6 +338,11 @@
     }
   }
 
+  function matchesType(inv){
+    if (currentTypeFilter === 'all') return true;
+    return getEventType(inv) === currentTypeFilter;
+  }
+
   function matchesSearch(inv){
     if (!currentSearch) return true;
     const q = currentSearch;
@@ -312,7 +353,7 @@
 
   function applyFiltersAndRender(){
     const ids = Object.keys(allInvitations).filter(id =>
-      matchesFilter(allInvitations[id]) && matchesSearch(allInvitations[id]));
+      matchesFilter(allInvitations[id]) && matchesType(allInvitations[id]) && matchesSearch(allInvitations[id]));
     renderTable(ids);
   }
 
@@ -343,8 +384,11 @@
         ? `<a href="${payment.receiptUrl}" target="_blank" style="background:var(--gold-light)">عرض الإيصال</a>`
         : '—';
 
+      const typeInfo = EVENT_TYPE_TAGS[getEventType(inv)] || EVENT_TYPE_TAGS.wedding;
+
       const tr = document.createElement('tr');
       tr.innerHTML = `
+        <td><span class="tag ${typeInfo.cls}">${typeInfo.text}</span></td>
         <td style="direction:ltr">${inv.slug||''}</td>
         <td>${inv.couple?.groomName||''} &amp; ${inv.couple?.brideName||''}</td>
         <td>${planText}</td>
@@ -417,9 +461,18 @@
   document.getElementById('tabs').addEventListener('click', (e) => {
     const btn = e.target.closest('.tab');
     if (!btn) return;
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('#tabs .tab').forEach(t => t.classList.remove('active'));
     btn.classList.add('active');
     currentFilter = btn.dataset.filter;
+    applyFiltersAndRender();
+  });
+
+  document.getElementById('typeTabs').addEventListener('click', (e) => {
+    const btn = e.target.closest('.tab');
+    if (!btn) return;
+    document.querySelectorAll('#typeTabs .tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    currentTypeFilter = btn.dataset.type;
     applyFiltersAndRender();
   });
 
@@ -445,7 +498,9 @@
     const inv = allInvitations[id];
     if (!inv) return;
 
-    document.getElementById('modalTitle').textContent = `تفاصيل: ${inv.couple?.groomName||''} و ${inv.couple?.brideName||''}`;
+    const typeInfo = EVENT_TYPE_TAGS[getEventType(inv)] || EVENT_TYPE_TAGS.wedding;
+    document.getElementById('modalTitle').textContent = `تفاصيل: ${inv.couple?.groomName||''} و ${inv.couple?.brideName||''} — ${typeInfo.text}`;
+    document.getElementById('editEventType').value = getEventType(inv);
     document.getElementById('editGroomName').value = inv.couple?.groomName || '';
     document.getElementById('editBrideName').value = inv.couple?.brideName || '';
     document.getElementById('editSlug').value = inv.slug || '';
@@ -558,7 +613,8 @@
       'couple/brideName': document.getElementById('editBrideName').value.trim(),
       'slug': newSlug,
       'event/eventName': document.getElementById('editEventName').value.trim(),
-      'event/venueName': document.getElementById('editVenueName').value.trim()
+      'event/venueName': document.getElementById('editVenueName').value.trim(),
+      'event/eventType': document.getElementById('editEventType').value
     };
     if (dateVal) updates['event/date'] = new Date(dateVal).toISOString();
 
@@ -569,8 +625,11 @@
       allInvitations[currentDetailId].couple = allInvitations[currentDetailId].couple || {};
       Object.assign(allInvitations[currentDetailId].couple, { groomName: updates['couple/groomName'], brideName: updates['couple/brideName'] });
       allInvitations[currentDetailId].slug = newSlug;
+      allInvitations[currentDetailId].event = allInvitations[currentDetailId].event || {};
+      allInvitations[currentDetailId].event.eventType = updates['event/eventType'];
       statusEl.style.color = 'var(--green)';
       statusEl.textContent = 'تم الحفظ بنجاح ✓';
+      renderStats();
       applyFiltersAndRender();
     } catch (err) {
       console.error('Save details error:', err);
