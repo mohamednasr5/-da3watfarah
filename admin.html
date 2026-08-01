@@ -46,6 +46,32 @@
   .gate .btn{background:var(--gold);color:#0B0F0E;border-color:var(--gold)}
   .gate .btn:disabled{opacity:.6;cursor:not-allowed}
   #adminLoginError{color:var(--red);font-size:13px;min-height:16px}
+
+  /* ===== Detail / control modal ===== */
+  .modal-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:500;align-items:center;justify-content:center;padding:20px}
+  .modal-backdrop.open{display:flex}
+  .modal-box{background:var(--panel);border:1px solid var(--line);border-radius:16px;max-width:900px;width:100%;max-height:88vh;overflow-y:auto;padding:0}
+  .modal-header{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--panel);z-index:2}
+  .modal-header h3{font-family:'Amiri',serif;color:var(--gold-light);font-size:18px}
+  .modal-close{background:none;border:none;color:var(--text-dim);font-size:20px;cursor:pointer}
+  .modal-body{padding:20px 22px}
+  .m-section{margin-bottom:26px}
+  .m-section h4{color:var(--gold-light);font-size:13px;margin-bottom:10px;border-bottom:1px solid var(--line);padding-bottom:6px}
+  .m-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media(max-width:600px){.m-grid{grid-template-columns:1fr}}
+  .m-field label{display:block;font-size:11px;color:var(--text-dim);margin-bottom:5px}
+  .m-field input{width:100%;padding:9px 12px;border-radius:8px;border:1px solid var(--line);background:var(--panel2);color:var(--text);font-family:'Cairo';font-size:13px}
+  .m-save-btn{margin-top:14px;background:var(--gold);color:#0B0F0E;border:none;padding:9px 20px;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Cairo'}
+  .m-list-table{width:100%;border-collapse:collapse;font-size:12.5px}
+  .m-list-table th,.m-list-table td{padding:8px;border-bottom:1px solid var(--line);text-align:right}
+  .m-empty{color:var(--text-dim);font-size:12.5px;padding:10px 0}
+  .m-gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px}
+  .m-g-item{position:relative;border-radius:10px;overflow:hidden;aspect-ratio:1}
+  .m-g-item img{width:100%;height:100%;object-fit:cover}
+  .m-g-actions{position:absolute;inset:auto 0 0 0;display:flex;gap:4px;padding:5px;background:rgba(0,0,0,.55)}
+  .m-g-actions button{flex:1;font-size:10px;padding:5px 4px;border-radius:6px;border:none;cursor:pointer;font-weight:700;font-family:'Cairo'}
+  .m-g-badge{position:absolute;top:5px;right:5px;font-size:9px;padding:2px 6px;border-radius:999px;font-weight:700}
+  .m-wish-row button{font-size:10px;padding:5px 9px;border-radius:6px;border:none;cursor:pointer;font-weight:700;font-family:'Cairo';margin-inline-start:4px}
 </style>
 </head>
 <body>
@@ -100,10 +126,61 @@
   </main>
 </div>
 
+<!-- Full invitation control modal -->
+<div class="modal-backdrop" id="detailModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3 id="modalTitle">تفاصيل الدعوة</h3>
+      <button class="modal-close" id="modalCloseBtn">&times;</button>
+    </div>
+    <div class="modal-body">
+
+      <div class="m-section">
+        <h4>بيانات أساسية (قابلة للتعديل)</h4>
+        <div class="m-grid">
+          <div class="m-field"><label>اسم العريس</label><input id="editGroomName"></div>
+          <div class="m-field"><label>اسم العروسة</label><input id="editBrideName"></div>
+          <div class="m-field"><label>الرابط (slug)</label><input id="editSlug" style="direction:ltr"></div>
+          <div class="m-field"><label>اسم المناسبة</label><input id="editEventName"></div>
+          <div class="m-field"><label>تاريخ ووقت المناسبة</label><input id="editEventDate" type="datetime-local"></div>
+          <div class="m-field"><label>مكان المناسبة</label><input id="editVenueName"></div>
+        </div>
+        <button class="m-save-btn" id="saveDetailsBtn">حفظ التعديلات</button>
+        <span id="saveStatus" style="margin-inline-start:10px;font-size:12px;color:var(--green)"></span>
+      </div>
+
+      <div class="m-section">
+        <h4>تأكيدات الحضور (RSVP)</h4>
+        <table class="m-list-table">
+          <thead><tr><th>الاسم</th><th>الحالة</th><th>عدد المرافقين</th><th>التاريخ</th></tr></thead>
+          <tbody id="modalRsvpTable"></tbody>
+        </table>
+        <div class="m-empty" id="modalRsvpEmpty" style="display:none">لا توجد تأكيدات حضور</div>
+      </div>
+
+      <div class="m-section">
+        <h4>جدار التهاني</h4>
+        <table class="m-list-table">
+          <thead><tr><th>الاسم</th><th>الرسالة</th><th>التاريخ</th><th>إجراء</th></tr></thead>
+          <tbody id="modalWishesTable"></tbody>
+        </table>
+        <div class="m-empty" id="modalWishesEmpty" style="display:none">لا توجد تهانٍ بعد</div>
+      </div>
+
+      <div class="m-section">
+        <h4>ذكريات وصور الضيوف</h4>
+        <div class="m-gallery-grid" id="modalGalleryGrid"></div>
+        <div class="m-empty" id="modalGalleryEmpty" style="display:none">لا توجد صور مرفوعة من الضيوف</div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import { getAuth, onAuthStateChanged, signOut, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-  import { getDatabase, ref, get, remove, update } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+  import { getDatabase, ref, get, remove, update, onValue, off } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
   // Worker endpoint that verifies the admin password (521988 by default,
   // see worker.js) and, on success, hands back the hidden Firebase admin
@@ -278,12 +355,15 @@
         <td>${inv.createdAt ? new Date(inv.createdAt).toLocaleDateString('ar-EG') : '-'}</td>
         <td class="row-actions">
           <a href="/${inv.slug}" target="_blank" style="background:var(--gold-light)">فتح</a>
+          <button style="background:var(--gold-light)" data-details="${id}">التفاصيل</button>
           ${!inv.isPublished ? `<button style="background:var(--green)" data-approve="${id}">موافقة ونشر</button>` : `<button style="background:var(--text-dim)" data-unpublish="${id}">إلغاء النشر</button>`}
           ${inv.status !== 'rejected' ? `<button style="background:var(--red)" data-reject="${id}">رفض</button>` : ''}
           <button style="background:var(--red)" data-del="${id}">حذف</button>
         </td>`;
       tbody.appendChild(tr);
     });
+
+    tbody.querySelectorAll('[data-details]').forEach(b => b.addEventListener('click', () => openDetailModal(b.dataset.details)));
 
     tbody.querySelectorAll('[data-approve]').forEach(b => b.addEventListener('click', async () => {
       const id = b.dataset.approve;
@@ -341,6 +421,162 @@
     btn.classList.add('active');
     currentFilter = btn.dataset.filter;
     applyFiltersAndRender();
+  });
+
+  // ===== Full invitation detail / control modal =====
+  let currentDetailId = null;
+  let detailListenerRefs = [];
+
+  function stopDetailListeners(){
+    detailListenerRefs.forEach(({r, cb}) => off(r, 'value', cb));
+    detailListenerRefs = [];
+  }
+
+  function toLocalDatetimeValue(ts){
+    if (!ts) return '';
+    const d = new Date(ts);
+    if (isNaN(d.getTime())) return '';
+    const pad = n => String(n).padStart(2, '0');
+    return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  }
+
+  function openDetailModal(id){
+    currentDetailId = id;
+    const inv = allInvitations[id];
+    if (!inv) return;
+
+    document.getElementById('modalTitle').textContent = `تفاصيل: ${inv.couple?.groomName||''} و ${inv.couple?.brideName||''}`;
+    document.getElementById('editGroomName').value = inv.couple?.groomName || '';
+    document.getElementById('editBrideName').value = inv.couple?.brideName || '';
+    document.getElementById('editSlug').value = inv.slug || '';
+    document.getElementById('editEventName').value = inv.event?.eventName || '';
+    document.getElementById('editEventDate').value = toLocalDatetimeValue(inv.event?.date);
+    document.getElementById('editVenueName').value = inv.event?.venueName || inv.event?.venue || '';
+    document.getElementById('saveStatus').textContent = '';
+
+    document.getElementById('detailModal').classList.add('open');
+    stopDetailListeners();
+
+    // RSVPs (one-time load — list rarely needs live updates while reviewing)
+    get(ref(db, `invitations/${id}/rsvps`)).then(snap => {
+      const tbody = document.getElementById('modalRsvpTable');
+      const empty = document.getElementById('modalRsvpEmpty');
+      tbody.innerHTML = '';
+      const data = snap.exists() ? snap.val() : {};
+      const keys = Object.keys(data);
+      empty.style.display = keys.length ? 'none' : 'block';
+      keys.sort((a,b) => (data[b].createdAt||0) - (data[a].createdAt||0)).forEach(k => {
+        const r = data[k];
+        const tag = r.attending ? '<span class="tag pub">حاضر</span>' : '<span class="tag rejected">معتذر</span>';
+        tbody.innerHTML += `<tr><td>${r.guestName||''}</td><td>${tag}</td><td>${r.guestsCount||0}</td><td>${r.createdAt ? new Date(r.createdAt).toLocaleDateString('ar-EG') : '-'}</td></tr>`;
+      });
+    });
+
+    // Wishes (realtime, with hide/delete)
+    const wishesRef = ref(db, `invitations/${id}/wishes`);
+    const wishesCb = onValue(wishesRef, (snap) => {
+      const tbody = document.getElementById('modalWishesTable');
+      const empty = document.getElementById('modalWishesEmpty');
+      tbody.innerHTML = '';
+      const data = snap.exists() ? snap.val() : {};
+      const keys = Object.keys(data);
+      empty.style.display = keys.length ? 'none' : 'block';
+      keys.sort((a,b) => (data[b].createdAt||0) - (data[a].createdAt||0)).forEach(k => {
+        const w = data[k];
+        const tr = document.createElement('tr');
+        tr.className = 'm-wish-row';
+        tr.innerHTML = `<td>${w.name||''}</td><td>${w.message||''}</td><td>${w.createdAt ? new Date(w.createdAt).toLocaleDateString('ar-EG') : '-'}</td>
+          <td>
+            <button style="background:var(--orange)" data-wish-hide="${k}">${w.isVisible===false?'إظهار':'إخفاء'}</button>
+            <button style="background:var(--red)" data-wish-del="${k}">حذف</button>
+          </td>`;
+        tbody.appendChild(tr);
+      });
+      tbody.querySelectorAll('[data-wish-hide]').forEach(b => b.addEventListener('click', () => {
+        const k = b.dataset.wishHide;
+        const isHidden = data[k].isVisible === false;
+        update(ref(db, `invitations/${id}/wishes/${k}`), { isVisible: isHidden ? true : false });
+      }));
+      tbody.querySelectorAll('[data-wish-del]').forEach(b => b.addEventListener('click', () => {
+        if (!confirm('حذف هذه التهنئة؟')) return;
+        remove(ref(db, `invitations/${id}/wishes/${b.dataset.wishDel}`));
+      }));
+    });
+    detailListenerRefs.push({ r: wishesRef, cb: wishesCb });
+
+    // Guest gallery photos (realtime, approve/reject/delete)
+    const galleryRef = ref(db, `invitations/${id}/gallery`);
+    const galleryCb = onValue(galleryRef, (snap) => {
+      const grid = document.getElementById('modalGalleryGrid');
+      const empty = document.getElementById('modalGalleryEmpty');
+      grid.innerHTML = '';
+      const data = snap.exists() ? snap.val() : {};
+      const keys = Object.keys(data);
+      empty.style.display = keys.length ? 'none' : 'block';
+      keys.forEach(k => {
+        const g = data[k];
+        const badge = g.approved ? '<span class="m-g-badge" style="background:var(--green);color:#0B0F0E">منشورة</span>' : '<span class="m-g-badge" style="background:var(--orange);color:#0B0F0E">بانتظار الموافقة</span>';
+        const div = document.createElement('div');
+        div.className = 'm-g-item';
+        div.innerHTML = `${badge}<img src="${g.url}" loading="lazy">
+          <div class="m-g-actions">
+            ${!g.approved ? `<button style="background:var(--green)" data-g-approve="${k}">اعتماد</button>` : `<button style="background:var(--text-dim)" data-g-unapprove="${k}">إخفاء</button>`}
+            <button style="background:var(--red)" data-g-delete="${k}">حذف</button>
+          </div>`;
+        grid.appendChild(div);
+      });
+      grid.querySelectorAll('[data-g-approve]').forEach(b => b.addEventListener('click', () =>
+        update(ref(db, `invitations/${id}/gallery/${b.dataset.gApprove}`), { approved: true })));
+      grid.querySelectorAll('[data-g-unapprove]').forEach(b => b.addEventListener('click', () =>
+        update(ref(db, `invitations/${id}/gallery/${b.dataset.gUnapprove}`), { approved: false })));
+      grid.querySelectorAll('[data-g-delete]').forEach(b => b.addEventListener('click', () => {
+        if (!confirm('حذف هذه الصورة نهائيًا؟')) return;
+        remove(ref(db, `invitations/${id}/gallery/${b.dataset.gDelete}`));
+      }));
+    });
+    detailListenerRefs.push({ r: galleryRef, cb: galleryCb });
+  }
+
+  function closeDetailModal(){
+    document.getElementById('detailModal').classList.remove('open');
+    stopDetailListeners();
+    currentDetailId = null;
+  }
+
+  document.getElementById('modalCloseBtn').addEventListener('click', closeDetailModal);
+  document.getElementById('detailModal').addEventListener('click', (e) => {
+    if (e.target.id === 'detailModal') closeDetailModal();
+  });
+
+  document.getElementById('saveDetailsBtn').addEventListener('click', async () => {
+    if (!currentDetailId) return;
+    const statusEl = document.getElementById('saveStatus');
+    const newSlug = document.getElementById('editSlug').value.trim();
+    const dateVal = document.getElementById('editEventDate').value;
+    const updates = {
+      'couple/groomName': document.getElementById('editGroomName').value.trim(),
+      'couple/brideName': document.getElementById('editBrideName').value.trim(),
+      'slug': newSlug,
+      'event/eventName': document.getElementById('editEventName').value.trim(),
+      'event/venueName': document.getElementById('editVenueName').value.trim()
+    };
+    if (dateVal) updates['event/date'] = new Date(dateVal).toISOString();
+
+    try {
+      statusEl.style.color = 'var(--gold-light)';
+      statusEl.textContent = 'جارٍ الحفظ...';
+      await update(ref(db, `invitations/${currentDetailId}`), updates);
+      allInvitations[currentDetailId].couple = allInvitations[currentDetailId].couple || {};
+      Object.assign(allInvitations[currentDetailId].couple, { groomName: updates['couple/groomName'], brideName: updates['couple/brideName'] });
+      allInvitations[currentDetailId].slug = newSlug;
+      statusEl.style.color = 'var(--green)';
+      statusEl.textContent = 'تم الحفظ بنجاح ✓';
+      applyFiltersAndRender();
+    } catch (err) {
+      console.error('Save details error:', err);
+      statusEl.style.color = 'var(--red)';
+      statusEl.textContent = 'حدث خطأ أثناء الحفظ';
+    }
   });
 </script>
 

@@ -385,7 +385,126 @@
             color: white;
             font-size: 1.5rem;
         }
-        
+
+        .memories-empty {
+            text-align: center;
+            opacity: .7;
+            padding: 20px 10px;
+            font-size: .95rem;
+        }
+
+        /* Pulsing heart next to the memories title */
+        .pulse-heart {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: #E94560;
+            animation: pulseHeart 1.15s ease-in-out infinite;
+        }
+
+        @keyframes pulseHeart {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.28); }
+        }
+
+        /* Guest "share your moments" card */
+        .memories-share-card {
+            max-width: 480px;
+            margin: 35px auto 0;
+            padding: 30px 25px;
+            border-radius: 20px;
+            text-align: center;
+            background: rgba(233, 69, 96, 0.06);
+            border: 1px dashed rgba(233, 69, 96, 0.35);
+        }
+
+        .memories-share-icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 14px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            color: #fff;
+            background: linear-gradient(135deg, #E94560, #D4AF37);
+        }
+
+        .memories-share-card h3 {
+            font-family: 'Amiri', serif;
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+        }
+
+        .memories-share-card p {
+            font-size: .9rem;
+            opacity: .8;
+            margin-bottom: 16px;
+            line-height: 1.7;
+        }
+
+        .memories-share-card input[type="text"] {
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 10px;
+            border: 1px solid rgba(0,0,0,0.12);
+            font-family: 'Tajawal', sans-serif;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+
+        .memories-choose-btn, .memories-submit-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            justify-content: center;
+            padding: 12px 22px;
+            border-radius: 999px;
+            border: none;
+            cursor: pointer;
+            font-family: 'Tajawal', sans-serif;
+            font-weight: 700;
+            font-size: .9rem;
+        }
+
+        .memories-choose-btn {
+            background: #2b2b2b;
+            color: #fff;
+        }
+
+        .memories-submit-btn {
+            margin-top: 12px;
+            background: linear-gradient(135deg, #E94560, #D4AF37);
+            color: #fff;
+        }
+
+        .memories-submit-btn:disabled {
+            opacity: .6;
+            cursor: not-allowed;
+        }
+
+        .memories-preview {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            margin-top: 14px;
+        }
+
+        .memories-preview img {
+            width: 64px;
+            height: 64px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        .memories-note {
+            margin-top: 12px !important;
+            font-size: .78rem !important;
+            opacity: .6;
+        }
+
         /* Event Cards */
         .event-cards {
             display: grid;
@@ -970,8 +1089,26 @@
             }
 
             .mqn-btn span {
-                font-size: 0.72rem;
+                font-size: 0.62rem;
                 font-weight: 600;
+            }
+
+            .mqn-btn.mqn-fab {
+                position: relative;
+                top: -18px;
+            }
+
+            .mqn-btn.mqn-fab i {
+                width: 46px;
+                height: 46px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: linear-gradient(135deg, var(--theme-primary, #D4AF37), var(--theme-secondary, #B8960C));
+                color: #fff;
+                font-size: 1.1rem;
+                box-shadow: 0 5px 18px rgba(0,0,0,0.28);
             }
 
             /* Leave room at the bottom so the nav bar never covers content/footer */
@@ -1082,6 +1219,96 @@
         .share-btn.copy-link { background: #666; }
         
         .text-red { color: #e74c3c; }
+
+        /* CTA */
+        .inv-cta-section {
+            text-align: center;
+            padding: 55px 20px;
+            background: #F7EDE2;
+        }
+
+        .inv-cta-section h3 {
+            font-family: 'Amiri', serif;
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: #2b2b2b;
+        }
+
+        .inv-cta-section p {
+            max-width: 420px;
+            margin: 0 auto 22px;
+            color: #555;
+            line-height: 1.8;
+            font-size: .95rem;
+        }
+
+        .inv-cta-btn {
+            display: inline-block;
+            padding: 14px 40px;
+            border-radius: 999px;
+            background: linear-gradient(135deg, #D4AF37, #B8960C);
+            color: #fff;
+            text-decoration: none;
+            font-weight: 700;
+            box-shadow: 0 8px 24px rgba(212,175,55,0.35);
+        }
+
+        /* Footer legal + support */
+        .footer-legal-support {
+            display: flex;
+            justify-content: center;
+            gap: 60px;
+            flex-wrap: wrap;
+            margin-top: 25px;
+            padding-top: 25px;
+            border-top: 1px solid rgba(255,255,255,0.12);
+            text-align: center;
+        }
+
+        .footer-col-title {
+            display: block;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: rgba(255,255,255,0.95);
+        }
+
+        .footer-legal-col {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .footer-legal-col a {
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            font-size: .9rem;
+        }
+
+        .footer-legal-col a:hover {
+            color: #fff;
+            text-decoration: underline;
+        }
+
+        .footer-support-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .support-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 9px 16px;
+            border-radius: 999px;
+            text-decoration: none;
+            font-size: .85rem;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .support-whatsapp { background: #25D366; }
+        .support-messenger { background: #0084FF; }
         
         /* Responsive */
         @media (max-width: 768px) {
@@ -1258,14 +1485,28 @@
             </div>
         </section>
 
-        <!-- Photo Gallery Section -->
-        <section class="inv-section gallery-section" id="gallerySection" style="display: none;" data-aos="fade-up">
+        <!-- Memories / Photo Gallery Section -->
+        <section class="inv-section gallery-section" id="gallerySection" data-aos="fade-up">
             <div class="section-title">
-                <i class="fas fa-camera-retro"></i>
-                <h2>ذكريات العريس والعروسة</h2>
+                <span class="pulse-heart" aria-hidden="true"><i class="fas fa-heart"></i></span>
+                <h2 id="memoriesTitle">ذكريات العروسين</h2>
             </div>
-            
+
             <div class="gallery-grid" id="galleryGrid"></div>
+
+            <div class="memories-share-card" data-aos="fade-up">
+                <div class="memories-share-icon"><i class="fas fa-camera"></i></div>
+                <h3>📸 شارك لحظاتك مع العروسين</h3>
+                <p>🟡 صوّرت لحظة حلوة في الفرح؟ ارفعها هنا وخلّيها ذكرى تفضل معاهم للأبد</p>
+                <input type="text" id="memoryGuestName" placeholder="اسمك (اختياري)">
+                <input type="file" id="memoryPhotosInput" accept="image/*" multiple hidden>
+                <button type="button" class="memories-choose-btn" id="memoryChooseBtn">اختر صور (حتى 5)</button>
+                <div class="memories-preview" id="memoryPreview"></div>
+                <button type="button" class="memories-submit-btn" id="memorySubmitBtn" style="display:none;">
+                    <i class="fas fa-cloud-upload-alt"></i> رفع الصور
+                </button>
+                <p class="memories-note">✨ هتظهر صورتك بعد موافقة العروسين</p>
+            </div>
         </section>
 
         <!-- Event Details Section -->
@@ -1452,6 +1693,13 @@
         </div>
         <audio id="bgAudio" loop></audio>
 
+        <!-- CTA: make your own invitation -->
+        <section class="inv-cta-section">
+            <h3>🌸 عجبتك الدعوة؟</h3>
+            <p>اعمل دعوة فرحك أو خطوبتك بنفس الشكل — صمّمها وشوفها مجاناً، في دقايق وبدون تسجيل.</p>
+            <a href="https://da3watfarah.com/" target="_top" class="inv-cta-btn">ابدأ فرحك</a>
+        </section>
+
         <!-- Footer -->
         <footer class="inv-footer">
             <div class="footer-content">
@@ -1476,24 +1724,51 @@
                         </button>
                     </div>
                 </div>
+                <div class="footer-legal-support">
+                    <div class="footer-legal-col">
+                        <span class="footer-col-title">قانوني</span>
+                        <a href="https://da3watfarah.com/legal/privacy.html" target="_top">سياسة الخصوصية</a>
+                        <a href="https://da3watfarah.com/legal/terms.html" target="_top">شروط الاستخدام</a>
+                        <a href="https://da3watfarah.com/legal/refund.html" target="_top">سياسة الاسترداد</a>
+                    </div>
+                    <div class="footer-support-col">
+                        <span class="footer-col-title">الدعم</span>
+                        <div class="footer-support-buttons">
+                            <a href="https://wa.me/201279934735" target="_blank" class="support-btn support-whatsapp"><i class="fab fa-whatsapp"></i> واتساب</a>
+                            <a href="https://m.me/844143088781265" target="_blank" class="support-btn support-messenger"><i class="fab fa-facebook-messenger"></i> ماسنجر</a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </footer>
     </main>
 
     <!-- Mobile Quick Actions Bar -->
     <nav class="mobile-quick-nav" id="mobileQuickNav">
-        <button type="button" class="mqn-btn" onclick="scrollToSection('rsvpSection')">
-            <i class="fas fa-user-check"></i>
-            <span>سجل حضور</span>
-        </button>
         <button type="button" class="mqn-btn" onclick="scrollToSection('wishesSection')">
-            <i class="fas fa-heart"></i>
-            <span>ابعت تهنئة</span>
+            <i class="fas fa-comment-dots"></i>
+            <span>التهاني</span>
         </button>
-        <a class="mqn-btn" href="index.html">
-            <i class="fas fa-plus-circle"></i>
-            <span>اعمل دعوة</span>
-        </a>
+        <button type="button" class="mqn-btn" onclick="scrollToSection('rsvpSection')">
+            <i class="fas fa-heart"></i>
+            <span>تأكيد الحضور</span>
+        </button>
+        <button type="button" class="mqn-btn" onclick="scrollToSection('eventDetailsSection')">
+            <i class="fas fa-map-marker-alt"></i>
+            <span>التفاصيل</span>
+        </button>
+        <button type="button" class="mqn-btn mqn-fab" onclick="scrollToSection('gallerySection')">
+            <i class="fas fa-camera"></i>
+            <span>شارك صورة</span>
+        </button>
+        <button type="button" class="mqn-btn" onclick="scrollToSection('countdownContainer')">
+            <i class="fas fa-clock"></i>
+            <span>العداد</span>
+        </button>
+        <button type="button" class="mqn-btn" id="mqnMusicBtn" onclick="document.getElementById('musicToggle')?.click()">
+            <i class="fas fa-pause" id="mqnMusicIcon"></i>
+            <span>الموسيقى</span>
+        </button>
     </nav>
 
     <!-- Lightbox for Gallery -->
@@ -2013,6 +2288,7 @@
             // Couple names
             document.getElementById('groomName').textContent = groomName;
             document.getElementById('brideName').textContent = brideName;
+            document.getElementById('memoriesTitle').textContent = `ذكريات ${groomName || 'العريس'} و ${brideName || 'العروسة'}`;
 
             // Bismillah / Welcome text
             const welcomeText = content.welcomeText || data.welcomeText || data.bismillah || '';
@@ -2142,26 +2418,9 @@
                 document.getElementById('directionsBtn').href = googleMapsUrl;
             }
 
-            // Gallery images
-            const galleryImages = design.galleryImages || data.galleryImages || [];
-            if (galleryImages && galleryImages.length > 0) {
-                document.getElementById('gallerySection').style.display = 'block';
-                const grid = document.getElementById('galleryGrid');
-                grid.innerHTML = '';
-                
-                galleryImages.forEach((imgUrl, index) => {
-                    const item = document.createElement('div');
-                    item.className = 'gallery-item';
-                    item.setAttribute('data-aos', 'zoom-in');
-                    item.setAttribute('data-aos-delay', index * 100);
-                    item.innerHTML = `
-                        <img src="${imgUrl}" alt="صورة ${index + 1}" loading="lazy">
-                        <div class="gallery-overlay"><i class="fas fa-expand"></i></div>
-                    `;
-                    item.onclick = () => openLightbox(imgUrl);
-                    grid.appendChild(item);
-                });
-            }
+            // Gallery / Memories images (owner-uploaded gallery + approved guest photos)
+            window.ownerGalleryImages = design.galleryImages || data.galleryImages || [];
+            renderMemoriesGrid();
 
             // Music
             const musicUrl = design.musicUrl || data.musicUrl || data.songUrl || '';
@@ -2268,10 +2527,14 @@
         bgAudioEl.addEventListener('play', () => {
             musicToggleBtn.innerHTML = '<i class="fas fa-pause"></i>';
             musicToggleBtn.classList.add('playing');
+            const mqnIcon = document.getElementById('mqnMusicIcon');
+            if (mqnIcon) mqnIcon.className = 'fas fa-pause';
         });
         bgAudioEl.addEventListener('pause', () => {
             musicToggleBtn.innerHTML = '<i class="fas fa-music"></i>';
             musicToggleBtn.classList.remove('playing');
+            const mqnIcon = document.getElementById('mqnMusicIcon');
+            if (mqnIcon) mqnIcon.className = 'fas fa-music';
         });
 
         musicToggleBtn.addEventListener('click', () => {
@@ -2462,6 +2725,100 @@
                 submitBtn.innerHTML = originalContent;
             }
         });
+
+        // ===== Memories gallery: owner photos + approved guest photos =====
+        window.ownerGalleryImages = window.ownerGalleryImages || [];
+        window.approvedGuestMemories = window.approvedGuestMemories || [];
+
+        function renderMemoriesGrid() {
+            const grid = document.getElementById('galleryGrid');
+            if (!grid) return;
+            const allImages = [...window.ownerGalleryImages, ...window.approvedGuestMemories.map(m => m.url)];
+            grid.innerHTML = '';
+            if (allImages.length === 0) {
+                grid.innerHTML = '<p class="memories-empty">لسه معندناش ذكريات هنا... كن أول من يشارك صورة 🤍</p>';
+                return;
+            }
+            allImages.forEach((imgUrl, index) => {
+                const item = document.createElement('div');
+                item.className = 'gallery-item';
+                item.setAttribute('data-aos', 'zoom-in');
+                item.setAttribute('data-aos-delay', index * 60);
+                item.innerHTML = `
+                    <img src="${imgUrl}" alt="صورة ${index + 1}" loading="lazy">
+                    <div class="gallery-overlay"><i class="fas fa-expand"></i></div>
+                `;
+                item.onclick = () => openLightbox(imgUrl);
+                grid.appendChild(item);
+            });
+        }
+
+        function listenForApprovedMemories() {
+            if (!window.currentInvitationId) return;
+            onValue(ref(db, `invitations/${window.currentInvitationId}/gallery`), (snapshot) => {
+                const data = snapshot.val() || {};
+                window.approvedGuestMemories = Object.values(data).filter(m => m.approved === true);
+                renderMemoriesGrid();
+            });
+        }
+
+        // ===== Guest "share your moments" upload =====
+        let selectedMemoryFiles = [];
+        const memoryChooseBtn = document.getElementById('memoryChooseBtn');
+        const memoryPhotosInput = document.getElementById('memoryPhotosInput');
+        const memoryPreview = document.getElementById('memoryPreview');
+        const memorySubmitBtn = document.getElementById('memorySubmitBtn');
+
+        if (memoryChooseBtn) {
+            memoryChooseBtn.addEventListener('click', () => memoryPhotosInput.click());
+
+            memoryPhotosInput.addEventListener('change', () => {
+                selectedMemoryFiles = Array.from(memoryPhotosInput.files || []).slice(0, 5);
+                memoryPreview.innerHTML = '';
+                selectedMemoryFiles.forEach(file => {
+                    const img = document.createElement('img');
+                    img.src = URL.createObjectURL(file);
+                    memoryPreview.appendChild(img);
+                });
+                memorySubmitBtn.style.display = selectedMemoryFiles.length ? 'inline-flex' : 'none';
+            });
+
+            memorySubmitBtn.addEventListener('click', async () => {
+                if (!selectedMemoryFiles.length || !window.currentInvitationId) return;
+                const guestName = document.getElementById('memoryGuestName').value.trim() || 'ضيف';
+                const originalContent = memorySubmitBtn.innerHTML;
+                memorySubmitBtn.disabled = true;
+                memorySubmitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الرفع...';
+                try {
+                    for (const file of selectedMemoryFiles) {
+                        const formData = new FormData();
+                        formData.append('file', file);
+                        formData.append('folder', `guest-gallery/${window.currentInvitationId}`);
+                        const response = await fetch(`${WORKER_URL}/api/upload`, { method: 'POST', body: formData });
+                        if (!response.ok) throw new Error('فشل رفع إحدى الصور');
+                        const result = await response.json();
+                        if (!result.success) throw new Error(result.error || 'فشل رفع إحدى الصور');
+                        await push(ref(db, `invitations/${window.currentInvitationId}/gallery`), {
+                            url: result.url,
+                            name: guestName,
+                            approved: false,
+                            createdAt: Date.now()
+                        });
+                    }
+                    selectedMemoryFiles = [];
+                    memoryPreview.innerHTML = '';
+                    memoryPhotosInput.value = '';
+                    memorySubmitBtn.style.display = 'none';
+                    alert('شكراً لمشاركتك! هتظهر صورتك بعد موافقة العروسين 🤍');
+                } catch (error) {
+                    console.error('Error uploading memory photo:', error);
+                    alert('حدث خطأ أثناء رفع الصور. ' + (error.message || ''));
+                } finally {
+                    memorySubmitBtn.disabled = false;
+                    memorySubmitBtn.innerHTML = originalContent;
+                }
+            });
+        }
 
         // Listen for wishes in real-time
         function listenForWishes() {
@@ -2671,6 +3028,9 @@
 
                 // Start listening for wishes
                 listenForWishes();
+
+                // Start listening for approved guest memory photos
+                listenForApprovedMemories();
 
                 // Hide loader and show content
                 setTimeout(() => {
