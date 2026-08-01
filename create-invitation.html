@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إنشاء دعوة جديدة | دعوة فرح</title>
+    <title id="pageTitle" data-i18n="page_title">إنشاء دعوة جديدة | دعوة فرح</title>
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -913,10 +913,15 @@
                     <button class="mobile-menu-btn" id="mobileSidebarBtn">
                         <i class="fas fa-bars"></i>
                     </button>
-                    <h1 class="page-title">إنشاء دعوة جديدة</h1>
+                    <h1 class="page-title" data-i18n="page_h1">إنشاء دعوة جديدة</h1>
                 </div>
                 
                 <div class="header-left">
+                    <div class="df-lang-switch" style="display:flex;align-items:center;gap:4px;margin-inline-end:6px;">
+                        <button type="button" class="df-lang-btn active" data-lang="ar" onclick="switchLang('ar')" style="border:1px solid var(--border-color,#E5E7EB);background:var(--primary-gold);color:#fff;font-size:11px;font-weight:700;padding:5px 11px;border-radius:14px;cursor:pointer;">AR</button>
+                        <button type="button" class="df-lang-btn" data-lang="en" onclick="switchLang('en')" style="border:1px solid var(--border-color,#E5E7EB);background:none;color:var(--text-secondary);font-size:11px;font-weight:700;padding:5px 11px;border-radius:14px;cursor:pointer;">EN</button>
+                    </div>
+
                     <button class="header-btn notification-btn">
                         <i class="fas fa-bell"></i>
                         <span class="notification-badge" id="notificationBadge">0</span>
@@ -929,9 +934,9 @@
                             <i class="fas fa-chevron-down"></i>
                         </button>
                         <div class="dropdown-menu">
-                            <a href="overview.html"><i class="fas fa-home"></i> نظرة عامة</a>
+                            <a href="overview.html"><i class="fas fa-home"></i> <span data-i18n="nav_overview">نظرة عامة</span></a>
                             <hr>
-                            <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</a>
+                            <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> <span data-i18n="logout_btn">تسجيل الخروج</span></a>
                         </div>
                     </div>
                 </div>
@@ -945,74 +950,74 @@
                     <div class="wizard-steps">
                         <div class="wiz-step active" data-step="1" onclick="goToStep(1)">
                             <span class="wiz-step-number">1</span>
-                            <span>البيانات الأساسية</span>
+                            <span data-i18n="wiz_step1">البيانات الأساسية</span>
                         </div>
                         <div class="wiz-step-line"></div>
                         
                         <div class="wiz-step" data-step="2" onclick="goToStep(2)">
                             <span class="wiz-step-number">2</span>
-                            <span>اختيار القالب</span>
+                            <span data-i18n="wiz_step2">اختيار القالب</span>
                         </div>
                         <div class="wiz-step-line"></div>
                         
                         <div class="wiz-step" data-step="3" onclick="goToStep(3)">
                             <span class="wiz-step-number">3</span>
-                            <span>المحتوى والتصميم</span>
+                            <span data-i18n="wiz_step3">المحتوى والتصميم</span>
                         </div>
                         <div class="wiz-step-line"></div>
                         
                         <div class="wiz-step" data-step="4" onclick="goToStep(4)">
                             <span class="wiz-step-number">4</span>
-                            <span>المعاينة والنشر</span>
+                            <span data-i18n="wiz_step4">المعاينة والنشر</span>
                         </div>
                     </div>
 
                     <!-- Step 1: Basic Info -->
                     <div class="wizard-content active" id="step1">
-                        <h3 style="margin-bottom: 25px;"><i class="fas fa-user-group" style="color: var(--primary-gold);"></i> البيانات الأساسية</h3>
+                        <h3 style="margin-bottom: 25px;" data-i18n="step1_h3"><i class="fas fa-user-group" style="color: var(--primary-gold);"></i> البيانات الأساسية</h3>
                         
                         <div class="form-grid">
                             <div class="form-group full-width">
-                                <label><i class="fas fa-heart"></i> نوع الدعوة *</label>
+                                <label data-i18n="event_type_label"><i class="fas fa-heart"></i> نوع الدعوة *</label>
                                 <div class="event-type-select" id="eventTypeSelect">
                                     <label class="event-type-option">
                                         <input type="radio" name="eventTypeRadio" value="wedding" checked>
-                                        <span><i class="fas fa-rings-wedding"></i> دعوة فرح</span>
+                                        <span data-i18n="event_type_wedding"><i class="fas fa-rings-wedding"></i> دعوة فرح</span>
                                     </label>
                                     <label class="event-type-option">
                                         <input type="radio" name="eventTypeRadio" value="engagement">
-                                        <span><i class="fas fa-gem"></i> دعوة خطوبة</span>
+                                        <span data-i18n="event_type_engagement"><i class="fas fa-gem"></i> دعوة خطوبة</span>
                                     </label>
                                     <label class="event-type-option">
                                         <input type="radio" name="eventTypeRadio" value="katb_ketab">
-                                        <span><i class="fas fa-book-quran"></i> دعوة كتب كتاب</span>
+                                        <span data-i18n="event_type_katb"><i class="fas fa-book-quran"></i> دعوة كتب كتاب</span>
                                     </label>
                                 </div>
                             </div>
 
                             <div class="form-group">
-                                <label><i class="fas fa-user"></i> اسم العريس *</label>
-                                <input type="text" class="form-control" id="groomName" placeholder="أدخل اسم العريس" required>
+                                <label data-i18n="groom_name_label"><i class="fas fa-user"></i> اسم العريس *</label>
+                                <input type="text" class="form-control" id="groomName" placeholder="أدخل اسم العريس" data-i18n-placeholder="groom_name_ph" required>
                             </div>
                             
                             <div class="form-group">
-                                <label><i class="fas fa-user"></i> اسم العروس *</label>
-                                <input type="text" class="form-control" id="brideName" placeholder="أدخل اسم العروس" required>
+                                <label data-i18n="bride_name_label"><i class="fas fa-user"></i> اسم العروس *</label>
+                                <input type="text" class="form-control" id="brideName" placeholder="أدخل اسم العروس" data-i18n-placeholder="bride_name_ph" required>
                             </div>
                             
                             <div class="form-group">
-                                <label><i class="fas fa-user-tie"></i> اسم أب العريس</label>
-                                <input type="text" class="form-control" id="groomFatherName" placeholder="اختياري">
+                                <label data-i18n="groom_father_label"><i class="fas fa-user-tie"></i> اسم أب العريس</label>
+                                <input type="text" class="form-control" id="groomFatherName" placeholder="اختياري" data-i18n-placeholder="optional_ph">
                             </div>
                             
                             <div class="form-group">
-                                <label><i class="fas fa-user"></i> اسم أب العروس</label>
-                                <input type="text" class="form-control" id="brideFatherName" placeholder="اختياري">
+                                <label data-i18n="bride_father_label"><i class="fas fa-user"></i> اسم أب العروس</label>
+                                <input type="text" class="form-control" id="brideFatherName" placeholder="اختياري" data-i18n-placeholder="optional_ph">
                             </div>
                             
                             <div class="form-group full-width">
-                                <label><i class="fas fa-users"></i> أسماء الوالدين كاملاً</label>
-                                <input type="text" class="form-control" id="parentsNames" placeholder="مثال: محمد أحمد & فاطمة علي">
+                                <label data-i18n="parents_names_label"><i class="fas fa-users"></i> أسماء الوالدين كاملاً</label>
+                                <input type="text" class="form-control" id="parentsNames" placeholder="مثال: محمد أحمد & فاطمة علي" data-i18n-placeholder="parents_names_ph">
                             </div>
                             
                             <div class="form-group full-width">
@@ -1021,29 +1026,29 @@
                             </div>
                             
                             <div class="form-group">
-                                <label><i class="fas fa-clock"></i> الوقت *</label>
+                                <label data-i18n="time_label"><i class="fas fa-clock"></i> الوقت *</label>
                                 <input type="time" class="form-control" id="weddingTime" required>
                             </div>
                             
                             <div class="form-group">
                                 <label id="venueNameFieldLabel"><i class="fas fa-map-marker-alt"></i> اسم القاعة *</label>
-                                <input type="text" class="form-control" id="venueName" placeholder="اسم الفندق أو القاعة" required>
+                                <input type="text" class="form-control" id="venueName" placeholder="اسم الفندق أو القاعة" data-i18n-placeholder="venue_name_ph" required>
                             </div>
                             
                             <div class="form-group full-width">
-                                <label><i class="fas fa-location-dot"></i> العنوان *</label>
-                                <input type="text" class="form-control" id="venueAddress" placeholder="العنوان الكامل" required>
+                                <label data-i18n="address_label"><i class="fas fa-location-dot"></i> العنوان *</label>
+                                <input type="text" class="form-control" id="venueAddress" placeholder="العنوان الكامل" data-i18n-placeholder="address_ph" required>
                             </div>
                             
                             <div class="form-group full-width">
-                                <label><i class="fab fa-google"></i> رابط Google Maps</label>
+                                <label data-i18n="maps_url_label"><i class="fab fa-google"></i> رابط Google Maps</label>
                                 <input type="url" class="form-control" id="googleMapsUrl" placeholder="https://maps.google.com/?q=...">
                             </div>
                             
                             <div class="form-group full-width">
-                                <label><i class="fas fa-link"></i> الرابط المخصص (Slug)</label>
+                                <label data-i18n="slug_label"><i class="fas fa-link"></i> الرابط المخصص (Slug)</label>
                                 <input type="text" class="form-control" id="customSlug" placeholder="mohamed-mona" dir="ltr">
-                                <small style="color: #6B7280;">سيكون رابط الدعوة: da3watfarah.com/{slug}</small>
+                                <small style="color: #6B7280;" data-i18n="slug_hint">سيكون رابط الدعوة: da3watfarah.com/{slug}</small>
                             </div>
                         </div>
                     </div>
@@ -1051,8 +1056,8 @@
                     <!-- Step 2: Template Selection (Enhanced) -->
                     <div class="wizard-content" id="step2">
                         <div class="templates-section-header">
-                            <h3 style="margin-bottom: 10px;"><i class="fas fa-palette" style="color: var(--primary-gold);"></i> اختر قالب الدعوة</h3>
-                            <p>اختر التصميم الذي يعكس ذوقكما الخاص - اضغط على أي قالب للمعاينة</p>
+                            <h3 style="margin-bottom: 10px;" data-i18n="step2_h3"><i class="fas fa-palette" style="color: var(--primary-gold);"></i> اختر قالب الدعوة</h3>
+                            <p data-i18n="step2_p">اختر التصميم الذي يعكس ذوقكما الخاص - اضغط على أي قالب للمعاينة</p>
                         </div>
                         
                         <div class="templates-grid" id="templatesGrid">
@@ -1062,9 +1067,9 @@
                         <!-- Live Preview Panel -->
                         <div class="live-preview-container" id="livePreviewContainer">
                             <div class="live-preview-header">
-                                <h4><i class="fas fa-eye"></i> معاينة القالب: <span id="selectedTemplateName">-</span></h4>
+                                <h4><i class="fas fa-eye"></i> <span data-i18n="live_preview_label">معاينة القالب:</span> <span id="selectedTemplateName">-</span></h4>
                                 <button onclick="openFullPreview()" class="btn-wizard btn-prev" style="padding: 8px 16px; font-size: 0.85rem;">
-                                    <i class="fas fa-expand"></i> معاينة كاملة
+                                    <i class="fas fa-expand"></i> <span data-i18n="full_preview_btn">معاينة كاملة</span>
                                 </button>
                             </div>
                             <div class="live-preview-frame">
@@ -1075,49 +1080,49 @@
 
                     <!-- Step 3: Content & Design -->
                     <div class="wizard-content" id="step3">
-                        <h3 style="margin-bottom: 25px;"><i class="fas fa-pen-fancy" style="color: var(--primary-gold);"></i> المحتوى والتصميم</h3>
+                        <h3 style="margin-bottom: 25px;" data-i18n="step3_h3"><i class="fas fa-pen-fancy" style="color: var(--primary-gold);"></i> المحتوى والتصميم</h3>
                         
                         <div class="form-grid">
                             <div class="form-group full-width">
                                 <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
                                     <input type="checkbox" id="religiousVerseToggle" checked style="width:auto;margin:0">
-                                    <span><i class="fas fa-star-and-crescent"></i> تفعيل الآية الدينية في أعلى الدعوة</span>
+                                    <span data-i18n="verse_toggle_label"><i class="fas fa-star-and-crescent"></i> تفعيل الآية الدينية في أعلى الدعوة</span>
                                 </label>
                                 <div id="religiousVerseTypeWrap" style="margin-top:10px">
                                     <select class="form-control" id="religiousVerseType">
-                                        <option value="quran">آية قرآنية</option>
-                                        <option value="bible">آية من الكتاب المقدس</option>
+                                        <option value="quran" data-i18n="verse_quran">آية قرآنية</option>
+                                        <option value="bible" data-i18n="verse_bible">آية من الكتاب المقدس</option>
                                     </select>
                                 </div>
                             </div>
 
                             <div class="form-group full-width">
-                                <label><i class="fas fa-star-and-crescent"></i> نص الترحيب (اتركه فارغًا لاستخدام الآية الدينية أعلاه تلقائيًا)</label>
+                                <label data-i18n="welcome_text_label"><i class="fas fa-star-and-crescent"></i> نص الترحيب (اتركه فارغًا لاستخدام الآية الدينية أعلاه تلقائيًا)</label>
                                 <textarea class="form-control" id="welcomeText" placeholder="﴿وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُم مِّنْ أَنفُسِكُمْ أَزْوَاجًا﴾"></textarea>
                             </div>
                             
                             <div class="form-group full-width">
                                 <div class="label-with-ai">
-                                    <label><i class="fas fa-envelope-open-text"></i> نص الدعوة *</label>
+                                    <label data-i18n="invitation_text_label"><i class="fas fa-envelope-open-text"></i> نص الدعوة *</label>
                                     <button type="button" class="ai-generate-btn" id="aiGenerateBtn" onclick="generateInvitationTextAI()">
                                         <i class="fas fa-wand-magic-sparkles"></i>
-                                        <span>توليد بالذكاء الاصطناعي</span>
+                                        <span data-i18n="ai_generate_btn">توليد بالذكاء الاصطناعي</span>
                                     </button>
                                 </div>
-                                <textarea class="form-control" id="invitationText" placeholder="يسرنا ويسعدنا أن ندعوكم لحضور زفاف..." required></textarea>
+                                <textarea class="form-control" id="invitationText" placeholder="يسرنا ويسعدنا أن ندعوكم لحضور زفاف..." data-i18n-placeholder="invitation_text_ph" required></textarea>
                             </div>
                             
                             <div class="form-group full-width">
-                                <label><i class="fas fa-heart"></i> قصة الحب (اختياري)</label>
-                                <textarea class="form-control" id="loveStory" placeholder="اكتب قصة تعارفكما..."></textarea>
+                                <label data-i18n="love_story_label"><i class="fas fa-heart"></i> قصة الحب (اختياري)</label>
+                                <textarea class="form-control" id="loveStory" placeholder="اكتب قصة تعارفكما..." data-i18n-placeholder="love_story_ph"></textarea>
                             </div>
                             
                             <div class="form-group full-width">
-                                <label><i class="fas fa-image"></i> صورة الغلاف</label>
+                                <label data-i18n="cover_image_label"><i class="fas fa-image"></i> صورة الغلاف</label>
                                 <div class="upload-area" id="coverUpload">
                                     <i class="fas fa-cloud-upload-alt"></i>
-                                    <h4>اسحب الصورة هنا أو اضغط للرفع</h4>
-                                    <p>PNG, JPG حتى 5MB</p>
+                                    <h4 data-i18n="cover_upload_h4">اسحب الصورة هنا أو اضغط للرفع</h4>
+                                    <p data-i18n="cover_upload_p">PNG, JPG حتى 5MB</p>
                                     <input type="file" id="coverInput" accept="image/*" hidden>
                                 </div>
                                 <div class="upload-progress" id="coverUploadProgress">
@@ -1125,19 +1130,19 @@
                                     <span class="upload-progress-label" id="coverUploadProgressLabel">0%</span>
                                 </div>
                                 <div class="url-input-row">
-                                    <span class="url-divider">أو رابط مباشر:</span>
+                                    <span class="url-divider" data-i18n="or_direct_link">أو رابط مباشر:</span>
                                     <input type="url" id="coverUrlInput" placeholder="https://example.com/image.jpg">
-                                    <button type="button" onclick="useCoverUrl()">استخدام الرابط</button>
+                                    <button type="button" onclick="useCoverUrl()" data-i18n="use_link_btn">استخدام الرابط</button>
                                 </div>
                                 <div class="upload-preview" id="coverPreview"></div>
                             </div>
                             
                             <div class="form-group full-width">
-                                <label><i class="fas fa-images"></i> صور المعرض</label>
+                                <label data-i18n="gallery_images_label"><i class="fas fa-images"></i> صور المعرض</label>
                                 <div class="upload-area" id="galleryUpload">
                                     <i class="fas fa-images"></i>
-                                    <h4>اضف صور للمعرض</h4>
-                                    <p>يمكنك إضافة عدة صور</p>
+                                    <h4 data-i18n="gallery_upload_h4">اضف صور للمعرض</h4>
+                                    <p data-i18n="gallery_upload_p">يمكنك إضافة عدة صور</p>
                                     <input type="file" id="galleryInput" accept="image/*" multiple hidden>
                                 </div>
                                 <div class="upload-progress" id="galleryUploadProgress">
@@ -1145,19 +1150,19 @@
                                     <span class="upload-progress-label" id="galleryUploadProgressLabel">0%</span>
                                 </div>
                                 <div class="url-input-row">
-                                    <span class="url-divider">أو رابط مباشر:</span>
+                                    <span class="url-divider" data-i18n="or_direct_link">أو رابط مباشر:</span>
                                     <input type="url" id="galleryUrlInput" placeholder="https://example.com/image.jpg">
-                                    <button type="button" onclick="addGalleryUrl()">إضافة</button>
+                                    <button type="button" onclick="addGalleryUrl()" data-i18n="add_btn">إضافة</button>
                                 </div>
                                 <div class="upload-preview" id="galleryPreview"></div>
                             </div>
                             
                             <div class="form-group full-width">
-                                <label><i class="fas fa-music"></i> موسيقى الخلفية</label>
+                                <label data-i18n="music_label"><i class="fas fa-music"></i> موسيقى الخلفية</label>
                                 <div class="upload-area" id="musicUpload">
                                     <i class="fas fa-music"></i>
-                                    <h4>اختر موسيقى للدعوة</h4>
-                                    <p>MP3 حتى 10MB</p>
+                                    <h4 data-i18n="music_upload_h4">اختر موسيقى للدعوة</h4>
+                                    <p data-i18n="music_upload_p">MP3 حتى 10MB</p>
                                     <input type="file" id="musicInput" accept="audio/*" hidden>
                                 </div>
                                 <div class="upload-progress" id="musicUploadProgress">
@@ -1165,15 +1170,15 @@
                                     <span class="upload-progress-label" id="musicUploadProgressLabel">0%</span>
                                 </div>
                                 <div class="url-input-row">
-                                    <span class="url-divider">أو رابط مباشر:</span>
+                                    <span class="url-divider" data-i18n="or_direct_link">أو رابط مباشر:</span>
                                     <input type="url" id="musicUrlInput" placeholder="https://example.com/song.mp3">
-                                    <button type="button" onclick="useMusicUrl()">استخدام الرابط</button>
+                                    <button type="button" onclick="useMusicUrl()" data-i18n="use_link_btn">استخدام الرابط</button>
                                 </div>
                                 <div id="musicPreview"></div>
                             </div>
                             
                             <div class="form-group full-width">
-                                <label><i class="fas fa-palette"></i> الألوان</label>
+                                <label data-i18n="colors_label"><i class="fas fa-palette"></i> الألوان</label>
                                 <div class="color-options">
                                     <div class="color-option selected" data-colors='{"primary":"#8B4513","secondary":"#D4AF37"}' style="background: linear-gradient(135deg, #8B4513, #D4AF37);" onclick="selectColor(this)"></div>
                                     <div class="color-option" data-colors='{"primary":"#1A1A2E","secondary":"#E94560"}' style="background: linear-gradient(135deg, #1A1A2E, #E94560);" onclick="selectColor(this)"></div>
@@ -1188,11 +1193,11 @@
 
                     <!-- Step 4: Preview & Publish -->
                     <div class="wizard-content" id="step4">
-                        <h3 style="margin-bottom: 25px;"><i class="fas fa-eye" style="color: var(--primary-gold);"></i> المعاينة والنشر</h3>
+                        <h3 style="margin-bottom: 25px;" data-i18n="step4_h3"><i class="fas fa-eye" style="color: var(--primary-gold);"></i> المعاينة والنشر</h3>
                         
                         <!-- Final Preview with User Data -->
                         <div style="background: var(--bg-secondary); border-radius: var(--radius-lg); padding: 20px; margin-bottom: 25px;">
-                            <h4 style="margin-bottom: 15px; color: var(--text-primary);">
+                            <h4 style="margin-bottom: 15px; color: var(--text-primary);" data-i18n="final_preview_h4">
                                 <i class="fas fa-mobile-alt" style="color: var(--primary-gold);"></i> معاينة الدعوة النهائية
                             </h4>
                             <div class="live-preview-frame" style="height: 550px;">
@@ -1201,7 +1206,7 @@
                         </div>
                         
                         <div class="url-preview">
-                            <h3><i class="fas fa-link"></i> رابط الدعوة</h3>
+                            <h3 data-i18n="invitation_link_h3"><i class="fas fa-link"></i> رابط الدعوة</h3>
                             <div class="url-display" id="previewUrl">da3watfarah.com/--</div>
                             
                             <div id="invitationSummary" style="text-align: right; margin: 20px 0;">
@@ -1210,10 +1215,10 @@
                             
                             <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
                                 <button class="btn-wizard btn-prev" onclick="goToStep(3)">
-                                    <i class="fas fa-arrow-right"></i> رجوع للتعديل
+                                    <i class="fas fa-arrow-right"></i> <span data-i18n="back_to_edit_btn">رجوع للتعديل</span>
                                 </button>
                                 <button class="btn-wizard btn-publish" onclick="publishInvitation()" id="publishBtn">
-                                    <i class="fas fa-paper-plane"></i> نشر الدعوة
+                                    <i class="fas fa-paper-plane"></i> <span data-i18n="publish_btn">نشر الدعوة</span>
                                 </button>
                             </div>
                         </div>
@@ -1222,10 +1227,10 @@
                     <!-- Navigation Buttons -->
                     <div class="wizard-nav">
                         <button class="btn-wizard btn-prev" id="prevBtn" onclick="prevStep()" style="visibility: hidden;">
-                            <i class="fas fa-arrow-right"></i> السابق
+                            <i class="fas fa-arrow-right"></i> <span data-i18n="prev_btn">السابق</span>
                         </button>
                         <button class="btn-wizard btn-next" id="nextBtn" onclick="nextStep()">
-                            التالي <i class="fas fa-arrow-left"></i>
+                            <span data-i18n="next_btn">التالي</span> <i class="fas fa-arrow-left"></i>
                         </button>
                     </div>
 
@@ -1238,7 +1243,7 @@
     <div class="preview-modal" id="previewModal">
         <div class="preview-modal-content">
             <div class="preview-modal-header">
-                <h4 id="modalTemplateName">معاينة القالب</h4>
+                <h4 id="modalTemplateName" data-i18n="modal_default_title">معاينة القالب</h4>
                 <button class="preview-modal-close" onclick="closePreviewModal()">
                     <i class="fas fa-times"></i>
                 </button>
@@ -1248,10 +1253,10 @@
             </div>
             <div class="preview-modal-footer">
                 <button class="btn-select-template" onclick="selectFromModal()">
-                    <i class="fas fa-check"></i> اختيار هذا القالب
+                    <i class="fas fa-check"></i> <span data-i18n="select_template_btn">اختيار هذا القالب</span>
                 </button>
                 <button class="btn-wizard btn-prev" onclick="closePreviewModal()" style="padding: 12px 24px;">
-                    إغلاق
+                    <span data-i18n="close_btn">إغلاق</span>
                 </button>
             </div>
         </div>
@@ -1272,6 +1277,309 @@
     <script src="js/notifications.js"></script>
     
     <script>
+        // ===================================
+        // i18n (AR / EN) — synced with df_lang across the site
+        // ===================================
+        const CI_T = {
+            ar: {
+                page_title: 'إنشاء دعوة جديدة | دعوة فرح',
+                nav_overview: 'نظرة عامة',
+                logout_btn: 'تسجيل الخروج',
+                page_h1: 'إنشاء دعوة جديدة',
+                wiz_step1: 'البيانات الأساسية', wiz_step2: 'اختيار القالب',
+                wiz_step3: 'المحتوى والتصميم', wiz_step4: 'المعاينة والنشر',
+                step1_h3: '<i class="fas fa-user-group" style="color: var(--primary-gold);"></i> البيانات الأساسية',
+                event_type_label: '<i class="fas fa-heart"></i> نوع الدعوة *',
+                event_type_wedding: '<i class="fas fa-rings-wedding"></i> دعوة فرح',
+                event_type_engagement: '<i class="fas fa-gem"></i> دعوة خطوبة',
+                event_type_katb: '<i class="fas fa-book-quran"></i> دعوة كتب كتاب',
+                groom_name_label: '<i class="fas fa-user"></i> اسم العريس *', groom_name_ph: 'أدخل اسم العريس',
+                bride_name_label: '<i class="fas fa-user"></i> اسم العروس *', bride_name_ph: 'أدخل اسم العروس',
+                groom_father_label: '<i class="fas fa-user-tie"></i> اسم أب العريس',
+                bride_father_label: '<i class="fas fa-user"></i> اسم أب العروس',
+                optional_ph: 'اختياري',
+                parents_names_label: '<i class="fas fa-users"></i> أسماء الوالدين كاملاً',
+                parents_names_ph: 'مثال: محمد أحمد & فاطمة علي',
+                time_label: '<i class="fas fa-clock"></i> الوقت *',
+                venue_name_ph: 'اسم الفندق أو القاعة',
+                address_label: '<i class="fas fa-location-dot"></i> العنوان *', address_ph: 'العنوان الكامل',
+                maps_url_label: '<i class="fab fa-google"></i> رابط Google Maps',
+                slug_label: '<i class="fas fa-link"></i> الرابط المخصص (Slug)',
+                slug_hint: 'سيكون رابط الدعوة: da3watfarah.com/{slug}',
+                step2_h3: '<i class="fas fa-palette" style="color: var(--primary-gold);"></i> اختر قالب الدعوة',
+                step2_p: 'اختر التصميم الذي يعكس ذوقكما الخاص - اضغط على أي قالب للمعاينة',
+                live_preview_label: 'معاينة القالب:', full_preview_btn: 'معاينة كاملة',
+                step3_h3: '<i class="fas fa-pen-fancy" style="color: var(--primary-gold);"></i> المحتوى والتصميم',
+                verse_toggle_label: '<i class="fas fa-star-and-crescent"></i> تفعيل الآية الدينية في أعلى الدعوة',
+                verse_quran: 'آية قرآنية', verse_bible: 'آية من الكتاب المقدس',
+                welcome_text_label: '<i class="fas fa-star-and-crescent"></i> نص الترحيب (اتركه فارغًا لاستخدام الآية الدينية أعلاه تلقائيًا)',
+                invitation_text_label: '<i class="fas fa-envelope-open-text"></i> نص الدعوة *',
+                ai_generate_btn: 'توليد بالذكاء الاصطناعي',
+                invitation_text_ph: 'يسرنا ويسعدنا أن ندعوكم لحضور زفاف...',
+                love_story_label: '<i class="fas fa-heart"></i> قصة الحب (اختياري)',
+                love_story_ph: 'اكتب قصة تعارفكما...',
+                cover_image_label: '<i class="fas fa-image"></i> صورة الغلاف',
+                cover_upload_h4: 'اسحب الصورة هنا أو اضغط للرفع', cover_upload_p: 'PNG, JPG حتى 5MB',
+                or_direct_link: 'أو رابط مباشر:', use_link_btn: 'استخدام الرابط',
+                gallery_images_label: '<i class="fas fa-images"></i> صور المعرض',
+                gallery_upload_h4: 'اضف صور للمعرض', gallery_upload_p: 'يمكنك إضافة عدة صور',
+                add_btn: 'إضافة',
+                music_label: '<i class="fas fa-music"></i> موسيقى الخلفية',
+                music_upload_h4: 'اختر موسيقى للدعوة', music_upload_p: 'MP3 حتى 10MB',
+                colors_label: '<i class="fas fa-palette"></i> الألوان',
+                step4_h3: '<i class="fas fa-eye" style="color: var(--primary-gold);"></i> المعاينة والنشر',
+                final_preview_h4: '<i class="fas fa-mobile-alt" style="color: var(--primary-gold);"></i> معاينة الدعوة النهائية',
+                invitation_link_h3: '<i class="fas fa-link"></i> رابط الدعوة',
+                back_to_edit_btn: 'رجوع للتعديل', publish_btn: 'نشر الدعوة',
+                prev_btn: 'السابق', next_btn: 'التالي',
+                modal_default_title: 'معاينة القالب',
+                select_template_btn: 'اختيار هذا القالب', close_btn: 'إغلاق',
+                preview_btn: 'معاينة', badge_new: 'جديد ✓', badge_popular: '⭐ شائع', badge_premium: '👑 مميز',
+                modal_preview_prefix: 'معاينة القالب',
+                fill_required: 'يرجى ملء جميع الحقول المطلوبة',
+                fill_required_star: 'يرجى ملء جميع الحقول المطلوبة (*)',
+                choose_template_first: 'يرجى اختيار قالب للدعوة',
+                write_invitation_text: 'يرجى كتابة نص الدعوة',
+                ai_generating: 'جاري التوليد...',
+                ai_need_names: 'يرجى إدخال اسم العريس والعروس أولاً (الخطوة 1)',
+                ai_success: 'تم توليد النص بنجاح',
+                ai_success_fallback: 'تم إنشاء نص جاهز (استخدم زر التوليد مرة أخرى لخيار آخر)',
+                ai_error: 'حدث خطأ أثناء توليد النص',
+                upload_failed: 'فشل الرفع', uploading_percent: 'جاري الرفع...',
+                cover_upload_success: 'تم رفع صورة الغلاف بنجاح',
+                image_upload_failed: 'فشل رفع الصورة. جرّب استخدام رابط مباشر بدلاً من ذلك',
+                image_upload_unavailable: 'تعذر رفع الصورة. يمكنك استخدام خيار "رابط مباشر" بدلاً من ذلك',
+                gallery_image_added: 'تمت إضافة الصورة بنجاح',
+                music_upload_success: 'تم رفع الموسيقى بنجاح',
+                music_upload_failed: 'فشل رفع الموسيقى. جرّب استخدام رابط مباشر بدلاً من ذلك',
+                music_upload_unavailable: 'تعذر رفع الموسيقى. يمكنك استخدام خيار "رابط مباشر" بدلاً من ذلك',
+                image_load_failed: 'تعذر تحميل الصورة من هذا الرابط',
+                enter_valid_link: 'يرجى إدخال رابط صحيح يبدأ بـ http:// أو https://',
+                cover_set_from_link: 'تم تعيين صورة الغلاف من الرابط',
+                image_added_from_link: 'تمت إضافة الصورة من الرابط',
+                music_set_from_link: 'تم تعيين الموسيقى من الرابط',
+                summary_groom: 'العريس:', summary_bride: 'العروس:', summary_date: 'التاريخ:',
+                summary_time: 'الوقت:', summary_venue: 'القاعة:', summary_template: 'القالب:',
+                plan_free_label: 'مجاني', plan_free_desc: 'معاينة القالب وشكل دعوتك فقط — بدون نشر رابط دعوة فعلي للعامة (لا يحتاج دفع)',
+                plan_premium_label: 'بريميوم', plan_premium_desc: 'جميع القوالب، صور غير محدودة، رابط مخصص، كل الميزات',
+                plan_vip_label: 'VIP', plan_vip_desc: 'كل ميزات بريميوم + نطاق مخصص + إزالة الشعار + دعم أولوية',
+                pm_card_label: 'فيزا / بايبال (PayPal)', pm_card_sub: 'دفع دولي آمن بالبطاقة البنكية',
+                pm_card_pay_label: 'ادفع الآن عبر PayPal / Visa',
+                pm_bank_label: 'تحويل بنكي - بنك D360', pm_bank_sub: 'تحويل مباشر عبر الآيبان السعودي',
+                pm_bank_note: 'قد يستغرق التحويل من 1 إلى 24 ساعة. أرسل إيصال التحويل للتفعيل.',
+                pm_bank_field_name: 'اسم البنك', pm_bank_field_holder: 'اسم صاحب الحساب', pm_bank_field_iban: 'رقم الآيبان (IBAN)',
+                pm_instapay_label: 'إنستاباي (InstaPay)', pm_instapay_sub: 'تحويل مباشر من داخل مصر',
+                pm_instapay_pay_label: 'افتح رابط الدفع عبر إنستاباي', pm_instapay_field_phone: 'رقم الهاتف (إنستاباي)',
+                pm_barq_label: 'تطبيق برق السعودي', pm_barq_sub: 'تحويل دولي من السعودية',
+                pm_barq_steps: 'اختر التحويل الدولي ← مصر ← ميزة ← ثم أدخل الرقم:', pm_barq_field_recipient: 'رقم المستلم',
+                pm_vodafone_label: 'فودافون كاش', pm_vodafone_sub: 'تحويل فوري عبر فودافون كاش', pm_vodafone_field_wallet: 'رقم المحفظة',
+                sending_publish: 'جاري الإرسال...', slug_taken: 'هذا الرابط مستخدم بالفعل، اختر رابط آخر',
+                sending_for_review: 'جاري إرسال الدعوة للمراجعة...', publish_generic_error: 'حدث خطأ في إنشاء الدعوة',
+                publish_retry_error: 'حدث خطأ في الإرسال، يرجى المحاولة مرة أخرى',
+                review_sent_h2: 'تم إرسال دعوتك إلى الإدارة للمراجعة 🎉',
+                review_sent_p: 'دعوتك جاهزة الآن! لكي تظهر للعالم كله، يرجى اختيار باقة الدفع ثم إتمام الدفع — بعدها ستتم مراجعتها ونشرها من قبل الإدارة.',
+                plan_free_pick_btn: 'اختر المجاني', plan_pick_btn: 'اختر هذه الباقة',
+                sending_to_admin: 'جاري إرسال الطلب للإدارة...', generic_retry_error: 'حدث خطأ، حاول مرة أخرى',
+                change_plan_btn: 'تغيير الباقة',
+                choose_payment_h3: '<i class="fas fa-credit-card" style="color:var(--primary-gold);"></i> اختر طريقة الدفع',
+                selected_plan_label: 'الباقة المختارة:', amount_due_label: 'المبلغ المطلوب:',
+                amount_due_label_short: 'المبلغ المطلوب',
+                currency_usd: 'دولار', currency_sar: 'ر.س', currency_egp: 'ج.م',
+                copy_btn: 'نسخ', copied_btn: 'تم النسخ ✓',
+                upload_receipt_label: '<i class="fas fa-receipt" style="color:var(--primary-gold);"></i> ارفع صورة إيصال / إثبات الدفع',
+                confirm_payment_btn: '<i class="fas fa-check"></i> تأكيد الدفع وإرسال الإيصال',
+                choose_receipt_first: 'يرجى اختيار صورة الإيصال أولاً',
+                uploading_receipt: 'جاري رفع الإيصال...',
+                receipt_upload_failed: 'فشل رفع الإيصال، حاول مرة أخرى',
+                receipt_submit_error: 'حدث خطأ أثناء إرسال البيانات',
+                preview_saved_h2: 'تم حفظ معاينتك 👀',
+                preview_saved_p1: 'الباقة المجانية مخصصة لمعاينة القالب وشكل دعوتك فقط، ولن يتم نشر رابط دعوة فعلي يراه ضيوفك.',
+                preview_saved_p2: 'إذا أعجبك القالب وحبيت تنشر دعوة حقيقية للعامة، تقدر ترقي لباقة بريميوم أو VIP في أي وقت.',
+                upgrade_now_btn: 'ترقية الآن ونشر الدعوة', my_invitations_btn: 'دعواتي',
+                preview_saved_toast: 'تم حفظ معاينتك! هذه معاينة فقط ولا تنشر رابطاً للعامة 👀',
+                waiting_review_h2: 'بانتظار مراجعة الإدارة ⏳',
+                waiting_review_p: 'تم استلام طلبك بنجاح، وسيتم تفعيل ونشر دعوتك بعد مراجعة الإدارة للدفع خلال وقت قصير.',
+                link_will_work: 'رابط الدعوة (سيعمل بعد الموافقة):',
+                new_invitation_btn: 'دعوة جديدة',
+                waiting_review_toast: 'تم إرسال طلبك للمراجعة! سيتم التواصل معك عند النشر 🎉'
+            },
+            en: {
+                page_title: 'Create New Invitation | Da3wetFarah',
+                nav_overview: 'Overview',
+                logout_btn: 'Log Out',
+                page_h1: 'Create New Invitation',
+                wiz_step1: 'Basic Info', wiz_step2: 'Choose Template',
+                wiz_step3: 'Content & Design', wiz_step4: 'Preview & Publish',
+                step1_h3: '<i class="fas fa-user-group" style="color: var(--primary-gold);"></i> Basic Info',
+                event_type_label: '<i class="fas fa-heart"></i> Invitation Type *',
+                event_type_wedding: '<i class="fas fa-rings-wedding"></i> Wedding Invitation',
+                event_type_engagement: '<i class="fas fa-gem"></i> Engagement Invitation',
+                event_type_katb: '<i class="fas fa-book-quran"></i> Katb El-Ketab Invitation',
+                groom_name_label: '<i class="fas fa-user"></i> Groom\'s Name *', groom_name_ph: "Enter groom's name",
+                bride_name_label: '<i class="fas fa-user"></i> Bride\'s Name *', bride_name_ph: "Enter bride's name",
+                groom_father_label: '<i class="fas fa-user-tie"></i> Groom\'s Father Name',
+                bride_father_label: '<i class="fas fa-user"></i> Bride\'s Father Name',
+                optional_ph: 'Optional',
+                parents_names_label: '<i class="fas fa-users"></i> Full Parents\' Names',
+                parents_names_ph: 'e.g. Mohamed Ahmed & Fatma Ali',
+                time_label: '<i class="fas fa-clock"></i> Time *',
+                venue_name_ph: 'Hotel or venue name',
+                address_label: '<i class="fas fa-location-dot"></i> Address *', address_ph: 'Full address',
+                maps_url_label: '<i class="fab fa-google"></i> Google Maps Link',
+                slug_label: '<i class="fas fa-link"></i> Custom Link (Slug)',
+                slug_hint: 'Your invitation link will be: da3watfarah.com/{slug}',
+                step2_h3: '<i class="fas fa-palette" style="color: var(--primary-gold);"></i> Choose Your Template',
+                step2_p: 'Pick the design that reflects your own taste - click any template to preview',
+                live_preview_label: 'Template preview:', full_preview_btn: 'Full Preview',
+                step3_h3: '<i class="fas fa-pen-fancy" style="color: var(--primary-gold);"></i> Content & Design',
+                verse_toggle_label: '<i class="fas fa-star-and-crescent"></i> Show a religious verse at the top of the invitation',
+                verse_quran: 'Quranic Verse', verse_bible: 'Bible Verse',
+                welcome_text_label: '<i class="fas fa-star-and-crescent"></i> Welcome text (leave empty to auto-use the religious verse above)',
+                invitation_text_label: '<i class="fas fa-envelope-open-text"></i> Invitation Text *',
+                ai_generate_btn: 'Generate with AI',
+                invitation_text_ph: "We are delighted to invite you to our wedding...",
+                love_story_label: '<i class="fas fa-heart"></i> Love Story (optional)',
+                love_story_ph: 'Write your story together...',
+                cover_image_label: '<i class="fas fa-image"></i> Cover Image',
+                cover_upload_h4: 'Drag an image here or click to upload', cover_upload_p: 'PNG, JPG up to 5MB',
+                or_direct_link: 'Or a direct link:', use_link_btn: 'Use Link',
+                gallery_images_label: '<i class="fas fa-images"></i> Gallery Photos',
+                gallery_upload_h4: 'Add photos to the gallery', gallery_upload_p: 'You can add several photos',
+                add_btn: 'Add',
+                music_label: '<i class="fas fa-music"></i> Background Music',
+                music_upload_h4: 'Choose music for the invitation', music_upload_p: 'MP3 up to 10MB',
+                colors_label: '<i class="fas fa-palette"></i> Colors',
+                step4_h3: '<i class="fas fa-eye" style="color: var(--primary-gold);"></i> Preview & Publish',
+                final_preview_h4: '<i class="fas fa-mobile-alt" style="color: var(--primary-gold);"></i> Final Invitation Preview',
+                invitation_link_h3: '<i class="fas fa-link"></i> Invitation Link',
+                back_to_edit_btn: 'Back to Edit', publish_btn: 'Publish Invitation',
+                prev_btn: 'Previous', next_btn: 'Next',
+                modal_default_title: 'Template Preview',
+                select_template_btn: 'Select This Template', close_btn: 'Close',
+                preview_btn: 'Preview', badge_new: 'New ✓', badge_popular: '⭐ Popular', badge_premium: '👑 Premium',
+                modal_preview_prefix: 'Preview:',
+                fill_required: 'Please fill in all required fields',
+                fill_required_star: 'Please fill in all required fields (*)',
+                choose_template_first: 'Please choose a template for your invitation',
+                write_invitation_text: 'Please write the invitation text',
+                ai_generating: 'Generating...',
+                ai_need_names: "Please enter the groom's and bride's names first (Step 1)",
+                ai_success: 'Text generated successfully',
+                ai_success_fallback: 'A ready text was generated (click generate again for another option)',
+                ai_error: 'An error occurred while generating the text',
+                upload_failed: 'Upload failed', uploading_percent: 'Uploading...',
+                cover_upload_success: 'Cover image uploaded successfully',
+                image_upload_failed: 'Image upload failed. Try using a direct link instead',
+                image_upload_unavailable: 'Could not upload the image. You can use the "direct link" option instead',
+                gallery_image_added: 'Image added successfully',
+                music_upload_success: 'Music uploaded successfully',
+                music_upload_failed: 'Music upload failed. Try using a direct link instead',
+                music_upload_unavailable: 'Could not upload the music. You can use the "direct link" option instead',
+                image_load_failed: 'Could not load the image from this link',
+                enter_valid_link: 'Please enter a valid link starting with http:// or https://',
+                cover_set_from_link: 'Cover image set from the link',
+                image_added_from_link: 'Image added from the link',
+                music_set_from_link: 'Music set from the link',
+                summary_groom: 'Groom:', summary_bride: 'Bride:', summary_date: 'Date:',
+                summary_time: 'Time:', summary_venue: 'Venue:', summary_template: 'Template:',
+                plan_free_label: 'Free', plan_free_desc: "Preview the template and your invitation's look only — no live public invitation link (no payment needed)",
+                plan_premium_label: 'Premium', plan_premium_desc: 'All templates, unlimited photos, custom link, every feature',
+                plan_vip_label: 'VIP', plan_vip_desc: 'All Premium features + custom domain + remove branding + priority support',
+                pm_card_label: 'Visa / PayPal', pm_card_sub: 'Secure international card payment',
+                pm_card_pay_label: 'Pay now via PayPal / Visa',
+                pm_bank_label: 'Bank Transfer - D360 Bank', pm_bank_sub: 'Direct transfer via Saudi IBAN',
+                pm_bank_note: 'The transfer may take 1 to 24 hours. Send the transfer receipt to activate.',
+                pm_bank_field_name: 'Bank Name', pm_bank_field_holder: 'Account Holder Name', pm_bank_field_iban: 'IBAN Number',
+                pm_instapay_label: 'InstaPay', pm_instapay_sub: 'Direct transfer from within Egypt',
+                pm_instapay_pay_label: 'Open the InstaPay payment link', pm_instapay_field_phone: 'Phone Number (InstaPay)',
+                pm_barq_label: 'Barq (Saudi) App', pm_barq_sub: 'International transfer from Saudi Arabia',
+                pm_barq_steps: 'Choose International Transfer ← Egypt ← Meeza ← then enter the number:', pm_barq_field_recipient: "Recipient's Number",
+                pm_vodafone_label: 'Vodafone Cash', pm_vodafone_sub: 'Instant transfer via Vodafone Cash', pm_vodafone_field_wallet: 'Wallet Number',
+                sending_publish: 'Sending...', slug_taken: 'This link is already taken, choose another one',
+                sending_for_review: 'Sending the invitation for review...', publish_generic_error: 'An error occurred while creating the invitation',
+                publish_retry_error: 'An error occurred while sending, please try again',
+                review_sent_h2: 'Your invitation was sent to the admin for review 🎉',
+                review_sent_p: "Your invitation is ready now! For it to go live for everyone, please choose a payment package and complete the payment — it will then be reviewed and published by the admin.",
+                plan_free_pick_btn: 'Choose Free', plan_pick_btn: 'Choose This Package',
+                sending_to_admin: 'Sending the request to the admin...', generic_retry_error: 'An error occurred, please try again',
+                change_plan_btn: 'Change Package',
+                choose_payment_h3: '<i class="fas fa-credit-card" style="color:var(--primary-gold);"></i> Choose a Payment Method',
+                selected_plan_label: 'Selected package:', amount_due_label: 'Amount due:',
+                amount_due_label_short: 'Amount due',
+                currency_usd: 'USD', currency_sar: 'SAR', currency_egp: 'EGP',
+                copy_btn: 'Copy', copied_btn: 'Copied ✓',
+                upload_receipt_label: '<i class="fas fa-receipt" style="color:var(--primary-gold);"></i> Upload a receipt / proof of payment',
+                confirm_payment_btn: '<i class="fas fa-check"></i> Confirm Payment & Send Receipt',
+                choose_receipt_first: 'Please choose the receipt image first',
+                uploading_receipt: 'Uploading the receipt...',
+                receipt_upload_failed: 'Receipt upload failed, please try again',
+                receipt_submit_error: 'An error occurred while sending the data',
+                preview_saved_h2: 'Your preview was saved 👀',
+                preview_saved_p1: "The free package is for previewing the template and your invitation's look only — no live invitation link will be published for your guests to see.",
+                preview_saved_p2: 'If you like the template and want to publish a real public invitation, you can upgrade to Premium or VIP anytime.',
+                upgrade_now_btn: 'Upgrade Now & Publish', my_invitations_btn: 'My Invitations',
+                preview_saved_toast: 'Your preview was saved! This is a preview only and no public link was published 👀',
+                waiting_review_h2: 'Awaiting Admin Review ⏳',
+                waiting_review_p: 'Your request was received successfully, and your invitation will be activated and published shortly after admin review of the payment.',
+                link_will_work: 'Invitation link (will work after approval):',
+                new_invitation_btn: 'New Invitation',
+                waiting_review_toast: "Your request was sent for review! We'll be in touch when it's published 🎉"
+            }
+        };
+
+        function ciLang() {
+            try {
+                const saved = localStorage.getItem('df_lang');
+                return (saved === 'ar' || saved === 'en') ? saved : 'ar';
+            } catch (e) { return 'ar'; }
+        }
+        function L(key) {
+            const t = CI_T[ciLang()] || CI_T.ar;
+            return t[key] !== undefined ? t[key] : key;
+        }
+
+        function applyTranslations(lang) {
+            const t = CI_T[lang] || CI_T.ar;
+            document.querySelectorAll('[data-i18n]').forEach(function(el) {
+                const key = el.getAttribute('data-i18n');
+                if (t[key] !== undefined) el.innerHTML = t[key];
+            });
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(function(el) {
+                const key = el.getAttribute('data-i18n-placeholder');
+                if (t[key] !== undefined) el.setAttribute('placeholder', t[key]);
+            });
+            if (t.page_title) document.title = t.page_title;
+            // Re-render dynamic parts that were built with the previous language
+            if (typeof TEMPLATES_CONFIG !== 'undefined' && document.getElementById('templatesGrid')) {
+                renderTemplates(TEMPLATES_CONFIG);
+            }
+            if (typeof applyEventTypeFieldLabels === 'function') {
+                applyEventTypeFieldLabels();
+            }
+        }
+
+        window.switchLang = function(lang) {
+            document.documentElement.lang = lang;
+            document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+            document.querySelectorAll('.df-lang-btn').forEach(function(b) {
+                b.classList.toggle('active', b.getAttribute('data-lang') === lang);
+                b.style.background = b.getAttribute('data-lang') === lang ? 'var(--primary-gold)' : 'none';
+                b.style.color = b.getAttribute('data-lang') === lang ? '#fff' : 'var(--text-secondary)';
+            });
+            applyTranslations(lang);
+            if (typeof window.applySidebarLang === 'function') window.applySidebarLang(lang);
+            try { localStorage.setItem('df_lang', lang); } catch (e) {}
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            try {
+                const saved = localStorage.getItem('df_lang');
+                if (saved && (saved === 'ar' || saved === 'en')) {
+                    window.switchLang(saved);
+                }
+            } catch (e) {}
+        });
+
         // ===================================
         // Global State
         // ===================================
@@ -1574,22 +1882,55 @@
                 fontFamily: "'Aref Ruqaa', serif"
             }
         ];
+
+        // English translations for template categories (Arabic text is the
+        // source of truth in TEMPLATES_CONFIG above).
+        const TEMPLATE_CATEGORY_EN = {
+            'حديث وأنيق': 'Modern & Elegant',
+            'كلاسيكي فاخر': 'Luxury Classic',
+            'ملكي فاخر': 'Royal Luxury',
+            'رومانسي رقيق': 'Delicate Romantic',
+            'إسلامي أصيل': 'Authentic Islamic',
+            'بوهيمي عصري': 'Modern Bohemian',
+            'فني وإبداعي': 'Artistic & Creative',
+            'فاخر ومميز': 'Luxury & Distinctive',
+            'وردي ورومانسي': 'Pink & Romantic',
+            'بسيط وأنيق': 'Simple & Elegant',
+            'طبيعي هادئ': 'Calm & Natural',
+            'نجومي ساحر': 'Enchanting Starry'
+        };
         
         // ===================================
         // Invitation type (wedding / engagement / katb_ketab)
         // ===================================
         const EVENT_TYPE_FIELD_META = {
-            wedding: {
-                dateLabel: '<i class="fas fa-calendar-alt"></i> تاريخ الزفاف *',
-                venueLabel: '<i class="fas fa-map-marker-alt"></i> اسم القاعة *'
+            ar: {
+                wedding: {
+                    dateLabel: '<i class="fas fa-calendar-alt"></i> تاريخ الزفاف *',
+                    venueLabel: '<i class="fas fa-map-marker-alt"></i> اسم القاعة *'
+                },
+                engagement: {
+                    dateLabel: '<i class="fas fa-calendar-alt"></i> تاريخ الخطوبة *',
+                    venueLabel: '<i class="fas fa-map-marker-alt"></i> مكان حفل الخطوبة *'
+                },
+                katb_ketab: {
+                    dateLabel: '<i class="fas fa-calendar-alt"></i> تاريخ كتب الكتاب *',
+                    venueLabel: '<i class="fas fa-map-marker-alt"></i> مكان كتب الكتاب *'
+                }
             },
-            engagement: {
-                dateLabel: '<i class="fas fa-calendar-alt"></i> تاريخ الخطوبة *',
-                venueLabel: '<i class="fas fa-map-marker-alt"></i> مكان حفل الخطوبة *'
-            },
-            katb_ketab: {
-                dateLabel: '<i class="fas fa-calendar-alt"></i> تاريخ كتب الكتاب *',
-                venueLabel: '<i class="fas fa-map-marker-alt"></i> مكان كتب الكتاب *'
+            en: {
+                wedding: {
+                    dateLabel: '<i class="fas fa-calendar-alt"></i> Wedding Date *',
+                    venueLabel: '<i class="fas fa-map-marker-alt"></i> Venue Name *'
+                },
+                engagement: {
+                    dateLabel: '<i class="fas fa-calendar-alt"></i> Engagement Date *',
+                    venueLabel: '<i class="fas fa-map-marker-alt"></i> Engagement Venue *'
+                },
+                katb_ketab: {
+                    dateLabel: '<i class="fas fa-calendar-alt"></i> Katb El-Ketab Date *',
+                    venueLabel: '<i class="fas fa-map-marker-alt"></i> Katb El-Ketab Venue *'
+                }
             }
         };
 
@@ -1605,7 +1946,7 @@
         }
 
         function applyEventTypeFieldLabels() {
-            const meta = EVENT_TYPE_FIELD_META[currentEventType()] || EVENT_TYPE_FIELD_META.wedding;
+            const meta = (EVENT_TYPE_FIELD_META[ciLang()] || EVENT_TYPE_FIELD_META.ar)[currentEventType()] || (EVENT_TYPE_FIELD_META[ciLang()] || EVENT_TYPE_FIELD_META.ar).wedding;
             document.getElementById('weddingDateFieldLabel').innerHTML = meta.dateLabel;
             document.getElementById('venueNameFieldLabel').innerHTML = meta.venueLabel;
         }
@@ -1633,7 +1974,7 @@
 
             // Preselect invitation type from URL (?type=engagement|katb_ketab|wedding)
             const urlType = new URLSearchParams(window.location.search).get('type');
-            if (urlType && EVENT_TYPE_FIELD_META[urlType]) {
+            if (urlType && EVENT_TYPE_FIELD_META.ar[urlType]) {
                 setEventType(urlType);
             } else {
                 applyEventTypeFieldLabels();
@@ -1654,7 +1995,7 @@
             
             // Validate current step before proceeding
             if (step > currentStep && !validateStep(currentStep)) {
-                db.showNotification('يرجى ملء جميع الحقول المطلوبة', 'error');
+                db.showNotification(L('fill_required'), 'error');
                 return;
             }
             
@@ -1718,14 +2059,14 @@
                     const venueAddress = document.getElementById('venueAddress').value.trim();
                     
                     if (!groomName || !brideName || !weddingDate || !weddingTime || !venueName || !venueAddress) {
-                        db.showNotification('يرجى ملء جميع الحقول المطلوبة (*)', 'error');
+                        db.showNotification(L('fill_required_star'), 'error');
                         return false;
                     }
                     return true;
                     
                 case 2:
                     if (!selectedTemplate) {
-                        db.showNotification('يرجى اختيار قالب للدعوة', 'error');
+                        db.showNotification(L('choose_template_first'), 'error');
                         return false;
                     }
                     return true;
@@ -1733,7 +2074,7 @@
                 case 3:
                     const invitationText = document.getElementById('invitationText').value.trim();
                     if (!invitationText) {
-                        db.showNotification('يرجى كتابة نص الدعوة', 'error');
+                        db.showNotification(L('write_invitation_text'), 'error');
                         return false;
                     }
                     return true;
@@ -1774,19 +2115,19 @@
                         <i class="fas fa-check"></i>
                     </div>
                     <div class="template-preview-wrapper">
-                        <img class="template-preview" src="${template.thumbnail}" alt="${template.nameAr}">
+                        <img class="template-preview" src="${template.thumbnail}" alt="${ciLang() === 'en' && template.nameEn ? template.nameEn : template.nameAr}">
                         <div class="template-overlay">
                             <span class="preview-btn" onclick="event.stopPropagation(); openPreviewModal('${template.id}')">
-                                <i class="fas fa-eye"></i> معاينة
+                                <i class="fas fa-eye"></i> ${L('preview_btn')}
                             </span>
                         </div>
-                        ${template.isNew ? '<span class="template-badge badge-new">جديد ✓</span>' : ''}
-                        ${template.isPopular ? '<span class="template-badge badge-popular">⭐ شائع</span>' : ''}
-                        ${template.isPremium ? '<span class="template-badge badge-premium">👑 مميز</span>' : ''}
+                        ${template.isNew ? `<span class="template-badge badge-new">${L('badge_new')}</span>` : ''}
+                        ${template.isPopular ? `<span class="template-badge badge-popular">${L('badge_popular')}</span>` : ''}
+                        ${template.isPremium ? `<span class="template-badge badge-premium">${L('badge_premium')}</span>` : ''}
                     </div>
                     <div class="template-info">
-                        <h4>${template.nameAr}</h4>
-                        <p>${template.category}</p>
+                        <h4>${ciLang() === 'en' && template.nameEn ? template.nameEn : template.nameAr}</h4>
+                        <p>${ciLang() === 'en' ? (TEMPLATE_CATEGORY_EN[template.category] || template.category) : template.category}</p>
                     </div>
                 </div>
             `).join('');
@@ -1844,7 +2185,7 @@
             const iframe = document.getElementById('modalPreviewIframe');
             const title = document.getElementById('modalTemplateName');
             
-            title.textContent = `معاينة القالب ${template.nameAr}`;
+            title.textContent = `${L('modal_preview_prefix')} ${ciLang() === 'en' && template.nameEn ? template.nameEn : template.nameAr}`;
             iframe.src = template.previewFile;
             
             modal.classList.add('active');
@@ -1902,7 +2243,7 @@
             const venueName = document.getElementById('venueName')?.value.trim() || '';
 
             if (!groomName || !brideName) {
-                db.showNotification('يرجى إدخال اسم العريس والعروس أولاً (الخطوة 1)', 'error');
+                db.showNotification(L('ai_need_names'), 'error');
                 return;
             }
 
@@ -1911,7 +2252,7 @@
             const originalText = btnText.textContent;
             btn.disabled = true;
             btn.querySelector('i').className = 'fas fa-spinner';
-            btnText.textContent = 'جاري التوليد...';
+            btnText.textContent = L('ai_generating');
 
             try {
                 let text = '';
@@ -1948,10 +2289,10 @@ ${venueName ? `- مكان الزفاف: ${venueName}` : ''}
                 }
 
                 document.getElementById('invitationText').value = text;
-                db.showNotification(window.nvidiaConfig?.apiKey ? 'تم توليد النص بنجاح' : 'تم إنشاء نص جاهز (استخدم زر التوليد مرة أخرى لخيار آخر)', 'success');
+                db.showNotification(window.nvidiaConfig?.apiKey ? L('ai_success') : L('ai_success_fallback'), 'success');
             } catch (error) {
                 console.error('AI generation error:', error);
-                db.showNotification('حدث خطأ أثناء توليد النص', 'error');
+                db.showNotification(L('ai_error'), 'error');
             } finally {
                 btn.disabled = false;
                 btn.querySelector('i').className = 'fas fa-wand-magic-sparkles';
@@ -2050,7 +2391,7 @@ ${venueName ? `- مكان الزفاف: ${venueName}` : ''}
             bar.classList.add('active');
             bar.classList.toggle('error', state === 'error');
             fill.style.width = `${percent}%`;
-            label.textContent = state === 'error' ? 'فشل الرفع' : `جاري الرفع... ${percent}%`;
+            label.textContent = state === 'error' ? L('upload_failed') : `${L('uploading_percent')} ${percent}%`;
         }
 
         async function handleCoverUpload(file) {
@@ -2061,16 +2402,16 @@ ${venueName ? `- مكان الزفاف: ${venueName}` : ''}
                 const result = await db.uploadToR2WithProgress(file, 'image', (pct) => setUploadProgress('cover', pct, 'active'));
                 if (result.success) {
                     setCoverImage(result.url);
-                    db.showNotification('تم رفع صورة الغلاف بنجاح', 'success');
+                    db.showNotification(L('cover_upload_success'), 'success');
                     setUploadProgress('cover', 100, 'hide');
                 } else {
                     setUploadProgress('cover', 0, 'error');
-                    db.showNotification(result.error || 'فشل رفع الصورة. جرّب استخدام رابط مباشر بدلاً من ذلك', 'error');
+                    db.showNotification(result.error || L('image_upload_failed'), 'error');
                 }
             } catch (error) {
                 console.error('Cover upload error:', error);
                 setUploadProgress('cover', 0, 'error');
-                db.showNotification('تعذر رفع الصورة. يمكنك استخدام خيار "رابط مباشر" بدلاً من ذلك', 'error');
+                db.showNotification(L('image_upload_unavailable'), 'error');
             } finally {
                 area.classList.remove('dragover');
             }
@@ -2083,16 +2424,16 @@ ${venueName ? `- مكان الزفاف: ${venueName}` : ''}
                 if (result.success) {
                     uploadedGallery.push(result.url);
                     renderGalleryPreview();
-                    db.showNotification('تمت إضافة الصورة بنجاح', 'success');
+                    db.showNotification(L('gallery_image_added'), 'success');
                     setUploadProgress('gallery', 100, 'hide');
                 } else {
                     setUploadProgress('gallery', 0, 'error');
-                    db.showNotification(result.error || 'فشل رفع الصورة. جرّب استخدام رابط مباشر بدلاً من ذلك', 'error');
+                    db.showNotification(result.error || L('image_upload_failed'), 'error');
                 }
             } catch (error) {
                 console.error('Gallery upload error:', error);
                 setUploadProgress('gallery', 0, 'error');
-                db.showNotification('تعذر رفع الصورة. يمكنك استخدام خيار "رابط مباشر" بدلاً من ذلك', 'error');
+                db.showNotification(L('image_upload_unavailable'), 'error');
             }
         }
         
