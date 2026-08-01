@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- Main Pages -->
   <url>
     <loc>https://da3watfarah.com/</loc>
     <changefreq>weekly</changefreq>
@@ -21,17 +22,24 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://da3watfarah.com/preview-modern.html</loc>
+    <loc>https://da3watfarah.com/create-invitation.html</loc>
     <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <priority>0.9</priority>
   </url>
+  <url>
+    <loc>https://da3watfarah.com/404.html</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.1</priority>
+  </url>
+
+  <!-- Original Template Previews -->
   <url>
     <loc>https://da3watfarah.com/preview-classic.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://da3watfarah.com/preview-royal.html</loc>
+    <loc>https://da3watfarah.com/preview-modern.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -41,13 +49,67 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://da3watfarah.com/preview-islamic.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://da3watfarah.com/preview-bohemian.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://da3watfarah.com/preview-islamic.html</loc>
+    <loc>https://da3watfarah.com/preview-royal.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
+  </url>
+
+  <!-- New Template Previews (templates-new/) -->
+  <url>
+    <loc>https://da3watfarah.com/templates-new/preview-artistic.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://da3watfarah.com/templates-new/preview-elite.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://da3watfarah.com/templates-new/preview-floral.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://da3watfarah.com/templates-new/preview-minimal.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://da3watfarah.com/templates-new/preview-nature.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://da3watfarah.com/templates-new/preview-starry.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Legal Pages -->
+  <url>
+    <loc>https://da3watfarah.com/legal/privacy.html</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  <url>
+    <loc>https://da3watfarah.com/legal/terms.html</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  <url>
+    <loc>https://da3watfarah.com/legal/refund.html</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.2</priority>
   </url>
 </urlset>

@@ -1,36 +1,51 @@
+# Robots.txt for Da3wat Farah - دعوة فرح
+# https://da3watfarah.com
+
 User-agent: *
 Allow: /
 
-# صفحات خاصة/إدارية أو لا تفيد الفهرسة — لا داعي لأرشفتها
+# Sitemap location
+Sitemap: https://da3watfarah.com/sitemap.xml
+
+# LLMs.txt location for AI crawlers
+User-agent: *
+Allow: /llms.txt
+
+# Disallow admin and internal pages
 Disallow: /admin.html
 Disallow: /dashboard.html
 Disallow: /dashboard.html.old_backup
 Disallow: /editor.html
-Disallow: /create-invitation.html
-Disallow: /my-invitations.html
-Disallow: /settings.html
-Disallow: /overview.html
-Disallow: /login.html
-Disallow: /register.html
 Disallow: /ai-writer.html
-Disallow: /js/
-Disallow: /*.json$
+Disallow: /overview.html
 
-# اسمح صراحة لروبوتات الذكاء الاصطناعي (ChatGPT, Perplexity, Claude...)
-# بقراءة المحتوى العام — يفيد ظهورك في نتائج البحث بالذكاء الاصطناعي
-User-agent: GPTBot
-Allow: /
+# Disallow API routes (handled by worker)
+Disallow: /api/
 
-User-agent: PerplexityBot
-Allow: /
+# Disallow test/preview pages that are not for public SEO
+Disallow: /preview-classic-3.html
+Disallow: /preview-classic-5.html
+Disallow: /preview-classic-6.html
+Disallow: /preview-romantic-4.html
 
-User-agent: ClaudeBot
-Allow: /
+# Allow all public-facing pages
+Allow: /index.html
+Allow: /register.html
+Allow: /login.html
+Allow: /gallery.html
+Allow: /create-invitation.html
+Allow: /invitation.html
+Allow: /invite.html
+Allow: /404.html
+Allow: /templates-new/
+Allow: /legal/
+Allow: /preview-classic.html
+Allow: /preview-modern.html
+Allow: /preview-royal.html
+Allow: /preview-romantic.html
+Allow: /preview-bohemian.html
+Allow: /preview-islamic.html
+Allow: /assets/
 
-User-agent: Google-Extended
-Allow: /
-
-User-agent: OAI-SearchBot
-Allow: /
-
-Sitemap: https://da3watfarah.com/sitemap.xml
+# Crawl delay (optional, be gentle)
+Crawl-delay: 1
