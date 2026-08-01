@@ -63,8 +63,14 @@
   .m-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
   @media(max-width:600px){.m-grid{grid-template-columns:1fr}}
   .m-field label{display:block;font-size:11px;color:var(--text-dim);margin-bottom:5px}
-  .m-field input{width:100%;padding:9px 12px;border-radius:8px;border:1px solid var(--line);background:var(--panel2);color:var(--text);font-family:'Cairo';font-size:13px}
+  .m-field input,.m-field select,.m-field textarea{width:100%;padding:9px 12px;border-radius:8px;border:1px solid var(--line);background:var(--panel2);color:var(--text);font-family:'Cairo';font-size:13px}
+  .m-field textarea{resize:vertical;min-height:70px;font-family:'Cairo'}
+  .m-field.full{grid-column:1/-1}
+  .m-color-field{display:flex;align-items:center;gap:8px}
+  .m-color-field input[type=color]{width:38px;height:36px;padding:2px;flex-shrink:0;cursor:pointer}
+  .m-color-field input[type=text]{flex:1}
   .m-save-btn{margin-top:14px;background:var(--gold);color:#0B0F0E;border:none;padding:9px 20px;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Cairo'}
+  .m-save-btn.secondary{background:none;border:1px solid var(--line);color:var(--text)}
   .m-list-table{width:100%;border-collapse:collapse;font-size:12.5px}
   .m-list-table th,.m-list-table td{padding:8px;border-bottom:1px solid var(--line);text-align:right}
   .m-empty{color:var(--text-dim);font-size:12.5px;padding:10px 0}
@@ -157,10 +163,20 @@
         <h4>بيانات أساسية (قابلة للتعديل)</h4>
         <div class="m-grid">
           <div class="m-field"><label>القسم / نوع المناسبة</label>
-            <select id="editEventType" style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid var(--line);background:var(--panel2);color:var(--text);font-family:'Cairo';font-size:13px">
+            <select id="editEventType">
               <option value="wedding">💍 دعوة فرح</option>
               <option value="engagement">💎 دعوة خطوبة</option>
               <option value="katb_ketab">📖 دعوة كتب كتاب</option>
+            </select>
+          </div>
+          <div class="m-field"><label>القالب المستخدم</label>
+            <select id="editTemplate">
+              <option value="preview-classic">كلاسيكي</option>
+              <option value="preview-modern">عصري</option>
+              <option value="preview-romantic">رومانسي</option>
+              <option value="preview-islamic">إسلامي</option>
+              <option value="preview-bohemian">بوهيمي</option>
+              <option value="preview-royal">ملكي</option>
             </select>
           </div>
           <div class="m-field"><label>اسم العريس</label><input id="editGroomName"></div>
@@ -169,13 +185,55 @@
           <div class="m-field"><label>اسم المناسبة</label><input id="editEventName"></div>
           <div class="m-field"><label>تاريخ ووقت المناسبة</label><input id="editEventDate" type="datetime-local"></div>
           <div class="m-field"><label>مكان المناسبة</label><input id="editVenueName"></div>
+          <div class="m-field"><label>اللون الأساسي</label>
+            <div class="m-color-field"><input type="color" id="editPrimaryColorPicker"><input type="text" id="editPrimaryColor" style="direction:ltr"></div>
+          </div>
+          <div class="m-field"><label>اللون الثانوي</label>
+            <div class="m-color-field"><input type="color" id="editSecondaryColorPicker"><input type="text" id="editSecondaryColor" style="direction:ltr"></div>
+          </div>
+          <div class="m-field full"><label>رابط صورة الغلاف</label><input id="editCoverImage" style="direction:ltr" placeholder="https://..."></div>
+          <div class="m-field full"><label>نص الدعوة</label><textarea id="editInvitationText"></textarea></div>
         </div>
         <button class="m-save-btn" id="saveDetailsBtn">حفظ التعديلات</button>
         <span id="saveStatus" style="margin-inline-start:10px;font-size:12px;color:var(--green)"></span>
       </div>
 
       <div class="m-section">
+        <h4>الدفع والباقة (قابلة للتعديل يدويًا)</h4>
+        <div class="m-grid">
+          <div class="m-field"><label>الباقة</label>
+            <select id="editPaymentPlan">
+              <option value="free">مجاني</option>
+              <option value="premium">مميزة</option>
+              <option value="vip">VIP</option>
+            </select>
+          </div>
+          <div class="m-field"><label>حالة الدفع</label>
+            <select id="editPaymentStatus">
+              <option value="unpaid">بانتظار اختيار الباقة</option>
+              <option value="pending_verification">بانتظار مراجعة الإيصال</option>
+              <option value="verified">تم التحقق والدفع</option>
+              <option value="rejected">مرفوض</option>
+              <option value="not_required">باقة مجانية</option>
+            </select>
+          </div>
+          <div class="m-field"><label>المبلغ</label><input id="editPaymentAmount" type="number" style="direction:ltr"></div>
+          <div class="m-field"><label>العملة</label><input id="editPaymentCurrency" style="direction:ltr" placeholder="EGP / SAR / USD"></div>
+        </div>
+        <button class="m-save-btn" id="savePaymentBtn">حفظ بيانات الدفع</button>
+        <span id="savePaymentStatus" style="margin-inline-start:10px;font-size:12px;color:var(--green)"></span>
+      </div>
+
+      <div class="m-section">
+        <h4>ملاحظة داخلية (تظهر للإدارة فقط، غير مرئية للضيوف)</h4>
+        <textarea id="editInternalNote" style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid var(--line);background:var(--panel2);color:var(--text);font-family:'Cairo';font-size:13px;min-height:60px"></textarea>
+        <button class="m-save-btn secondary" id="saveNoteBtn" style="margin-top:10px">حفظ الملاحظة</button>
+        <span id="saveNoteStatus" style="margin-inline-start:10px;font-size:12px;color:var(--green)"></span>
+      </div>
+
+      <div class="m-section">
         <h4>تأكيدات الحضور (RSVP)</h4>
+        <button class="m-save-btn secondary" id="exportRsvpBtn" style="margin-bottom:12px">تصدير CSV</button>
         <table class="m-list-table">
           <thead><tr><th>الاسم</th><th>الحالة</th><th>عدد المرافقين</th><th>التاريخ</th></tr></thead>
           <tbody id="modalRsvpTable"></tbody>
@@ -399,6 +457,7 @@
         <td>${inv.createdAt ? new Date(inv.createdAt).toLocaleDateString('ar-EG') : '-'}</td>
         <td class="row-actions">
           <a href="/${inv.slug}" target="_blank" style="background:var(--gold-light)">فتح</a>
+          <button style="background:var(--gold-light)" data-copy="${inv.slug}">نسخ الرابط</button>
           <button style="background:var(--gold-light)" data-details="${id}">التفاصيل</button>
           ${!inv.isPublished ? `<button style="background:var(--green)" data-approve="${id}">موافقة ونشر</button>` : `<button style="background:var(--text-dim)" data-unpublish="${id}">إلغاء النشر</button>`}
           ${inv.status !== 'rejected' ? `<button style="background:var(--red)" data-reject="${id}">رفض</button>` : ''}
@@ -406,6 +465,18 @@
         </td>`;
       tbody.appendChild(tr);
     });
+
+    tbody.querySelectorAll('[data-copy]').forEach(b => b.addEventListener('click', async () => {
+      const link = `https://da3watfarah.com/${b.dataset.copy}`;
+      try {
+        await navigator.clipboard.writeText(link);
+        const original = b.textContent;
+        b.textContent = 'تم النسخ ✓';
+        setTimeout(() => { b.textContent = original; }, 1500);
+      } catch (e) {
+        prompt('انسخ الرابط يدويًا:', link);
+      }
+    }));
 
     tbody.querySelectorAll('[data-details]').forEach(b => b.addEventListener('click', () => openDetailModal(b.dataset.details)));
 
