@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>معاينة القالب الرومانسي - الوردة الحمراء | دعوة فرح</title>
-    <meta name="description" content="معاينة قالب الدعوة الرومانسي - الوردة الحمراء">
+    <title>معاينة القالب الرومانسي - الأحمر الشغوف | دعوة فرح</title>
+    <meta name="description" content="معاينة قالب الدعوة الرومانسي - الأحمر الشغوف">
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -23,20 +23,20 @@
     <link rel="stylesheet" href="css/invitation.css">
     <link rel="stylesheet" href="css/df-footer.css">
 
-    <!-- الوردة الحمراء Theme Overrides -->
+    <!-- الأحمر الشغوف Theme Overrides -->
     <style>
         :root {
-            --theme-primary: #D4A5A5;
-            --theme-secondary: #E8B4BC;
-            --theme-accent: #F7D1CD;
-            --theme-rose: #FF6B8A;
-            --theme-text: #5D4037;
+            --theme-primary: #A6303C;
+            --theme-secondary: #E0A6AC;
+            --theme-accent: #F5D6D9;
+            --theme-rose: #D62839;
+            --theme-text: #4A1418;
         }
 
         * { box-sizing: border-box; }
 
         .invitation-body {
-            background: linear-gradient(180deg, #FFF0F3 0%, #FFE4EC 30%, #FFF5F7 60%, #FFE8EE 100%);
+            background: linear-gradient(180deg, #FFF3F3 0%, #FBE2E3 30%, #FFF7F7 60%, #FADFE0 100%);
             min-height: 100vh;
         }
 
@@ -58,7 +58,7 @@
 
         /* No external photo dependency: refined gradient cover */
         .inv-cover .cover-bg {
-            background: radial-gradient(ellipse at 50% 30%, var(--theme-accent) 0%, var(--theme-primary) 60%, #5D4037 130%);
+            background: radial-gradient(ellipse at 50% 30%, var(--theme-accent) 0%, var(--theme-primary) 60%, #4A1418 130%);
         }
         .cover-overlay {
             background: linear-gradient(135deg, rgba(0,0,0,0.28) 0%, rgba(0,0,0,0.5) 100%) !important;
@@ -170,6 +170,16 @@
             .gallery-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
         }
 
+        /* --- Fiery Passion: heartbeat pulse + rising rose petals --- */
+        .anim-heartbeat{display:inline-block;animation:heartbeatZoom 1.4s ease-in-out .2s both, heartbeatLoop 2.4s ease-in-out 1.6s infinite;}
+        @keyframes heartbeatZoom{0%{transform:scale(.5);opacity:0;}60%{transform:scale(1.15);opacity:1;}100%{transform:scale(1);}}
+        @keyframes heartbeatLoop{0%,100%{transform:scale(1);}15%{transform:scale(1.06);}30%{transform:scale(1);}45%{transform:scale(1.06);}60%{transform:scale(1);}}
+        .rose-petals-fall{position:absolute;inset:0;pointer-events:none;overflow:hidden;}
+        .rose-petals-fall::before,.rose-petals-fall::after{content:'🌹';position:absolute;font-size:1.6rem;opacity:.6;
+            animation:floatHeart 12s linear infinite;}
+        .rose-petals-fall::before{left:15%;animation-delay:0s;}
+        .rose-petals-fall::after{content:'🥀';left:70%;animation-delay:5s;animation-duration:15s;}
+    
     </style>
 </head>
 <body class="invitation-body">
@@ -179,7 +189,7 @@
     <!-- Loading Screen -->
     <div class="invitation-loader" id="invitationLoader">
         <div class="loader-content">
-            <span class="loader-icon">💕</span>
+            <span class="loader-icon">❤️‍🔥</span>
             <p>جارٍ تحميل الدعوة...</p>
         </div>
     </div>
@@ -194,22 +204,22 @@
             </div>
 
             <div class="cover-decorations">
-                
+                <div class="rose-petals-fall"></div>
             </div>
 
             <div class="cover-content">
-                <div class="bismillah-text" data-aos="fade-down">
+                <div class="bismillah-text" data-aos="zoom-in">
                     بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
                 </div>
 
-                <div class="couple-names" data-aos="fade-up" data-aos-delay="200">
-                    <h1 class="groom-name ">محمد</h1>
-                    <span class="ampersand">♥</span>
-                    <h1 class="bride-name ">منى</h1>
+                <div class="couple-names" data-aos="zoom-in" data-aos-delay="200">
+                    <h1 class="groom-name anim-heartbeat">محمد</h1>
+                    <span class="ampersand">❤</span>
+                    <h1 class="bride-name anim-heartbeat">منى</h1>
                 </div>
 
                 <div class="wedding-title" data-aos="fade-up" data-aos-delay="400">
-                    <span>مع حب يدعوانكم لمشاركتهما أجمل لحظات العمر</span>
+                    <span>بشغفٍ لا يهدأ.. يبدآن رحلة العشق الأبدي</span>
                 </div>
 
                 <div class="scroll-indicator" data-aos="fade-up" data-aos-delay="600">
@@ -231,8 +241,8 @@
         <section class="inv-section invitation-text-section" data-aos="fade-up">
             <div class="text-card">
                 <div class="card-header">
-                    <i class="fas fa-heart"></i>
-                    <h2>قلوبنا تدعوكم ♥</h2>
+                    <i class="fas fa-fire"></i>
+                    <h2>بعشقٍ لا يخبو يدعوانكم ❤️‍🔥</h2>
                 </div>
 
                 <div class="card-body">
@@ -263,49 +273,49 @@
 
             <div class="gallery-grid">
                 <div class="gallery-item df-ph-gallery" data-aos="zoom-in" data-aos-delay="0"
-                     style="background:linear-gradient(145deg,#D4A5A5 0%,#FF6B8A 100%);">
+                     style="background:linear-gradient(145deg,#A6303C 0%,#D62839 100%);">
                     <div class="df-ph-inner">
-                        <i class="fas fa-heart"></i>
+                        <i class="fas fa-fire"></i>
                         <span>أول لقاء</span>
                     </div>
                     <div class="gallery-overlay"><i class="fas fa-heart"></i></div>
                 </div>
                 <div class="gallery-item df-ph-gallery" data-aos="zoom-in" data-aos-delay="100"
-                     style="background:linear-gradient(145deg,#D4A5A5 0%,#FF6B8A 100%);">
+                     style="background:linear-gradient(145deg,#A6303C 0%,#D62839 100%);">
                     <div class="df-ph-inner">
-                        <i class="fas fa-heart"></i>
+                        <i class="fas fa-fire"></i>
                         <span>خطوبتنا</span>
                     </div>
                     <div class="gallery-overlay"><i class="fas fa-heart"></i></div>
                 </div>
                 <div class="gallery-item df-ph-gallery" data-aos="zoom-in" data-aos-delay="200"
-                     style="background:linear-gradient(145deg,#D4A5A5 0%,#FF6B8A 100%);">
+                     style="background:linear-gradient(145deg,#A6303C 0%,#D62839 100%);">
                     <div class="df-ph-inner">
-                        <i class="fas fa-heart"></i>
+                        <i class="fas fa-fire"></i>
                         <span>جلسة تصويرنا</span>
                     </div>
                     <div class="gallery-overlay"><i class="fas fa-heart"></i></div>
                 </div>
                 <div class="gallery-item df-ph-gallery" data-aos="zoom-in" data-aos-delay="300"
-                     style="background:linear-gradient(145deg,#D4A5A5 0%,#FF6B8A 100%);">
+                     style="background:linear-gradient(145deg,#A6303C 0%,#D62839 100%);">
                     <div class="df-ph-inner">
-                        <i class="fas fa-heart"></i>
+                        <i class="fas fa-fire"></i>
                         <span>لحظة الخاتم</span>
                     </div>
                     <div class="gallery-overlay"><i class="fas fa-heart"></i></div>
                 </div>
                 <div class="gallery-item df-ph-gallery" data-aos="zoom-in" data-aos-delay="400"
-                     style="background:linear-gradient(145deg,#D4A5A5 0%,#FF6B8A 100%);">
+                     style="background:linear-gradient(145deg,#A6303C 0%,#D62839 100%);">
                     <div class="df-ph-inner">
-                        <i class="fas fa-heart"></i>
+                        <i class="fas fa-fire"></i>
                         <span>نزهة رومانسية</span>
                     </div>
                     <div class="gallery-overlay"><i class="fas fa-heart"></i></div>
                 </div>
                 <div class="gallery-item df-ph-gallery" data-aos="zoom-in" data-aos-delay="500"
-                     style="background:linear-gradient(145deg,#D4A5A5 0%,#FF6B8A 100%);">
+                     style="background:linear-gradient(145deg,#A6303C 0%,#D62839 100%);">
                     <div class="df-ph-inner">
-                        <i class="fas fa-heart"></i>
+                        <i class="fas fa-fire"></i>
                         <span>ذكرى لا تُنسى</span>
                     </div>
                     <div class="gallery-overlay"><i class="fas fa-heart"></i></div>
@@ -323,7 +333,7 @@
             <div class="event-cards">
                 <div class="event-card main-event" data-aos="fade-right">
                     <div class="event-icon">
-                        <i class="fas fa-heart"></i>
+                        <i class="fas fa-fire"></i>
                     </div>
                     <div class="event-info">
                         <h3>حفل زفافنا</h3>
@@ -339,23 +349,23 @@
                 </div>
 
                 <div class="countdown-container" data-aos="zoom-in">
-                    <h3 class="countdown-title">💕 العد التنازلي ليومنا السعيد</h3>
+                    <h3 class="countdown-title">🔥 العد التنازلي لاشتعال الفرح</h3>
                     <div class="countdown-timer" id="countdownTimer">
                         <div class="countdown-item">
                             <span class="countdown-number" id="days">00</span>
                             <span class="countdown-label">يوم</span>
                         </div>
-                        <div class="countdown-separator">♥</div>
+                        <div class="countdown-separator">❤</div>
                         <div class="countdown-item">
                             <span class="countdown-number" id="hours">00</span>
                             <span class="countdown-label">ساعة</span>
                         </div>
-                        <div class="countdown-separator">♥</div>
+                        <div class="countdown-separator">❤</div>
                         <div class="countdown-item">
                             <span class="countdown-number" id="minutes">00</span>
                             <span class="countdown-label">دقيقة</span>
                         </div>
-                        <div class="countdown-separator">♥</div>
+                        <div class="countdown-separator">❤</div>
                         <div class="countdown-item">
                             <span class="countdown-number" id="seconds">00</span>
                             <span class="countdown-label">ثانية</span>
@@ -465,7 +475,7 @@
                 <i class="fas fa-music"></i>
             </button>
             <div class="music-info">
-                <span class="song-title">Romantic Wedding Melody 💕</span>
+                <span class="song-title">Passionate Love Melody ❤️‍🔥</span>
             </div>
         </div>
 
@@ -534,7 +544,7 @@
 
         // Create floating hearts
         const heartsContainer = document.getElementById('floatingHearts');
-        const heartSymbols = ['❤', '💕', '💗', '💖', '♥', '🩷'];
+        const heartSymbols = ['❤️‍🔥','❤','🔥','💋','🌹'];
 
         for (let i = 0; i < 15; i++) {
             const heart = document.createElement('div');
