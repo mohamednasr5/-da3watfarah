@@ -399,6 +399,42 @@
         font-style: italic;
         direction: ltr;
     }
+
+    /* ===== Language Switcher ===== */
+    .lang-switcher {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        background: rgba(255,255,255,.08);
+        border-radius: 25px;
+        padding: 3px;
+        border: 1px solid rgba(212,175,55,.25);
+    }
+    .lang-btn {
+        border: none;
+        background: transparent;
+        color: rgba(255,255,255,.65);
+        padding: 5px 14px;
+        border-radius: 20px;
+        font-size: .78rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all .3s;
+        font-family: 'Tajawal', sans-serif;
+    }
+    .lang-btn:hover {
+        color: #fff;
+        background: rgba(255,255,255,.1);
+    }
+    .lang-btn.active {
+        background: linear-gradient(135deg, #D4AF37, #f0d060);
+        color: #1a1a1a;
+    }
+    /* RTL fix for English */
+    html[lang="en"] .lang-switcher { direction: ltr; }
+    html[lang="en"] { direction: ltr; }
+    html[lang="en"] body { direction: ltr; text-align: left; }
+
     </style>
     
     <!-- PWA Meta Tags -->
@@ -432,33 +468,39 @@
 
                 <span class="logo-icon">💍</span>
 
-                <span class="logo-text">دعوة<span class="gold">فرح</span></span> <small style="font-size:.5em;opacity:.6;vertical-align:middle">Da3wat Farah</small>
+                <span class="logo-text">دعوة<span class="gold">فرح</span></span> 
 
             </a>
 
             <ul class="nav-links">
 
-                <li><a href="#home">الرئيسية | Home</a></li>
+                <li><a href="#home" data-i18n="nav_home">الرئيسية</a></li>
 
-                <li><a href="#features">المميزات | Features</a></li>
+                <li><a href="#features" data-i18n="nav_features">المميزات</a></li>
 
-                <li><a href="#templates">القوالب | Templates</a></li>
+                <li><a href="#templates" data-i18n="nav_templates">القوالب</a></li>
 
-                <li><a href="#how-it-works">كيف يعمل | How It Works</a></li>
+                <li><a href="#how-it-works" data-i18n="nav_how">كيف يعمل</a></li>
 
-                <li><a href="#pricing">الأسعار | Pricing</a></li>
+                <li><a href="#pricing" data-i18n="nav_pricing">الأسعار</a></li>
 
             </ul>
 
             <div class="nav-buttons">
 
-                <a href="login.html" class="btn btn-outline">تسجيل الدخول</a>
+                <a href="login.html" class="btn btn-outline" data-i18n="btn_login">تسجيل الدخول</a>
 
-                <a href="register.html" class="btn btn-primary">ابدأ مجاناً</a>
+                <a href="register.html" class="btn btn-primary" data-i18n="btn_start_free">ابدأ مجاناً</a>
 
             </div>
 
-            <button class="mobile-menu-btn" id="mobileMenuBtn">
+            
+                <div class="lang-switcher" id="langSwitcher">
+                    <button class="lang-btn active" data-lang="ar" onclick="switchLang('ar')">العربية</button>
+                    <button class="lang-btn" data-lang="en" onclick="switchLang('en')">English</button>
+                </div>
+
+                <button class="mobile-menu-btn" id="mobileMenuBtn">
 
                 <i class="fas fa-bars"></i>
 
@@ -472,19 +514,19 @@
 
             <ul class="mobile-nav-links">
 
-                <li><a href="#home">الرئيسية | Home</a></li>
+                <li><a href="#home" data-i18n="nav_home">الرئيسية</a></li>
 
-                <li><a href="#features">المميزات | Features</a></li>
+                <li><a href="#features" data-i18n="nav_features">المميزات</a></li>
 
-                <li><a href="#templates">القوالب | Templates</a></li>
+                <li><a href="#templates" data-i18n="nav_templates">القوالب</a></li>
 
-                <li><a href="#how-it-works">كيف يعمل | How It Works</a></li>
+                <li><a href="#how-it-works" data-i18n="nav_how">كيف يعمل</a></li>
 
-                <li><a href="#pricing">الأسعار | Pricing</a></li>
+                <li><a href="#pricing" data-i18n="nav_pricing">الأسعار</a></li>
 
-                <li><a href="login.html" class="btn btn-outline">تسجيل الدخول</a></li>
+                <li><a href="login.html" class="btn btn-outline" data-i18n="btn_login">تسجيل الدخول</a></li>
 
-                <li><a href="register.html" class="btn btn-primary">ابدأ مجاناً</a></li>
+                <li><a href="register.html" class="btn btn-primary" data-i18n="btn_start_free">ابدأ مجاناً</a></li>
 
             </ul>
 
@@ -522,7 +564,7 @@
 
             <div class="hero-content" data-aos="fade-right">
 
-                <span class="badge">✨ المنصة الأولى لدعوات الزفاف في العالم العربي | The #1 Wedding Invitation Platform in the Arab World</span>
+                <span class="badge" data-i18n="hero_badge">✨ المنصة الأولى لدعوات الزفاف في العالم العربي</span>
 
                 <h1>
 
@@ -546,7 +588,7 @@
 
                         <i class="fas fa-magic"></i>
 
-                        أنشئ دعوتك الآن | Create Now
+                        <span data-i18n="hero_create">أنشئ دعوتك الآن</span>
 
                     </a>
 
@@ -554,7 +596,7 @@
 
                         <i class="fas fa-eye"></i>
 
-                        استعرض القوالب | Browse Templates
+                        <span data-i18n="hero_browse">استعرض القوالب</span>
 
                     </a>
 
@@ -574,7 +616,7 @@
 
                             <span class="stat-number">+10,000+</span>
 
-                            <span class="stat-label">دعوة تم إنشاؤها<br><small style="font-size:.65em">Invitations Created</small></span>
+                            <span class="stat-label" data-i18n="stat_invitations">دعوة تم إنشاؤها</span>
 
                         </div>
 
@@ -594,7 +636,7 @@
 
                             <span class="stat-number">+24,000+</span>
 
-                            <span class="stat-label">ضيف تمت دعوتهم<br><small style="font-size:.65em">Guests Invited</small></span>
+                            <span class="stat-label" data-i18n="stat_guests">ضيف تمت دعوتهم</span>
 
                         </div>
 
@@ -614,7 +656,7 @@
 
                             <span class="stat-number">98%</span>
 
-                            <span class="stat-label">رضا العملاء<br><small style="font-size:.65em">Customer Satisfaction</small></span>
+                            <span class="stat-label" data-i18n="stat_satisfaction">رضا العملاء</span>
 
                         </div>
 
@@ -698,9 +740,9 @@
 
             <div class="section-header" data-aos="fade-up">
 
-                <span class="section-badge">لماذا نحن؟ | Why Us?</span>
+                <span class="section-badge" data-i18n="badge_why">لماذا نحن؟</span>
 
-                <h2>مميزات تجعل دعوتك <span class="gold">استثنائية</span><br><small style="font-size:.4em;opacity:.6;font-weight:400">Features That Make Your Invitation Exceptional</small></h2>
+                <h2>مميزات تجعل دعوتك <span class="gold">استثنائية</span></h2>
 
                 <p>نقدم لك كل ما تحتاجه لإنشاء دعوة زفاف احترافية تعكس ذوقك الرفيع</p>
 
@@ -718,7 +760,7 @@
 
                     </div>
 
-                    <h3>قوالب فاخرة | Premium Templates</h3>
+                    <h3 data-i18n="feat_templates">قوالب فاخرة</h3>
 
                     <p>اختر من بين +24 قالب مصمم بأيد عربية بتصاميم متنوعة تناسب جميع الأذواق</p>
 
@@ -734,7 +776,7 @@
 
                     </div>
 
-                    <h3>ذكاء اصطناعي | AI Powered</h3>
+                    <h3 data-i18n="feat_ai">ذكاء اصطناعي</h3>
 
                     <p>اكتب نص دعوتك الاحترافي بتقنية AI المتقدمة من NVIDIA في ثوانٍ</p>
 
@@ -750,7 +792,7 @@
 
                     </div>
 
-                    <h3>معرض صور تفاعلي | Interactive Gallery</h3>
+                    <h3 data-i18n="feat_gallery">معرض صور تفاعلي</h3>
 
                     <p>ارفع صورك المفضلة واعرضها بمعرض صور أنيق وتفاعلي مع تأثيرات رائعة</p>
 
@@ -766,7 +808,7 @@
 
                     </div>
 
-                    <h3>موسيقى مخصصة | Custom Music</h3>
+                    <h3 data-i18n="feat_music">موسيقى مخصصة</h3>
 
                     <p>أضف أغنيتك المفضلة أو موسيقى خلفية تعزز جو الفرح والبهجة</p>
 
@@ -782,7 +824,7 @@
 
                     </div>
 
-                    <h3>خريطة تفاعلية | Interactive Map</h3>
+                    <h3 data-i18n="feat_map">خريطة تفاعلية</h3>
 
                     <p>أضف موقع الحفل بخريطة Google Maps تفاعلية تسهل وصول الضيوف</p>
 
@@ -798,7 +840,7 @@
 
                     </div>
 
-                    <h3>QR Code خاص | Custom QR Code</h3>
+                    <h3 data-i18n="feat_qr">QR Code خاص</h3>
 
                     <p>كل دعوة تحصل على QR Code فريد لمشاركتها بسهولة عبر وسائل التواصل</p>
 
@@ -814,7 +856,7 @@
 
                     </div>
 
-                    <h3>عداد تنازلي | Countdown Timer</h3>
+                    <h3 data-i18n="feat_countdown">عداد تنازلي</h3>
 
                     <p>عداد تنازلي حي يزيد من تشويق الضيوف ويذكرهم بموعد الفرح</p>
 
@@ -830,7 +872,7 @@
 
                     </div>
 
-                    <h3>نظام RSVP | RSVP System</h3>
+                    <h3 data-i18n="feat_rsvp">نظام RSVP</h3>
 
                     <p>تتبع تأكيدات الحضور بسهولة وإدارة قائمة الضيوف بكفاءة</p>
 
@@ -854,7 +896,7 @@
 
             <div class="section-header" data-aos="fade-up">
 
-                <span class="section-badge">اختر مناسبتك | Choose Your Occasion</span>
+                <span class="section-badge" data-i18n="badge_occasion">اختر مناسبتك</span>
 
                 <h2>3 أقسام لكل <span class="gold">مناسباتك</span> السعيدة</h2>
 
@@ -870,7 +912,7 @@
 
                     <div class="category-icon"><i class="fas fa-gem"></i></div>
 
-                    <h3>دعوة الخطوبة<br><small style="font-size:.65em;opacity:.6;font-weight:400">Engagement Invitation</small></h3>
+                    <h3 data-i18n="cat_engagement">دعوة الخطوبة</h3>
 
                     <p>دعوات خطوبة أنيقة بنصوص AI مكتوبة خصيصًا لأجواء الخطوبة.</p>
 
@@ -884,7 +926,7 @@
 
                     <div class="category-icon"><i class="fas fa-book-quran"></i></div>
 
-                    <h3>دعوة كتب الكتاب<br><small style="font-size:.65em;opacity:.6;font-weight:400">Katb Ketab Invitation</small></h3>
+                    <h3 data-i18n="cat_katb">دعوة كتب الكتاب</h3>
 
                     <p>دعوات كتب كتاب بمفردات وأجواء تليق بهذه المناسبة المباركة.</p>
 
@@ -898,7 +940,7 @@
 
                     <div class="category-icon"><i class="fas fa-ring"></i></div>
 
-                    <h3>دعوة الفرح<br><small style="font-size:.65em;opacity:.6;font-weight:400">Wedding Invitation</small></h3>
+                    <h3 data-i18n="cat_wedding">دعوة الفرح</h3>
 
                     <p>دعوات زفاف فاخرة بتصاميم وقوالب متعددة تناسب ليلة عمرك.</p>
 
@@ -920,9 +962,9 @@
 
             <div class="section-header" data-aos="fade-up">
 
-                <span class="section-badge">تصاميم رائعة | Amazing Designs</span>
+                <span class="section-badge" data-i18n="badge_designs">تصاميم رائعة</span>
 
-                <h2>اختر <span class="gold">قالبك</span> المفضل<br><small style="font-size:.4em;opacity:.6;font-weight:400">Choose Your Favorite Template</small></h2>
+                <h2>اختر <span class="gold">قالبك</span> المفضل</h2>
 
                 <p>مجموعة متنوعة من القوالب المصممة بعناية لتناسب جميع الأذواق</p>
 
@@ -932,19 +974,19 @@
 
             <div class="templates-filter">
 
-                <button class="filter-btn active" data-filter="all">الكل | All</button>
+                <button class="filter-btn active" data-filter="all" data-i18n="filter_all">الكل</button>
 
-                <button class="filter-btn" data-filter="classic">كلاسيكي | Classic</button>
+                <button class="filter-btn" data-filter="classic" data-i18n="filter_classic">كلاسيكي</button>
 
-                <button class="filter-btn" data-filter="modern">عصري | Modern</button>
+                <button class="filter-btn" data-filter="modern" data-i18n="filter_modern">عصري</button>
 
-                <button class="filter-btn" data-filter="romantic">رومانسي | Romantic</button>
+                <button class="filter-btn" data-filter="romantic" data-i18n="filter_romantic">رومانسي</button>
 
-                <button class="filter-btn" data-filter="islamic">إسلامي | Islamic</button>
+                <button class="filter-btn" data-filter="islamic" data-i18n="filter_islamic">إسلامي</button>
 
-                <button class="filter-btn" data-filter="bohemian">بوهيمي | Bohemian</button>
-                <button class="filter-btn" data-filter="artistic">فني | Artistic</button>
-                <button class="filter-btn" data-filter="nature">طبيعة | Nature</button>
+                <button class="filter-btn" data-filter="bohemian" data-i18n="filter_bohemian">بوهيمي</button>
+                <button class="filter-btn" data-filter="artistic" data-i18n="filter_artistic">فني</button>
+                <button class="filter-btn" data-filter="nature" data-i18n="filter_nature">طبيعة</button>
 
             </div>
 
@@ -972,14 +1014,13 @@
 
                     <div class="template-info">
 
-                        <h4>الكلاسيكي الذهبي | Classic Golden</h4>
+                        <h4>الكلاسيكي الذهبي</h4>
 
                         <p>أناقة وخلود</p>
-                        <span class="en-subtitle">Elegance & Timelessness</span>
 
                         <a href="preview-classic.html" class="btn btn-sm btn-outline">
 
-                            <i class="fas fa-eye"></i> معاينة | Preview
+                            <i class="fas fa-eye"></i> معاينة
 
                         </a>
 
@@ -991,7 +1032,7 @@
 
                 <div class="template-card featured" data-category="modern" data-aos="zoom-in" data-aos-delay="100">
 
-                    <div class="template-badge">الأكثر شعبية | Most Popular</div>
+                    <div class="template-badge">الأكثر شعبية</div>
 
                     <div class="template-preview modern-preview">
 
@@ -1009,14 +1050,13 @@
 
                     <div class="template-info">
 
-                        <h4>العصري الأنيق | Modern Elegant</h4>
+                        <h4>العصري الأنيق</h4>
 
                         <p>بساطة ورقي</p>
-                        <span class="en-subtitle">Simplicity & Refinement</span>
 
                         <a href="preview-modern.html" class="btn btn-sm btn-primary">
 
-                            <i class="fas fa-eye"></i> معاينة | Preview
+                            <i class="fas fa-eye"></i> معاينة
 
                         </a>
 
@@ -1046,14 +1086,13 @@
 
                     <div class="template-info">
 
-                        <h4>الرومانسي الناعم | Romantic Soft</h4>
+                        <h4>الرومانسي الناعم</h4>
 
                         <p>عاطفة وجمال</p>
-                        <span class="en-subtitle">Emotion & Beauty</span>
 
                         <a href="preview-romantic.html" class="btn btn-sm btn-outline">
 
-                            <i class="fas fa-eye"></i> معاينة | Preview
+                            <i class="fas fa-eye"></i> معاينة
 
                         </a>
 
@@ -1083,14 +1122,13 @@
 
                     <div class="template-info">
 
-                        <h4>الإسلامي الفاخر | Islamic Luxury</h4>
+                        <h4>الإسلامي الفاخر</h4>
 
                         <p>بركة وهناء</p>
-                        <span class="en-subtitle">Blessing & Joy</span>
 
                         <a href="preview-islamic.html" class="btn btn-sm btn-outline">
 
-                            <i class="fas fa-eye"></i> معاينة | Preview
+                            <i class="fas fa-eye"></i> معاينة
 
                         </a>
 
@@ -1122,14 +1160,13 @@
 
                     <div class="template-info">
 
-                        <h4>البوهيمي الحر | Bohemian Free</h4>
+                        <h4>البوهيمي الحر</h4>
 
                         <p>طبيعة وحيوية</p>
-                        <span class="en-subtitle">Nature & Vitality</span>
 
                         <a href="preview-bohemian.html" class="btn btn-sm btn-outline">
 
-                            <i class="fas fa-eye"></i> معاينة | Preview
+                            <i class="fas fa-eye"></i> معاينة
 
                         </a>
 
@@ -1159,14 +1196,13 @@
 
                     <div class="template-info">
 
-                        <h4>الملكي الفاخر | Royal Luxury</h4>
+                        <h4>الملكي الفاخر</h4>
 
                         <p>فخامة وتميز</p>
-                        <span class="en-subtitle">Luxury & Distinction</span>
 
                         <a href="preview-royal.html" class="btn btn-sm btn-gold">
 
-                            <i class="fas fa-eye"></i> معاينة | Preview
+                            <i class="fas fa-eye"></i> معاينة
 
                         </a>
 
@@ -1176,7 +1212,7 @@
 
                 <!-- Artistic Love Template -->
                 <div class="template-card premium" data-category="artistic" data-aos="zoom-in" data-aos-delay="600">
-                    <div class="template-badge">بريميوم | Premium</div>
+                    <div class="template-badge">بريميوم</div>
                     <div class="template-preview artistic-preview">
                         <div class="preview-content">
                             <span class="preview-palette">🎨</span>
@@ -1186,18 +1222,17 @@
                         </div>
                     </div>
                     <div class="template-info">
-                        <h4>قالب الفن | Art Template</h4>
+                        <h4>قالب الفن</h4>
                         <p>إبداع وتميز</p>
-                        <span class="en-subtitle">Creativity & Distinction</span>
                         <a href="templates-new/preview-artistic.html" class="btn btn-sm btn-outline">
-                            <i class="fas fa-eye"></i> معاينة | Preview
+                            <i class="fas fa-eye"></i> معاينة
                         </a>
                     </div>
                 </div>
 
                 <!-- Elite Wedding Template -->
                 <div class="template-card premium featured" data-category="modern" data-aos="zoom-in" data-aos-delay="700">
-                    <div class="template-badge">جديد | New</div>
+                    <div class="template-badge">جديد</div>
                     <div class="template-preview elite-preview">
                         <div class="preview-content">
                             <span class="preview-crown">👑</span>
@@ -1207,11 +1242,10 @@
                         </div>
                     </div>
                     <div class="template-info">
-                        <h4>قالب النخبة | Elite Template</h4>
+                        <h4>قالب النخبة</h4>
                         <p>فخامة وعراقة</p>
-                        <span class="en-subtitle">Luxury & Prestige</span>
                         <a href="templates-new/preview-elite.html" class="btn btn-sm btn-primary">
-                            <i class="fas fa-eye"></i> معاينة | Preview
+                            <i class="fas fa-eye"></i> معاينة
                         </a>
                     </div>
                 </div>
@@ -1227,11 +1261,10 @@
                         </div>
                     </div>
                     <div class="template-info">
-                        <h4>قالب الورود | Floral Template</h4>
+                        <h4>قالب الورود</h4>
                         <p>جمال ورومانسية</p>
-                        <span class="en-subtitle">Beauty & Romance</span>
                         <a href="templates-new/preview-floral.html" class="btn btn-sm btn-outline">
-                            <i class="fas fa-eye"></i> معاينة | Preview
+                            <i class="fas fa-eye"></i> معاينة
                         </a>
                     </div>
                 </div>
@@ -1247,11 +1280,10 @@
                         </div>
                     </div>
                     <div class="template-info">
-                        <h4>قالب البساطة | Minimal Template</h4>
+                        <h4>قالب البساطة</h4>
                         <p>أناقة بسيطة</p>
-                        <span class="en-subtitle">Simple Elegance</span>
                         <a href="templates-new/preview-minimal.html" class="btn btn-sm btn-outline">
-                            <i class="fas fa-eye"></i> معاينة | Preview
+                            <i class="fas fa-eye"></i> معاينة
                         </a>
                     </div>
                 </div>
@@ -1267,18 +1299,17 @@
                         </div>
                     </div>
                     <div class="template-info">
-                        <h4>قالب الطبيعة | Nature Template</h4>
+                        <h4>قالب الطبيعة Template</h4>
                         <p>هدوء وجمال</p>
-                        <span class="en-subtitle">Serenity & Beauty</span>
                         <a href="templates-new/preview-nature.html" class="btn btn-sm btn-outline">
-                            <i class="fas fa-eye"></i> معاينة | Preview
+                            <i class="fas fa-eye"></i> معاينة
                         </a>
                     </div>
                 </div>
 
                 <!-- Starry Night Template -->
                 <div class="template-card premium" data-category="romantic" data-aos="zoom-in" data-aos-delay="1100">
-                    <div class="template-badge">مميز | Featured</div>
+                    <div class="template-badge">مميز</div>
                     <div class="template-preview starry-preview">
                         <div class="preview-content">
                             <span class="preview-moon">🌙</span>
@@ -1288,11 +1319,10 @@
                         </div>
                     </div>
                     <div class="template-info">
-                        <h4>قالب النجوم | Starry Template</h4>
+                        <h4>قالب النجوم</h4>
                         <p>سحر وروعة</p>
-                        <span class="en-subtitle">Magic & Splendor</span>
                         <a href="templates-new/preview-starry.html" class="btn btn-sm btn-gold">
-                            <i class="fas fa-eye"></i> معاينة | Preview
+                            <i class="fas fa-eye"></i> معاينة
                         </a>
                     </div>
                 </div>
@@ -1301,9 +1331,9 @@
 
             <div class="templates-cta" data-aos="fade-up">
 
-                <p>لم تجد القالب المناسب؟ | Didn't find the right template?</p>
+                <p>لم تجد القالب المناسب؟ </p>
 
-                <a href="register.html" class="btn btn-primary">ابدأ وصمم قالبك الخاص | Design Your Own</a>
+                <a href="register.html" class="btn btn-primary"><span data-i18n="templates_cta_btn">ابدأ وصمم قالبك الخاص</span></a>
 
             </div>
 
@@ -1321,11 +1351,11 @@
 
             <div class="section-header" data-aos="fade-up">
 
-                <span class="section-badge">دعوات حقيقية | Real Invitations</span>
+                <span class="section-badge">دعوات حقيقية</span>
 
                 <h2>دعوات الأفراح على موقعنا الأكثر <span class="gold">تفاعلاً</span></h2>
 
-                <p>دعوات حقيقية | Real Invitations صممها عرسان على موقع دعوة فرح وقرروا يشاركوها معاكم.</p>
+                <p>دعوات حقيقية صممها عرسان على موقع دعوة فرح وقرروا يشاركوها معاكم.</p>
 
             </div>
 
@@ -1375,9 +1405,9 @@
 
             <div class="section-header" data-aos="fade-up">
 
-                <span class="section-badge">سهل وبسيط | Easy & Simple</span>
+                <span class="section-badge" data-i18n="badge_easy">سهل وبسيط</span>
 
-                <h2>كيف <span class="gold">يعمل</span>؟<br><small style="font-size:.4em;opacity:.6;font-weight:400">How It Works</small></h2>
+                <h2>كيف <span class="gold">يعمل</span>؟</h2>
 
                 <p>3 خطوات بسيطة فقط للحصول على دعوتك المثالية</p>
 
@@ -1405,7 +1435,7 @@
 
                     </div>
 
-                    <h3>أنشئ حسابك<br><small style="font-size:.65em;opacity:.6;font-weight:400">Create Your Account</small></h3>
+                    <h3 data-i18n="step1_title">أنشئ حسابك</h3>
 
                     <p>سجل مجاناً في ثوانٍ وأبدأ رحلة إنشاء دعوتك الخاصة</p>
 
@@ -1443,7 +1473,7 @@
 
                     </div>
 
-                    <h3>صمم دعوتك<br><small style="font-size:.65em;opacity:.6;font-weight:400">Design Your Invitation</small></h3>
+                    <h3 data-i18n="step2_title">صمم دعوتك</h3>
 
                     <p>اختر القالب، أضف صورك، شخصّص التفاصيل واستخدم الذكاء الاصطناعي</p>
 
@@ -1479,7 +1509,7 @@
 
                     </div>
 
-                    <h3>شارك دعوتك<br><small style="font-size:.65em;opacity:.6;font-weight:400">Share Your Invitation</small></h3>
+                    <h3 data-i18n="step3_title">شارك دعوتك</h3>
 
                     <p>احصل على رابط فريد وQR Code وشاركه مع جميع الضيوف</p>
 
@@ -1501,9 +1531,9 @@
 
             <div class="section-header" data-aos="fade-up">
 
-                <span class="section-badge">خطط مرنة | Flexible Plans</span>
+                <span class="section-badge" data-i18n="badge_plans">خطط مرنة</span>
 
-                <h2>اختر <span class="gold">باقتك</span> المناسبة<br><small style="font-size:.4em;opacity:.6;font-weight:400">Choose Your Suitable Plan</small></h2>
+                <h2>اختر <span class="gold">باقتك</span> المناسبة</h2>
 
                 <p>أسعار تناسب الجميع مع ميزات متدرجة تلبي جميع الاحتياجات</p>
 
@@ -1517,7 +1547,7 @@
 
                 <i class="fas fa-infinity"></i>
 
-                <span>جميع الباقات مدى الحياة -دفعة واحدة فقط | All plans are lifetime - one-time payment</span>
+                <span>جميع الباقات مدى الحياة -دفعة واحدة فقط</span>
 
             </div>
 
@@ -1537,7 +1567,7 @@
 
                         </div>
 
-                        <h3>مجاني | Free</h3>
+                        <h3 data-i18n="plan_free">مجاني</h3>
 
                         <div class="price">
 
@@ -1581,7 +1611,7 @@
 
                     </p>
 
-                    <a href="#" class="btn btn-outline btn-block" onclick="selectPricingPlan('free');return false;">ابدأ مجاناً (معاينة فقط) | Start Free (Preview Only)</a>
+                    <a href="#" class="btn btn-outline btn-block" onclick="selectPricingPlan('free');return false;">ابدأ مجاناً (معاينة فقط)</a>
 
                 </div>
 
@@ -1601,7 +1631,7 @@
 
                         </div>
 
-                        <h3>بريميوم | Premium</h3>
+                        <h3 data-i18n="plan_premium">بريميوم</h3>
 
                         <div class="price">
 
@@ -1637,7 +1667,7 @@
 
                     </ul>
 
-                    <a href="#" class="btn btn-primary btn-block" onclick="selectPricingPlan('premium');return false;">اشترك الآن | Subscribe Now</a>
+                    <a href="#" class="btn btn-primary btn-block" onclick="selectPricingPlan('premium');return false;">اشترك الآن</a>
 
                 </div>
 
@@ -1657,7 +1687,7 @@
 
                         </div>
 
-                        <h3>VIP</h3>
+                        <h3 data-i18n="plan_vip">VIP</h3>
 
                         <div class="price">
 
@@ -1697,7 +1727,7 @@
 
                     </ul>
 
-                    <a href="#" class="btn btn-gold btn-block" onclick="selectPricingPlan('vip');return false;">ترقية لـ VIP | Upgrade to VIP</a>
+                    <a href="#" class="btn btn-gold btn-block" onclick="selectPricingPlan('vip');return false;">ترقية لـ VIP</a>
 
                 </div>
 
@@ -1717,9 +1747,9 @@
 
             <div class="section-header" data-aos="fade-up">
 
-                <span class="section-badge">آراء العملاء | Customer Reviews</span>
+                <span class="section-badge" data-i18n="badge_reviews">آراء العملاء</span>
 
-                <h2>ماذا يقول <span class="gold">عملاؤنا</span>؟<br><small style="font-size:.4em;opacity:.6;font-weight:400">What Do Our Customers Say?</small></h2>
+                <h2>ماذا يقول <span class="gold">عملاؤنا</span>؟</h2>
 
                 <p>قصص نجاح حقيقية من أزواج سعداء استخدموا دعوة فرح</p>
 
@@ -1869,7 +1899,7 @@
 
             <div class="cta-content" data-aos="zoom-in">
 
-                <h2>هل أنت مستعد لإنشاء <span class="gold">دعوتك المثالية</span>؟<br><small style="font-size:.35em;opacity:.6;font-weight:400">Ready to Create Your Perfect Invitation?</small></h2>
+                <h2 data-i18n="cta_title">هل أنت مستعد لإنشاء <span class="gold">دعوتك المثالية</span>؟</h2>
 
                 <p>انضم إلى آلاف الأزواج السعداء الذين اختاروا دعوة فرح</p>
 
@@ -1879,7 +1909,7 @@
 
                         <i class="fas-rocket"></i>
 
-                        ابدأ مجاناً الآن | Start Free Now
+                        ابدأ مجاناً الآن
 
                     </a>
 
@@ -1887,7 +1917,7 @@
 
                         <i class="fas-play-circle"></i>
 
-                        شاهد كيف يعمل | See How It Works
+                        شاهد كيف يعمل
 
                     </a>
 
@@ -1929,7 +1959,7 @@
 
                 <div class="df-footer-box df-footer-legal">
 
-                    <h4>قانوني | Legal</h4>
+                    <h4 data-i18n="footer_legal">قانوني</h4>
 
                     <ul>
 
@@ -1951,7 +1981,7 @@
 
                 <div class="df-footer-box df-footer-support">
 
-                    <h4>الدعم | Support</h4>
+                    <h4 data-i18n="footer_support">الدعم</h4>
 
                     <div class="df-support-buttons">
 
@@ -2289,6 +2319,299 @@
                 console.log('🌐 PWA initialized');
             });
         }
+    </script>
+
+
+    <!-- Language Switcher System -->
+    <script>
+    (function() {
+        'use strict';
+
+        const T = {
+            ar: {
+                // Nav
+                nav_home: 'الرئيسية',
+                nav_features: 'المميزات',
+                nav_templates: 'القوالب',
+                nav_how: 'كيف يعمل',
+                nav_pricing: 'الأسعار',
+                btn_login: 'تسجيل الدخول',
+                btn_start_free: 'ابدأ مجاناً',
+                // Hero
+                hero_badge: '✨ المنصة الأولى لدعوات الزفاف في العالم العربي',
+                hero_create: 'أنشئ دعوتك الآن',
+                hero_browse: 'استعرض القوالب',
+                stat_invitations: 'دعوة تم إنشاؤها',
+                stat_guests: 'ضيف تمت دعوتهم',
+                stat_satisfaction: 'رضا العملاء',
+                // Features
+                badge_why: 'لماذا نحن؟',
+                feat_templates: 'قوالب فاخرة',
+                feat_ai: 'ذكاء اصطناعي',
+                feat_gallery: 'معرض صور تفاعلي',
+                feat_music: 'موسيقى مخصصة',
+                feat_map: 'خريطة تفاعلية',
+                feat_qr: 'QR Code خاص',
+                feat_countdown: 'عداد تنازلي',
+                feat_rsvp: 'نظام RSVP',
+                // Categories
+                badge_occasion: 'اختر مناسبتك',
+                cat_engagement: 'دعوة الخطوبة',
+                cat_katb: 'دعوة كتب الكتاب',
+                cat_wedding: 'دعوة الفرح',
+                // Templates
+                badge_designs: 'تصاميم رائعة',
+                filter_all: 'الكل',
+                filter_classic: 'كلاسيكي',
+                filter_modern: 'عصري',
+                filter_romantic: 'رومانسي',
+                filter_islamic: 'إسلامي',
+                filter_bohemian: 'بوهيمي',
+                filter_artistic: 'فني',
+                filter_nature: 'طبيعة',
+                templates_cta_text: 'لم تجد القالب المناسب؟',
+                templates_cta_btn: 'ابدأ وصمم قالبك الخاص',
+                // How it works
+                badge_easy: 'سهل وبسيط',
+                step1_title: 'أنشئ حسابك',
+                step2_title: 'صمم دعوتك',
+                step3_title: 'شارك دعوتك',
+                // Pricing
+                badge_plans: 'خطط مرنة',
+                plan_free: 'مجاني',
+                plan_premium: 'بريميوم',
+                plan_vip: 'VIP',
+                pricing_free_btn: 'ابدأ مجاناً (معاينة فقط)',
+                pricing_premium_btn: 'اشترك الآن',
+                pricing_vip_btn: 'ترقية لـ VIP',
+                // Testimonials
+                badge_reviews: 'آراء العملاء',
+                // CTA
+                cta_title: 'هل أنت مستعد لإنشاء دعوتك المثالية؟',
+                cta_start: 'ابدأ مجاناً الآن',
+                cta_how: 'شاهد كيف يعمل',
+                // Footer
+                footer_legal: 'قانوني',
+                footer_support: 'الدعم',
+                // Template names
+                tpl_classic: 'الكلاسيكي الذهبي', tpl_classic_sub: 'أناقة وخلود',
+                tpl_modern: 'العصري الأنيق', tpl_modern_sub: 'بساطة ورقي',
+                tpl_romantic: 'الرومانسي الناعم', tpl_romantic_sub: 'عاطفة وجمال',
+                tpl_islamic: 'الإسلامي الفاخر', tpl_islamic_sub: 'بركة وهناء',
+                tpl_bohemian: 'البوهيمي الحر', tpl_bohemian_sub: 'طبيعة وحيوية',
+                tpl_royal: 'الملكي الفاخر', tpl_royal_sub: 'فخامة وتميز',
+                tpl_artistic: 'قالب الفن', tpl_artistic_sub: 'إبداع وتميز',
+                tpl_elite: 'قالب النخبة', tpl_elite_sub: 'فخامة وعراقة',
+                tpl_floral: 'قالب الورود', tpl_floral_sub: 'جمال ورومانسية',
+                tpl_minimal: 'قالب البساطة', tpl_minimal_sub: 'أناقة بسيطة',
+                tpl_nature: 'قالب الطبيعة', tpl_nature_sub: 'هدوء وجمال',
+                tpl_starry: 'قالب النجوم', tpl_starry_sub: 'سحر وروعة',
+                btn_preview: 'معاينة',
+                // Badges
+                badge_popular: 'الأكثر شعبية',
+                badge_new: 'جديد',
+                badge_premium: 'بريميوم',
+                badge_featured: 'مميز',
+            },
+            en: {
+                nav_home: 'Home',
+                nav_features: 'Features',
+                nav_templates: 'Templates',
+                nav_how: 'How It Works',
+                nav_pricing: 'Pricing',
+                btn_login: 'Login',
+                btn_start_free: 'Start Free',
+                hero_badge: '✨ The #1 Wedding Invitation Platform in the Arab World',
+                hero_create: 'Create Your Invitation Now',
+                hero_browse: 'Browse Templates',
+                stat_invitations: 'Invitations Created',
+                stat_guests: 'Guests Invited',
+                stat_satisfaction: 'Customer Satisfaction',
+                badge_why: 'Why Us?',
+                feat_templates: 'Premium Templates',
+                feat_ai: 'AI Powered',
+                feat_gallery: 'Interactive Gallery',
+                feat_music: 'Custom Music',
+                feat_map: 'Interactive Map',
+                feat_qr: 'Custom QR Code',
+                feat_countdown: 'Countdown Timer',
+                feat_rsvp: 'RSVP System',
+                badge_occasion: 'Choose Your Occasion',
+                cat_engagement: 'Engagement',
+                cat_katb: 'Katb Ketab',
+                cat_wedding: 'Wedding',
+                badge_designs: 'Amazing Designs',
+                filter_all: 'All',
+                filter_classic: 'Classic',
+                filter_modern: 'Modern',
+                filter_romantic: 'Romantic',
+                filter_islamic: 'Islamic',
+                filter_bohemian: 'Bohemian',
+                filter_artistic: 'Artistic',
+                filter_nature: 'Nature',
+                templates_cta_text: "Didn't find the right template?",
+                templates_cta_btn: 'Start & Design Your Own',
+                badge_easy: 'Easy & Simple',
+                step1_title: 'Create Your Account',
+                step2_title: 'Design Your Invitation',
+                step3_title: 'Share Your Invitation',
+                badge_plans: 'Flexible Plans',
+                plan_free: 'Free',
+                plan_premium: 'Premium',
+                plan_vip: 'VIP',
+                pricing_free_btn: 'Start Free (Preview Only)',
+                pricing_premium_btn: 'Subscribe Now',
+                pricing_vip_btn: 'Upgrade to VIP',
+                badge_reviews: 'Customer Reviews',
+                cta_title: 'Ready to Create Your Perfect Invitation?',
+                cta_start: 'Start Free Now',
+                cta_how: 'See How It Works',
+                footer_legal: 'Legal',
+                footer_support: 'Support',
+                tpl_classic: 'Classic Golden', tpl_classic_sub: 'Elegance & Timelessness',
+                tpl_modern: 'Modern Elegant', tpl_modern_sub: 'Simplicity & Refinement',
+                tpl_romantic: 'Romantic Soft', tpl_romantic_sub: 'Emotion & Beauty',
+                tpl_islamic: 'Islamic Luxury', tpl_islamic_sub: 'Blessing & Joy',
+                tpl_bohemian: 'Bohemian Free', tpl_bohemian_sub: 'Nature & Vitality',
+                tpl_royal: 'Royal Luxury', tpl_royal_sub: 'Luxury & Distinction',
+                tpl_artistic: 'Art Template', tpl_artistic_sub: 'Creativity & Distinction',
+                tpl_elite: 'Elite Template', tpl_elite_sub: 'Luxury & Prestige',
+                tpl_floral: 'Floral Template', tpl_floral_sub: 'Beauty & Romance',
+                tpl_minimal: 'Minimal Template', tpl_minimal_sub: 'Simple Elegance',
+                tpl_nature: 'Nature Template', tpl_nature_sub: 'Serenity & Beauty',
+                tpl_starry: 'Starry Template', tpl_starry_sub: 'Magic & Splendor',
+                btn_preview: 'Preview',
+                badge_popular: 'Most Popular',
+                badge_new: 'New',
+                badge_premium: 'Premium',
+                badge_featured: 'Featured',
+            }
+        };
+
+        // Template name key mapping (by category+index order)
+        const tplKeys = [
+            'classic','modern','romantic','islamic','bohemian','royal',
+            'artistic','elite','floral','minimal','nature','starry'
+        ];
+
+        function applyTranslations(lang) {
+            const t = T[lang];
+            if (!t) return;
+
+            // Update all [data-i18n] elements
+            document.querySelectorAll('[data-i18n]').forEach(function(el) {
+                const key = el.getAttribute('data-i18n');
+                if (t[key] !== undefined) {
+                    el.innerHTML = t[key];
+                }
+            });
+
+            // Update template card names and descriptions
+            const cards = document.querySelectorAll('.template-card');
+            cards.forEach(function(card, i) {
+                if (i < tplKeys.length) {
+                    const key = tplKeys[i];
+                    const h4 = card.querySelector('.template-info h4');
+                    const p = card.querySelector('.template-info p');
+                    if (h4 && t['tpl_' + key]) h4.textContent = t['tpl_' + key];
+                    if (p && t['tpl_' + key + '_sub']) p.textContent = t['tpl_' + key + '_sub'];
+                }
+                // Update preview button text
+                const btn = card.querySelector('.template-info .btn');
+                if (btn) {
+                    const icon = btn.querySelector('i');
+                    btn.textContent = '';
+                    if (icon) btn.appendChild(icon);
+                    btn.append(' ' + t.btn_preview);
+                }
+                // Update badge text
+                const badge = card.querySelector('.template-badge');
+                if (badge) {
+                    if (card.classList.contains('featured') && !card.classList.contains('premium'))
+                        badge.textContent = t.badge_popular;
+                    else if (card.classList.contains('new'))
+                        badge.textContent = t.badge_new;
+                    else if (card.classList.contains('premium') && !card.classList.contains('featured'))
+                        badge.textContent = t.badge_premium;
+                    else if (card.classList.contains('premium') && card.classList.contains('featured'))
+                        badge.textContent = t.badge_new;
+                    else
+                        badge.textContent = t.badge_featured;
+                }
+            });
+
+            // Update pricing buttons
+            document.querySelectorAll('.pricing-card a.btn').forEach(function(btn) {
+                const plan = btn.closest('.pricing-card').getAttribute('data-plan');
+                if (plan === 'free') btn.textContent = t.pricing_free_btn;
+                else if (plan === 'premium') btn.textContent = t.pricing_premium_btn;
+                else if (plan === 'vip') btn.textContent = t.pricing_vip_btn;
+            });
+
+            // Update CTA section buttons (bottom CTA, not in pricing)
+            document.querySelectorAll('.cta-section .btn').forEach(function(btn) {
+                const text = btn.textContent.trim();
+                if (text.includes('ابدأ') || text.includes('Start')) {
+                    const icon = btn.querySelector('i');
+                    btn.textContent = '';
+                    if (icon) btn.appendChild(icon);
+                    btn.append(' ' + t.cta_start);
+                }
+                if (text.includes('شاهد') || text.includes('See')) {
+                    const icon = btn.querySelector('i');
+                    btn.textContent = '';
+                    if (icon) btn.appendChild(icon);
+                    btn.append(' ' + t.cta_how);
+                }
+            });
+
+            // Update mobile nav links
+            document.querySelectorAll('.mobile-nav-links a').forEach(function(a) {
+                const href = a.getAttribute('href');
+                if (href === '#home') a.textContent = t.nav_home;
+                else if (href === '#features') a.textContent = t.nav_features;
+                else if (href === '#templates') a.textContent = t.nav_templates;
+                else if (href === '#how-it-works') a.textContent = t.nav_how;
+                else if (href === '#pricing') a.textContent = t.nav_pricing;
+            });
+
+            // Real invitations filter
+            document.querySelectorAll('#realInvitationsFilter .filter-btn').forEach(function(btn) {
+                const type = btn.getAttribute('data-type');
+                if (type === 'all') btn.textContent = t.filter_all;
+                else if (type === 'wedding') btn.textContent = t.cat_wedding;
+                else if (type === 'engagement') btn.textContent = t.cat_engagement;
+                else if (type === 'katb_ketab') btn.textContent = t.cat_katb;
+            });
+        }
+
+        window.switchLang = function(lang) {
+            // Update html lang & dir
+            document.documentElement.lang = lang;
+            document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+
+            // Toggle active button
+            document.querySelectorAll('.lang-btn').forEach(function(b) {
+                b.classList.toggle('active', b.getAttribute('data-lang') === lang);
+            });
+
+            // Apply translations
+            applyTranslations(lang);
+
+            // Save preference
+            try { localStorage.setItem('df_lang', lang); } catch(e) {}
+        };
+
+        // Auto-load saved language on DOM ready
+        document.addEventListener('DOMContentLoaded', function() {
+            try {
+                var saved = localStorage.getItem('df_lang');
+                if (saved && (saved === 'ar' || saved === 'en')) {
+                    window.switchLang(saved);
+                }
+            } catch(e) {}
+        });
+    })();
     </script>
 
 </body>
