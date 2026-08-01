@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>لوحة التحكم | دعوة فرح</title>
+<title id="pageTitle" data-i18n="page_title">لوحة التحكم | دعوة فرح</title>
 <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
 <style>
@@ -80,9 +80,13 @@
 
 <header>
   <div class="logo">دعوة فرح</div>
+  <div class="df-lang-toggle" style="display:flex;gap:4px;">
+    <button type="button" class="df-lang-btn active" data-lang="ar" onclick="switchLang('ar')" style="border:1px solid var(--line);background:var(--gold);color:#12210F;font-size:11px;font-weight:700;padding:4px 10px;border-radius:14px;cursor:pointer;">AR</button>
+    <button type="button" class="df-lang-btn" data-lang="en" onclick="switchLang('en')" style="border:1px solid var(--line);background:none;color:var(--text);font-size:11px;font-weight:700;padding:4px 10px;border-radius:14px;cursor:pointer;">EN</button>
+  </div>
   <div class="top-actions">
     <span id="slugTop" style="font-size:13px;color:var(--text-dim);direction:ltr"></span>
-    <button class="btn" id="logoutBtn">تسجيل الخروج</button>
+    <button class="btn" id="logoutBtn" data-i18n="logout_btn">تسجيل الخروج</button>
   </div>
 </header>
 
@@ -90,63 +94,63 @@
 
 <div class="wrap">
   <aside>
-    <div class="side-link active" data-panel="details">تفاصيل الدعوة</div>
-    <div class="side-link" data-panel="media">الصور والأغنية</div>
-    <div class="side-link" data-panel="ai">كاتب الدعوة الذكي</div>
-    <div class="side-link" data-panel="share">الرابط ونشر الدعوة</div>
-    <div class="side-link" data-panel="rsvp">تأكيدات الحضور</div>
-    <div class="side-link" data-panel="wishes">تهاني الضيوف</div>
-    <div class="side-link" data-panel="gallery">ألبوم صور الضيوف</div>
+    <div class="side-link active" data-panel="details" data-i18n="nav_details">تفاصيل الدعوة</div>
+    <div class="side-link" data-panel="media" data-i18n="nav_media">الصور والأغنية</div>
+    <div class="side-link" data-panel="ai" data-i18n="nav_ai">كاتب الدعوة الذكي</div>
+    <div class="side-link" data-panel="share" data-i18n="nav_share">الرابط ونشر الدعوة</div>
+    <div class="side-link" data-panel="rsvp" data-i18n="nav_rsvp">تأكيدات الحضور</div>
+    <div class="side-link" data-panel="wishes" data-i18n="nav_wishes">تهاني الضيوف</div>
+    <div class="side-link" data-panel="gallery" data-i18n="nav_gallery">ألبوم صور الضيوف</div>
   </aside>
 
   <main>
     <!-- تفاصيل -->
     <div class="panel active" id="panel-details">
-      <h2>تفاصيل الدعوة</h2>
+      <h2 data-i18n="details_h2">تفاصيل الدعوة</h2>
       <div class="card">
         <div class="grid2">
-          <div><label>اسم العريس</label><input id="groomName"></div>
-          <div><label>اسم العروسة</label><input id="brideName"></div>
+          <div><label data-i18n="groom_name_label">اسم العريس</label><input id="groomName"></div>
+          <div><label data-i18n="bride_name_label">اسم العروسة</label><input id="brideName"></div>
         </div>
         <div class="grid2">
-          <label style="grid-column:1/-1">نوع المناسبة</label>
+          <label style="grid-column:1/-1" data-i18n="occasion_label">نوع المناسبة</label>
           <select id="eventType" style="grid-column:1/-1">
-            <option value="wedding">حفل زفاف</option>
-            <option value="engagement">خطوبة</option>
-            <option value="katb_ketab">كتب كتاب</option>
+            <option value="wedding" data-i18n="occasion_wedding">حفل زفاف</option>
+            <option value="engagement" data-i18n="occasion_engagement">خطوبة</option>
+            <option value="katb_ketab" data-i18n="occasion_katb">كتب كتاب</option>
           </select>
         </div>
         <div class="grid2">
-          <div><label>تاريخ ووقت المناسبة</label><input type="datetime-local" id="eventDate"></div>
-          <div><label>اسم المكان / القاعة</label><input id="venueName"></div>
+          <div><label data-i18n="event_date_label">تاريخ ووقت المناسبة</label><input type="datetime-local" id="eventDate"></div>
+          <div><label data-i18n="venue_label">اسم المكان / القاعة</label><input id="venueName"></div>
         </div>
-        <label>رابط الموقع على الخريطة (اختياري)</label>
+        <label data-i18n="map_link_label">رابط الموقع على الخريطة (اختياري)</label>
         <input id="venueMapUrl" placeholder="https://maps.google.com/...">
-        <label>قصتكم / كلمة للضيوف</label>
-        <textarea id="story" placeholder="اكتبوا كلمة قصيرة لضيوفكم..."></textarea>
+        <label data-i18n="story_label">قصتكم / كلمة للضيوف</label>
+        <textarea id="story" placeholder="اكتبوا كلمة قصيرة لضيوفكم..." data-i18n-placeholder="story_ph"></textarea>
 
         <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
           <input type="checkbox" id="verseToggle" style="width:auto;margin:0">
-          <span>تفعيل الآية الدينية في أعلى الدعوة</span>
+          <span data-i18n="verse_toggle_label">تفعيل الآية الدينية في أعلى الدعوة</span>
         </label>
         <div id="verseTypeWrap" style="display:none;margin-top:10px">
-          <label>نوع الآية</label>
+          <label data-i18n="verse_type_label">نوع الآية</label>
           <select id="verseType">
-            <option value="quran">آية قرآنية</option>
-            <option value="bible">آية من الكتاب المقدس</option>
+            <option value="quran" data-i18n="verse_quran">آية قرآنية</option>
+            <option value="bible" data-i18n="verse_bible">آية من الكتاب المقدس</option>
           </select>
           <div id="verseAyahPreview" style="margin-top:10px;padding:14px;border:1px dashed var(--line);border-radius:10px;font-size:13.5px;color:var(--text-dim);line-height:1.9"></div>
         </div>
 
-        <label>التصميم</label>
+        <label data-i18n="theme_label">التصميم</label>
         <div class="theme-picker">
-          <div class="theme-opt royal" data-theme="royal">الملكي</div>
-          <div class="theme-opt blossom" data-theme="blossom">الزهري</div>
-          <div class="theme-opt modern" data-theme="modern">العصري</div>
+          <div class="theme-opt royal" data-theme="royal" data-i18n="theme_royal">الملكي</div>
+          <div class="theme-opt blossom" data-theme="blossom" data-i18n="theme_blossom">الزهري</div>
+          <div class="theme-opt modern" data-theme="modern" data-i18n="theme_modern">العصري</div>
         </div>
 
         <div class="row" style="margin-top:22px">
-          <button class="btn btn-gold" id="saveDetails">حفظ التفاصيل</button>
+          <button class="btn btn-gold" id="saveDetails" data-i18n="save_details_btn">حفظ التفاصيل</button>
           <span class="msg" id="detailsMsg"></span>
         </div>
       </div>
@@ -154,15 +158,15 @@
 
     <!-- ميديا -->
     <div class="panel" id="panel-media">
-      <h2>الصور والأغنية</h2>
+      <h2 data-i18n="media_h2">الصور والأغنية</h2>
       <div class="card">
-        <label>صورة الغلاف</label>
-        <div class="upload-box" id="coverBox">اضغط لرفع صورة الغلاف (JPG / PNG)</div>
+        <label data-i18n="cover_label">صورة الغلاف</label>
+        <div class="upload-box" id="coverBox" data-i18n="cover_upload_box">اضغط لرفع صورة الغلاف (JPG / PNG)</div>
         <input type="file" id="coverInput" accept="image/*" style="display:none">
         <div class="preview" id="coverPreview"></div>
 
-        <label style="margin-top:26px">أغنية الدعوة</label>
-        <div class="upload-box" id="songBox">اضغط لرفع ملف صوتي (MP3)</div>
+        <label style="margin-top:26px" data-i18n="song_label">أغنية الدعوة</label>
+        <div class="upload-box" id="songBox" data-i18n="song_upload_box">اضغط لرفع ملف صوتي (MP3)</div>
         <input type="file" id="songInput" accept="audio/*" style="display:none">
         <audio id="songPreview" controls style="width:100%;margin-top:10px;display:none"></audio>
 
@@ -172,17 +176,17 @@
 
     <!-- AI -->
     <div class="panel" id="panel-ai">
-      <h2>كاتب الدعوة الذكي</h2>
+      <h2 data-i18n="ai_h2">كاتب الدعوة الذكي</h2>
       <div class="card">
-        <p style="color:var(--text-dim);font-size:14px;margin-bottom:6px">اختاروا أسلوب النص وخلوا الذكاء الاصطناعي يكتب دعوتكم:</p>
+        <p style="color:var(--text-dim);font-size:14px;margin-bottom:6px" data-i18n="ai_desc">اختاروا أسلوب النص وخلوا الذكاء الاصطناعي يكتب دعوتكم:</p>
         <div class="ai-tones">
-          <button class="btn btn-sm" data-tone="رسمي">أسلوب رسمي</button>
-          <button class="btn btn-sm" data-tone="رومانسي">أسلوب رومانسي</button>
-          <button class="btn btn-sm" data-tone="بهيج">أسلوب بهيج</button>
+          <button class="btn btn-sm" data-tone="رسمي" data-i18n="tone_formal">أسلوب رسمي</button>
+          <button class="btn btn-sm" data-tone="رومانسي" data-i18n="tone_romantic">أسلوب رومانسي</button>
+          <button class="btn btn-sm" data-tone="بهيج" data-i18n="tone_joyful">أسلوب بهيج</button>
         </div>
-        <textarea id="aiText" style="margin-top:16px" placeholder="سيظهر نص الدعوة هنا بعد التوليد، وتقدر تعدله يدويًا..."></textarea>
+        <textarea id="aiText" style="margin-top:16px" placeholder="سيظهر نص الدعوة هنا بعد التوليد، وتقدر تعدله يدويًا..." data-i18n-placeholder="ai_text_ph"></textarea>
         <div class="row" style="margin-top:14px">
-          <button class="btn btn-gold" id="saveAiText">استخدام هذا النص في الدعوة</button>
+          <button class="btn btn-gold" id="saveAiText" data-i18n="use_ai_text_btn">استخدام هذا النص في الدعوة</button>
           <span class="msg" id="aiMsg"></span>
         </div>
       </div>
@@ -190,7 +194,7 @@
 
     <!-- مشاركة -->
     <div class="panel" id="panel-share">
-      <h2>الرابط ونشر الدعوة</h2>
+      <h2 data-i18n="share_h2">الرابط ونشر الدعوة</h2>
       <div class="card">
         <label class="row" style="align-items:center">
           <input type="checkbox" id="publishToggle" style="width:auto">
@@ -199,47 +203,47 @@
         <div class="link-box" style="margin-top:18px">
           <span id="fullLink">da3watfarah.com/...</span>
           <div class="row">
-            <button class="btn btn-sm" id="copyLinkBtn">نسخ الرابط</button>
-            <a class="btn btn-sm" id="openLinkBtn" target="_blank">فتح الدعوة</a>
+            <button class="btn btn-sm" id="copyLinkBtn" data-i18n="copy_link_btn">نسخ الرابط</button>
+            <a class="btn btn-sm" id="openLinkBtn" target="_blank" data-i18n="open_invite_btn">فتح الدعوة</a>
           </div>
         </div>
         <div class="qr-wrap">
           <canvas id="qrCanvas"></canvas><br>
-          <button class="btn btn-sm" id="downloadQrBtn" style="margin-top:10px">تحميل كود QR</button>
+          <button class="btn btn-sm" id="downloadQrBtn" style="margin-top:10px" data-i18n="download_qr_btn">تحميل كود QR</button>
         </div>
       </div>
     </div>
 
     <!-- RSVP -->
     <div class="panel" id="panel-rsvp">
-      <h2>تأكيدات الحضور</h2>
+      <h2 data-i18n="rsvp_h2">تأكيدات الحضور</h2>
       <div class="card">
         <table>
-          <thead><tr><th>الاسم</th><th>الحالة</th><th>عدد الأفراد</th><th>التاريخ</th></tr></thead>
+          <thead><tr><th data-i18n="col_name">الاسم</th><th data-i18n="col_status">الحالة</th><th data-i18n="col_count">عدد الأفراد</th><th data-i18n="col_date">التاريخ</th></tr></thead>
           <tbody id="rsvpTable"></tbody>
         </table>
-        <div class="empty" id="rsvpEmpty" style="display:none">لسه معندكوش تأكيدات حضور</div>
+        <div class="empty" id="rsvpEmpty" style="display:none" data-i18n="rsvp_empty">لسه معندكوش تأكيدات حضور</div>
       </div>
     </div>
 
     <!-- Wishes -->
     <div class="panel" id="panel-wishes">
-      <h2>تهاني الضيوف</h2>
+      <h2 data-i18n="wishes_h2">تهاني الضيوف</h2>
       <div class="card">
         <table>
-          <thead><tr><th>الاسم</th><th>الرسالة</th><th>التاريخ</th></tr></thead>
+          <thead><tr><th data-i18n="col_name">الاسم</th><th data-i18n="col_message">الرسالة</th><th data-i18n="col_date">التاريخ</th></tr></thead>
           <tbody id="wishesTable"></tbody>
         </table>
-        <div class="empty" id="wishesEmpty" style="display:none">لسه معندكوش تهاني</div>
+        <div class="empty" id="wishesEmpty" style="display:none" data-i18n="wishes_empty">لسه معندكوش تهاني</div>
       </div>
     </div>
 
     <!-- Gallery -->
     <div class="panel" id="panel-gallery">
-      <h2>ألبوم صور الضيوف</h2>
+      <h2 data-i18n="gallery_h2">ألبوم صور الضيوف</h2>
       <div class="card">
         <div class="gallery-grid" id="galleryGrid"></div>
-        <div class="empty" id="galleryEmpty" style="display:none">لسه معندكوش صور من الضيوف</div>
+        <div class="empty" id="galleryEmpty" style="display:none" data-i18n="gallery_empty">لسه معندكوش صور من الضيوف</div>
       </div>
     </div>
   </main>
@@ -280,14 +284,14 @@
     // way of knowing which invitation to load.
     invitationId = new URLSearchParams(window.location.search).get('id');
     if (!invitationId) {
-      alert('لم يتم تحديد الدعوة المطلوب تعديلها');
+      alert(t('alert_no_invite_selected'));
       window.location.href = 'my-invitations.html';
       return;
     }
 
     const invSnap = await get(ref(db, 'invitations/' + invitationId));
     if (!invSnap.exists()) {
-      alert('هذه الدعوة غير موجودة');
+      alert(t('alert_invite_not_found'));
       window.location.href = 'my-invitations.html';
       return;
     }
@@ -295,7 +299,7 @@
 
     // Make sure the logged-in user actually owns this invitation.
     if (invData.userId && invData.userId !== currentUid) {
-      alert('ليس لديك صلاحية لتعديل هذه الدعوة');
+      alert(t('alert_no_permission'));
       window.location.href = 'my-invitations.html';
       return;
     }
@@ -399,9 +403,9 @@
     const attending = invData.attendingCount ?? invData.rsvpsCount ?? 0;
     const wishes = invData.wishesCount || 0;
     bar.innerHTML = `
-      <div class="inv-stat"><i class="fas fa-eye"></i><div><b>${views.toLocaleString('ar-EG')}</b><span>مشاهدة فعلية</span></div></div>
-      <div class="inv-stat"><i class="fas fa-user-check"></i><div><b>${attending.toLocaleString('ar-EG')}</b><span>تأكيد حضور</span></div></div>
-      <div class="inv-stat"><i class="fas fa-heart"></i><div><b>${wishes.toLocaleString('ar-EG')}</b><span>تهنئة</span></div></div>
+      <div class="inv-stat"><i class="fas fa-eye"></i><div><b>${views.toLocaleString(getLang()==='ar'?'ar-EG':'en-US')}</b><span>${t('stat_views')}</span></div></div>
+      <div class="inv-stat"><i class="fas fa-user-check"></i><div><b>${attending.toLocaleString(getLang()==='ar'?'ar-EG':'en-US')}</b><span>${t('stat_attending')}</span></div></div>
+      <div class="inv-stat"><i class="fas fa-heart"></i><div><b>${wishes.toLocaleString(getLang()==='ar'?'ar-EG':'en-US')}</b><span>${t('stat_wishes')}</span></div></div>
     `;
   }
 
@@ -471,7 +475,7 @@
     invData.eventType = payload.eventType;
 
     const m = document.getElementById('detailsMsg');
-    m.textContent = 'تم الحفظ بنجاح'; m.className = 'msg ok';
+    m.textContent = t('msg_saved'); m.className = 'msg ok';
     setTimeout(() => m.textContent = '', 3000);
   });
 
@@ -491,36 +495,36 @@
   document.getElementById('coverInput').addEventListener('change', async (e) => {
     const file = e.target.files[0]; if (!file) return;
     const m = document.getElementById('mediaMsg');
-    m.textContent = 'جاري رفع الصورة...'; m.className = 'msg';
+    m.textContent = t('msg_uploading_image'); m.className = 'msg';
     try {
       const url = await uploadFile(file, 'cover');
       await update(ref(db, 'invitations/' + invitationId), { 'design/coverImage': url });
       invData.design = { ...(invData.design||{}), coverImage: url };
       document.getElementById('coverPreview').innerHTML = `<img src="${url}">`;
-      m.textContent = 'تم رفع صورة الغلاف'; m.className = 'msg ok';
-    } catch { m.textContent = 'فشل رفع الصورة، حاول مرة أخرى'; m.className = 'msg error'; }
+      m.textContent = t('msg_cover_uploaded'); m.className = 'msg ok';
+    } catch { m.textContent = t('msg_image_upload_failed'); m.className = 'msg error'; }
   });
 
   document.getElementById('songBox').addEventListener('click', () => document.getElementById('songInput').click());
   document.getElementById('songInput').addEventListener('change', async (e) => {
     const file = e.target.files[0]; if (!file) return;
     const m = document.getElementById('mediaMsg');
-    m.textContent = 'جاري رفع الأغنية...'; m.className = 'msg';
+    m.textContent = t('msg_uploading_song'); m.className = 'msg';
     try {
       const url = await uploadFile(file, 'song');
       await update(ref(db, 'invitations/' + invitationId), { 'design/musicUrl': url });
       invData.design = { ...(invData.design||{}), musicUrl: url };
       const audio = document.getElementById('songPreview');
       audio.src = url; audio.style.display = 'block';
-      m.textContent = 'تم رفع الأغنية'; m.className = 'msg ok';
-    } catch { m.textContent = 'فشل رفع الأغنية، حاول مرة أخرى'; m.className = 'msg error'; }
+      m.textContent = t('msg_song_uploaded'); m.className = 'msg ok';
+    } catch { m.textContent = t('msg_song_upload_failed'); m.className = 'msg error'; }
   });
 
   // ===== كاتب الدعوة الذكي (NVIDIA AI عبر الـ Worker) =====
   document.querySelectorAll('.ai-tones button').forEach(btn => {
     btn.addEventListener('click', async () => {
       const m = document.getElementById('aiMsg');
-      m.textContent = 'جاري توليد النص...'; m.className = 'msg';
+      m.textContent = t('msg_generating_text'); m.className = 'msg';
       try {
         const res = await fetch(WORKER_URL + '/api/ai/generate', {
           method: 'POST',
@@ -535,8 +539,8 @@
         });
         const data = await res.json();
         document.getElementById('aiText').value = data.text || '';
-        m.textContent = 'تم توليد النص، عدّله إن أحببت'; m.className = 'msg ok';
-      } catch { m.textContent = 'تعذر توليد النص الآن'; m.className = 'msg error'; }
+        m.textContent = t('msg_text_generated'); m.className = 'msg ok';
+      } catch { m.textContent = t('msg_text_gen_failed'); m.className = 'msg error'; }
     });
   });
 
@@ -545,7 +549,7 @@
     await update(ref(db, 'invitations/' + invitationId), { 'content/invitationText': text });
     invData.content = { ...(invData.content||{}), invitationText: text };
     const m = document.getElementById('aiMsg');
-    m.textContent = 'تم حفظ نص الدعوة'; m.className = 'msg ok';
+    m.textContent = t('msg_ai_text_saved'); m.className = 'msg ok';
   });
 
   // ===== المشاركة والنشر =====
@@ -586,7 +590,7 @@
       empty.style.display = keys.length ? 'none' : 'block';
       keys.sort((a,b) => (data[b].createdAt||0) - (data[a].createdAt||0)).forEach(k => {
         const r = data[k];
-        const tag = r.attending ? '<span class="tag yes">حاضر</span>' : '<span class="tag no">معتذر</span>';
+        const tag = r.attending ? '<span class="tag yes">' + t('tag_attending') + '</span>' : '<span class="tag no">' + t('tag_apology') + '</span>';
         tbody.innerHTML += `<tr><td>${r.guestName||''}</td><td>${tag}</td><td>${r.guestsCount||1}</td><td>${new Date(r.createdAt||0).toLocaleDateString('ar-EG')}</td></tr>`;
       });
       // Keep the top stats bar's "attending" number in sync with the real list.
@@ -628,8 +632,8 @@
         div.className = 'g-item';
         div.innerHTML = `<img src="${g.url}">
           <div class="g-actions">
-            <button style="background:#8CE0A0" data-approve="${k}">اعتماد</button>
-            <button style="background:#E88" data-delete="${k}">حذف</button>
+            <button style="background:#8CE0A0" data-approve="${k}">${t('btn_approve')}</button>
+            <button style="background:#E88" data-delete="${k}">${t('btn_delete')}</button>
           </div>`;
         grid.appendChild(div);
       });
@@ -641,5 +645,144 @@
   }
 </script>
 
+<script>
+(function(){
+  var DF_I18N = {
+    ar: {
+      page_title: "لوحة التحكم | دعوة فرح",
+      logout_btn: "تسجيل الخروج",
+      nav_details: "تفاصيل الدعوة", nav_media: "الصور والأغنية", nav_ai: "كاتب الدعوة الذكي",
+      nav_share: "الرابط ونشر الدعوة", nav_rsvp: "تأكيدات الحضور", nav_wishes: "تهاني الضيوف", nav_gallery: "ألبوم صور الضيوف",
+      details_h2: "تفاصيل الدعوة",
+      groom_name_label: "اسم العريس", bride_name_label: "اسم العروسة",
+      occasion_label: "نوع المناسبة",
+      occasion_wedding: "حفل زفاف", occasion_engagement: "خطوبة", occasion_katb: "كتب كتاب",
+      event_date_label: "تاريخ ووقت المناسبة", venue_label: "اسم المكان / القاعة",
+      map_link_label: "رابط الموقع على الخريطة (اختياري)",
+      story_label: "قصتكم / كلمة للضيوف", story_ph: "اكتبوا كلمة قصيرة لضيوفكم...",
+      verse_toggle_label: "تفعيل الآية الدينية في أعلى الدعوة",
+      verse_type_label: "نوع الآية", verse_quran: "آية قرآنية", verse_bible: "آية من الكتاب المقدس",
+      theme_label: "التصميم", theme_royal: "الملكي", theme_blossom: "الزهري", theme_modern: "العصري",
+      save_details_btn: "حفظ التفاصيل",
+      media_h2: "الصور والأغنية", cover_label: "صورة الغلاف",
+      cover_upload_box: "اضغط لرفع صورة الغلاف (JPG / PNG)",
+      song_label: "أغنية الدعوة", song_upload_box: "اضغط لرفع ملف صوتي (MP3)",
+      ai_h2: "كاتب الدعوة الذكي",
+      ai_desc: "اختاروا أسلوب النص وخلوا الذكاء الاصطناعي يكتب دعوتكم:",
+      tone_formal: "أسلوب رسمي", tone_romantic: "أسلوب رومانسي", tone_joyful: "أسلوب بهيج",
+      ai_text_ph: "سيظهر نص الدعوة هنا بعد التوليد، وتقدر تعدله يدويًا...",
+      use_ai_text_btn: "استخدام هذا النص في الدعوة",
+      share_h2: "الرابط ونشر الدعوة", copy_link_btn: "نسخ الرابط", open_invite_btn: "فتح الدعوة",
+      download_qr_btn: "تحميل كود QR",
+      rsvp_h2: "تأكيدات الحضور", col_name: "الاسم", col_status: "الحالة", col_count: "عدد الأفراد", col_date: "التاريخ",
+      rsvp_empty: "لسه معندكوش تأكيدات حضور",
+      wishes_h2: "تهاني الضيوف", col_message: "الرسالة", wishes_empty: "لسه معندكوش تهاني",
+      gallery_h2: "ألبوم صور الضيوف", gallery_empty: "لسه معندكوش صور من الضيوف",
+      stat_views: "مشاهدة فعلية", stat_attending: "تأكيد حضور", stat_wishes: "تهنئة",
+      tag_attending: "حاضر", tag_apology: "معتذر",
+      btn_approve: "اعتماد", btn_delete: "حذف",
+      alert_no_invite_selected: "لم يتم تحديد الدعوة المطلوب تعديلها",
+      alert_invite_not_found: "هذه الدعوة غير موجودة",
+      alert_no_permission: "ليس لديك صلاحية لتعديل هذه الدعوة",
+      msg_saved: "تم الحفظ بنجاح",
+      msg_uploading_image: "جاري رفع الصورة...",
+      msg_cover_uploaded: "تم رفع صورة الغلاف",
+      msg_image_upload_failed: "فشل رفع الصورة، حاول مرة أخرى",
+      msg_uploading_song: "جاري رفع الأغنية...",
+      msg_song_uploaded: "تم رفع الأغنية",
+      msg_song_upload_failed: "فشل رفع الأغنية، حاول مرة أخرى",
+      msg_generating_text: "جاري توليد النص...",
+      msg_text_generated: "تم توليد النص، عدّله إن أحببت",
+      msg_text_gen_failed: "تعذر توليد النص الآن",
+      msg_ai_text_saved: "تم حفظ نص الدعوة"
+    },
+    en: {
+      page_title: "Dashboard | Da3wat Farah",
+      logout_btn: "Log out",
+      nav_details: "Invitation Details", nav_media: "Photos & Song", nav_ai: "AI Invitation Writer",
+      nav_share: "Link & Publish", nav_rsvp: "RSVP Confirmations", nav_wishes: "Guest Wishes", nav_gallery: "Guest Photo Album",
+      details_h2: "Invitation Details",
+      groom_name_label: "Groom's Name", bride_name_label: "Bride's Name",
+      occasion_label: "Occasion Type",
+      occasion_wedding: "Wedding", occasion_engagement: "Engagement", occasion_katb: "Katb Ketab",
+      event_date_label: "Event Date & Time", venue_label: "Venue Name / Hall",
+      map_link_label: "Map location link (optional)",
+      story_label: "Your Story / Message for Guests", story_ph: "Write a short message for your guests...",
+      verse_toggle_label: "Show a religious verse at the top of the invitation",
+      verse_type_label: "Verse Type", verse_quran: "Quranic Verse", verse_bible: "Bible Verse",
+      theme_label: "Design", theme_royal: "Royal", theme_blossom: "Blossom", theme_modern: "Modern",
+      save_details_btn: "Save Details",
+      media_h2: "Photos & Song", cover_label: "Cover Photo",
+      cover_upload_box: "Click to upload cover photo (JPG / PNG)",
+      song_label: "Invitation Song", song_upload_box: "Click to upload an audio file (MP3)",
+      ai_h2: "AI Invitation Writer",
+      ai_desc: "Choose a writing style and let AI write your invitation:",
+      tone_formal: "Formal style", tone_romantic: "Romantic style", tone_joyful: "Joyful style",
+      ai_text_ph: "The invitation text will appear here after generating, and you can edit it manually...",
+      use_ai_text_btn: "Use this text for the invitation",
+      share_h2: "Link & Publish", copy_link_btn: "Copy Link", open_invite_btn: "Open Invitation",
+      download_qr_btn: "Download QR Code",
+      rsvp_h2: "RSVP Confirmations", col_name: "Name", col_status: "Status", col_count: "Guests", col_date: "Date",
+      rsvp_empty: "No RSVP confirmations yet",
+      wishes_h2: "Guest Wishes", col_message: "Message", wishes_empty: "No wishes yet",
+      gallery_h2: "Guest Photo Album", gallery_empty: "No guest photos yet",
+      stat_views: "Actual Views", stat_attending: "Attending", stat_wishes: "Wishes",
+      tag_attending: "Attending", tag_apology: "Not attending",
+      btn_approve: "Approve", btn_delete: "Delete",
+      alert_no_invite_selected: "No invitation was selected for editing",
+      alert_invite_not_found: "This invitation doesn't exist",
+      alert_no_permission: "You don't have permission to edit this invitation",
+      msg_saved: "Saved successfully",
+      msg_uploading_image: "Uploading image...",
+      msg_cover_uploaded: "Cover photo uploaded",
+      msg_image_upload_failed: "Failed to upload photo, try again",
+      msg_uploading_song: "Uploading song...",
+      msg_song_uploaded: "Song uploaded",
+      msg_song_upload_failed: "Failed to upload song, try again",
+      msg_generating_text: "Generating text...",
+      msg_text_generated: "Text generated, feel free to edit it",
+      msg_text_gen_failed: "Couldn't generate text right now",
+      msg_ai_text_saved: "Invitation text saved"
+    }
+  };
+  window.DF_I18N = DF_I18N;
+  window.getLang = function(){ return document.documentElement.lang || 'ar'; };
+  window.t = function(key){
+    var dict = DF_I18N[getLang()] || DF_I18N.ar;
+    return (dict[key] !== undefined) ? dict[key] : (DF_I18N.ar[key] || key);
+  };
+  function applyTranslations(lang){
+    var dict = DF_I18N[lang] || DF_I18N.ar;
+    document.querySelectorAll('[data-i18n]').forEach(function(el){
+      var key = el.getAttribute('data-i18n');
+      if (dict[key] !== undefined) el.textContent = dict[key];
+    });
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(function(el){
+      var key = el.getAttribute('data-i18n-placeholder');
+      if (dict[key] !== undefined) el.setAttribute('placeholder', dict[key]);
+    });
+    if (dict.page_title) document.title = dict.page_title;
+    if (typeof renderInvitationStats === 'function') { try { renderInvitationStats(); } catch(e){} }
+  }
+  window.switchLang = function(lang){
+    document.documentElement.lang = lang;
+    document.documentElement.dir = (lang === 'ar') ? 'rtl' : 'ltr';
+    document.querySelectorAll('.df-lang-btn').forEach(function(b){
+      var active = b.getAttribute('data-lang') === lang;
+      b.classList.toggle('active', active);
+      b.style.background = active ? 'var(--gold)' : 'none';
+      b.style.color = active ? '#12210F' : 'var(--text)';
+    });
+    applyTranslations(lang);
+    try { localStorage.setItem('df_lang', lang); } catch(e){}
+  };
+  document.addEventListener('DOMContentLoaded', function(){
+    try {
+      var saved = localStorage.getItem('df_lang');
+      if (saved && (saved === 'ar' || saved === 'en')) window.switchLang(saved);
+    } catch(e){}
+  });
+})();
+</script>
 </body>
 </html>

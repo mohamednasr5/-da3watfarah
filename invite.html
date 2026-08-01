@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title id="pageTitle">دعوة فرح - عرض الدعوة</title>
+    <title id="pageTitle" data-i18n="page_title">دعوة فرح - عرض الدعوة</title>
     <meta name="description" content="دعوة زفاف إلكترونية من دعوة فرح">
     
     <!-- Open Graph Meta Tags -->
@@ -1623,20 +1623,26 @@
     </style>
 </head>
 <body>
+    <!-- Language Toggle -->
+    <div class="df-lang-toggle" id="dfLangToggle" style="position:fixed;top:14px;inset-inline-end:14px;z-index:10000;display:flex;gap:4px;background:rgba(0,0,0,0.45);backdrop-filter:blur(6px);border-radius:20px;padding:4px;">
+        <button type="button" class="df-lang-btn active" data-lang="ar" onclick="switchLang('ar')" style="border:none;background:rgba(255,255,255,0.9);color:#1A1A2E;font-size:12px;font-weight:700;padding:5px 12px;border-radius:16px;cursor:pointer;">AR</button>
+        <button type="button" class="df-lang-btn" data-lang="en" onclick="switchLang('en')" style="border:none;background:transparent;color:#fff;font-size:12px;font-weight:700;padding:5px 12px;border-radius:16px;cursor:pointer;">EN</button>
+    </div>
+
     <!-- Loading Screen -->
     <div class="invitation-loader" id="invitationLoader">
         <div class="loader-content">
             <span class="loader-icon">💍</span>
-            <p>جارٍ تجهيز الدعوة...</p>
+            <p data-i18n="loader_text">جارٍ تجهيز الدعوة...</p>
         </div>
     </div>
 
     <!-- Error State (hidden by default) -->
     <div class="error-container" id="errorContainer" style="display: none;">
         <div class="error-icon">😔</div>
-        <h2 class="error-title">الدعوة غير موجودة</h2>
-        <p class="error-message" id="errorMessage">لم نتمكن من العثور على الدعوة المطلوبة. تأكد من أن الرابط صحيح.</p>
-        <a href="/" class="error-btn">العودة للرئيسية</a>
+        <h2 class="error-title" data-i18n="error_title">الدعوة غير موجودة</h2>
+        <p class="error-message" id="errorMessage" data-i18n="error_message">لم نتمكن من العثور على الدعوة المطلوبة. تأكد من أن الرابط صحيح.</p>
+        <a href="/" class="error-btn" data-i18n="error_btn">العودة للرئيسية</a>
     </div>
 
     <!-- Main Invitation Container -->
@@ -1663,7 +1669,7 @@
                 </div>
                 
                 <div class="wedding-title" data-aos="fade-up" data-aos-delay="400" id="weddingTitle">
-                    <span>يدعوانكم لمشاركتهما فرحة الزفاف</span>
+                    <span data-i18n="wedding_title_default">يدعوانكم لمشاركتهما فرحة الزفاف</span>
                 </div>
                 
                 <div class="scroll-indicator" data-aos="fade-up" data-aos-delay="600" onclick="scrollToSection('welcomeSection')">
@@ -1696,7 +1702,7 @@
             <div class="text-card">
                 <div class="card-header" id="cardHeader">
                     <i class="fas fa-envelope-open-text"></i>
-                    <h2>الدعوة الكريمة</h2>
+                    <h2 data-i18n="card_header">الدعوة الكريمة</h2>
                 </div>
                 
                 <div class="card-body">
@@ -1721,16 +1727,16 @@
 
             <div class="memories-share-card" data-aos="fade-up">
                 <div class="memories-share-icon"><i class="fas fa-camera"></i></div>
-                <h3>📸 شارك لحظاتك مع العروسين</h3>
-                <p>🟡 صوّرت لحظة حلوة في الفرح؟ ارفعها هنا وخلّيها ذكرى تفضل معاهم للأبد</p>
-                <input type="text" id="memoryGuestName" placeholder="اسمك (اختياري)">
+                <h3 data-i18n="memories_share_title">📸 شارك لحظاتك مع العروسين</h3>
+                <p data-i18n="memories_share_desc">🟡 صوّرت لحظة حلوة في الفرح؟ ارفعها هنا وخلّيها ذكرى تفضل معاهم للأبد</p>
+                <input type="text" id="memoryGuestName" placeholder="اسمك (اختياري)" data-i18n-placeholder="memory_guest_name_ph">
                 <input type="file" id="memoryPhotosInput" accept="image/*" multiple hidden>
-                <button type="button" class="memories-choose-btn" id="memoryChooseBtn">اختر صور (حتى 5)</button>
+                <button type="button" class="memories-choose-btn" id="memoryChooseBtn" data-i18n="memories_choose_btn">اختر صور (حتى 5)</button>
                 <div class="memories-preview" id="memoryPreview"></div>
                 <button type="button" class="memories-submit-btn" id="memorySubmitBtn" style="display:none;">
-                    <i class="fas fa-cloud-upload-alt"></i> رفع الصور
+                    <i class="fas fa-cloud-upload-alt"></i> <span data-i18n="memories_upload_btn">رفع الصور</span>
                 </button>
-                <p class="memories-note">✨ هتظهر صورتك بعد موافقة العروسين</p>
+                <p class="memories-note" data-i18n="memories_note">✨ هتظهر صورتك بعد موافقة العروسين</p>
             </div>
         </section>
 
@@ -1738,7 +1744,7 @@
         <section class="inv-section event-details-section" id="eventDetailsSection" data-aos="fade-up">
             <div class="section-title">
                 <i class="fas fa-calendar-heart"></i>
-                <h2>تفاصيل الحفل</h2>
+                <h2 data-i18n="event_details_title">تفاصيل الحفل</h2>
             </div>
             
             <div class="event-cards">
@@ -1762,32 +1768,32 @@
                         </div>
                         <a href="#" class="add-calendar-btn" id="addToCalendarBtn" target="_blank" rel="noopener" style="display:none;">
                             <i class="fas fa-calendar-plus"></i>
-                            <span>أضف التاريخ لتقويم Google</span>
+                            <span data-i18n="add_calendar_btn">أضف التاريخ لتقويم Google</span>
                         </a>
                     </div>
                 </div>
                 
                 <div class="countdown-container" data-aos="zoom-in" id="countdownContainer">
-                    <h3 class="countdown-title">العد التنازلي للفرح</h3>
+                    <h3 class="countdown-title" data-i18n="countdown_title">العد التنازلي للفرح</h3>
                     <div class="countdown-timer" id="countdownTimer">
                         <div class="countdown-item">
                             <span class="countdown-number" id="cdDays">00</span>
-                            <span class="countdown-label">يوم</span>
+                            <span class="countdown-label" data-i18n="cd_days">يوم</span>
                         </div>
                         <div class="countdown-separator">:</div>
                         <div class="countdown-item">
                             <span class="countdown-number" id="cdHours">00</span>
-                            <span class="countdown-label">ساعة</span>
+                            <span class="countdown-label" data-i18n="cd_hours">ساعة</span>
                         </div>
                         <div class="countdown-separator">:</div>
                         <div class="countdown-item">
                             <span class="countdown-number" id="cdMinutes">00</span>
-                            <span class="countdown-label">دقيقة</span>
+                            <span class="countdown-label" data-i18n="cd_minutes">دقيقة</span>
                         </div>
                         <div class="countdown-separator">:</div>
                         <div class="countdown-item">
                             <span class="countdown-number" id="cdSeconds">00</span>
-                            <span class="countdown-label">ثانية</span>
+                            <span class="countdown-label" data-i18n="cd_seconds">ثانية</span>
                         </div>
                     </div>
                 </div>
@@ -1796,14 +1802,14 @@
             <div class="map-container" id="mapContainer" style="display: none;" data-aos="fade-up">
                 <div class="map-header" id="mapHeader">
                     <i class="fas fa-map-location-dot"></i>
-                    <h3>الموقع على الخريطة</h3>
+                    <h3 data-i18n="map_title">الموقع على الخريطة</h3>
                 </div>
                 <div class="map-embed" id="mapEmbed">
                     <iframe id="mapIframe" width="100%" height="300" style="border:0; border-radius: 0 0 15px 15px;" allowfullscreen="" loading="lazy"></iframe>
                 </div>
                 <a href="#" class="get-directions-btn" id="directionsBtn" target="_blank">
                     <i class="fas fa-directions"></i>
-                    احصل على الاتجاهات
+                    <span data-i18n="directions_btn">احصل على الاتجاهات</span>
                 </a>
             </div>
         </section>
@@ -1813,44 +1819,44 @@
             <div class="rsvp-card">
                 <div class="rsvp-header" id="rsvpHeader">
                     <i class="fas fa-envelope-open-text"></i>
-                    <h2>تأكيد الحضور</h2>
-                    <p>يسعدنا أن تؤكدوا حضوركم معنا في هذا اليوم المميز</p>
+                    <h2 data-i18n="rsvp_title">تأكيد الحضور</h2>
+                    <p data-i18n="rsvp_subtitle">يسعدنا أن تؤكدوا حضوركم معنا في هذا اليوم المميز</p>
                 </div>
                 
                 <form class="rsvp-form" id="rsvpForm">
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="guestNameInput">الاسم الكريم *</label>
-                            <input type="text" id="guestNameInput" placeholder="أدخل اسمك الكريم" required>
+                            <label for="guestNameInput" data-i18n="rsvp_name_label">الاسم الكريم *</label>
+                            <input type="text" id="guestNameInput" placeholder="أدخل اسمك الكريم" required data-i18n-placeholder="rsvp_name_ph">
                         </div>
                         <div class="form-group">
-                            <label for="guestCountSelect">عدد المرافقين</label>
+                            <label for="guestCountSelect" data-i18n="rsvp_count_label">عدد المرافقين</label>
                             <select id="guestCountSelect">
-                                <option value="0">بدون مرافقين</option>
-                                <option value="1">مرافق واحد</option>
-                                <option value="2" selected>مرافقان</option>
-                                <option value="3">3 مرافقين</option>
-                                <option value="4">4 مرافقين</option>
-                                <option value="5">5 مرافقين</option>
+                                <option value="0" data-i18n="rsvp_count_0">بدون مرافقين</option>
+                                <option value="1" data-i18n="rsvp_count_1">مرافق واحد</option>
+                                <option value="2" selected data-i18n="rsvp_count_2">مرافقان</option>
+                                <option value="3" data-i18n="rsvp_count_3">3 مرافقين</option>
+                                <option value="4" data-i18n="rsvp_count_4">4 مرافقين</option>
+                                <option value="5" data-i18n="rsvp_count_5">5 مرافقين</option>
                             </select>
                         </div>
                     </div>
                     
                     <div class="form-group">
-                        <label>حالة الحضور *</label>
+                        <label data-i18n="rsvp_status_label">حالة الحضور *</label>
                         <div class="attendance-options">
                             <label class="attendance-option">
                                 <input type="radio" name="attendance" value="attending" required>
                                 <div class="option-box attending">
                                     <i class="fas fa-check-circle"></i>
-                                    <span>سأحضر بإذن الله ✓</span>
+                                    <span data-i18n="rsvp_attending">سأحضر بإذن الله ✓</span>
                                 </div>
                             </label>
                             <label class="attendance-option">
                                 <input type="radio" name="attendance" value="not-attending">
                                 <div class="option-box not-attending">
                                     <i class="fas fa-times-circle"></i>
-                                    <span>أعتذر عن عدم الحضور</span>
+                                    <span data-i18n="rsvp_not_attending">أعتذر عن عدم الحضور</span>
                                 </div>
                             </label>
                         </div>
@@ -1858,14 +1864,14 @@
                     
                     <button type="submit" class="btn btn-primary rsvp-submit-btn">
                         <i class="fas fa-paper-plane"></i>
-                        إرسال التأكيد
+                        <span data-i18n="rsvp_submit_btn">إرسال التأكيد</span>
                     </button>
                 </form>
                 
                 <div class="success-message" id="rsvpSuccessMessage">
                     <i class="fas fa-check-circle" style="font-size: 2rem; color: #27ae60;"></i>
-                    <h3 style="margin: 10px 0;">شكراً لتأكيد حضوركم!</h3>
-                    <p>نتطلع لرؤيتكم في الفرح 🎉</p>
+                    <h3 style="margin: 10px 0;" data-i18n="rsvp_success_title">شكراً لتأكيد حضوركم!</h3>
+                    <p data-i18n="rsvp_success_msg">نتطلع لرؤيتكم في الفرح 🎉</p>
                 </div>
             </div>
         </section>
@@ -1874,28 +1880,28 @@
         <section class="inv-section wishes-section" id="wishesSection" data-aos="fade-up">
             <div class="section-title">
                 <i class="fas fa-comments"></i>
-                <h2>جدار التهاني</h2>
+                <h2 data-i18n="wishes_title">جدار التهاني</h2>
             </div>
             
             <div class="wish-form" id="wishForm">
                 <div class="form-group">
-                    <label for="wishNameInput">اسمك</label>
-                    <input type="text" id="wishNameInput" placeholder="أدخل اسمك">
+                    <label for="wishNameInput" data-i18n="wish_name_label">اسمك</label>
+                    <input type="text" id="wishNameInput" placeholder="أدخل اسمك" data-i18n-placeholder="wish_name_ph">
                 </div>
                 <div class="form-group">
-                    <label for="wishMessageInput">رسالة التهنئة</label>
-                    <textarea id="wishMessageInput" rows="3" placeholder="اكتب رسالة تهنئة... (أو سجّل تهنئة صوتية بدلاً من ذلك)"></textarea>
+                    <label for="wishMessageInput" data-i18n="wish_msg_label">رسالة التهنئة</label>
+                    <textarea id="wishMessageInput" rows="3" placeholder="اكتب رسالة تهنئة... (أو سجّل تهنئة صوتية بدلاً من ذلك)" data-i18n-placeholder="wish_msg_ph"></textarea>
                 </div>
                 <div class="form-group">
-                    <label>أو أرسل تهنئة صوتية</label>
+                    <label data-i18n="wish_voice_label">أو أرسل تهنئة صوتية</label>
                     <div class="voice-wish-controls">
                         <button type="button" class="btn btn-outline voice-record-btn" id="voiceRecordBtn">
                             <i class="fas fa-microphone"></i>
-                            <span id="voiceRecordBtnLabel">تسجيل صوتي</span>
+                            <span id="voiceRecordBtnLabel" data-i18n="voice_record_btn">تسجيل صوتي</span>
                         </button>
                         <div class="voice-wish-preview" id="voiceWishPreview" style="display:none;">
                             <audio controls id="voiceWishAudioPlayer"></audio>
-                            <button type="button" class="voice-wish-remove" id="voiceWishRemoveBtn" title="حذف التسجيل">
+                            <button type="button" class="voice-wish-remove" id="voiceWishRemoveBtn" title="حذف التسجيل" data-i18n-title="voice_remove_title">
                                 <i class="fas fa-times"></i>
                             </button>
                         </div>
@@ -1903,7 +1909,7 @@
                 </div>
                 <button type="button" class="btn btn-primary" id="submitWishBtn">
                     <i class="fas fa-heart"></i>
-                    إرسال التهنئة
+                    <span data-i18n="wish_submit_btn">إرسال التهنئة</span>
                 </button>
             </div>
             
@@ -1912,7 +1918,7 @@
 
         <!-- Music Player -->
         <div class="music-player" id="musicPlayer" style="display: none;">
-            <button class="music-toggle" id="musicToggle" title="تشغيل/إيقاف الموسيقى">
+            <button class="music-toggle" id="musicToggle" title="تشغيل/إيقاف الموسيقى" data-i18n-title="music_toggle_title">
                 <i class="fas fa-music"></i>
             </button>
         </div>
@@ -1920,9 +1926,9 @@
 
         <!-- CTA: make your own invitation -->
         <section class="inv-cta-section">
-            <h3>🌸 عجبتك الدعوة؟</h3>
-            <p>اعمل دعوة فرحك أو خطوبتك بنفس الشكل — صمّمها وشوفها مجاناً، في دقايق وبدون تسجيل.</p>
-            <a href="https://da3watfarah.com/" target="_top" class="inv-cta-btn">ابدأ فرحك</a>
+            <h3 data-i18n="cta_title">🌸 عجبتك الدعوة؟</h3>
+            <p data-i18n="cta_desc">اعمل دعوة فرحك أو خطوبتك بنفس الشكل — صمّمها وشوفها مجاناً، في دقايق وبدون تسجيل.</p>
+            <a href="https://da3watfarah.com/" target="_top" class="inv-cta-btn" data-i18n="cta_btn">ابدأ فرحك</a>
         </section>
 
         <!-- Footer -->
@@ -1930,30 +1936,30 @@
             <div class="df-footer-container">
                 <div class="df-footer-col df-footer-col-legal">
                     <div class="df-footer-share">
-                        <span>شارك الدعوة:</span>
+                        <span data-i18n="footer_share_label">شارك الدعوة:</span>
                         <div class="df-share-icons">
-                            <button class="df-icon-btn df-icon-copy" onclick="copyInvitationLink()" title="نسخ الرابط"><i class="fas fa-copy"></i></button>
-                            <a class="df-icon-btn df-icon-telegram" href="javascript:void(0)" onclick="shareOnTelegram()" title="تيليجرام"><i class="fab fa-telegram-plane"></i></a>
-                            <a class="df-icon-btn df-icon-twitter" href="javascript:void(0)" onclick="shareOnTwitter()" title="تويتر"><i class="fab fa-twitter"></i></a>
-                            <a class="df-icon-btn df-icon-whatsapp" href="javascript:void(0)" onclick="shareOnWhatsApp()" title="واتساب"><i class="fab fa-whatsapp"></i></a>
+                            <button class="df-icon-btn df-icon-copy" onclick="copyInvitationLink()" title="نسخ الرابط" data-i18n-title="footer_copy_title"><i class="fas fa-copy"></i></button>
+                            <a class="df-icon-btn df-icon-telegram" href="javascript:void(0)" onclick="shareOnTelegram()" title="تيليجرام" data-i18n-title="footer_telegram_title"><i class="fab fa-telegram-plane"></i></a>
+                            <a class="df-icon-btn df-icon-twitter" href="javascript:void(0)" onclick="shareOnTwitter()" title="تويتر" data-i18n-title="footer_twitter_title"><i class="fab fa-twitter"></i></a>
+                            <a class="df-icon-btn df-icon-whatsapp" href="javascript:void(0)" onclick="shareOnWhatsApp()" title="واتساب" data-i18n-title="footer_whatsapp_title"><i class="fab fa-whatsapp"></i></a>
                         </div>
                     </div>
                     <div class="df-footer-box df-footer-legal">
-                        <h4>قانوني</h4>
+                        <h4 data-i18n="footer_legal_title">قانوني</h4>
                         <ul>
-                            <li><a href="https://da3watfarah.com/legal/privacy.html" target="_top">سياسة الخصوصية</a></li>
-                            <li><a href="https://da3watfarah.com/legal/terms.html" target="_top">شروط الاستخدام</a></li>
-                            <li><a href="https://da3watfarah.com/legal/refund.html" target="_top">سياسة الاسترداد</a></li>
+                            <li><a href="https://da3watfarah.com/legal/privacy.html" target="_top"><span data-i18n="footer_privacy">سياسة الخصوصية</span></a></li>
+                            <li><a href="https://da3watfarah.com/legal/terms.html" target="_top"><span data-i18n="footer_terms">شروط الاستخدام</span></a></li>
+                            <li><a href="https://da3watfarah.com/legal/refund.html" target="_top"><span data-i18n="footer_refund">سياسة الاسترداد</span></a></li>
                         </ul>
                     </div>
                 </div>
 
                 <div class="df-footer-col df-footer-col-support">
                     <div class="df-footer-box df-footer-support">
-                        <h4>الدعم</h4>
+                        <h4 data-i18n="footer_support_title">الدعم</h4>
                         <div class="df-support-buttons">
-                            <a href="https://m.me/844143088781265" target="_blank" rel="noopener" class="df-support-btn df-support-messenger"><i class="fab fa-facebook-messenger"></i> ماسنجر</a>
-                            <a href="https://wa.me/201279934735" target="_blank" rel="noopener" class="df-support-btn df-support-whatsapp"><i class="fab fa-whatsapp"></i> واتساب</a>
+                            <a href="https://m.me/844143088781265" target="_blank" rel="noopener" class="df-support-btn df-support-messenger"><i class="fab fa-facebook-messenger"></i> <span data-i18n="footer_messenger">ماسنجر</span></a>
+                            <a href="https://wa.me/201279934735" target="_blank" rel="noopener" class="df-support-btn df-support-whatsapp"><i class="fab fa-whatsapp"></i> <span data-i18n="footer_whatsapp_btn">واتساب</span></a>
                         </div>
                     </div>
                 </div>
@@ -1961,7 +1967,7 @@
                 <div class="df-footer-col df-footer-col-brand">
                     <div class="df-footer-brand">
                         <span>💍</span>
-                        <span>صُنع بـ <i class="fas fa-heart df-heart"></i> على <a href="https://da3watfarah.com/" target="_top">دعوة فرح</a></span>
+                        <span><span data-i18n="footer_made_with">صُنع بـ</span> <i class="fas fa-heart df-heart"></i> <span data-i18n="footer_on">على</span> <a href="https://da3watfarah.com/" target="_top">دعوة فرح</a></span>
                     </div>
                     <div class="df-footer-box df-footer-social">
                         <a href="https://snapchat.com/add/da3watfarah" target="_blank" rel="noopener" title="Snapchat"><i class="fab fa-snapchat"></i></a>
@@ -1973,7 +1979,7 @@
             </div>
 
             <div class="df-footer-bottom">
-                <p>&copy; 2025 دعوة فرح. جميع الحقوق محفوظة.</p>
+                <p><span data-i18n="footer_copyright">&copy; 2025 دعوة فرح. جميع الحقوق محفوظة.</span></p>
             </div>
         </footer>
     </main>
@@ -1982,27 +1988,27 @@
     <nav class="mobile-quick-nav" id="mobileQuickNav">
         <button type="button" class="mqn-btn" onclick="scrollToSection('wishesSection')">
             <i class="fas fa-comment-dots"></i>
-            <span>التهاني</span>
+            <span data-i18n="nav_wishes">التهاني</span>
         </button>
         <button type="button" class="mqn-btn" onclick="scrollToSection('rsvpSection')">
             <i class="fas fa-heart"></i>
-            <span>تأكيد الحضور</span>
+            <span data-i18n="nav_rsvp">تأكيد الحضور</span>
         </button>
         <button type="button" class="mqn-btn" onclick="scrollToSection('eventDetailsSection')">
             <i class="fas fa-map-marker-alt"></i>
-            <span>التفاصيل</span>
+            <span data-i18n="nav_details">التفاصيل</span>
         </button>
         <button type="button" class="mqn-btn mqn-fab" onclick="scrollToSection('gallerySection')">
             <i class="fas fa-camera"></i>
-            <span>شارك صورة</span>
+            <span data-i18n="nav_photo">شارك صورة</span>
         </button>
         <button type="button" class="mqn-btn" onclick="scrollToSection('countdownContainer')">
             <i class="fas fa-clock"></i>
-            <span>العداد</span>
+            <span data-i18n="nav_countdown">العداد</span>
         </button>
         <button type="button" class="mqn-btn" id="mqnMusicBtn" onclick="document.getElementById('musicToggle')?.click()">
             <i class="fas fa-pause" id="mqnMusicIcon"></i>
-            <span>الموسيقى</span>
+            <span data-i18n="nav_music">الموسيقى</span>
         </button>
     </nav>
 
@@ -2914,7 +2920,7 @@
             const guestCount = document.getElementById('guestCountSelect').value;
 
             if (!name || !attendance) {
-                alert('يرجى ملء جميع الحقول المطلوبة');
+                alert(t('alert_fill_required'));
                 return;
             }
 
@@ -2946,7 +2952,7 @@
                 document.getElementById('rsvpSuccessMessage').classList.add('show');
             } catch (error) {
                 console.error('Error submitting RSVP:', error);
-                alert('حدث خطأ أثناء إرسال التأكيد. يرجى المحاولة مرة أخرى.');
+                alert(t('alert_rsvp_error'));
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = submitBtnOriginalHtml;
             }
@@ -2973,7 +2979,7 @@
             }
 
             if (!navigator.mediaDevices || !window.MediaRecorder) {
-                alert('التسجيل الصوتي غير مدعوم على هذا المتصفح، جرّب متصفح آخر مثل Chrome.');
+                alert(t('alert_voice_unsupported'));
                 return;
             }
 
@@ -2994,16 +3000,16 @@
 
                     isRecording = false;
                     voiceRecordBtn.classList.remove('recording');
-                    voiceRecordBtnLabel.textContent = 'تسجيل صوتي';
+                    voiceRecordBtnLabel.textContent = t('voice_record_btn');
                 };
 
                 mediaRecorder.start();
                 isRecording = true;
                 voiceRecordBtn.classList.add('recording');
-                voiceRecordBtnLabel.textContent = 'إيقاف التسجيل';
+                voiceRecordBtnLabel.textContent = t('voice_stop_btn');
             } catch (error) {
                 console.error('Mic access error:', error);
-                alert('تعذر الوصول إلى الميكروفون. يرجى السماح بالوصول والمحاولة مرة أخرى.');
+                alert(t('alert_mic_denied'));
             }
         });
 
@@ -3035,11 +3041,11 @@
             const message = document.getElementById('wishMessageInput').value.trim();
 
             if (!name) {
-                alert('يرجى كتابة اسمك');
+                alert(t('alert_enter_name'));
                 return;
             }
             if (!message && !recordedBlob) {
-                alert('يرجى كتابة رسالة أو تسجيل تهنئة صوتية');
+                alert(t('alert_enter_wish'));
                 return;
             }
 
@@ -3076,10 +3082,10 @@
                 document.getElementById('wishNameInput').value = '';
                 document.getElementById('wishMessageInput').value = '';
                 voiceWishRemoveBtn.click();
-                alert('شكراً لتهنئتك! 🎉');
+                alert(t('alert_wish_thanks'));
             } catch (error) {
                 console.error('Error submitting wish:', error);
-                alert('حدث خطأ أثناء إرسال التهنئة. ' + (error.message || ''));
+                alert(t('alert_wish_error') + ' ' + (error.message || ''));
             } finally {
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = originalContent;
@@ -3096,7 +3102,7 @@
             const allImages = [...window.ownerGalleryImages, ...window.approvedGuestMemories.map(m => m.url)];
             grid.innerHTML = '';
             if (allImages.length === 0) {
-                grid.innerHTML = '<p class="memories-empty">لسه معندناش ذكريات هنا... كن أول من يشارك صورة 🤍</p>';
+                grid.innerHTML = '<p class="memories-empty">' + t('memories_empty') + '</p>';
                 return;
             }
             allImages.forEach((imgUrl, index) => {
@@ -3169,10 +3175,10 @@
                     memoryPreview.innerHTML = '';
                     memoryPhotosInput.value = '';
                     memorySubmitBtn.style.display = 'none';
-                    alert('شكراً لمشاركتك! هتظهر صورتك بعد موافقة العروسين 🤍');
+                    alert(t('alert_memory_thanks'));
                 } catch (error) {
                     console.error('Error uploading memory photo:', error);
-                    alert('حدث خطأ أثناء رفع الصور. ' + (error.message || ''));
+                    alert(t('alert_memory_error') + ' ' + (error.message || ''));
                 } finally {
                     memorySubmitBtn.disabled = false;
                     memorySubmitBtn.innerHTML = originalContent;
@@ -3264,7 +3270,7 @@
 
         window.copyInvitationLink = function() {
             navigator.clipboard.writeText(window.location.href).then(() => {
-                alert('تم نسخ رابط الدعوة!');
+                alert(t('alert_link_copied'));
             }).catch(() => {
                 // Fallback
                 const input = document.createElement('input');
@@ -3273,7 +3279,7 @@
                 input.select();
                 document.execCommand('copy');
                 document.body.removeChild(input);
-                alert('تم نسخ رابط الدعوة!');
+                alert(t('alert_link_copied'));
             });
         };
 
@@ -3417,5 +3423,214 @@
         init();
     </script>
     <script src="js/df-footer.js"></script>
+
+    <!-- Language Switcher -->
+    <script>
+    (function(){
+        var DF_I18N = {
+            ar: {
+                page_title: "دعوة فرح - عرض الدعوة",
+                loader_text: "جارٍ تجهيز الدعوة...",
+                error_title: "الدعوة غير موجودة",
+                error_message: "لم نتمكن من العثور على الدعوة المطلوبة. تأكد من أن الرابط صحيح.",
+                error_btn: "العودة للرئيسية",
+                wedding_title_default: "يدعوانكم لمشاركتهما فرحة الزفاف",
+                card_header: "الدعوة الكريمة",
+                memories_share_title: "📸 شارك لحظاتك مع العروسين",
+                memories_share_desc: "🟡 صوّرت لحظة حلوة في الفرح؟ ارفعها هنا وخلّيها ذكرى تفضل معاهم للأبد",
+                memory_guest_name_ph: "اسمك (اختياري)",
+                memories_choose_btn: "اختر صور (حتى 5)",
+                memories_upload_btn: "رفع الصور",
+                memories_note: "✨ هتظهر صورتك بعد موافقة العروسين",
+                event_details_title: "تفاصيل الحفل",
+                add_calendar_btn: "أضف التاريخ لتقويم Google",
+                countdown_title: "العد التنازلي للفرح",
+                cd_days: "يوم", cd_hours: "ساعة", cd_minutes: "دقيقة", cd_seconds: "ثانية",
+                map_title: "الموقع على الخريطة",
+                directions_btn: "احصل على الاتجاهات",
+                rsvp_title: "تأكيد الحضور",
+                rsvp_subtitle: "يسعدنا أن تؤكدوا حضوركم معنا في هذا اليوم المميز",
+                rsvp_name_label: "الاسم الكريم *",
+                rsvp_name_ph: "أدخل اسمك الكريم",
+                rsvp_count_label: "عدد المرافقين",
+                rsvp_count_0: "بدون مرافقين", rsvp_count_1: "مرافق واحد", rsvp_count_2: "مرافقان",
+                rsvp_count_3: "3 مرافقين", rsvp_count_4: "4 مرافقين", rsvp_count_5: "5 مرافقين",
+                rsvp_status_label: "حالة الحضور *",
+                rsvp_attending: "سأحضر بإذن الله ✓",
+                rsvp_not_attending: "أعتذر عن عدم الحضور",
+                rsvp_submit_btn: "إرسال التأكيد",
+                rsvp_success_title: "شكراً لتأكيد حضوركم!",
+                rsvp_success_msg: "نتطلع لرؤيتكم في الفرح 🎉",
+                wishes_title: "جدار التهاني",
+                wish_name_label: "اسمك",
+                wish_name_ph: "أدخل اسمك",
+                wish_msg_label: "رسالة التهنئة",
+                wish_msg_ph: "اكتب رسالة تهنئة... (أو سجّل تهنئة صوتية بدلاً من ذلك)",
+                wish_voice_label: "أو أرسل تهنئة صوتية",
+                voice_record_btn: "تسجيل صوتي",
+                voice_stop_btn: "إيقاف التسجيل",
+                voice_remove_title: "حذف التسجيل",
+                wish_submit_btn: "إرسال التهنئة",
+                music_toggle_title: "تشغيل/إيقاف الموسيقى",
+                cta_title: "🌸 عجبتك الدعوة؟",
+                cta_desc: "اعمل دعوة فرحك أو خطوبتك بنفس الشكل — صمّمها وشوفها مجاناً، في دقايق وبدون تسجيل.",
+                cta_btn: "ابدأ فرحك",
+                footer_share_label: "شارك الدعوة:",
+                footer_copy_title: "نسخ الرابط",
+                footer_telegram_title: "تيليجرام",
+                footer_twitter_title: "تويتر",
+                footer_whatsapp_title: "واتساب",
+                footer_legal_title: "قانوني",
+                footer_privacy: "سياسة الخصوصية",
+                footer_terms: "شروط الاستخدام",
+                footer_refund: "سياسة الاسترداد",
+                footer_support_title: "الدعم",
+                footer_messenger: "ماسنجر",
+                footer_whatsapp_btn: "واتساب",
+                footer_made_with: "صُنع بـ",
+                footer_on: "على",
+                footer_copyright: "© 2025 دعوة فرح. جميع الحقوق محفوظة.",
+                nav_wishes: "التهاني", nav_rsvp: "تأكيد الحضور", nav_details: "التفاصيل",
+                nav_photo: "شارك صورة", nav_countdown: "العداد", nav_music: "الموسيقى",
+                alert_fill_required: "يرجى ملء جميع الحقول المطلوبة",
+                alert_rsvp_error: "حدث خطأ أثناء إرسال التأكيد. يرجى المحاولة مرة أخرى.",
+                alert_voice_unsupported: "التسجيل الصوتي غير مدعوم على هذا المتصفح، جرّب متصفح آخر مثل Chrome.",
+                alert_mic_denied: "تعذر الوصول إلى الميكروفون. يرجى السماح بالوصول والمحاولة مرة أخرى.",
+                alert_enter_name: "يرجى كتابة اسمك",
+                alert_enter_wish: "يرجى كتابة رسالة أو تسجيل تهنئة صوتية",
+                alert_wish_thanks: "شكراً لتهنئتك! 🎉",
+                alert_wish_error: "حدث خطأ أثناء إرسال التهنئة.",
+                alert_memory_thanks: "شكراً لمشاركتك! هتظهر صورتك بعد موافقة العروسين 🤍",
+                alert_memory_error: "حدث خطأ أثناء رفع الصور.",
+                alert_link_copied: "تم نسخ رابط الدعوة!",
+                memories_empty: "لسه معندناش ذكريات هنا... كن أول من يشارك صورة 🤍"
+            },
+            en: {
+                page_title: "Da3wat Farah - View Invitation",
+                loader_text: "Preparing the invitation...",
+                error_title: "Invitation not found",
+                error_message: "We couldn't find the requested invitation. Please make sure the link is correct.",
+                error_btn: "Back to Home",
+                wedding_title_default: "Invite you to share in their wedding joy",
+                card_header: "The Honorable Invitation",
+                memories_share_title: "📸 Share your moments with the couple",
+                memories_share_desc: "🟡 Captured a beautiful moment at the wedding? Upload it here and keep it a memory forever",
+                memory_guest_name_ph: "Your name (optional)",
+                memories_choose_btn: "Choose photos (up to 5)",
+                memories_upload_btn: "Upload photos",
+                memories_note: "✨ Your photo will appear after the couple's approval",
+                event_details_title: "Event Details",
+                add_calendar_btn: "Add date to Google Calendar",
+                countdown_title: "Countdown to the Wedding",
+                cd_days: "Days", cd_hours: "Hours", cd_minutes: "Minutes", cd_seconds: "Seconds",
+                map_title: "Location on Map",
+                directions_btn: "Get Directions",
+                rsvp_title: "RSVP",
+                rsvp_subtitle: "We would be delighted if you confirm your attendance with us on this special day",
+                rsvp_name_label: "Full Name *",
+                rsvp_name_ph: "Enter your name",
+                rsvp_count_label: "Number of Guests",
+                rsvp_count_0: "No guests", rsvp_count_1: "1 guest", rsvp_count_2: "2 guests",
+                rsvp_count_3: "3 guests", rsvp_count_4: "4 guests", rsvp_count_5: "5 guests",
+                rsvp_status_label: "Attendance Status *",
+                rsvp_attending: "I will attend ✓",
+                rsvp_not_attending: "I can't make it",
+                rsvp_submit_btn: "Send Confirmation",
+                rsvp_success_title: "Thank you for confirming!",
+                rsvp_success_msg: "We look forward to seeing you at the celebration 🎉",
+                wishes_title: "Wishes Wall",
+                wish_name_label: "Your Name",
+                wish_name_ph: "Enter your name",
+                wish_msg_label: "Congratulation Message",
+                wish_msg_ph: "Write a congratulatory message... (or record a voice wish instead)",
+                wish_voice_label: "Or send a voice wish",
+                voice_record_btn: "Record voice",
+                voice_stop_btn: "Stop recording",
+                voice_remove_title: "Delete recording",
+                wish_submit_btn: "Send Wish",
+                music_toggle_title: "Play/Pause Music",
+                cta_title: "🌸 Loved this invitation?",
+                cta_desc: "Create your own wedding or engagement invitation in the same style — design and preview it for free, in minutes, no signup needed.",
+                cta_btn: "Start Your Invitation",
+                footer_share_label: "Share the invitation:",
+                footer_copy_title: "Copy link",
+                footer_telegram_title: "Telegram",
+                footer_twitter_title: "Twitter",
+                footer_whatsapp_title: "WhatsApp",
+                footer_legal_title: "Legal",
+                footer_privacy: "Privacy Policy",
+                footer_terms: "Terms of Use",
+                footer_refund: "Refund Policy",
+                footer_support_title: "Support",
+                footer_messenger: "Messenger",
+                footer_whatsapp_btn: "WhatsApp",
+                footer_made_with: "Made with",
+                footer_on: "on",
+                footer_copyright: "© 2025 Da3wat Farah. All rights reserved.",
+                nav_wishes: "Wishes", nav_rsvp: "RSVP", nav_details: "Details",
+                nav_photo: "Share photo", nav_countdown: "Countdown", nav_music: "Music",
+                alert_fill_required: "Please fill in all required fields",
+                alert_rsvp_error: "An error occurred while sending the confirmation. Please try again.",
+                alert_voice_unsupported: "Voice recording is not supported in this browser, try another browser like Chrome.",
+                alert_mic_denied: "Couldn't access the microphone. Please allow access and try again.",
+                alert_enter_name: "Please enter your name",
+                alert_enter_wish: "Please write a message or record a voice wish",
+                alert_wish_thanks: "Thank you for your wishes! 🎉",
+                alert_wish_error: "An error occurred while sending the wish.",
+                alert_memory_thanks: "Thanks for sharing! Your photo will appear after the couple's approval 🤍",
+                alert_memory_error: "An error occurred while uploading the photos.",
+                alert_link_copied: "Invitation link copied!",
+                memories_empty: "No memories yet... be the first to share a photo 🤍"
+            }
+        };
+        window.DF_I18N = DF_I18N;
+
+        window.t = function(key) {
+            var lang = document.documentElement.lang || 'ar';
+            var dict = DF_I18N[lang] || DF_I18N.ar;
+            return (dict[key] !== undefined) ? dict[key] : (DF_I18N.ar[key] || key);
+        };
+
+        function applyTranslations(lang) {
+            var dict = DF_I18N[lang] || DF_I18N.ar;
+            document.querySelectorAll('[data-i18n]').forEach(function(el) {
+                var key = el.getAttribute('data-i18n');
+                if (dict[key] !== undefined) el.textContent = dict[key];
+            });
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(function(el) {
+                var key = el.getAttribute('data-i18n-placeholder');
+                if (dict[key] !== undefined) el.setAttribute('placeholder', dict[key]);
+            });
+            document.querySelectorAll('[data-i18n-title]').forEach(function(el) {
+                var key = el.getAttribute('data-i18n-title');
+                if (dict[key] !== undefined) el.setAttribute('title', dict[key]);
+            });
+            var pageTitleEl = document.getElementById('pageTitle');
+            if (pageTitleEl && dict.page_title) document.title = dict.page_title;
+        }
+
+        window.switchLang = function(lang) {
+            document.documentElement.lang = lang;
+            document.documentElement.dir = (lang === 'ar') ? 'rtl' : 'ltr';
+            document.querySelectorAll('.df-lang-btn').forEach(function(b) {
+                var active = b.getAttribute('data-lang') === lang;
+                b.classList.toggle('active', active);
+                b.style.background = active ? 'rgba(255,255,255,0.9)' : 'transparent';
+                b.style.color = active ? '#1A1A2E' : '#fff';
+            });
+            applyTranslations(lang);
+            try { localStorage.setItem('df_lang', lang); } catch (e) {}
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            try {
+                var saved = localStorage.getItem('df_lang');
+                if (saved && (saved === 'ar' || saved === 'en')) {
+                    window.switchLang(saved);
+                }
+            } catch (e) {}
+        });
+    })();
+    </script>
 </body>
 </html>
