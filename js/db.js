@@ -4,6 +4,71 @@
  */
 
 // ===================================
+// Inject notification-toast styles once
+// (showNotification() below builds a <div class="notification-toast
+// notification-{type}"> — but none of the site's CSS files style that
+// class, so on any page that doesn't define its own copy the toast was
+// rendered with zero positioning/visibility and was effectively
+// invisible. This makes sure every page using db.showNotification()
+// gets a visible, floating toast without needing to duplicate the CSS.)
+// ===================================
+(function injectNotificationStyles() {
+    if (document.getElementById('dbNotificationStyles')) return;
+    const style = document.createElement('style');
+    style.id = 'dbNotificationStyles';
+    style.textContent = `
+        .notification-toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: #fff;
+            color: #1F2937;
+            padding: 15px 20px;
+            border-radius: 14px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.18);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 99999;
+            max-width: 90vw;
+            width: max-content;
+            min-width: 260px;
+            font-family: inherit;
+            font-size: 14.5px;
+            opacity: 0;
+            animation: dbToastIn 0.35s ease forwards;
+        }
+        @keyframes dbToastIn {
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+        @keyframes slideOut {
+            to { opacity: 0; transform: translateX(-50%) translateY(20px); }
+        }
+        .notification-toast .notification-content {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+        }
+        .notification-toast .notification-content i { font-size: 1.15rem; }
+        .notification-toast.notification-success .notification-content i { color: #10B981; }
+        .notification-toast.notification-error .notification-content i { color: #EF4444; }
+        .notification-toast.notification-info .notification-content i { color: #3B82F6; }
+        .notification-toast .notification-close {
+            background: none;
+            border: none;
+            color: #9CA3AF;
+            cursor: pointer;
+            padding: 4px;
+            font-size: 14px;
+        }
+        .notification-toast .notification-close:hover { color: #4B5563; }
+    `;
+    document.head.appendChild(style);
+})();
+
+// ===================================
 // Global Variables
 // ===================================
 let currentUser = null;

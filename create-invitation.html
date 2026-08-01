@@ -2217,11 +2217,24 @@ ${venueName ? `- مكان الزفاف: ${venueName}` : ''}
                 publishBtn.disabled = true;
                 publishBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الإرسال...';
 
-                const slug = document.getElementById('customSlug').value.trim() ||
-                             buildSlug(document.getElementById('groomName').value, document.getElementById('brideName').value);
+                const customSlugValue = document.getElementById('customSlug').value.trim();
+                let slug = customSlugValue ||
+                           buildSlug(document.getElementById('groomName').value, document.getElementById('brideName').value);
 
-                // Check slug availability
-                const isAvailable = await db.isSlugAvailable(slug);
+                // Check slug availability. If the user typed their own custom
+                // slug, a collision is their choice to fix. But if the slug
+                // was auto-generated from the names (customSlug left empty),
+                // collisions are common (e.g. two "mohamed-mona" couples) —
+                // so just append a short numeric suffix and keep trying
+                // instead of silently blocking the publish.
+                let isAvailable = await db.isSlugAvailable(slug);
+                if (!isAvailable && !customSlugValue) {
+                    const base = slug;
+                    for (let n = 2; n <= 20 && !isAvailable; n++) {
+                        slug = `${base}-${n}`;
+                        isAvailable = await db.isSlugAvailable(slug);
+                    }
+                }
                 if (!isAvailable) {
                     db.showNotification('هذا الرابط مستخدم بالفعل، اختر رابط آخر', 'error');
                     publishBtn.disabled = false;
