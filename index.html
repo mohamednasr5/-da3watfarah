@@ -166,6 +166,33 @@
 
     <link rel="stylesheet" href="css/df-footer.css">
 
+    <!-- PWA Meta Tags and Icons -->
+    <link rel="manifest" href="/manifest.json">
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/icons/favicon-16x16.png">
+    <link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+    <link rel="mask-icon" href="/assets/icons/icon-512x512.png" color="#d4a574">
+    
+    <!-- PWA Styles -->
+    <link rel="stylesheet" href="css/pwa-style.css">
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#d4a574">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="دعوة فرح">
+    <meta name="msapplication-TileColor" content="#d4a574">
+    <meta name="msapplication-TileImage" content="/assets/icons/icon-192x192.png">
+    <meta name="application-name" content="دعوة فرح">
+    
+    <!-- PWA Installation -->
+    <meta name="format-detection" content="telephone=no">
+    
+    <!-- Preload PWA resources -->
+    <link rel="preload" href="/service-worker.js" as="script">
+    <link rel="preload" href="/js/pwa-manager.js" as="script">
+
 </head>
 
 <body>
@@ -920,6 +947,7 @@
 
             
 
+            <div class="
                 <!-- New Templates Added -->
                 <div class="template-card premium" data-category="artistic" data-aos="zoom-in" data-aos-delay="600">
                     <div class="template-badge">بريميوم</div>
@@ -1031,9 +1059,7 @@
                         </a>
                     </div>
                 </div>
-            </div>
-            
-            <div class="templates-cta" data-aos="fade-up">
+templates-cta" data-aos="fade-up">
 
                 <p>لم تجد القالب المناسب؟</p>
 
@@ -2012,6 +2038,18 @@
     </script>
 
     <script src="js/df-footer.js"></script>
+
+    <!-- PWA Manager Scripts -->
+    <script src="/js/pwa-manager.js" defer></script>
+    <script>
+        // Initialize PWA on page load
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                // PWAManager will be initialized automatically
+                console.log('🌐 PWA initialized');
+            });
+        }
+    </script>
 
 </body>
 
