@@ -1034,6 +1034,22 @@
                                         <input type="radio" name="eventTypeRadio" value="katb_ketab">
                                         <span data-i18n="event_type_katb"><i class="fas fa-book-quran"></i> دعوة كتب كتاب</span>
                                     </label>
+                                    <label class="event-type-option">
+                                        <input type="radio" name="eventTypeRadio" value="henna">
+                                        <span><i class="fas fa-hand-sparkles"></i> دعوة حناء</span>
+                                    </label>
+                                    <label class="event-type-option">
+                                        <input type="radio" name="eventTypeRadio" value="birthday">
+                                        <span><i class="fas fa-birthday-cake"></i> دعوة عيد ميلاد</span>
+                                    </label>
+                                    <label class="event-type-option">
+                                        <input type="radio" name="eventTypeRadio" value="newborn">
+                                        <span><i class="fas fa-baby"></i> دعوة مولود</span>
+                                    </label>
+                                    <label class="event-type-option">
+                                        <input type="radio" name="eventTypeRadio" value="graduation">
+                                        <span><i class="fas fa-graduation-cap"></i> دعوة تخرج</span>
+                                    </label>
                                 </div>
                             </div>
 
@@ -1977,6 +1993,222 @@
                 isPopular: true,
                 isPremium: true,
                 fontFamily: "'Aref Ruqaa', serif"
+            },
+            // ===================================
+            // VIP Exclusive Templates (17 designs)
+            // These are full-layout designs from vip/ — not color themes.
+            // Each has isVip:true, an eventCategory for filtering, and
+            // previewFile pointing to the actual vip/ HTML file.
+            // ===================================
+            // --- زفاف (Wedding) ---
+            {
+                id: 'vip-editorial-noir',
+                nameAr: 'أبيض وأسود تحريري',
+                nameEn: 'Editorial Noir',
+                category: 'فاخر VIP',
+                eventCategory: 'wedding',
+                previewFile: 'vip/زفاف/demo-editorial-noir/demo-editorial-noir.html',
+                thumbnail: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiB2aWV3Qm94PSIwIDAgNDAwIDUwMCI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjMWExQTFGIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjMDAwIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSI1MDAiIGZpbGw9InVybCgjZykiLz48cmVjdCB4PSI4MCIgeT0iNjAiIHdpZHRoPSIyNDAiIGhlaWdodD0iMzgwIiBmaWxsPSJub25lIiBzdHJva2U9IiMzMzMiIHN0cm9rZS13aWR0aD0iMSIvPjx0ZXh0IHg9IjIwMCIgeT0iMTgwIiBmb250LWZhbWlseT0ic2VyaWYiIGZvbnQtc2l6ZT0iMjAiIGZpbGw9IiNmZmYiIHRleHQtYW5jaG9yPSJtaWRkbGUiPuKMgzwvdGV4dD48dGV4dCB4PSIyMDAiIHk9IjIxMCIgZm9udC1mYW1pbHk9InNlcmlmIiBmb250LXNpemU9IjE0IiBmaWxsPSIjOTk5IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7Yp9mE2YXYp9ixPC90ZXh0Pjwvc3ZnPg==',
+                colors: { primary: '#1A1A1F', secondary: '#D4AF37' },
+                isNew: true, isPopular: false, isPremium: false, isVip: true,
+                fontFamily: "'El Messiri', serif"
+            },
+            {
+                id: 'vip-garden-blush',
+                nameAr: 'حديقة وردي',
+                nameEn: 'Garden Blush',
+                category: 'فاخر VIP',
+                eventCategory: 'wedding',
+                previewFile: 'vip/زفاف/demo-garden-blush/demo-garden-blush.html',
+                thumbnail: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiB2aWV3Qm94PSIwIDAgNDAwIDUwMCI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjZmZmMGY1Ii8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjZjRiOGI4Ii8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSI1MDAiIGZpbGw9InVybCgjZykiLz48Y2lyY2xlIGN4PSIyMDAiIGN5PSIxNDAiIHI9IjMwIiBmaWxsPSIjZTBhMGEwIi8+PHRleHQgeD0iMjAwIiB5PSIxNDYiIGZvbnQtZmFtaWx5PSJzZXJpZiIgZm9udC1zaXplPSIxOCIgZmlsbD0iI2ZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+8J+RpjwvdGV4dD48dGV4dCB4PSIyMDAiIHk9IjI1MCIgZm9udC1mYW1pbHk9InNlcmlmIiBmb250LXNpemU9IjE2IiBmaWxsPSIjZTBhMGEwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7Yp9mE2YXYp9ixPC90ZXh0Pjwvc3ZnPg==',
+                colors: { primary: '#e0a0a0', secondary: '#f4b8b8' },
+                isNew: true, isPopular: true, isPremium: false, isVip: true,
+                fontFamily: "'El Messiri', serif"
+            },
+            {
+                id: 'vip-gate-of-joy',
+                nameAr: 'بوابة الفرح',
+                nameEn: 'Gate of Joy',
+                category: 'فاخر VIP',
+                eventCategory: 'wedding',
+                previewFile: 'vip/زفاف/demo-gate-of-joy/demo-gate-of-joy.html',
+                thumbnail: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiB2aWV3Qm94PSIwIDAgNDAwIDUwMCI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjMkQxQjM2Ii8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjMUExQTJFIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSI1MDAiIGZpbGw9InVybCgjZykiLz48cmVjdCB4PSIxMDAiIHk9IjEwMCIgd2lkdGg9IjIwMCIgaGVpZ2h0PSIzMCIgcng9IjUiIGZpbGw9IiNENEFGMzciLz48cmVjdCB4PSIxMjAiIHk9IjE0MCIgd2lkdGg9IjE2MCIgaGVpZ2h0PSIxMDAiIHJ4PSI1IiBmaWxsPSIjZmZmIiBzdHJva2U9IiNENEFGMzciIHN0cm9rZS13aWR0aD0iMiIvPjx0ZXh0IHg9IjIwMCIgeT0iMjQwIiBmb250LWZhbWlseT0ic2VyaWYiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiNENEFGMzciIHRleHQtYW5jaG9yPSJtaWRkbGUiPuKAnOKAgTwvdGV4dD48dGV4dCB4PSIyMDAiIHk9IjI2MCIgZm9udC1mYW1pbHk9InNlcmlmIiBmb250LXNpemU9IjEyIiBmaWxsPSIjOTk5IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7Yp9mE2YXYp9ixPC90ZXh0Pjwvc3ZnPg==',
+                colors: { primary: '#1A1A2E', secondary: '#D4AF37' },
+                isNew: true, isPopular: true, isPremium: false, isVip: true,
+                fontFamily: "'Prata', 'El Messiri', serif"
+            },
+            {
+                id: 'vip-grand-hall',
+                nameAr: 'القاعة الكبرى',
+                nameEn: 'Grand Hall',
+                category: 'فاخر VIP',
+                eventCategory: 'wedding',
+                previewFile: 'vip/زفاف/demo-grand-hall/demo-grand-hall.html',
+                thumbnail: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiB2aWV3Qm94PSIwIDAgNDAwIDUwMCI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjMkQxQjM2Ii8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjMUIxQjI4Ii8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSI1MDAiIGZpbGw9InVybCgjZykiLz48cmVjdCB4PSI5MCIgeT0iMTIwIiB3aWR0aD0iMjIwIiBoZWlnaHQ9IjI2MCIgcng9IjEwIiBmaWxsPSJub25lIiBzdHJva2U9IiNENEFGMzciIHN0cm9rZS13aWR0aD0iMiIvPjx0ZXh0IHg9IjIwMCIgeT0iMjUwIiBmb250LWZhbWlseT0ic2VyaWYiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiNENEFGMzciIHRleHQtYW5jaG9yPSJtaWRkbGUiPtiM2Lkg2KfZhdyA8L3RleHQ+PC9zdmc+',
+                colors: { primary: '#1B1B28', secondary: '#D4AF37' },
+                isNew: true, isPopular: false, isPremium: false, isVip: true,
+                fontFamily: "'Prata', 'El Messiri', serif"
+            },
+            {
+                id: 'vip-moon-stars',
+                nameAr: 'قمر ونجوم',
+                nameEn: 'Moon & Stars',
+                category: 'فاخر VIP',
+                eventCategory: 'wedding',
+                previewFile: 'vip/زفاف/demo-moon-stars/demo-moon-stars.html',
+                thumbnail: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiB2aWV3Qm94PSIwIDAgNDAwIDUwMCI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjMGExMjQ1Ii8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjMWUxYjRiIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSI1MDAiIGZpbGw9InVybCgjZykiLz48Y2lyY2xlIGN4PSIyMDAiIGN5PSIxMjAiIHI9IjM1IiBmaWxsPSIjRkZGQjI0Ii8+PGNpcmNsZSBjeD0iMTIwIiBjeT0iMjAwIiByPSIyIiBmaWxsPSIjZmZmIi8+PGNpcmNsZSBjeD0iMjgwIiBjeT0iMzAwIiByPSIyIiBmaWxsPSIjZmZmIi8+PGNpcmNsZSBjeD0iMTYwIiBjeT0iMzUwIiByPSIxLjUiIGZpbGw9IiNmZmYiLz48dGV4dCB4PSIyMDAiIHk9IjEyOCIgZm9udC1mYW1pbHk9InNlcmlmIiBmb250LXNpemU9IjIwIiBmaWxsPSIjMGExMjQ1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7ihpI8L3RleHQ+PHRleHQgeD0iMjAwIiB5PSIyNTAiIGZvbnQtZmFtaWx5PSJzZXJpZiIgZm9udC1zaXplPSIxNCIgZmlsbD0iI2E3OGJmYSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+2YXZhduM2Lkg2KfZhNi52K88L3RleHQ+PC9zdmc+',
+                colors: { primary: '#0a1245', secondary: '#a78bfa' },
+                isNew: true, isPopular: false, isPremium: false, isVip: true,
+                fontFamily: "'El Messiri', serif"
+            },
+            {
+                id: 'vip-royal-maroon',
+                nameAr: 'العنابي الملكي',
+                nameEn: 'Royal Maroon',
+                category: 'فاخر VIP',
+                eventCategory: 'wedding',
+                previewFile: 'vip/زفاف/demo-royal-maroon/demo-royal-maroon.html',
+                thumbnail: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiB2aWV3Qm94PSIwIDAgNDAwIDUwMCI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjMkQwNzI5Ii8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjMTAxQTAxIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSI1MDAiIGZpbGw9InVybCgjZykiLz48cmVjdCB4PSI4MCIgeT0iODAiIHdpZHRoPSIyNDAiIGhlaWdodD0iMzQwIiByeD0iMTUiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI0Q0QUYzNyIgc3Ryb2tlLXdpZHRoPSIyIi8+PGNpcmNsZSBjeD0iMjAwIiBjeT0iMTgwIiByPSIyNSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjRDRBRjM3IiBzdHJva2Utd2lkdGg9IjEiLz48dGV4dCB4PSIyMDAiIHk9IjE4NiIgZm9udC1mYW1pbHk9InNlcmlmIiBmb250LXNpemU9IjE4IiBmaWxsPSIjRDRBRjM3IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7inIU8L3RleHQ+PHRleHQgeD0iMjAwIiB5PSIyNTAiIGZvbnQtZmFtaWx5PSJzZXJpZiIgZm9udC1zaXplPSIxNCIgZmlsbD0iI2M5YTBhMCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+2KfZhNi12YQg2KfYs9iqPC90ZXh0Pjwvc3ZnPg==',
+                colors: { primary: '#2D0729', secondary: '#D4AF37' },
+                isNew: true, isPopular: true, isPremium: false, isVip: true,
+                fontFamily: "'El Messiri', serif"
+            },
+            {
+                id: 'vip-the-doves',
+                nameAr: 'الحمامات',
+                nameEn: 'The Doves',
+                category: 'فاخر VIP',
+                eventCategory: 'wedding',
+                previewFile: 'vip/زفاف/demo-the-doves/demo-the-doves.html',
+                thumbnail: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiB2aWV3Qm94PSIwIDAgNDAwIDUwMCI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjZjBmNGY0Ii8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjZThlOGU4Ii8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSI1MDAiIGZpbGw9InVybCgjZykiLz48cGF0aCBkPSJNMTUwIDI1MCAxODAgMjIwIDIwMCAyNTAgMjIwIDIyMCAyNTAgMjUwIiBzdHJva2U9IiM5OTkiIGZpbGw9Im5vbmUiIHN0cm9rZS13aWR0aD0iMiIvPjx0ZXh0IHg9IjIwMCIgeT0iMjcwIiBmb250LWZhbWlseT0ic2VyaWYiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiM5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiPuKAnOKAgTwvdGV4dD48L3N2Zz4=',
+                colors: { primary: '#f0f4f4', secondary: '#e8e8e8' },
+                isNew: true, isPopular: false, isPremium: false, isVip: true,
+                fontFamily: "'El Messiri', serif"
+            },
+            {
+                id: 'vip-wax-seal',
+                nameAr: 'ختم الشمع',
+                nameEn: 'Wax Seal',
+                category: 'فاخر VIP',
+                eventCategory: 'wedding',
+                previewFile: 'vip/زفاف/demo-wax-seal/demo-wax-seal.html',
+                thumbnail: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiB2aWV3Qm94PSIwIDAgNDAwIDUwMCI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjMWExQTJFIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjMkQyRDQ0Ii8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSI1MDAiIGZpbGw9InVybCgjZykiLz48Y2lyY2xlIGN4PSIyMDAiIGN5PSIxODAiIHI9IjMwIiBmaWxsPSIjQzQwMDAwIi8+PHRleHQgeD0iMjAwIiB5PSIxODYiIGZvbnQtZmFtaWx5PSJzZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0iI2ZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+8J+RpjwvdGV4dD48dGV4dCB4PSIyMDAiIHk9IjI1MCIgZm9udC1mYW1pbHk9InNlcmlmIiBmb250LXNpemU9IjEyIiBmaWxsPSIjOTk5IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7Yp9mE2YXYp9ixPC90ZXh0Pjwvc3ZnPg==',
+                colors: { primary: '#1A1A2E', secondary: '#C40000' },
+                isNew: true, isPopular: false, isPremium: false, isVip: true,
+                fontFamily: "'El Messiri', serif"
+            },
+            {
+                id: 'vip-white-hall',
+                nameAr: 'القاعة البيضاء',
+                nameEn: 'White Hall',
+                category: 'فاخر VIP',
+                eventCategory: 'wedding',
+                previewFile: 'vip/زفاف/demo-white-hall/demo-white-hall.html',
+                thumbnail: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiB2aWV3Qm94PSIwIDAgNDAwIDUwMCI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjRkZGRkZGIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjZTBlMGUwIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSI1MDAiIGZpbGw9InVybCgjZykiLz48cmVjdCB4PSI5MCIgeT0iMTAwIiB3aWR0aD0iMjIwIiBoZWlnaHQ9IjMwMCIgcng9IjEwIiBmaWxsPSJub25lIiBzdHJva2U9IiMxYTFhMkUiIHN0cm9rZS13aWR0aD0iMSIvPjx0ZXh0IHg9IjIwMCIgeT0iMjUwIiBmb250LWZhbWlseT0ic2VyaWYiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiMxYTFhMkUiIHRleHQtYW5jaG9yPSJtaWRkbGUiPtiM2Lkg2KfZhdyA8L3RleHQ+PC9zdmc+',
+                colors: { primary: '#FFFFFF', secondary: '#e0e0e0' },
+                isNew: true, isPopular: false, isPremium: false, isVip: true,
+                fontFamily: "'Prata', 'El Messiri', serif"
+            },
+            // --- خطوبة (Engagement) ---
+            {
+                id: 'vip-starry-night',
+                nameAr: 'ليلة نجومية',
+                nameEn: 'Starry Night',
+                category: 'فاخر VIP',
+                eventCategory: 'engagement',
+                previewFile: 'vip/خطوبة/demo-starry-night/demo-starry-night.html',
+                thumbnail: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiB2aWV3Qm94PSIwIDAgNDAwIDUwMCI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjMGMyODQ1Ii8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjMWUxYjRiIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSI1MDAiIGZpbGw9InVybCgjZykiLz48Y2lyY2xlIGN4PSIxMDAiIGN5PSI4MCIgcj0iMiIgZmlsbD0iI2ZmZiIvPjxjaXJjbGUgY3g9IjMwMCIgY3k9IjEyMCIgcj0iMiIgZmlsbD0iI2ZmZiIvPjxjaXJjbGUgY3g9IjIwMCIgY3k9IjE2MCIgcj0iMyIgZmlsbD0iI2JCQkYyNCIvPjx0ZXh0IHg9IjIwMCIgeT0iMjUwIiBmb250LWZhbWlseT0ic2VyaWYiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiNhNzhiZmEiIHRleHQtYW5jaG9yPSJtaWRkbGUiPti12YXZitiv2Yo8L3RleHQ+PC9zdmc+',
+                colors: { primary: '#0c2845', secondary: '#a78bfa' },
+                isNew: true, isPopular: true, isPremium: false, isVip: true,
+                fontFamily: "'El Messiri', serif"
+            },
+            {
+                id: 'vip-the-ring',
+                nameAr: 'الخاتم',
+                nameEn: 'The Ring',
+                category: 'فاخر VIP',
+                eventCategory: 'engagement',
+                previewFile: 'vip/خطوبة/demo-the-ring/demo-the-ring.html',
+                thumbnail: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiB2aWV3Qm94PSIwIDAgNDAwIDUwMCI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjMWExQTJFIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjMkQyRDQ0Ii8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSI1MDAiIGZpbGw9InVybCgjZykiLz48Y2lyY2xlIGN4PSIyMDAiIGN5PSIxNzAiIHI9IjM1IiBmaWxsPSJub25lIiBzdHJva2U9IiNENEFGMzciIHN0cm9rZS13aWR0aD0iMyIvPjx0ZXh0IHg9IjIwMCIgeT0iMjUwIiBmb250LWZhbWlseT0ic2VyaWYiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiNENEFGMzciIHRleHQtYW5jaG9yPSJtaWRkbGUiPti12YXZitiv2Yo8L3RleHQ+PC9zdmc+',
+                colors: { primary: '#1A1A2E', secondary: '#D4AF37' },
+                isNew: true, isPopular: false, isPremium: false, isVip: true,
+                fontFamily: "'El Messiri', serif"
+            },
+            // --- حناء (Henna) ---
+            {
+                id: 'vip-henna-night',
+                nameAr: 'ليلة الحناء',
+                nameEn: 'Henna Night',
+                category: 'فاخر VIP',
+                eventCategory: 'henna',
+                previewFile: 'vip/حناء/demo-henna-night/demo-henna-night.html',
+                thumbnail: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiB2aWV3Qm94PSIwIDAgNDAwIDUwMCI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjMkQwNzI5Ii8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjRjQwMDUxIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSI1MDAiIGZpbGw9InVybCgjZykiLz48Y2lyY2xlIGN4PSIyMDAiIGN5PSIxNjAiIHI9IjMwIiBmaWxsPSJub25lIiBzdHJva2U9IiNENEFGMzciIHN0cm9rZS13aWR0aD0iMiIvPjx0ZXh0IHg9IjIwMCIgeT0iMTY2IiBmb250LWZhbWlseT0ic2VyaWYiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiNENEFGMzciIHRleHQtYW5jaG9yPSJtaWRkbGUiPtiM2Lkg2KfYp9ioPC90ZXh0Pjwvc3ZnPg==',
+                colors: { primary: '#2D0729', secondary: '#D4AF37' },
+                isNew: true, isPopular: false, isPremium: false, isVip: true,
+                fontFamily: "'El Messiri', serif"
+            },
+            // --- عيد ميلاد (Birthday) ---
+            {
+                id: 'vip-castle-magic',
+                nameAr: 'قلعة سحرية',
+                nameEn: 'Castle Magic',
+                category: 'فاخر VIP',
+                eventCategory: 'birthday',
+                previewFile: 'vip/عيد ميلاد/demo-castle-magic/demo-castle-magic.html',
+                thumbnail: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiB2aWV3Qm94PSIwIDAgNDAwIDUwMCI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjNjM2NmYxIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjYTg1NUQzIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSI1MDAiIGZpbGw9InVybCgjZykiLz48cmVjdCB4PSIxNjAiIHk9IjE2MCIgd2lkdGg9IjgwIiBoZWlnaHQ9IjEwMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjRkZGIiBzdHJva2Utd2lkdGg9IjIiLz48dGV4dCB4PSIyMDAiIHk9IjI1MCIgZm9udC1mYW1pbHk9InNlcmlmIiBmb250LXNpemU9IjE2IiBmaWxsPSIjRkZGIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7Yp9ix2YXYqtmFINiq2YU8L3RleHQ+PC9zdmc+',
+                colors: { primary: '#6366f1', secondary: '#a855D3' },
+                isNew: true, isPopular: false, isPremium: false, isVip: true,
+                fontFamily: "'Tajawal', sans-serif"
+            },
+            {
+                id: 'vip-neon-glow',
+                nameAr: 'نيون متوهج',
+                nameEn: 'Neon Glow',
+                category: 'فاخر VIP',
+                eventCategory: 'birthday',
+                previewFile: 'vip/عيد ميلاد/demo-neon-glow/demo-neon-glow.html',
+                thumbnail: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiB2aWV3Qm94PSIwIDAgNDAwIDUwMCI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjMGYwMTcyIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjMzAxMDI0Ii8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSI1MDAiIGZpbGw9InVybCgjZykiLz48dGV4dCB4PSIyMDAiIHk9IjE4MCIgZm9udC1mYW1pbHk9InNlcmlmIiBmb250LXNpemU9IjI0IiBmaWxsPSIjMDBmZjkxIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7Yp9ix2YXYqtmFINio2LkZTwvdGV4dD48dGV4dCB4PSIyMDAiIHk9IjI1MCIgZm9udC1mYW1pbHk9InNlcmlmIiBmb250LXNpemU9IjEyIiBmaWxsPSIjMDBmZjkxIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7Yp9ix2YXYqtmFINiq2YU8L3RleHQ+PC9zdmc+',
+                colors: { primary: '#0f0172', secondary: '#00ff91' },
+                isNew: true, isPopular: false, isPremium: false, isVip: true,
+                fontFamily: "'Tajawal', sans-serif"
+            },
+            // --- مولود (Newborn) ---
+            {
+                id: 'vip-clouds',
+                nameAr: 'غيوم وسحائب',
+                nameEn: 'Clouds',
+                category: 'فاخر VIP',
+                eventCategory: 'newborn',
+                previewFile: 'vip/مولود/demo-clouds/demo-clouds.html',
+                thumbnail: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiB2aWV3Qm94PSIwIDAgNDAwIDUwMCI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjZTBlOWZmIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjYmJkZmVkIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSI1MDAiIGZpbGw9InVybCgjZykiLz48ZWxsaXBzZSBjeD0iMjAwIiBjeT0iMTYwIiByeD0iODAiIHJ5PSI0MCIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjMpIi8+PHRleHQgeD0iMjAwIiB5PSIxNjYiIGZvbnQtZmFtaWx5PSJzZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0iIzU1NSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+2KfYs9iq2YUg2KfYsduM2Lk8L3RleHQ+PC9zdmc+',
+                colors: { primary: '#e0e9ff', secondary: '#bbdfed' },
+                isNew: true, isPopular: false, isPremium: false, isVip: true,
+                fontFamily: "'Tajawal', sans-serif"
+            },
+            {
+                id: 'vip-rosebud',
+                nameAr: 'برعم الورد',
+                nameEn: 'Rosebud',
+                category: 'فاخر VIP',
+                eventCategory: 'newborn',
+                previewFile: 'vip/مولود/demo-rosebud/demo-rosebud.html',
+                thumbnail: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiB2aWV3Qm94PSIwIDAgNDAwIDUwMCI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjZmZmMGY1Ii8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjZjRiOGI4Ii8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSI1MDAiIGZpbGw9InVybCgjZykiLz48Y2lyY2xlIGN4PSIyMDAiIGN5PSIxNjAiIHI9IjMwIiBmaWxsPSIjZjRhMGEwIi8+PHRleHQgeD0iMjAwIiB5PSIxNjYiIGZvbnQtZmFtaWx5PSJzZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0iI2ZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+2KfYs9iq2YUg2KfYsduM2Lk8L3RleHQ+PC9zdmc+',
+                colors: { primary: '#fff0f5', secondary: '#f4a0a0' },
+                isNew: true, isPopular: false, isPremium: false, isVip: true,
+                fontFamily: "'Tajawal', sans-serif"
+            },
+            // --- حفلة تخرج (Graduation) ---
+            {
+                id: 'vip-graduation',
+                nameAr: 'حفل التخرج',
+                nameEn: 'Graduation',
+                category: 'فاخر VIP',
+                eventCategory: 'graduation',
+                previewFile: 'vip/حفلة تخرج/demo-graduation/demo-graduation.html',
+                thumbnail: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiB2aWV3Qm94PSIwIDAgNDAwIDUwMCI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjMWExQTJFIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjMkQyRDQ0Ii8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSI1MDAiIGZpbGw9InVybCgjZykiLz48cG9seWdvbiBwb2ludHM9IjIwMCwxNjAgMjMwLDE5MCAyMDAsMjIwIDE3MCwxOTAiIGZpbGw9IiNENEFGMzciLz48dGV4dCB4PSIyMDAiIHk9IjI1MCIgZm9udC1mYW1pbHk9InNlcmlmIiBmb250LXNpemU9IjE2IiBmaWxsPSIjRDRBRjM3IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7Yp9ix2YXZhdin2KzZiNmCPC90ZXh0Pjwvc3ZnPg==',
+                colors: { primary: '#1A1A2E', secondary: '#D4AF37' },
+                isNew: true, isPopular: false, isPremium: false, isVip: true,
+                fontFamily: "'Tajawal', sans-serif"
             }
         ];
 
@@ -1994,11 +2226,12 @@
             'وردي ورومانسي': 'Pink & Romantic',
             'بسيط وأنيق': 'Simple & Elegant',
             'طبيعي هادئ': 'Calm & Natural',
-            'نجومي ساحر': 'Enchanting Starry'
+            'نجومي ساحر': 'Enchanting Starry',
+            'فاخر VIP': 'VIP Exclusive'
         };
         
         // ===================================
-        // Invitation type (wedding / engagement / katb_ketab)
+        // Invitation type (wedding / engagement / katb_ketab / henna / birthday / newborn / graduation)
         // ===================================
         const EVENT_TYPE_FIELD_META = {
             ar: {
@@ -2013,6 +2246,22 @@
                 katb_ketab: {
                     dateLabel: '<i class="fas fa-calendar-alt"></i> تاريخ كتب الكتاب *',
                     venueLabel: '<i class="fas fa-map-marker-alt"></i> مكان كتب الكتاب *'
+                },
+                henna: {
+                    dateLabel: '<i class="fas fa-calendar-alt"></i> تاريخ الحناء *',
+                    venueLabel: '<i class="fas fa-map-marker-alt"></i> مكان الحناء *'
+                },
+                birthday: {
+                    dateLabel: '<i class="fas fa-calendar-alt"></i> تاريخ عيد الميلاد *',
+                    venueLabel: '<i class="fas fa-map-marker-alt"></i> مكان الحفل *'
+                },
+                newborn: {
+                    dateLabel: '<i class="fas fa-calendar-alt"></i> تاريخ الاستقبال *',
+                    venueLabel: '<i class="fas fa-map-marker-alt"></i> مكان الاستقبال *'
+                },
+                graduation: {
+                    dateLabel: '<i class="fas fa-calendar-alt"></i> تاريخ التخرج *',
+                    venueLabel: '<i class="fas fa-map-marker-alt"></i> مكان الحفل *'
                 }
             },
             en: {
@@ -2027,6 +2276,22 @@
                 katb_ketab: {
                     dateLabel: '<i class="fas fa-calendar-alt"></i> Katb El-Ketab Date *',
                     venueLabel: '<i class="fas fa-map-marker-alt"></i> Katb El-Ketab Venue *'
+                },
+                henna: {
+                    dateLabel: '<i class="fas fa-calendar-alt"></i> Henna Night Date *',
+                    venueLabel: '<i class="fas fa-map-marker-alt"></i> Henna Venue *'
+                },
+                birthday: {
+                    dateLabel: '<i class="fas fa-calendar-alt"></i> Birthday Date *',
+                    venueLabel: '<i class="fas fa-map-marker-alt"></i> Party Venue *'
+                },
+                newborn: {
+                    dateLabel: '<i class="fas fa-calendar-alt"></i> Welcome Date *',
+                    venueLabel: '<i class="fas fa-map-marker-alt"></i> Welcome Venue *'
+                },
+                graduation: {
+                    dateLabel: '<i class="fas fa-calendar-alt"></i> Graduation Date *',
+                    venueLabel: '<i class="fas fa-map-marker-alt"></i> Ceremony Venue *'
                 }
             }
         };
@@ -2078,7 +2343,11 @@
             }
 
             document.querySelectorAll('input[name="eventTypeRadio"]').forEach(radio => {
-                radio.addEventListener('change', applyEventTypeFieldLabels);
+                radio.addEventListener('change', function() {
+                    applyEventTypeFieldLabels();
+                    // Re-filter templates when event type changes
+                    loadTemplates();
+                });
             });
 
             prefillFromAIWriter();
@@ -2187,13 +2456,25 @@
         function loadTemplates() {
             const grid = document.getElementById('templatesGrid');
             
-            // Use local templates configuration first
-            renderTemplates(TEMPLATES_CONFIG);
+            const et = currentEventType();
+            const filtered = TEMPLATES_CONFIG.filter(t => {
+                if (t.eventCategory) {
+                    // VIP template: show only if event type matches
+                    return t.eventCategory === et;
+                }
+                // Non-VIP template: show for wedding, engagement, and katb_ketab only
+                // (new event types henna/birthday/newborn/graduation only have VIP templates)
+                if (et === 'henna' || et === 'birthday' || et === 'newborn' || et === 'graduation') {
+                    return false;
+                }
+                return true;
+            });
+            
+            renderTemplates(filtered);
             
             // Try to load from RTDB as well (for future dynamic templates)
             db.getTemplates().then(rtdbTemplates => {
                 if (rtdbTemplates && rtdbTemplates.length > 0) {
-                    // Merge with local config or use RTDB templates
                     console.log('Loaded additional templates from RTDB:', rtdbTemplates.length);
                 }
             }).catch(err => {
@@ -2247,6 +2528,20 @@
             
             // Set selected template
             selectedTemplate = template;
+            
+            // === VIP Gating: if user selected a VIP template directly from the grid
+            // (not via the /vip/ hub with ?vip=1), activate the VIP gate so the
+            // paywall banner and plan pre-selection trigger correctly.
+            if (template.isVip && !window.__vipGate.required) {
+                window.__vipGate = { required: true, source: template.nameAr };
+                localStorage.setItem('da3wa_selected_plan', 'vip');
+                if (template.nameAr) localStorage.setItem('da3wa_vip_source_template', template.nameAr);
+                // Show the VIP banner in the wizard body if it exists
+                const wizardBody = document.querySelector('.wizard-content.active');
+                if (wizardBody && !wizardBody.querySelector('.vip-gate-banner')) {
+                    wizardBody.insertAdjacentHTML('afterbegin', renderVipBanner());
+                }
+            }
             
             // Show live preview
             showLivePreview(template);
@@ -2695,6 +2990,7 @@ ${venueName ? `- مكان الزفاف: ${venueName}` : ''}
                 design: {
                     templateId: selectedTemplate?.id || 'classic',
                     templateFile: (selectedTemplate?.previewFile || 'preview-classic.html').replace(/\.html$/i, ''),
+                    isVipTemplate: selectedTemplate?.isVip || false,
                     primaryColor: selectedColors.primary,
                     secondaryColor: selectedColors.secondary,
                     coverImage: uploadedCover,
@@ -2911,6 +3207,7 @@ ${venueName ? `- مكان الزفاف: ${venueName}` : ''}
                         templateId: selectedTemplate?.id || 'classic',
                         templateName: selectedTemplate?.nameAr || 'كلاسيكي',
                         templateFile: (selectedTemplate?.previewFile || 'preview-classic.html').replace(/\.html$/i, ''),
+                        isVipTemplate: selectedTemplate?.isVip || false,
                         primaryColor: selectedColors.primary,
                         secondaryColor: selectedColors.secondary,
                         fontFamily: selectedTemplate?.fontFamily || "'Tajawal', sans-serif",
