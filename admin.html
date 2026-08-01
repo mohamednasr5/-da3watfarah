@@ -309,11 +309,22 @@
 
   onAuthStateChanged(auth, async (user) => {
     if (!user) return;
-    const adminSnap = await get(ref(db, 'admins/' + user.uid));
-    if (!adminSnap.exists() || adminSnap.val() !== true) return; // مش أدمن، يفضل على شاشة الدخول
-    document.getElementById('gate').style.display = 'none';
-    document.getElementById('dashboard').style.display = 'block';
-    loadInvitations();
+    const errorEl = document.getElementById('adminLoginError');
+    try {
+      const adminSnap = await get(ref(db, 'admins/' + user.uid));
+      if (!adminSnap.exists() || adminSnap.val() !== true) {
+        if (errorEl) errorEl.textContent = 'هذا الحساب غير مسجّل كأدمن في قاعدة البيانات (admins/' + user.uid + ').';
+        await signOut(auth);
+        return; // مش أدمن، يفضل على شاشة الدخول
+      }
+      document.getElementById('gate').style.display = 'none';
+      document.getElementById('dashboard').style.display = 'block';
+      loadInvitations();
+    } catch (err) {
+      console.error('Admin check error:', err);
+      if (errorEl) errorEl.textContent = 'تعذر التحقق من صلاحيات الأدمن (Permission denied). تأكد من نشر database.rules.json المحدّثة على فايربيز.';
+      await signOut(auth);
+    }
   });
 
   document.getElementById('logoutBtn').addEventListener('click', () => signOut(auth).then(() => location.reload()));
