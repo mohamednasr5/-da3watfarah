@@ -2204,15 +2204,15 @@ ${venueName ? `- مكان الزفاف: ${venueName}` : ''}
             const publishBtn = document.getElementById('publishBtn');
             const originalContent = publishBtn.innerHTML;
 
-            // Validate all steps
-            for (let i = 1; i <= 3; i++) {
-                if (!validateStep(i)) {
-                    goToStep(i);
-                    return;
-                }
-            }
-
             try {
+                // Validate all steps
+                for (let i = 1; i <= 3; i++) {
+                    if (!validateStep(i)) {
+                        goToStep(i);
+                        return;
+                    }
+                }
+
                 // Show loading state
                 publishBtn.disabled = true;
                 publishBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الإرسال...';
