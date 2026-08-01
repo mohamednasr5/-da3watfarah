@@ -1034,22 +1034,6 @@
                                         <input type="radio" name="eventTypeRadio" value="katb_ketab">
                                         <span data-i18n="event_type_katb"><i class="fas fa-book-quran"></i> دعوة كتب كتاب</span>
                                     </label>
-                                    <label class="event-type-option">
-                                        <input type="radio" name="eventTypeRadio" value="henna">
-                                        <span><i class="fas fa-hand-sparkles"></i> دعوة حناء</span>
-                                    </label>
-                                    <label class="event-type-option">
-                                        <input type="radio" name="eventTypeRadio" value="birthday">
-                                        <span><i class="fas fa-birthday-cake"></i> دعوة عيد ميلاد</span>
-                                    </label>
-                                    <label class="event-type-option">
-                                        <input type="radio" name="eventTypeRadio" value="newborn">
-                                        <span><i class="fas fa-baby"></i> دعوة مولود</span>
-                                    </label>
-                                    <label class="event-type-option">
-                                        <input type="radio" name="eventTypeRadio" value="graduation">
-                                        <span><i class="fas fa-graduation-cap"></i> دعوة تخرج</span>
-                                    </label>
                                 </div>
                             </div>
 
@@ -2231,7 +2215,7 @@
         };
         
         // ===================================
-        // Invitation type (wedding / engagement / katb_ketab / henna / birthday / newborn / graduation)
+        // Invitation type (wedding / engagement / katb_ketab)
         // ===================================
         const EVENT_TYPE_FIELD_META = {
             ar: {
@@ -2246,22 +2230,6 @@
                 katb_ketab: {
                     dateLabel: '<i class="fas fa-calendar-alt"></i> تاريخ كتب الكتاب *',
                     venueLabel: '<i class="fas fa-map-marker-alt"></i> مكان كتب الكتاب *'
-                },
-                henna: {
-                    dateLabel: '<i class="fas fa-calendar-alt"></i> تاريخ الحناء *',
-                    venueLabel: '<i class="fas fa-map-marker-alt"></i> مكان الحناء *'
-                },
-                birthday: {
-                    dateLabel: '<i class="fas fa-calendar-alt"></i> تاريخ عيد الميلاد *',
-                    venueLabel: '<i class="fas fa-map-marker-alt"></i> مكان الحفل *'
-                },
-                newborn: {
-                    dateLabel: '<i class="fas fa-calendar-alt"></i> تاريخ الاستقبال *',
-                    venueLabel: '<i class="fas fa-map-marker-alt"></i> مكان الاستقبال *'
-                },
-                graduation: {
-                    dateLabel: '<i class="fas fa-calendar-alt"></i> تاريخ التخرج *',
-                    venueLabel: '<i class="fas fa-map-marker-alt"></i> مكان الحفل *'
                 }
             },
             en: {
@@ -2276,22 +2244,6 @@
                 katb_ketab: {
                     dateLabel: '<i class="fas fa-calendar-alt"></i> Katb El-Ketab Date *',
                     venueLabel: '<i class="fas fa-map-marker-alt"></i> Katb El-Ketab Venue *'
-                },
-                henna: {
-                    dateLabel: '<i class="fas fa-calendar-alt"></i> Henna Night Date *',
-                    venueLabel: '<i class="fas fa-map-marker-alt"></i> Henna Venue *'
-                },
-                birthday: {
-                    dateLabel: '<i class="fas fa-calendar-alt"></i> Birthday Date *',
-                    venueLabel: '<i class="fas fa-map-marker-alt"></i> Party Venue *'
-                },
-                newborn: {
-                    dateLabel: '<i class="fas fa-calendar-alt"></i> Welcome Date *',
-                    venueLabel: '<i class="fas fa-map-marker-alt"></i> Welcome Venue *'
-                },
-                graduation: {
-                    dateLabel: '<i class="fas fa-calendar-alt"></i> Graduation Date *',
-                    venueLabel: '<i class="fas fa-map-marker-alt"></i> Ceremony Venue *'
                 }
             }
         };
@@ -2456,17 +2408,17 @@
         function loadTemplates() {
             const grid = document.getElementById('templatesGrid');
             
+            // Filter templates by current event type
+            // Non-VIP templates show for wedding/engagement/katb_ketab (no eventCategory = show for all)
+            // VIP templates only show when their eventCategory matches
             const et = currentEventType();
             const filtered = TEMPLATES_CONFIG.filter(t => {
                 if (t.eventCategory) {
                     // VIP template: show only if event type matches
+                    // Map: wedding, engagement, henna, birthday, newborn, graduation
                     return t.eventCategory === et;
                 }
-                // Non-VIP template: show for wedding, engagement, and katb_ketab only
-                // (new event types henna/birthday/newborn/graduation only have VIP templates)
-                if (et === 'henna' || et === 'birthday' || et === 'newborn' || et === 'graduation') {
-                    return false;
-                }
+                // Non-VIP template: show for wedding and engagement (existing behavior)
                 return true;
             });
             
