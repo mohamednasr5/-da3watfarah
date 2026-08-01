@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>معاينة قالب النخبة | دعوة فرح</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=Amiri:wght@400;700&family=Aref+Ruqaa:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #1a1a2e;
+            --secondary: #d4af37;
+            --accent: #16213e;
+            --gold-light: #f4e4bc;
+            --gold-dark: #b8860b;
+        }
+        
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 50%, #16213e 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            color: #fff;
+        }
+        
+        /* Animated Background */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .bg-animation::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 30% 70%, rgba(212, 175, 55, 0.08) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 30%, rgba(212, 175, 55, 0.05) 0%, transparent 50%);
+            animation: bgRotate 30s linear infinite;
+        }
+        
+        @keyframes bgRotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Floating Gold Particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: var(--secondary);
+            border-radius: 50%;
+            opacity: 0;
+            animation: particleFloat 8s infinite;
+            box-shadow: 0 0 10px var(--secondary), 0 0 20px rgba(212, 175, 55, 0.5);
+        }
+        
+        @keyframes particleFloat {
+            0% { opacity: 0; transform: translateY(100vh) scale(0); }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { opacity: 0; transform: translateY(-100vh) scale(1); }
+        }
+        
+        /* Main Container */
+        .invitation-container {
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Elite Card */
+        .elite-card {
+            background: linear-gradient(145deg, rgba(26, 26, 46, 0.95) 0%, rgba(22, 33, 62, 0.95) 100%);
+            border-radius: 30px;
+            padding: 50px 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 
+                0 25px 80px rgba(0, 0, 0, 0.5),
+                0 0 0 1px rgba(212, 175, 55, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+        }
+        
+        .elite-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--secondary), transparent);
+            animation: shimmerLine 3s ease-in-out infinite;
+        }
+        
+        @keyframes shimmerLine {
+            0%, 100% { opacity: 0.5; transform: scaleX(0.8); }
+            50% { opacity: 1; transform: scaleX(1); }
+        }
+        
+        /* Corner Ornaments */
+        .corner-ornament {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            opacity: 0.3;
+        }
+        
+        .corner-ornament.top-right {
+            top: 15px;
+            right: 15px;
+            border-top: 3px solid var(--secondary);
+            border-right: 3px solid var(--secondary);
+            border-radius: 0 20px 0 0;
+        }
+        
+        .corner-ornament.top-left {
+            top: 15px;
+            left: 15px;
+            border-top: 3px solid var(--secondary);
+            border-left: 3px solid var(--secondary);
+            border-radius: 20px 0 0 0;
+        }
+        
+        .corner-ornament.bottom-right {
+            bottom: 15px;
+            right: 15px;
+            border-bottom: 3px solid var(--secondary);
+            border-right: 3px solid var(--secondary);
+            border-radius: 0 0 20px 0;
+        }
+        
+        .corner-ornament.bottom-left {
+            bottom: 15px;
+            left: 15px;
+            border-bottom: 3px solid var(--secondary);
+            border-left: 3px solid var(--secondary);
+            border-radius: 0 0 0 20px;
+        }
+        
+        /* Bismillah */
+        .bismillah {
+            font-family: 'Aref Ruqaa', serif;
+            font-size: 1.6rem;
+            color: var(--secondary);
+            margin-bottom: 25px;
+            opacity: 0;
+            animation: fadeInDown 1s ease forwards;
+            animation-delay: 0.3s;
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+        }
+        
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Crown Icon */
+        .crown-icon {
+            font-size: 3rem;
+            color: var(--secondary);
+            margin-bottom: 20px;
+            opacity: 0;
+            animation: crownBounce 1s ease forwards;
+            animation-delay: 0.5s;
+            filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.6));
+        }
+        
+        @keyframes crownBounce {
+            0% { opacity: 0; transform: translateY(-50px) scale(0.5) rotate(-10deg); }
+            60% { transform: translateY(10px) scale(1.1) rotate(5deg); }
+            100% { opacity: 1; transform: translateY(0) scale(1) rotate(0deg); }
+        }
+        
+        /* Couple Names */
+        .couple-names {
+            margin: 30px 0;
+            opacity: 0;
+            animation: namesReveal 1.2s ease forwards;
+            animation-delay: 0.8s;
+        }
+        
+        @keyframes namesReveal {
+            from { opacity: 0; letter-spacing: 10px; filter: blur(10px); }
+            to { opacity: 1; letter-spacing: 2px; filter: blur(0); }
+        }
+        
+        .couple-names h1 {
+            font-family: 'Aref Ruqaa', serif;
+            font-size: 3.2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #fff 0%, var(--gold-light) 50%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+        
+        .ampersand {
+            font-size: 2rem;
+            color: var(--secondary);
+            display: block;
+            margin: 10px 0;
+            opacity: 0;
+            animation: ampersandPulse 1s ease forwards;
+            animation-delay: 1.2s;
+        }
+        
+        @keyframes ampersandPulse {
+            0% { opacity: 0; transform: scale(0) rotate(-180deg); }
+            50% { transform: scale(1.3) rotate(10deg); }
+            100% { opacity: 1; transform: scale(1) rotate(0deg); }
+        }
+        
+        /* Wedding Title */
+        .wedding-title {
+            font-size: 1.3rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 300;
+            letter-spacing: 3px;
+            margin: 25px 0;
+            opacity: 0;
+            animation: fadeInUp 1s ease forwards;
+            animation-delay: 1.4s;
+        }
+        
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Decorative Line */
+        .decorative-line {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin: 30px 0;
+            opacity: 0;
+            animation: lineExpand 0.8s ease forwards;
+            animation-delay: 1.6s;
+        }
+        
+        @keyframes lineExpand {
+            from { opacity: 0; transform: scaleX(0); }
+            to { opacity: 1; transform: scaleX(1); }
+        }
+        
+        .line-segment {
+            height: 1px;
+            width: 60px;
+            background: linear-gradient(90deg, transparent, var(--secondary));
+        }
+        
+        .line-segment:last-child {
+            background: linear-gradient(90deg, var(--secondary), transparent);
+        }
+        
+        .diamond {
+            width: 10px;
+            height: 10px;
+            background: var(--secondary);
+            transform: rotate(45deg);
+            box-shadow: 0 0 10px var(--secondary);
+        }
+        
+        /* Date Section */
+        .date-section {
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 20px;
+            padding: 25px;
+            margin: 25px 0;
+            opacity: 0;
+            animation: dateSlide 1s ease forwards;
+            animation-delay: 1.8s;
+        }
+        
+        @keyframes dateSlide {
+            from { opacity: 0; transform: translateX(-50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        .date-label {
+            font-size: 0.9rem;
+            color: var(--secondary);
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        .date-value {
+            font-family: 'Aref Ruqaa', serif;
+            font-size: 1.8rem;
+            color: #fff;
+            font-weight: 700;
+        }
+        
+        /* Location Section */
+        .location-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            margin: 20px 0;
+            opacity: 0;
+            animation: locationFade 1s ease forwards;
+            animation-delay: 2s;
+        }
+        
+        @keyframes locationFade {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        
+        .location-icon {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, var(--secondary), var(--gold-dark));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            color: var(--primary);
+        }
+        
+        .location-text h4 {
+            font-size: 1.1rem;
+            color: #fff;
+            margin-bottom: 3px;
+        }
+        
+        .location-text p {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        /* RSVP Button */
+        .rsvp-btn {
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--gold-dark) 100%);
+            color: var(--primary);
+            border: none;
+            padding: 18px 50px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 25px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
+            opacity: 0;
+            animation: btnRise 0.8s ease forwards;
+            animation-delay: 2.2s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        @keyframes btnRise {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .rsvp-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .rsvp-btn:hover::before {
+            left: 100%;
+        }
+        
+        .rsvp-btn:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 20px 40px rgba(212, 175, 55, 0.4);
+        }
+        
+        /* Footer Text */
+        .footer-text {
+            margin-top: 30px;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.5);
+            opacity: 0;
+            animation: fadeIn 1s ease forwards;
+            animation-delay: 2.5s;
+        }
+        
+        @keyframes fadeIn { to { opacity: 1; } }
+        
+        /* Responsive */
+        @media (max-width: 520px) {
+            .elite-card { padding: 35px 25px; border-radius: 25px; }
+            .couple-names h1 { font-size: 2.4rem; }
+            .crown-icon { font-size: 2.5rem; }
+            .bismillah { font-size: 1.3rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-animation"></div>
+    <div class="particles" id="particles"></div>
+    
+    <div class="invitation-container">
+        <div class="elite-card">
+            <div class="corner-ornament top-right"></div>
+            <div class="corner-ornament top-left"></div>
+            <div class="corner-ornament bottom-right"></div>
+            <div class="corner-ornament bottom-left"></div>
+            
+            <p class="bismillah">بِسْمِ اللهِ الرَّحْمَنِ الرَّحِيمِ</p>
+            <div class="crown-icon">👑</div>
+            
+            <div class="couple-names">
+                <h1>خالد & نور</h1>
+                <span class="ampersand">&</span>
+            </div>
+            
+            <p class="wedding-title">يدعوانكم لمشاركتهما فرحهما</p>
+            
+            <div class="decorative-line">
+                <span class="line-segment"></span>
+                <span class="diamond"></span>
+                <span class="line-segment"></span>
+            </div>
+            
+            <div class="date-section">
+                <p class="date-label">موعد الفرح</p>
+                <p class="date-value">٢٠ سبتمبر ٢٠٢٦</p>
+            </div>
+            
+            <div class="location-section">
+                <div class="location-icon"><i class="fas fa-map-marker-alt"></i></div>
+                <div class="location-text">
+                    <h4>فندق الريتز كارلتون</h4>
+                    <p>الرياض، المملكة العربية السعودية</p>
+                </div>
+            </div>
+            
+            <button class="rsvp-btn"><i class="fas fa-heart"></i> تأكيد الحضور</button>
+            <p class="footer-text">يسرنا تشريفكم 🤍</p>
+        </div>
+    </div>
+    
+    <script>
+        const particlesContainer = document.getElementById('particles');
+        for (let i = 0; i < 25; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 8 + 's';
+            particle.style.animationDuration = (Math.random() * 4 + 6) + 's';
+            particlesContainer.appendChild(particle);
+        }
+    </script>
+</body>
+</html>
