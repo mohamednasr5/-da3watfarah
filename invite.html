@@ -25,6 +25,7 @@
     <!-- AOS Animation -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <script src="js/vip-template-renderer.js"></script>
     
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/style.css">
@@ -3302,10 +3303,7 @@
             const params = new URLSearchParams(window.location.search);
             const isPreviewMode = params.get('preview') === '1';
 
-            // Live-preview mode (used by the invitation wizard): read the
-            // data straight from sessionStorage instead of Firebase, so the
-            // preview reflects exactly what the user has typed so far, with
-            // the real template styling and chosen colors.
+            // Live-preview mode (used by the invitation wizard)
             if (isPreviewMode) {
                 try {
                     const raw = sessionStorage.getItem('farah_preview_data');
@@ -3317,6 +3315,16 @@
                     }
 
                     invitationData = data;
+
+                    // === VIP Template Detection for Preview Mode ===
+                    const previewTemplateFile = (data.design && data.design.templateFile) || '';
+                    if (typeof VipTemplateRenderer !== 'undefined' &&
+                        VipTemplateRenderer.isVipTemplate(previewTemplateFile, data.design)) {
+                        const container = document.getElementById('invitationContainer');
+                        VipTemplateRenderer.render(data, previewTemplateFile, container);
+                        return;
+                    }
+
                     populateInvitationUI(data);
 
                     const weddingDate = data.event?.date || data.event?.weddingDate;
@@ -3377,7 +3385,26 @@
                 // Store data globally
                 invitationData = data;
 
-                // Populate UI with invitation data
+                // === VIP Template Detection ===
+                // If the invitation uses a VIP template (full-layout design under vip/),
+                // delegate rendering to VipTemplateRenderer instead of the shared shell.
+                const templateFile = (data.design && data.design.templateFile) || '';
+                if (typeof VipTemplateRenderer !== 'undefined' &&
+                    VipTemplateRenderer.isVipTemplate(templateFile, data.design)) {
+                    const container = document.getElementById('invitationContainer');
+                    VipTemplateRenderer.render(data, templateFile, container);
+
+                    // Still increment view count and listen for wishes even for VIP templates
+                    const invId = data.key || data.id;
+                    if (invId) {
+                        incrementViewCount(invId);
+                        listenForWishes();
+                        listenForApprovedMemories();
+                    }
+                    return;
+                }
+
+                // Populate UI with invitation data (non-VIP path)
                 populateInvitationUI(data);
 
                 // Initialize countdown
