@@ -1,0 +1,36 @@
+User-agent: *
+Allow: /
+
+# صفحات خاصة/إدارية أو لا تفيد الفهرسة — لا داعي لأرشفتها
+Disallow: /admin.html
+Disallow: /dashboard.html
+Disallow: /dashboard.html.old_backup
+Disallow: /editor.html
+Disallow: /create-invitation.html
+Disallow: /my-invitations.html
+Disallow: /settings.html
+Disallow: /overview.html
+Disallow: /login.html
+Disallow: /register.html
+Disallow: /ai-writer.html
+Disallow: /js/
+Disallow: /*.json$
+
+# اسمح صراحة لروبوتات الذكاء الاصطناعي (ChatGPT, Perplexity, Claude...)
+# بقراءة المحتوى العام — يفيد ظهورك في نتائج البحث بالذكاء الاصطناعي
+User-agent: GPTBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+Sitemap: https://da3watfarah.com/sitemap.xml

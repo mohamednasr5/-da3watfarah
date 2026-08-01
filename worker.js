@@ -81,6 +81,29 @@ export default {
             return handleAdminLogin(request, env, corsHeaders);
         }
 
+        // Dynamic social-share preview image: /api/og/<slug>.png
+        // Renders a branded card with the couple's names (used as og:image
+        // for invitation links shared on WhatsApp/Facebook/etc).
+        if (url.pathname.startsWith('/api/og/') && request.method === 'GET') {
+            return handleOgImage(request, env, url);
+        }
+
+        // Server-rendered invitation page: injects the real couple names /
+        // cover photo into <title> and the Open Graph meta tags BEFORE the
+        // HTML is sent, so link-preview crawlers (which never run JS) show
+        // the correct names and image. Bind a Cloudflare Worker Route for
+        // da3watfarah.com/* to this Worker for this to take effect on the
+        // real domain (see deployment notes).
+        if ((url.pathname === '/invite.html' || isPrettyInviteSlug(url.pathname)) && request.method === 'GET') {
+            return handleInvitePage(request, env, url);
+        }
+
+        // Dynamic sitemap of published invitations (kept separate from the
+        // static sitemap.xml so it always reflects the live database).
+        if (url.pathname === '/sitemap-invitations.xml' && request.method === 'GET') {
+            return handleInvitationsSitemap(env);
+        }
+
         if (url.pathname.startsWith('/files/')) {
             return serveFile(url, env, corsHeaders);
         }
@@ -93,7 +116,12 @@ export default {
                 timestamp: new Date().toISOString(),
                 r2BucketConnected: !!bucket,
                 publicUrlConfigured: !!env.PUBLIC_URL,
-                nvidiaKeyConfigured: !!env.NVIDIA_API_KEY
+                nvidiaKeyConfigured: !!env.NVIDIA_API_KEY,
+                // Diagnostics for the admin.html login (does NOT reveal the
+                // actual secret values, just whether they're set):
+                adminPasswordConfigured: !!env.ADMIN_PASSWORD,
+                adminFirebaseEmailConfigured: !!env.ADMIN_FIREBASE_EMAIL,
+                adminFirebasePasswordConfigured: !!env.ADMIN_FIREBASE_PASSWORD
             }, corsHeaders);
         }
 
@@ -420,6 +448,158 @@ async function handleAdminLogin(request, env, corsHeaders) {
     } catch (error) {
         console.error('Admin login error:', error);
         return errorResponse('حدث خطأ أثناء تسجيل الدخول', 500, corsHeaders);
+    }
+}
+
+// ==========================================================================
+// Dynamic social-preview (Open Graph) support
+// ==========================================================================
+
+const FIREBASE_DB_URL = 'https://da3watfarah-default-rtdb.firebaseio.com';
+
+// Reserved top-level pages that are NOT invitation slugs (pretty URLs like
+// da3watfarah.com/ahmed-sara route through 404.html today; once this Worker
+// sits in front of the domain we can resolve them directly instead).
+const RESERVED_PATHS = new Set([
+    '/', '/index.html', '/login.html', '/register.html', '/editor.html',
+    '/admin.html', '/invite.html', '/invitation.html', '/dashboard.html',
+    '/gallery.html', '/my-invitations.html', '/settings.html', '/overview.html',
+    '/create-invitation.html', '/music.html', '/ai-writer.html', '/404.html',
+    '/robots.txt', '/sitemap.xml', '/sitemap-invitations.xml', '/llms.txt',
+    '/manifest.json', '/sw.js'
+]);
+
+function isPrettyInviteSlug(pathname) {
+    if (RESERVED_PATHS.has(pathname)) return false;
+    if (pathname.startsWith('/css/') || pathname.startsWith('/js/') || pathname.startsWith('/assets/') || pathname.startsWith('/api/') || pathname.startsWith('/files/')) return false;
+    if (pathname.includes('.')) return false; // skip actual asset requests
+    return true;
+}
+
+// Looks up a published invitation by its slug using the public Firebase
+// Realtime Database REST API (invitations/ is ".read": true in the rules).
+async function fetchInvitationBySlug(slug) {
+    const query = `${FIREBASE_DB_URL}/invitations.json?orderBy=${encodeURIComponent('"slug"')}&equalTo=${encodeURIComponent('"' + slug + '"')}`;
+    const res = await fetch(query);
+    if (!res.ok) return null;
+    const data = await res.json();
+    if (!data) return null;
+    const [id, inv] = Object.entries(data)[0] || [];
+    return inv ? { id, ...inv } : null;
+}
+
+function escapeXmlAttr(str) {
+    return String(str || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+// GET /api/og/<slug>.png  -> branded PNG card with the couple's names,
+// used as the og:image for invitation links shared on WhatsApp/Facebook/etc.
+async function handleOgImage(request, env, url) {
+    const slug = decodeURIComponent(url.pathname.replace('/api/og/', '').replace(/\.png$/, ''));
+    let groomName = 'العريس', brideName = 'العروسة', dateText = '';
+    try {
+        const inv = await fetchInvitationBySlug(slug);
+        if (inv) {
+            groomName = inv.couple?.groomName || groomName;
+            brideName = inv.couple?.brideName || brideName;
+            if (inv.event?.date) {
+                try { dateText = new Date(inv.event.date).toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric' }); } catch (e) {}
+            }
+        }
+    } catch (e) {
+        console.error('OG lookup error:', e);
+    }
+
+    const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    groomName = esc(groomName); brideName = esc(brideName); dateText = esc(dateText);
+
+    try {
+        const { ImageResponse } = await import('workers-og');
+        const html = `
+        <div style="height:100%;width:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(135deg,#0B0F0E 0%,#152420 100%);font-family:sans-serif;color:#F5F1E8;padding:60px;text-align:center">
+          <div style="display:flex;font-size:28px;color:#C9A227;letter-spacing:4px;margin-bottom:24px">دعوة زفاف</div>
+          <div style="display:flex;align-items:center;font-size:72px;font-weight:700;color:#E8C766">
+            <span>${brideName}</span>
+            <span style="margin:0 30px;color:#C9A227">&amp;</span>
+            <span>${groomName}</span>
+          </div>
+          ${dateText ? `<div style="display:flex;font-size:30px;color:#A9B3AC;margin-top:30px">${dateText}</div>` : ''}
+        </div>`;
+        return new ImageResponse(html, { width: 1200, height: 630 });
+    } catch (e) {
+        console.error('OG image generation error:', e);
+        // Fallback so a broken image generator never breaks link previews
+        return new Response(null, { status: 302, headers: { Location: (env.PUBLIC_URL ? env.PUBLIC_URL + '/og-default.jpg' : 'https://da3watfarah.com/assets/images/og-cover.jpg') } });
+    }
+}
+
+// GET /invite.html?slug=... or GET /<pretty-slug>
+// Fetches the real static page from the site origin, then rewrites the
+// <title> and Open Graph/Twitter meta tags in-place using the real
+// invitation data before returning it — so WhatsApp/Facebook/Twitter
+// previews (and Google) see the couple's real names and a real image,
+// not the generic placeholder.
+async function handleInvitePage(request, env, url) {
+    const slug = url.searchParams.get('slug') || url.pathname.replace(/^\//, '');
+
+    // NOTE: adjust ORIGIN_BASE if your GitHub Pages repo/user differs.
+    // This fetches the page from GitHub Pages' default domain so the
+    // Worker doesn't loop back into itself when routed on da3watfarah.com.
+    const ORIGIN_BASE = env.ORIGIN_BASE || 'https://mohamednasr5.github.io/-da3watfarah';
+    const originRes = await fetch(`${ORIGIN_BASE}/invite.html${url.search || ('?slug=' + encodeURIComponent(slug))}`, {
+        cf: { cacheTtl: 60, cacheEverything: false }
+    });
+
+    if (!originRes.ok || !slug) return originRes;
+
+    const inv = await fetchInvitationBySlug(slug).catch(() => null);
+    if (!inv) return originRes; // unknown slug: serve the page as-is (its own JS/404 flow handles it)
+
+    const groomName = inv.couple?.groomName || '';
+    const brideName = inv.couple?.brideName || '';
+    const title = groomName && brideName ? `دعوة زفاف ${brideName} و ${groomName} | دعوة فرح` : 'دعوة زفاف | دعوة فرح';
+    const description = inv.content?.invitationText || inv.invitationText || `يسرنا دعوتكم لحضور زفاف ${brideName} و ${groomName}`;
+    const image = inv.design?.coverImage || inv.coverImage || `${new URL(request.url).origin}/api/og/${encodeURIComponent(slug)}.png`;
+    const pageUrl = `https://da3watfarah.com/${slug}`;
+
+    class MetaRewriter {
+        element(el) {
+            const prop = el.getAttribute('property');
+            const name = el.getAttribute('name');
+            if (prop === 'og:title') el.setAttribute('content', title);
+            if (prop === 'og:description') el.setAttribute('content', description);
+            if (prop === 'og:image') el.setAttribute('content', image);
+            if (prop === 'og:url') el.setAttribute('content', pageUrl);
+            if (name === 'twitter:title') el.setAttribute('content', title);
+            if (name === 'twitter:description') el.setAttribute('content', description);
+            if (name === 'twitter:image') el.setAttribute('content', image);
+            if (name === 'description') el.setAttribute('content', description);
+        }
+    }
+    class TitleRewriter {
+        element(el) { el.setInnerContent(title); }
+    }
+
+    return new HTMLRewriter()
+        .on('meta', new MetaRewriter())
+        .on('title', new TitleRewriter())
+        .transform(originRes);
+}
+
+// GET /sitemap-invitations.xml — lists published invitations so Google can
+// index individual invitation pages (extra organic-search reach).
+async function handleInvitationsSitemap(env) {
+    try {
+        const res = await fetch(`${FIREBASE_DB_URL}/invitations.json?orderBy=${encodeURIComponent('"isPublished"')}&equalTo=true`);
+        const data = res.ok ? await res.json() : null;
+        const entries = data ? Object.values(data) : [];
+        const urls = entries.filter(inv => inv.slug).map(inv =>
+            `  <url><loc>https://da3watfarah.com/${escapeXmlAttr(inv.slug)}</loc><changefreq>weekly</changefreq><priority>0.5</priority></url>`
+        ).join('\n');
+        const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>`;
+        return new Response(xml, { headers: { 'Content-Type': 'application/xml' } });
+    } catch (e) {
+        return new Response('<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"></urlset>', { headers: { 'Content-Type': 'application/xml' } });
     }
 }
 
