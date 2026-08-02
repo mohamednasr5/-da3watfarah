@@ -104,6 +104,12 @@ export default {
             return handleInvitationsSitemap(env);
         }
 
+        // Random cover image endpoint /api/random-cover?event=wedding
+        // Returns a random cover image URL suitable for the event type
+        if (url.pathname === '/api/random-cover' && request.method === 'GET') {
+            return handleRandomCover(request, env, corsHeaders, url);
+        }
+
         if (url.pathname.startsWith('/files/')) {
             return serveFile(url, env, corsHeaders);
         }
@@ -127,13 +133,14 @@ export default {
 
         return jsonResponse({
             message: 'Da3wat Farah API',
-            version: '1.1.0',
+            version: '1.2.0',
             endpoints: [
                 'POST /api/upload - Upload file to R2',
                 'DELETE /api/delete - Delete file from R2',
                 'GET /api/list - List files in bucket',
                 'POST /api/ai/generate - Generate invitation text via AI',
                 'POST /api/admin/login - Owner login with a single password (no email)',
+                'GET /api/random-cover?event=wedding - Get random cover image for event type',
                 'GET /files/:key - Serve file from R2',
                 'GET /health - Diagnostics'
             ]
@@ -612,4 +619,180 @@ function jsonResponse(data, headers, status = 200) {
 
 function errorResponse(message, status, headers) {
     return jsonResponse({ success: false, error: message }, headers, status);
+}
+
+// ==========================================================================
+// Random Cover Image System
+// نظام الصور العشوائية للأغلفة
+// ==========================================================================
+
+/**
+ * Cover image sources configuration per event type
+ * إعدادات مصادر صور الأغلفة حسب نوع المناسبة
+ */
+const COVER_IMAGE_CONFIG = {
+    wedding: {
+        queries: ['wedding', 'wedding decoration', 'wedding flowers', 'romantic wedding', 'bridal'],
+        colors: ['#D4AF37', '#F5E6D3', '#8B0000', '#FFFFFF'],
+        fallbackText: 'زفاف سعيد'
+    },
+    engagement: {
+        queries: ['engagement ring', 'romantic dinner', 'couple love', 'engagement party', 'roses'],
+        colors: ['#FF69B4', '#FFD700', '#C0C0C0', '#FFE4E1'],
+        fallbackText: 'خطوبة سعيدة'
+    },
+    katb_ketab: {
+        queries: ['islamic decoration', 'arabic calligraphy', 'mosque interior', 'islamic pattern'],
+        colors: ['#1A5F1A', '#D4AF37', '#FFFFFF', '#2C3E50'],
+        fallbackText: 'كتب الكتاب'
+    },
+    henna: {
+        queries: ['henna design', 'henna party', 'arabic celebration', 'women gathering'],
+        colors: ['#8B008B', '#FF1493', '#D4AF37', '#2D1B4E'],
+        fallbackText: 'ليلة حناء'
+    },
+    birthday: {
+        queries: ['birthday party', 'birthday cake', 'balloons', 'celebration', 'confetti'],
+        colors: ['#FF6B6B', '#4ECDC4', '#FFE66D', '#95E1D3'],
+        fallbackText: 'عيد ميلاد سعيد'
+    },
+    newborn: {
+        queries: ['baby', 'newborn', 'baby shower', 'baby feet', 'soft baby'],
+        colors: ['#FFB6C1', '#87CEEB', '#F0E68C', '#DDA0DD'],
+        fallbackText: 'مبارك المولود'
+    },
+    graduation: {
+        queries: ['graduation', 'cap and gown', 'university', 'diploma', 'academic'],
+        colors: ['#1E3A5F', '#D4AF37', '#2E4057', '#F5F5DC'],
+        fallbackText: 'مبروك التخرج'
+    },
+    ramadan: {
+        queries: ['ramadan', 'iftar', 'lanterns', 'moon and stars', 'dates', 'mosque at night'],
+        colors: ['#6B8E23', '#D4AF37', '#1a1a2e', '#8B4513'],
+        fallbackText: 'رمضان كريم'
+    }
+};
+
+/**
+ * Valid event types for random cover images
+ * أنواع المناسبات الصالحة للصور العشوائية
+ */
+const VALID_EVENT_TYPES = Object.keys(COVER_IMAGE_CONFIG);
+
+/**
+ * Generate a placeholder SVG image as fallback
+ * إنشاء صورة SVG بديلة
+ * 
+ * @param {string} eventType - Type of event
+ * @param {number} width - Image width
+ * @param {number} height - Image height
+ * @returns {string} SVG data URL
+ */
+function generatePlaceholderSVG(eventType, width = 800, height = 600) {
+    const config = COVER_IMAGE_CONFIG[eventType] || COVER_IMAGE_CONFIG.wedding;
+    const colors = config.colors;
+    const color1 = colors[Math.floor(Math.random() * colors.length)];
+    let color2 = colors[Math.floor(Math.random() * colors.length)];
+    while (color2 === color1) {
+        color2 = colors[Math.floor(Math.random() * colors.length)];
+    }
+    
+    const svg = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">
+            <defs>
+                <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:${color1};stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:${color2};stop-opacity:1" />
+                </linearGradient>
+            </defs>
+            <rect width="${width}" height="${height}" fill="url(#grad)"/>
+            <text x="50%" y="50%" font-family="Arial,sans-serif" font-size="36" fill="white" 
+                  text-anchor="middle" dominant-baseline="middle">${config.fallbackText}</text>
+        </svg>
+    `;
+    
+    return `data:image/svg+xml;base64,${btoa(unescape(encodeURIComponent(svg)))}`;
+}
+
+/**
+ * Handle GET /api/random-cover?event=wedding&width=800&height=600
+ * Returns a random cover image URL suitable for the specified event type
+ * 
+ * Supports multiple image sources:
+ * 1. Unsplash Source API (free, no key needed)
+ * 2. Picsum Photos (free, reliable)
+ * 3. Generated SVG placeholder (fallback)
+ * 
+ * Query parameters:
+ *  - event: Event type (wedding, engagement, etc.) - required
+ *  - width: Image width in pixels (default: 800)
+ *  - height: Image height in pixels (default: 600)
+ *  - source: Preferred source (unsplash, picsum, placeholder) - optional
+ */
+async function handleRandomCover(request, env, corsHeaders, url) {
+    try {
+        // Get query parameters / الحصول على معاملات الاستعلام
+        const eventType = url.searchParams.get('event') || 'wedding';
+        const width = parseInt(url.searchParams.get('width')) || 800;
+        const height = parseInt(url.searchParams.get('height')) || 600;
+        const preferredSource = url.searchParams.get('source') || 'unsplash';
+        
+        // Validate event type / التحقق من نوع المناسبة
+        if (!VALID_EVENT_TYPES.includes(eventType)) {
+            return errorResponse(
+                `Invalid event type. Supported types: ${VALID_EVENT_TYPES.join(', ')}`,
+                400,
+                corsHeaders
+            );
+        }
+        
+        const config = COVER_IMAGE_CONFIG[eventType];
+        let imageUrl;
+        let source = preferredSource;
+        
+        // Try to get image based on preferred source
+        // محاولة الحصول على الصورة بناءً على المصدر المفضل
+        switch (preferredSource) {
+            case 'unsplash':
+                // Unsplash Source API (deprecated but functional)
+                const query = config.queries[Math.floor(Math.random() * config.queries.length)];
+                const timestamp = Date.now();
+                imageUrl = `https://source.unsplash.com/${width}x${height}/?${encodeURIComponent(query)}&sig=${timestamp}`;
+                break;
+                
+            case 'picsum':
+                // Picsum Photos (reliable alternative)
+                const seed = `${eventType}-${Math.random().toString(36).substring(7)}`;
+                imageUrl = `https://picsum.photos/seed/${seed}/${width}/${height}`;
+                break;
+                
+            case 'placeholder':
+            default:
+                // Generate SVG placeholder
+                imageUrl = generatePlaceholderSVG(eventType, width, height);
+                source = 'placeholder';
+        }
+        
+        // Return the image URL / إرجاع رابط الصورة
+        return jsonResponse({
+            success: true,
+            eventType,
+            imageUrl,
+            source,
+            width,
+            height,
+            query: config.queries[0],
+            colors: config.colors,
+            timestamp: new Date().toISOString(),
+            cacheTtl: 3600 // Suggested cache time in seconds
+        }, corsHeaders);
+        
+    } catch (error) {
+        console.error('Random cover error:', error);
+        return errorResponse(
+            `Error: ${error.message}`,
+            500,
+            corsHeaders
+        );
+    }
 }

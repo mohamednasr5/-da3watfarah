@@ -941,6 +941,215 @@
                 grid-template-columns: 1fr;
             }
         }
+        
+        /* ===================================
+           Category Tabs / Section Selection
+           =================================== */
+        .category-tabs-container {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            margin-bottom: 25px;
+            border: 2px solid #E5E7EB;
+        }
+        
+        .category-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+        
+        .category-tab {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 18px;
+            border: 2px solid #E5E7EB;
+            border-radius: var(--radius-md);
+            background: white;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+        
+        .category-tab:hover {
+            border-color: var(--primary-gold, #D4AF37);
+            background: rgba(212, 175, 55, 0.05);
+            transform: translateY(-2px);
+        }
+        
+        .category-tab.active {
+            background: var(--primary-gold, #D4AF37);
+            color: white;
+            border-color: var(--primary-gold, #D4AF37);
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
+        }
+        
+        .category-tab i {
+            font-size: 1.1rem;
+        }
+        
+        .category-tab .cat-count {
+            background: rgba(255,255,255,0.2);
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+        
+        .category-tab:not(.active) .cat-count {
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+        }
+        
+        @media (max-width: 600px) {
+            .category-tabs {
+                gap: 8px;
+            }
+            .category-tab {
+                padding: 10px 14px;
+                font-size: 0.8rem;
+            }
+            .category-tabs-container {
+                padding: 15px;
+            }
+        }
+
+        /* ===================================
+           Random Cover Button Styles
+           أنماط زر الصورة العشوائية
+           =================================== */
+        
+        .random-cover-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 12px;
+            padding: 10px 20px;
+            border: 2px dashed var(--primary-gold, #D4AF37);
+            border-radius: var(--radius-lg);
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.08), rgba(212, 175, 55, 0.03));
+            color: var(--primary-gold, #D4AF37);
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            justify-content: center;
+        }
+        
+        .random-cover-btn:hover:not(:disabled) {
+            background: linear-gradient(135deg, var(--primary-gold, #D4AF37), #C9A227);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(212, 175, 55, 0.35);
+            border-style: solid;
+        }
+        
+        .random-cover-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .random-cover-btn i.fa-dice {
+            font-size: 1.1rem;
+            animation: dice-shake 2s ease-in-out infinite;
+        }
+        
+        .random-cover-btn:hover:not(:disabled) i.fa-dice,
+        .random-cover-btn:disabled i.fa-dice {
+            animation: none;
+        }
+        
+        .random-cover-btn:disabled i.fa-spinner {
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes dice-shake {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-15deg); }
+            75% { transform: rotate(15deg); }
+        }
+        
+        /* Random Image Preview Styles */
+        .random-image-preview {
+            position: relative;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            border: 2px solid var(--primary-gold, #D4AF37);
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);
+        }
+        
+        .random-image-preview img {
+            width: 100%;
+            max-height: 300px;
+            object-fit: cover;
+            display: block;
+        }
+        
+        .preview-actions {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            gap: 0;
+            background: linear-gradient(transparent, rgba(0,0,0,0.7));
+            padding: 30px 10px 10px;
+        }
+        
+        .preview-actions button {
+            flex: 1;
+            padding: 8px 12px;
+            border: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+        
+        .preview-actions .accept-btn {
+            background: #10B981;
+            color: white;
+        }
+        
+        .preview-actions .accept-btn:hover {
+            background: #059669;
+        }
+        
+        .preview-actions .reject-btn {
+            background: rgba(255,255,255,0.9);
+            color: #374151;
+        }
+        
+        .preview-actions .reject-btn:hover {
+            background: white;
+        }
+        
+        /* Loading spinner for random image */
+        .loading-spinner {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-secondary);
+        }
+        
+        .loading-spinner i {
+            font-size: 2rem;
+            color: var(--primary-gold, #D4AF37);
+            margin-bottom: 10px;
+        }
+        
+        .loading-spinner p {
+            margin: 0;
+            font-size: 0.95rem;
+        }
     </style>
 </head>
 <body class="dashboard-body">
@@ -1074,30 +1283,6 @@
                                     <option value="female" data-i18n="newborn_gender_female">مولودة (أنثى)</option>
                                 </select>
                             </div>
-
-                            <!-- Extra fields per event category — optional, only shown/used when the
-                                 selected template actually has a place to display them (birthday age,
-                                 newborn weight, graduation major/university). Safe no-op otherwise. -->
-                            <div class="form-group" id="extraAgeGroup" style="display:none;">
-                                <label data-i18n="extra_age_label"><i class="fas fa-cake-candles"></i> العمر (اختياري)</label>
-                                <input type="text" class="form-control" id="extraAge" placeholder="مثال: سبع" data-i18n-placeholder="extra_age_ph">
-                                <small style="color:#6B7280;" data-i18n="extra_age_hint">يظهر تلقائيًا في نص القالب: «... تكمل [العمر] سنوات»</small>
-                            </div>
-
-                            <div class="form-group" id="extraBabyWeightGroup" style="display:none;">
-                                <label data-i18n="extra_weight_label"><i class="fas fa-weight-scale"></i> وزن المولود (اختياري)</label>
-                                <input type="text" class="form-control" id="extraBabyWeight" placeholder="مثال: 3.2 كجم" data-i18n-placeholder="extra_weight_ph">
-                            </div>
-
-                            <div class="form-group" id="extraGraduateMajorGroup" style="display:none;">
-                                <label data-i18n="extra_major_label"><i class="fas fa-graduation-cap"></i> التخصص / الدرجة العلمية (اختياري)</label>
-                                <input type="text" class="form-control" id="extraGraduateMajor" placeholder="مثال: بكالوريوس علوم حاسب" data-i18n-placeholder="extra_major_ph">
-                            </div>
-
-                            <div class="form-group" id="extraGraduateUniversityGroup" style="display:none;">
-                                <label data-i18n="extra_university_label"><i class="fas fa-building-columns"></i> الجامعة / الكلية (اختياري)</label>
-                                <input type="text" class="form-control" id="extraGraduateUniversity" placeholder="مثال: جامعة الملك سعود" data-i18n-placeholder="extra_university_ph">
-                            </div>
                             
                             <div class="form-group" id="groomFatherNameGroup">
                                 <label id="groomFatherFieldLabel" data-i18n="groom_father_label"><i class="fas fa-user-tie"></i> اسم أب العريس</label>
@@ -1151,7 +1336,26 @@
                     <div class="wizard-content" id="step2">
                         <div class="templates-section-header">
                             <h3 style="margin-bottom: 10px;" data-i18n="step2_h3"><i class="fas fa-palette" style="color: var(--primary-gold);"></i> اختر قالب الدعوة</h3>
-                            <p data-i18n="step2_p">اختر التصميم الذي يعكس ذوقكما الخاص - اضغط على أي قالب للمعاينة</p>
+                            <p data-i18n="step2_p">اختر القسم أولاً ثم اختر التصميم الذي يعكس ذوقك - اضغط على أي قالب للمعاينة</p>
+                        </div>
+                        
+                        <!-- Category Tabs / Section Selection -->
+                        <div class="category-tabs-container" id="categoryTabsContainer">
+                            <h4 style="margin-bottom: 15px; font-size: 1rem; color: var(--text-primary);" data-i18n="select_category_first">
+                                <i class="fas fa-layer-group" style="color: var(--primary-gold); margin-left: 6px;"></i> اختر قسم المناسبة أولاً:
+                            </h4>
+                            <div class="category-tabs" id="categoryTabs">
+                                <!-- Categories will be loaded here by JS -->
+                            </div>
+                        </div>
+                        
+                        <!-- VIP Templates Link (shown when category is selected) -->
+                        <div class="vip-templates-link" id="vipTemplatesLink" style="display:none; margin: 15px 0; text-align: center;">
+                            <a href="/vip/index.html" target="blank" class="vip-link-btn" style="display:inline-flex;align-items:center;gap:8px;padding:10px 20px;background:linear-gradient(135deg,#1A1A2E,#2D2D44);color:#F4E4BC;border-radius:12px;text-decoration:none;font-weight:600;font-size:0.9rem;border:1px solid #D4AF37;transition:all 0.3s;">
+                                <i class="fas fa-crown"></i>
+                                <span data-i18n="view_vip_templates">تصفح قوالب VIP الحصرية لهذا القسم</span>
+                                <i class="fas fa-external-link-alt" style="font-size:0.75rem;"></i>
+                            </a>
                         </div>
                         
                         <div class="templates-grid" id="templatesGrid">
@@ -1159,7 +1363,7 @@
                         </div>
                         <div id="templatesEmptyMsg" style="display:none; text-align:center; padding:40px 15px; color:#888;">
                             <i class="fas fa-hourglass-half" style="font-size:1.8rem; color:var(--primary-gold,#D4AF37); display:block; margin-bottom:10px;"></i>
-                            قوالب هذا القسم قريبًا... تابعنا
+                            <span data-i18n="coming_soon">قوالب هذا القسم قريبًا... تابعنا</span>
                         </div>
                         
                         <!-- Live Preview Panel -->
@@ -1223,6 +1427,9 @@
                                     <p data-i18n="cover_upload_p">PNG, JPG حتى 5MB</p>
                                     <input type="file" id="coverInput" accept="image/*" hidden>
                                 </div>
+                                <button type="button" id="randomCoverBtn" class="random-cover-btn" onclick="handleRandomCoverImage()">
+                                    <i class="fas fa-dice"></i> صورة عشوائية
+                                </button>
                                 <div class="upload-progress" id="coverUploadProgress">
                                     <div class="upload-progress-track"><div class="upload-progress-fill" id="coverUploadProgressFill"></div></div>
                                     <span class="upload-progress-label" id="coverUploadProgressLabel">0%</span>
@@ -1499,7 +1706,21 @@
                 waiting_review_p: 'تم استلام طلبك بنجاح، وسيتم تفعيل ونشر دعوتك بعد مراجعة الإدارة للدفع خلال وقت قصير.',
                 link_will_work: 'رابط الدعوة (سيعمل بعد الموافقة):',
                 new_invitation_btn: 'دعوة جديدة',
-                waiting_review_toast: 'تم إرسال طلبك للمراجعة! سيتم التواصل معك عند النشر 🎉'
+                waiting_review_toast: 'تم إرسال طلبك للمراجعة! سيتم التواصل معك عند النشر 🎉',
+                // New: Category/Section selection
+                select_category_first: '<i class="fas fa-layer-group" style="color: var(--primary-gold); margin-left: 6px;"></i> اختر قسم المناسبة أولاً:',
+                view_vip_templates: 'تصفح قوالب VIP الحصرية لهذا القسم',
+                coming_soon: 'قوالب هذا القسم قريبًا... تابعنا',
+                category_all: 'الكل',
+                category_wedding: 'زفاف',
+                category_engagement: 'خطوبة',
+                category_katb_ketab: 'كتب كتاب',
+                category_henna: 'حنة',
+                category_birthday: 'عيد ميلاد',
+                category_newborn: 'مولود',
+                category_graduation: 'تخرج',
+                category_ramadan: 'رمضان',
+                templates_count: '{count} قالب'
             },
             en: {
                 page_title: 'Create New Invitation | Da3wetFarah',
@@ -1621,7 +1842,21 @@
                 waiting_review_p: 'Your request was received successfully, and your invitation will be activated and published shortly after admin review of the payment.',
                 link_will_work: 'Invitation link (will work after approval):',
                 new_invitation_btn: 'New Invitation',
-                waiting_review_toast: "Your request was sent for review! We'll be in touch when it's published 🎉"
+                waiting_review_toast: "Your request was sent for review! We'll be in touch when it's published 🎉",
+                // New: Category/Section selection
+                select_category_first: '<i class="fas fa-layer-group" style="color: var(--primary-gold); margin-right: 6px;"></i> Choose the occasion category first:',
+                view_vip_templates: 'Browse VIP exclusive templates for this category',
+                coming_soon: 'Templates for this category coming soon... stay tuned',
+                category_all: 'All',
+                category_wedding: 'Wedding',
+                category_engagement: 'Engagement',
+                category_katb_ketab: 'Katb Ketab',
+                category_henna: 'Henna Night',
+                category_birthday: 'Birthday',
+                category_newborn: 'Newborn',
+                category_graduation: 'Graduation',
+                category_ramadan: 'Ramadan',
+                templates_count: '{count} templates'
             }
         };
 
@@ -1649,7 +1884,15 @@
             if (t.page_title) document.title = t.page_title;
             // Re-render dynamic parts that were built with the previous language
             if (typeof TEMPLATES_CONFIG !== 'undefined' && document.getElementById('templatesGrid')) {
-                renderTemplates(TEMPLATES_CONFIG);
+                // Use category filter if set, otherwise show all
+                if (typeof selectedCategory !== 'undefined' && selectedCategory !== 'all') {
+                    filterTemplatesByCategory(selectedCategory);
+                } else {
+                    renderTemplates(TEMPLATES_CONFIG);
+                }
+            }
+            if (typeof renderCategoryTabs === 'function') {
+                renderCategoryTabs();
             }
             if (typeof applyEventTypeFieldLabels === 'function') {
                 applyEventTypeFieldLabels();
@@ -1743,6 +1986,91 @@
         let uploadedGallery = [];
         let uploadedMusic = null;
         let modalTemplateId = null;
+        let selectedCategory = 'all'; // New: Selected category for filtering
+        
+        // ===================================
+        // Event Categories Configuration
+        // ===================================
+        const EVENT_CATEGORIES = [
+            { id: 'all', icon: 'fa-th-large', key: 'category_all' },
+            { id: 'wedding', icon: 'fa-rings-wedding', key: 'category_wedding' },
+            { id: 'engagement', icon: 'fa-gem', key: 'category_engagement' },
+            { id: 'katb_ketab', icon: 'fa-book-quran', key: 'category_katb_ketab' },
+            { id: 'henna', icon: 'fa-spa', key: 'category_henna' },
+            { id: 'birthday', icon: 'fa-cake-candles', key: 'category_birthday' },
+            { id: 'newborn', icon: 'fa-baby', key: 'category_newborn' },
+            { id: 'graduation', icon: 'fa-graduation-cap', key: 'category_graduation' },
+            { id: 'ramadan', icon: 'fa-moon', key: 'category_ramadan' }
+        ];
+        
+        // ===================================
+        // Category Tabs Functions
+        // ===================================
+        function renderCategoryTabs() {
+            const container = document.getElementById('categoryTabs');
+            if (!container) return;
+            
+            const lang = ciLang();
+            
+            container.innerHTML = EVENT_CATEGORIES.map(cat => {
+                const count = cat.id === 'all' 
+                    ? TEMPLATES_CONFIG.length 
+                    : TEMPLATES_CONFIG.filter(t => t.eventCategories && t.eventCategories.includes(cat.id)).length;
+                
+                return `
+                    <button type="button" class="category-tab ${selectedCategory === cat.id ? 'active' : ''}" 
+                            data-category="${cat.id}" onclick="selectCategory('${cat.id}')">
+                        <i class="fas ${cat.icon}"></i>
+                        <span>${L(cat.key)}</span>
+                        <span class="cat-count">${count}</span>
+                    </button>
+                `;
+            }).join('');
+        }
+        
+        function selectCategory(categoryId) {
+            selectedCategory = categoryId;
+            
+            // Update active tab
+            document.querySelectorAll('.category-tab').forEach(tab => {
+                tab.classList.toggle('active', tab.dataset.category === categoryId);
+            });
+            
+            // Show/hide VIP link
+            const vipLink = document.getElementById('vipTemplatesLink');
+            if (vipLink) {
+                vipLink.style.display = categoryId !== 'all' ? 'block' : 'none';
+                if (categoryId !== 'all') {
+                    const catName = L('category_' + categoryId);
+                    vipLink.querySelector('a').href = `/vip/index.html#filter=${categoryId}`;
+                }
+            }
+            
+            // Filter templates
+            filterTemplatesByCategory(categoryId);
+        }
+        
+        function filterTemplatesByCategory(categoryId) {
+            let filtered;
+            if (categoryId === 'all') {
+                filtered = TEMPLATES_CONFIG;
+            } else {
+                filtered = TEMPLATES_CONFIG.filter(t => 
+                    t.eventCategories && t.eventCategories.includes(categoryId)
+                );
+            }
+            
+            const grid = document.getElementById('templatesGrid');
+            const emptyMsg = document.getElementById('templatesEmptyMsg');
+            
+            if (filtered.length === 0) {
+                grid.innerHTML = '';
+                emptyMsg.style.display = 'block';
+            } else {
+                emptyMsg.style.display = 'none';
+                renderTemplates(filtered);
+            }
+        }
         
         // ===================================
         // Templates Configuration (Local)
@@ -2334,7 +2662,6 @@
                     dateLabel: '<i class="fas fa-calendar-alt"></i> تاريخ عيد الميلاد *',
                     venueLabel: '<i class="fas fa-map-marker-alt"></i> مكان الاحتفال *',
                     singlePerson: true,
-                    showAge: true,
                     nameLabel: '<i class="fas fa-user"></i> اسم صاحب/صاحبة عيد الميلاد *',
                     namePh: 'أدخل الاسم'
                 },
@@ -2343,7 +2670,6 @@
                     venueLabel: '<i class="fas fa-map-marker-alt"></i> مكان الاحتفال *',
                     singlePerson: true,
                     showNewbornGender: true,
-                    showBabyWeight: true,
                     nameLabel: '<i class="fas fa-baby"></i> اسم المولود *',
                     namePh: 'أدخل اسم المولود'
                 },
@@ -2351,7 +2677,6 @@
                     dateLabel: '<i class="fas fa-calendar-alt"></i> تاريخ حفل التخرج *',
                     venueLabel: '<i class="fas fa-map-marker-alt"></i> مكان حفل التخرج *',
                     singlePerson: true,
-                    showGraduateFields: true,
                     nameLabel: '<i class="fas fa-user"></i> اسم الخريج/الخريجة *',
                     namePh: 'أدخل الاسم'
                 },
@@ -2384,7 +2709,6 @@
                     dateLabel: '<i class="fas fa-calendar-alt"></i> Birthday Date *',
                     venueLabel: '<i class="fas fa-map-marker-alt"></i> Party Venue *',
                     singlePerson: true,
-                    showAge: true,
                     nameLabel: '<i class="fas fa-user"></i> Name *',
                     namePh: 'Enter name'
                 },
@@ -2393,7 +2717,6 @@
                     venueLabel: '<i class="fas fa-map-marker-alt"></i> Venue *',
                     singlePerson: true,
                     showNewbornGender: true,
-                    showBabyWeight: true,
                     nameLabel: '<i class="fas fa-baby"></i> Baby\'s Name *',
                     namePh: 'Enter baby\'s name'
                 },
@@ -2401,7 +2724,6 @@
                     dateLabel: '<i class="fas fa-calendar-alt"></i> Graduation Date *',
                     venueLabel: '<i class="fas fa-map-marker-alt"></i> Graduation Venue *',
                     singlePerson: true,
-                    showGraduateFields: true,
                     nameLabel: '<i class="fas fa-user"></i> Graduate\'s Name *',
                     namePh: 'Enter name'
                 },
@@ -2459,14 +2781,6 @@
                 document.getElementById('brideName').required = true;
                 toggle('newbornGenderGroup', false);
             }
-
-            // Optional per-category extra fields — only relevant to specific
-            // event types, and only used by templates that have a slot for them
-            // (older/other templates simply ignore the value).
-            toggle('extraAgeGroup', !!meta.showAge);
-            toggle('extraBabyWeightGroup', !!meta.showBabyWeight);
-            toggle('extraGraduateMajorGroup', !!meta.showGraduateFields);
-            toggle('extraGraduateUniversityGroup', !!meta.showGraduateFields);
         }
 
         // Prefill the wizard with text generated by the AI writer (ai-writer.html),
@@ -2487,6 +2801,12 @@
 
         document.addEventListener('DOMContentLoaded', function() {
             AOS.init({ duration: 600, once: true });
+            
+            // Initialize category tabs first
+            if (typeof renderCategoryTabs === 'function') {
+                renderCategoryTabs();
+            }
+            
             loadTemplates();
             initUploadAreas();
 
@@ -3174,13 +3494,7 @@ ${venueName ? `- مكان الزفاف: ${venueName}` : ''}
                     loveStory: val('loveStory'),
                     religiousVerseEnabled: document.getElementById('religiousVerseToggle')?.checked ?? true,
                     religiousVerseType: document.getElementById('religiousVerseType')?.value || 'quran',
-                    newbornGender: document.getElementById('newbornGender')?.value || 'male',
-                    extra: {
-                        age: val('extraAge'),
-                        babyWeight: val('extraBabyWeight'),
-                        graduateMajor: val('extraGraduateMajor'),
-                        graduateUniversity: val('extraGraduateUniversity')
-                    }
+                    newbornGender: document.getElementById('newbornGender')?.value || 'male'
                 },
                 isPublished: true
             };
@@ -3399,13 +3713,7 @@ ${venueName ? `- مكان الزفاف: ${venueName}` : ''}
                         loveStory: document.getElementById('loveStory').value.trim(),
                         religiousVerseEnabled: document.getElementById('religiousVerseToggle').checked,
                         religiousVerseType: document.getElementById('religiousVerseType').value,
-                        newbornGender: document.getElementById('newbornGender')?.value || 'male',
-                        extra: {
-                            age: document.getElementById('extraAge')?.value.trim() || '',
-                            babyWeight: document.getElementById('extraBabyWeight')?.value.trim() || '',
-                            graduateMajor: document.getElementById('extraGraduateMajor')?.value.trim() || '',
-                            graduateUniversity: document.getElementById('extraGraduateUniversity')?.value.trim() || ''
-                        }
+                        newbornGender: document.getElementById('newbornGender')?.value || 'male'
                     },
                     slug: slug
                 };
@@ -3475,14 +3783,7 @@ ${venueName ? `- مكان الزفاف: ${venueName}` : ''}
 
         function renderPlanGrid() {
             const grid = document.getElementById('planGrid');
-            const vipRequired = !!(window.__vipGate && window.__vipGate.required);
-            // If the chosen template is VIP-exclusive, don't offer the free/premium
-            // plans at all — publishing this design requires a VIP subscription.
-            const plansToShow = vipRequired
-                ? { vip: PUBLISH_PLANS.vip }
-                : PUBLISH_PLANS;
-
-            grid.innerHTML = Object.values(plansToShow).map(plan => `
+            grid.innerHTML = Object.values(PUBLISH_PLANS).map(plan => `
                 <div class="publish-plan-card" data-plan="${plan.id}" onclick="choosePublishPlan('${plan.id}')"
                      style="border:2px solid var(--border-color,#E5E7EB);border-radius:var(--radius-lg);padding:22px 18px;text-align:center;cursor:pointer;transition:all .2s;background:var(--bg-card,#fff);">
                     <i class="fas ${plan.icon}" style="font-size:1.8rem;color:var(--primary-gold);margin-bottom:10px;display:block;"></i>
@@ -3499,14 +3800,6 @@ ${venueName ? `- مكان الزفاف: ${venueName}` : ''}
         }
 
         async function choosePublishPlan(planId) {
-            // Hard guard: a VIP-template invitation can only be published on the
-            // VIP plan. Even if this function is reached with 'free' or 'premium'
-            // (e.g. a stale preselected plan from localStorage), redirect to VIP.
-            const vipRequired = !!(window.__vipGate && window.__vipGate.required);
-            if (vipRequired && planId !== 'vip') {
-                planId = 'vip';
-            }
-
             selectedPublishPlan = PUBLISH_PLANS[planId];
 
             if (selectedPublishPlan.usd === 0) {
@@ -3738,5 +4031,189 @@ ${venueName ? `- مكان الزفاف: ${venueName}` : ''}
                 });
             }
         }
+
+        // ===================================
+        // Random Cover Image Handler
+        // معالج صورة الغلاف العشوائية
+        // ===================================
+        
+        /**
+         * Get current event type from form
+         * الحصول على نوع المناسبة الحالي من النموذج
+         */
+        function getCurrentEventType() {
+            const eventTypeSelect = document.getElementById('eventType');
+            if (eventTypeSelect) {
+                return eventTypeSelect.value || 'wedding';
+            }
+            return 'wedding';
+        }
+        
+        /**
+         * Handle random cover image button click
+         * معالجة الضغط على زر الصورة العشوائية
+         */
+        async function handleRandomCoverImage() {
+            const btn = document.getElementById('randomCoverBtn');
+            const preview = document.getElementById('coverPreview');
+            const urlInput = document.getElementById('coverUrlInput');
+            
+            if (!btn || btn.disabled) return;
+            
+            const eventType = getCurrentEventType();
+            
+            // Update button state / تحديث حالة الزر
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner"></i> جاري البحث عن صورة مناسبة...';
+            
+            try {
+                // Show loading in preview / عرض التحميل في المعاينة
+                if (preview) {
+                    preview.style.display = 'block';
+                    preview.innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i><p>جاري البحث عن صورة مناسبة للمناسبة...</p></div>';
+                }
+                
+                // Fetch random image using AI Prompts system / جلب صورة عشوائية
+                let imageUrl;
+                
+                if (typeof getRandomCoverImage === 'function') {
+                    const result = await getRandomCoverImage(eventType, {
+                        preferredSource: 'worker',
+                        width: 800,
+                        height: 600
+                    });
+                    imageUrl = result.imageUrl;
+                } else {
+                    // Fallback to placeholder / بديل كصورة مؤقتة
+                    imageUrl = await generateFallbackImage(eventType);
+                }
+                
+                // Preview the image / معاينة الصورة
+                if (preview && imageUrl) {
+                    preview.innerHTML = `
+                        <div class="random-image-preview">
+                            <img src="${imageUrl}" alt="صورة غلاف مقترحة" 
+                                 onerror="this.parentElement.innerHTML='<p style=\'padding:20px;color:#EF4444;text-align:center;\'>تعذر تحميل الصورة. <button onclick=\'handleRandomCoverImage()\' style=\'margin-top:10px;padding:8px 16px;background:#D4AF37;border:none;border-radius:8px;cursor:pointer;\'>المحاولة مرة أخرى</button></p>'">
+                            <div class="preview-actions">
+                                <button type="button" class="accept-btn" onclick="acceptRandomCoverImage('${imageUrl}')">
+                                    <i class="fas fa-check"></i> قبول
+                                </button>
+                                <button type="button" class="reject-btn" onclick="handleRandomCoverImage()">
+                                    <i class="fas fa-redo"></i> تغيير
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                console.log('✅ Random cover image fetched for:', eventType);
+                
+            } catch (error) {
+                console.error('❌ Error fetching random cover:', error);
+                
+                if (preview) {
+                    preview.innerHTML = `<p style="padding:15px;color:#EF4444;text-align:center;background:#FEF2F2;border-radius:8px;margin-top:10px;">
+                        <i class="fas fa-exclamation-circle"></i> حدث خطأ: ${error.message}<br>
+                        <button onclick="handleRandomCoverImage()" style="margin-top:10px;padding:8px 16px;background:#D4AF37;border:none;border-radius:8px;cursor:pointer;color:white;">إعادة المحاولة</button>
+                    </p>`;
+                    preview.style.display = 'block';
+                }
+                
+                if (typeof db !== 'undefined' && db.showNotification) {
+                    db.showNotification('حدث خطأ في جلب الصورة', 'error');
+                }
+                
+            } finally {
+                // Restore button state / استعادة حالة الزر
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-dice"></i> صورة عشوائية';
+            }
+        }
+        
+        /**
+         * Accept and use the random cover image
+         * قبول واستخدام صورة الغلاف العشوائية
+         */
+        function acceptRandomCoverImage(imageUrl) {
+            const urlInput = document.getElementById('coverUrlInput');
+            const preview = document.getElementById('coverPreview');
+            
+            if (urlInput) {
+                urlInput.value = imageUrl;
+                // Trigger change event / تشغيل حدث التغيير
+                urlInput.dispatchEvent(new Event('input', { bubbles: true }));
+                urlInput.dispatchEvent(new Event('change', { bubbles: true }));
+            }
+            
+            // Update preview to show accepted state / تحديث المعاينة
+            if (preview) {
+                const img = preview.querySelector('img');
+                if (img) {
+                    img.style.border = '3px solid #10B981';
+                }
+                const actionsDiv = preview.querySelector('.preview-actions');
+                if (actionsDiv) {
+                    actionsDiv.innerHTML = '<span style="color:white;font-weight:600;"><i class="fas fa-check-circle"></i> تم القبول!</span>';
+                }
+            }
+            
+            // Show success notification / عرض إشعار النجاح
+            if (typeof db !== 'undefined' && db.showNotification) {
+                db.showNotification('تم اختيار صورة الغلاف بنجاح! 🎲', 'success');
+            }
+            
+            console.log('✅ Random cover image accepted:', imageUrl.substring(0, 50) + '...');
+        }
+        
+        /**
+         * Generate fallback image when API is not available
+         * إنشاء صورة بديلة عندما لا تكون API متوفرة
+         */
+        async function generateFallbackImage(eventType) {
+            const colors = {
+                wedding: ['#D4AF37', '#F5E6D3'],
+                engagement: ['#FF69B4', '#FFD700'],
+                katb_ketab: ['#1A5F1A', '#D4AF37'],
+                henna: ['#8B008B', '#FF1493'],
+                birthday: ['#FF6B6B', '#4ECDC4'],
+                newborn: ['#FFB6C1', '#87CEEB'],
+                graduation: ['#1E3A5F', '#D4AF37'],
+                ramadan: ['#6B8E23', '#D4AF37']
+            };
+            
+            const [c1, c2] = colors[eventType] || colors.wedding;
+            const texts = {
+                wedding: 'زفاف سعيد',
+                engagement: 'خطوبة سعيدة',
+                katb_ketab: 'كتب الكتاب',
+                henna: 'ليلة حناء',
+                birthday: 'عيد ميلاد سعيد',
+                newborn: 'مبارك المولود',
+                graduation: 'مبروك التخرج',
+                ramadan: 'رمضان كريم'
+            };
+            
+            const text = texts[eventType] || 'دعوة فرح';
+            
+            // Generate SVG as data URL / إنشاء SVG كـ data URL
+            const svg = `
+                <svg xmlns="http://www.w3.org/2000/svg" width="800" height="600">
+                    <defs>
+                        <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:${c1};stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:${c2};stop-opacity:1" />
+                        </linearGradient>
+                    </defs>
+                    <rect width="800" height="600" fill="url(#bg)"/>
+                    <text x="50%" y="50%" font-family="Arial,Tajawal,sans-serif" font-size="48" fill="white" 
+                          text-anchor="middle" dominant-baseline="middle" opacity="0.9">${text}</text>
+                </svg>
+            `;
+            
+            return 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svg)));
+        }
     </script>
+    
+    <!-- AI Prompts & Random Cover System -->
+    <script src="js/ai-prompts.js"></script>
 </body>

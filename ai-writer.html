@@ -697,6 +697,13 @@
                                         <span>دعوة تخرج</span>
                                     </label>
                                 </div>
+                                <div class="style-option">
+                                    <input type="radio" name="eventType" value="ramadan" id="typeRamadan">
+                                    <label for="typeRamadan" class="style-option-label">
+                                        <i class="fas fa-moon"></i>
+                                        <span>دعوة رمضان</span>
+                                    </label>
+                                </div>
                             </div>
                         </div>
 
@@ -948,6 +955,18 @@
                 dateNoun: 'تاريخ التخرج',
                 locationNoun: 'مكان الحفل',
                 hideBride: true
+            },
+            ramadan: {
+                pageTitle: 'اكتب نص دعوة رمضان المبارك في ثوانٍ معدودة',
+                groomLabel: 'اسم المضيف/المضيفة',
+                brideLabel: 'نوع المناسبة (إفطار/سحور)',
+                dateLabel: 'التاريخ',
+                locationLabel: 'مكان التجمع',
+                occasionNoun: 'تجمع رمضاني',
+                promptNoun: 'دعوة رمضان',
+                dateNoun: 'التاريخ',
+                locationNoun: 'مكان التجمع',
+                hideBride: false
             }
         };
 
@@ -1710,5 +1729,8 @@ ${detailsLines}
         
         console.log('✅ AI Writer page initialized');
     </script>
+    
+    <!-- AI Prompts & Random Cover System -->
+    <script src="js/ai-prompts.js"></script>
 </body>
 </html>
