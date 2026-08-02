@@ -94,7 +94,7 @@
             var fileUrl = encodeURI(t.file);
             var videoUrl = t.video ? encodeURI(t.video) : null;
             var media = videoUrl
-                ? '<video src="' + videoUrl + '" muted loop playsinline preload="metadata" onmouseover="this.play()" onmouseout="this.pause();this.currentTime=0;"></video>'
+                ? '<video class="vip-lazy-video" data-src="' + videoUrl + '" muted loop playsinline preload="none"></video>'
                 : '<div class="vip-card-fallback"><i class="fas fa-gem"></i></div>';
 
             return (
@@ -115,11 +115,56 @@
             );
         }
 
+        // Autoplay videos when their card scrolls into view — works on mobile
+        // (no hover event exists there) and on desktop. Videos are lazy-loaded
+        // (src set only once visible) so we don't fetch all 17 clips at once.
+        var videoObserver = ('IntersectionObserver' in window) ? new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+                var video = entry.target;
+                if (entry.isIntersecting) {
+                    if (!video.src && video.dataset.src) {
+                        video.src = video.dataset.src;
+                        video.load();
+                    }
+                    var playPromise = video.play();
+                    if (playPromise && playPromise.catch) playPromise.catch(function () {});
+                } else {
+                    video.pause();
+                }
+            });
+        }, { threshold: 0.35 }) : null;
+
+        function wireCard(card) {
+            var video = card.querySelector('.vip-lazy-video');
+            if (!video) return;
+
+            // Bonus: instant play on hover for desktop users, on top of the
+            // scroll-based autoplay above.
+            video.addEventListener('mouseenter', function () {
+                if (!video.src && video.dataset.src) { video.src = video.dataset.src; video.load(); }
+                var p = video.play();
+                if (p && p.catch) p.catch(function () {});
+            });
+
+            // If the clip fails to load (missing/corrupt file), fall back to
+            // the gem icon instead of leaving a broken black box.
+            video.addEventListener('error', function () {
+                var fallback = document.createElement('div');
+                fallback.className = 'vip-card-fallback';
+                fallback.innerHTML = '<i class="fas fa-gem"></i>';
+                video.replaceWith(fallback);
+            });
+
+            if (videoObserver) videoObserver.observe(video);
+        }
+
         function render(filter) {
             var list = filter === 'all' ? VIP_TEMPLATES : VIP_TEMPLATES.filter(function (t) { return t.category === filter; });
             grid.innerHTML = list.length
                 ? list.map(cardHtml).join('')
                 : '<p class="vip-empty">لا توجد تصاميم في هذا القسم بعد.</p>';
+
+            grid.querySelectorAll('.vip-card').forEach(wireCard);
 
             grid.querySelectorAll('.vip-btn-use').forEach(function (btn) {
                 btn.addEventListener('click', function () {
