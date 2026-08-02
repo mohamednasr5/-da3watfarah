@@ -1430,6 +1430,9 @@
                                 <button type="button" id="randomCoverBtn" class="random-cover-btn" onclick="handleRandomCoverImage()">
                                     <i class="fas fa-dice"></i> صورة عشوائية
                                 </button>
+                                <button type="button" class="random-cover-btn" onclick="openMediaLibrary('image')">
+                                    <i class="fas fa-photo-film"></i> اختر من الصور المرفوعة سابقًا
+                                </button>
                                 <div class="upload-progress" id="coverUploadProgress">
                                     <div class="upload-progress-track"><div class="upload-progress-fill" id="coverUploadProgressFill"></div></div>
                                     <span class="upload-progress-label" id="coverUploadProgressLabel">0%</span>
@@ -1470,6 +1473,9 @@
                                     <p data-i18n="music_upload_p">MP3 حتى 10MB</p>
                                     <input type="file" id="musicInput" accept="audio/*" hidden>
                                 </div>
+                                <button type="button" class="random-cover-btn" onclick="openMediaLibrary('audio')">
+                                    <i class="fas fa-record-vinyl"></i> اختر من الأغاني المرفوعة سابقًا
+                                </button>
                                 <div class="upload-progress" id="musicUploadProgress">
                                     <div class="upload-progress-track"><div class="upload-progress-fill" id="musicUploadProgressFill"></div></div>
                                     <span class="upload-progress-label" id="musicUploadProgressLabel">0%</span>
@@ -1562,6 +1568,34 @@
                 </button>
                 <button class="btn-wizard btn-prev" onclick="closePreviewModal()" style="padding: 12px 24px;">
                     <span data-i18n="close_btn">إغلاق</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Media Library Picker Modal (browse previously uploaded images/music) -->
+    <div class="preview-modal" id="mediaLibraryModal">
+        <div class="preview-modal-content" style="max-width:900px;">
+            <div class="preview-modal-header">
+                <h4 id="mediaLibraryTitle">اختر من الملفات المرفوعة سابقًا</h4>
+                <button class="preview-modal-close" onclick="closeMediaLibrary()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="preview-modal-body" style="overflow-y:auto; padding:20px;">
+                <div id="mediaLibraryLoading" style="text-align:center; padding:40px; color:#888;">
+                    <i class="fas fa-spinner fa-spin" style="font-size:1.8rem; display:block; margin-bottom:10px;"></i>
+                    جارٍ التحميل...
+                </div>
+                <div id="mediaLibraryEmpty" style="display:none; text-align:center; padding:40px; color:#888;">
+                    لا توجد ملفات مرفوعة سابقًا بعد.
+                </div>
+                <div id="mediaLibraryGridImages" style="display:none; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:12px;"></div>
+                <div id="mediaLibraryListAudio" style="display:none; flex-direction:column; gap:10px;"></div>
+            </div>
+            <div class="preview-modal-footer">
+                <button class="btn-wizard btn-prev" onclick="closeMediaLibrary()" style="padding: 12px 24px;">
+                    إغلاق
                 </button>
             </div>
         </div>
@@ -3088,6 +3122,94 @@
         }
         
         // ===================================
+        // Media Library Picker (browse previously uploaded images/music
+        // stored in the shared R2 bucket, via the Worker's /api/list endpoint)
+        // ===================================
+        async function openMediaLibrary(type) {
+            const modal = document.getElementById('mediaLibraryModal');
+            const title = document.getElementById('mediaLibraryTitle');
+            const loading = document.getElementById('mediaLibraryLoading');
+            const empty = document.getElementById('mediaLibraryEmpty');
+            const gridImages = document.getElementById('mediaLibraryGridImages');
+            const listAudio = document.getElementById('mediaLibraryListAudio');
+
+            title.textContent = type === 'audio' ? 'اختر أغنية من الأغاني المرفوعة سابقًا' : 'اختر صورة من الصور المرفوعة سابقًا';
+            modal.classList.add('active');
+            loading.style.display = 'block';
+            empty.style.display = 'none';
+            gridImages.style.display = 'none';
+            listAudio.style.display = 'none';
+            gridImages.innerHTML = '';
+            listAudio.innerHTML = '';
+
+            const prefix = type === 'audio' ? 'music/' : 'images/';
+
+            try {
+                const workerUrl = window.r2Config?.workerUrl;
+                if (!workerUrl) throw new Error('R2 worker not configured');
+                const res = await fetch(`${workerUrl}/api/list?prefix=${encodeURIComponent(prefix)}&limit=200`);
+                const data = await res.json();
+                loading.style.display = 'none';
+
+                const files = (data.success && Array.isArray(data.files)) ? data.files : [];
+                if (files.length === 0) {
+                    empty.style.display = 'block';
+                    return;
+                }
+
+                // Most recently uploaded first (filenames start with a timestamp)
+                files.sort((a, b) => (b.uploaded || '').localeCompare(a.uploaded || ''));
+
+                if (type === 'audio') {
+                    listAudio.style.display = 'flex';
+                    files.forEach(file => {
+                        const row = document.createElement('div');
+                        row.style.cssText = 'display:flex;align-items:center;gap:12px;padding:12px;border:1px solid #E5E7EB;border-radius:var(--radius-md);';
+                        const name = file.key.split('/').pop();
+                        row.innerHTML = `
+                            <i class="fas fa-music" style="color:var(--primary-gold);font-size:1.3rem;flex-shrink:0;"></i>
+                            <audio controls preload="none" src="${file.url}" style="flex:1;min-width:0;height:36px;"></audio>
+                            <button type="button" class="btn-select-template" style="padding:8px 16px;font-size:.85rem;white-space:nowrap;" onclick="pickMediaFromLibrary('audio', '${file.url}', '${name.replace(/'/g, "\\'")}')">
+                                <i class="fas fa-check"></i> استخدام هذه
+                            </button>
+                        `;
+                        listAudio.appendChild(row);
+                    });
+                } else {
+                    gridImages.style.display = 'grid';
+                    files.forEach(file => {
+                        const card = document.createElement('div');
+                        card.style.cssText = 'cursor:pointer;border:2px solid transparent;border-radius:var(--radius-md);overflow:hidden;transition:border-color .2s;position:relative;aspect-ratio:1/1;background:#F3F4F6;';
+                        card.innerHTML = `<img src="${file.url}" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;" onerror="this.parentElement.style.display='none'">`;
+                        card.onmouseenter = () => card.style.borderColor = 'var(--primary-gold)';
+                        card.onmouseleave = () => card.style.borderColor = 'transparent';
+                        card.onclick = () => pickMediaFromLibrary('image', file.url, '');
+                        gridImages.appendChild(card);
+                    });
+                }
+            } catch (err) {
+                console.error('Media library load error:', err);
+                loading.style.display = 'none';
+                empty.textContent = 'تعذر تحميل الملفات المرفوعة سابقًا. تأكد من الاتصال بالإنترنت وحاول مرة أخرى.';
+                empty.style.display = 'block';
+            }
+        }
+
+        function pickMediaFromLibrary(type, url, label) {
+            if (type === 'audio') {
+                setMusic(url, label);
+            } else {
+                setCoverImage(url);
+            }
+            closeMediaLibrary();
+            scheduleLivePreviewRefresh();
+        }
+
+        function closeMediaLibrary() {
+            document.getElementById('mediaLibraryModal').classList.remove('active');
+        }
+
+        // ===================================
         // Preview Modal Functions
         // ===================================
         function openPreviewModal(templateId) {
@@ -3131,6 +3253,7 @@
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 closePreviewModal();
+                closeMediaLibrary();
             }
         });
         
@@ -3138,6 +3261,12 @@
         document.getElementById('previewModal').addEventListener('click', (e) => {
             if (e.target.id === 'previewModal') {
                 closePreviewModal();
+            }
+        });
+
+        document.getElementById('mediaLibraryModal').addEventListener('click', (e) => {
+            if (e.target.id === 'mediaLibraryModal') {
+                closeMediaLibrary();
             }
         });
         
