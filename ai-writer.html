@@ -669,6 +669,34 @@
                                         <span>كتب كتاب</span>
                                     </label>
                                 </div>
+                                <div class="style-option">
+                                    <input type="radio" name="eventType" value="henna" id="typeHenna">
+                                    <label for="typeHenna" class="style-option-label">
+                                        <i class="fas fa-hand-sparkles"></i>
+                                        <span>دعوة حناء</span>
+                                    </label>
+                                </div>
+                                <div class="style-option">
+                                    <input type="radio" name="eventType" value="birthday" id="typeBirthday">
+                                    <label for="typeBirthday" class="style-option-label">
+                                        <i class="fas fa-birthday-cake"></i>
+                                        <span>دعوة عيد ميلاد</span>
+                                    </label>
+                                </div>
+                                <div class="style-option">
+                                    <input type="radio" name="eventType" value="newborn" id="typeNewborn">
+                                    <label for="typeNewborn" class="style-option-label">
+                                        <i class="fas fa-baby"></i>
+                                        <span>دعوة مولود</span>
+                                    </label>
+                                </div>
+                                <div class="style-option">
+                                    <input type="radio" name="eventType" value="graduation" id="typeGraduation">
+                                    <label for="typeGraduation" class="style-option-label">
+                                        <i class="fas fa-graduation-cap"></i>
+                                        <span>دعوة تخرج</span>
+                                    </label>
+                                </div>
                             </div>
                         </div>
 
@@ -870,7 +898,56 @@
                 occasionNoun: 'حفل كتب الكتاب',
                 promptNoun: 'دعوة كتب كتاب',
                 dateNoun: 'تاريخ كتب الكتاب',
-                locationNoun: 'مكان كتب الكتاب'
+                locationNoun: 'مكان كتب الكتاب',
+                hideBride: false
+            },
+            henna: {
+                pageTitle: 'اكتب نص دعوة الحناء المميزة في ثوانٍ معدودة',
+                groomLabel: 'اسم العريس',
+                brideLabel: 'اسم العروس',
+                dateLabel: 'تاريخ الحناء',
+                locationLabel: 'مكان الحناء',
+                occasionNoun: 'حفل الحناء',
+                promptNoun: 'دعوة حناء',
+                dateNoun: 'تاريخ الحناء',
+                locationNoun: 'مكان الحناء',
+                hideBride: false
+            },
+            birthday: {
+                pageTitle: 'اكتب نص دعوة عيد الميلاد المميزة في ثوانٍ معدودة',
+                groomLabel: 'اسم صاحب/ة العيد',
+                brideLabel: '',
+                dateLabel: 'تاريخ عيد الميلاد',
+                locationLabel: 'مكان الحفل',
+                occasionNoun: 'حفل عيد الميلاد',
+                promptNoun: 'دعوة عيد ميلاد',
+                dateNoun: 'تاريخ عيد الميلاد',
+                locationNoun: 'مكان الحفل',
+                hideBride: true
+            },
+            newborn: {
+                pageTitle: 'اكتب نص دعوة استقبال المولود في ثوانٍ معدودة',
+                groomLabel: 'اسم المولود',
+                brideLabel: 'اسم الأم',
+                dateLabel: 'تاريخ الاستقبال',
+                locationLabel: 'مكان الاستقبال',
+                occasionNoun: 'حفل استقبال المولود',
+                promptNoun: 'دعوة مولود',
+                dateNoun: 'تاريخ الاستقبال',
+                locationNoun: 'مكان الاستقبال',
+                hideBride: false
+            },
+            graduation: {
+                pageTitle: 'اكتب نص دعوة التخرج المميزة في ثوانٍ معدودة',
+                groomLabel: 'اسم الخريج/ة',
+                brideLabel: '',
+                dateLabel: 'تاريخ التخرج',
+                locationLabel: 'مكان الحفل',
+                occasionNoun: 'حفل التخرج',
+                promptNoun: 'دعوة تخرج',
+                dateNoun: 'تاريخ التخرج',
+                locationNoun: 'مكان الحفل',
+                hideBride: true
             }
         };
 
@@ -883,7 +960,13 @@
             const meta = EVENT_TYPE_META[currentEventType()];
             document.querySelector('.ai-header-text p').textContent = meta.pageTitle;
             document.getElementById('groomNameLabel').innerHTML = `${meta.groomLabel} <span class="required">*</span>`;
-            document.getElementById('brideNameLabel').innerHTML = `${meta.brideLabel} <span class="required">*</span>`;
+            const brideGroup = document.getElementById('brideName').closest('.form-group');
+            if (meta.hideBride) {
+                brideGroup.style.display = 'none';
+            } else {
+                brideGroup.style.display = '';
+                document.getElementById('brideNameLabel').innerHTML = `${meta.brideLabel} <span class="required">*</span>`;
+            }
             document.getElementById('weddingDateLabel').textContent = meta.dateLabel;
             document.getElementById('weddingLocationLabel').textContent = meta.locationLabel;
         }
@@ -1026,6 +1109,181 @@
 {location}
 
 يسعدنا حضوركم`
+            },
+            henna: {
+                traditional: `بسم الله الرحمن الرحيم
+
+الحمد لله رب العالمين
+
+يسرنا دعوتكم لحضور حفل الحناء
+
+{groomName}
+و
+{brideName}
+
+في يوم {weddingDate}
+
+في {location}
+
+ننتظر تشريفكم لمشاركتنا هذه الليلة المميزة`,
+
+                modern: `🌙 ليلة حناء لا تُنسى! 🌙
+
+{groomName} 💛 {brideName}
+
+📅 {weddingDate}
+📍 {location}
+
+تعالوا نحتفل معاً قبل الفرحة الكبرى ✨`,
+
+                islamic: `﴿ إِنَّمَا يُرِيدُ اللَّهُ لِيُذْهِبَ عَنكُمُ الرِّجْسَ أَهْلَ الْبَيْتِ وَيُطَهِّرَكُمْ تَطْهِيرًا ﴾
+
+بحمد الله وتوفيقه، يسرنا دعوتكم لحفل الحناء
+
+{groomName}
+{brideName}
+
+{weddingDate}
+{location}`,
+
+                short: `{groomName} 🌙 {brideName}
+
+ليلة حنائنا قريبة! 💛
+
+{weddingDate}
+{location}
+
+بانتظار حضوركم`
+            },
+            birthday: {
+                traditional: `يسرنا أن ندعوكم لحضور حفل عيد ميلاد
+
+{groomName}
+
+في يوم {weddingDate}
+
+في {location}
+
+ننتظر تشريفكم لمشاركتنا هذه المناسبة السعيدة`,
+
+                modern: `🎂 عيد ميلاد سعيد! 🎂
+
+{groomName}
+
+📅 {weddingDate}
+📍 {location}
+
+تعالوا نحتفل معاً! 🎉🎈`,
+
+                islamic: `بسم الله الرحمن الرحيم
+
+الحمد لله على نعمة أخرى أتمها علينا
+
+يسرنا دعوتكم لحضور حفل عيد ميلاد
+
+{groomName}
+
+{weddingDate}
+{location}`,
+
+                short: `🎉 {groomName} 🎉
+
+عيد ميلادي قريب!
+
+{weddingDate}
+{location}
+
+أتمنى حضوركم! 🎂`
+            },
+            newborn: {
+                traditional: `بسم الله الرحمن الرحيم
+
+الحمد لله الذي أنعم علينا بنعمة الذرية الصالحة
+
+بكل سرور وفرح نعلن عن قدوم المولود
+
+{groomName}
+
+ابن/ة {brideName}
+
+في يوم {weddingDate}
+
+في {location}
+
+نسأل الله أن يجعله ذخراً لوالديه`,
+
+                modern: `👶 مرحباً بالأمير/ة الصغير! 👶
+
+{groomName}
+من {brideName}
+
+📅 {weddingDate}
+📍 {location}
+
+تعالوا نحتفل معاً بهذه المناسبة الجميلة 🍼`,
+
+                islamic: `﴿ يَهَبُ لِمَن يَشَاءُ إِنَاثًا وَيَهَبُ لِمَن يَشَاءُ الذُّكُورَ ﴾
+
+بشكر الله وحمده
+
+يسرنا دعوتكم لاستقبال المولود الجديد
+
+{groomName}
+{brideName}
+
+{weddingDate}
+{location}`,
+
+                short: `👶 {groomName} 👶
+
+مولودنا الجديد!
+
+{weddingDate}
+{location}
+
+ننتظر مشاركتكم الفرحة 🍼`
+            },
+            graduation: {
+                traditional: `يسرنا أن ندعوكم لحضور حفل تخرج
+
+{groomName}
+
+في يوم {weddingDate}
+
+في {location}
+
+ننتظر تشريفكم لمشاركتنا هذه المناسبة المميزة`,
+
+                modern: `🎓 تخرجنا أخيراً! 🎓
+
+{groomName}
+
+📅 {weddingDate}
+📍 {location}
+
+تعالوا نحتفل معاً بإنجاز هذا الحلم! 🌟`,
+
+                islamic: `بسم الله الرحمن الرحيم
+
+﴿ وَقُل رَّبِّ زِدْنِي عِلْمًا ﴾
+
+بحمد الله وتوفيقه
+
+يسرنا دعوتكم لحضور حفل تخرج
+
+{groomName}
+
+{weddingDate}
+{location}`,
+
+                short: `🎓 {groomName} 🎓
+
+لحظة التخرج قريبة!
+
+{weddingDate}
+{location}
+
+أتمنى حضوركم! 🌟`
             }
         };
         
@@ -1066,8 +1324,13 @@
             const writingStyle = document.querySelector('input[name="writingStyle"]:checked').value;
             
             // Validation
-            if (!groomName || !brideName) {
-                window.db.showNotification('يرجى إدخال أسماء العريس والعروس', 'error');
+            const meta = EVENT_TYPE_META[eventType];
+            if (!groomName) {
+                window.db.showNotification('يرجى إدخال ' + meta.groomLabel, 'error');
+                return;
+            }
+            if (!meta.hideBride && !brideName) {
+                window.db.showNotification('يرجى إدخال ' + meta.brideLabel, 'error');
                 return;
             }
             
@@ -1158,20 +1421,27 @@
         // Build the prompt for AI
         function buildPrompt(params) {
             const meta = EVENT_TYPE_META[params.eventType || 'wedding'];
-            return `اكتب نص ${meta.promptNoun} احترافي باللغة العربية بالأسلوب ${styleDescriptions[params.writingStyle]}، خاص بمناسبة ${meta.occasionNoun} فقط (وليس نص زفاف عام إن لم تكن المناسبة زفافاً).
+            let detailsLines = `- ${meta.groomLabel}: ${params.groomName}`;
+            if (!meta.hideBride && params.brideName) {
+                detailsLines += `
+- ${meta.brideLabel}: ${params.brideName}`;
+            }
+            if (params.weddingDate) detailsLines += `
+- ${meta.dateNoun}: ${params.weddingDate}`;
+            if (params.weddingLocation) detailsLines += `
+- ${meta.locationNoun}: ${params.weddingLocation}`;
+            if (params.additionalDetails) detailsLines += `
+- تفاصيل إضافية: ${params.additionalDetails}`;
+            return `اكتب نص ${meta.promptNoun} احترافي باللغة العربية بالأسلوب ${styleDescriptions[params.writingStyle]}، خاص بمناسبة ${meta.occasionNoun} فقط.
 
 التفاصيل:
-- اسم العريس: ${params.groomName}
-- اسم العروس: ${params.brideName}
-${params.weddingDate ? `- ${meta.dateNoun}: ${params.weddingDate}` : ''}
-${params.weddingLocation ? `- ${meta.locationNoun}: ${params.weddingLocation}` : ''}
-${params.additionalDetails ? `- تفاصيل إضافية: ${params.additionalDetails}` : ''}
+${detailsLines}
 
 المطلوب:
 1. اكتب نص كامل ومتكامل لـ ${meta.promptNoun}
 2. استخدم أسلوب ${styleDescriptions[params.writingStyle]}
 3. اجعل النص مناسباً للعرض في بطاقة دعوة إلكترونية
-4. استخدم كلمات ومفردات مناسبة تحديداً لـ ${meta.occasionNoun} (لا تستخدم كلمة "زفاف" أو "عروسين رسمياً" إن كانت المناسبة خطوبة أو كتب كتاب)
+4. استخدم كلمات ومفردات مناسبة تحديداً لـ ${meta.occasionNoun}
 
 اكتب النص فقط بدون أي مقدمة أو شرح:`;
         }
@@ -1184,7 +1454,7 @@ ${params.additionalDetails ? `- تفاصيل إضافية: ${params.additionalDe
             
             // Replace placeholders
             text = text.replace('{groomName}', params.groomName)
-                       .replace('{brideName}', params.brideName)
+                       .replace('{brideName}', params.brideName || '')
                        .replace('{weddingDate}', params.weddingDate ? formatDateArabic(params.weddingDate) : '[التاريخ]')
                        .replace('{location}', params.weddingLocation || '[المكان]');
             
