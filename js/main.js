@@ -145,29 +145,63 @@ function initBackToTop() {
 // Template Filter
 // ===================================
 function initTemplateFilter() {
-    const filterButtons = document.querySelectorAll('.filter-btn');
-    const templateCards = document.querySelectorAll('.template-card');
-    
-    if (filterButtons.length === 0 || templateCards.length === 0) return;
-    
-    filterButtons.forEach(btn => {
+    const styleButtons = document.querySelectorAll('.templates-filter .filter-btn');
+    const eventButtons = document.querySelectorAll('.event-templates-filter .event-filter-btn');
+    const grid = document.querySelector('.templates-grid');
+    const templateCards = grid ? grid.querySelectorAll('.template-card') : document.querySelectorAll('.template-card');
+    const emptyState = document.getElementById('templatesEmptyState');
+
+    if (templateCards.length === 0) return;
+
+    let currentStyleFilter = 'all';
+    let currentEventFilter = 'all';
+
+    function sortVipWithVideoFirst() {
+        if (!grid) return;
+        const visibleCards = Array.from(templateCards).filter(c => c.style.display !== 'none');
+        visibleCards.sort((a, b) => {
+            const rank = c => (c.dataset.vip === '1' ? (c.dataset.video === '1' ? 0 : 1) : 2);
+            return rank(a) - rank(b);
+        });
+        visibleCards.forEach(c => grid.appendChild(c));
+    }
+
+    function applyFilters() {
+        let visibleCount = 0;
+        templateCards.forEach(card => {
+            const cardEvents = (card.dataset.event || '').split(' ').filter(Boolean);
+            const styleMatch = currentStyleFilter === 'all' || card.dataset.category === currentStyleFilter;
+            const eventMatch = currentEventFilter === 'all' || cardEvents.includes(currentEventFilter);
+            const show = styleMatch && eventMatch;
+            card.style.display = show ? 'block' : 'none';
+            if (show) {
+                card.style.animation = 'fadeInUp 0.5s ease forwards';
+                visibleCount++;
+            }
+        });
+        sortVipWithVideoFirst();
+        if (emptyState) emptyState.style.display = visibleCount === 0 ? 'block' : 'none';
+    }
+
+    styleButtons.forEach(btn => {
         btn.addEventListener('click', () => {
-            // Update active button
-            filterButtons.forEach(b => b.classList.remove('active'));
+            styleButtons.forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            
-            const filter = btn.dataset.filter;
-            
-            templateCards.forEach(card => {
-                if (filter === 'all' || card.dataset.category === filter) {
-                    card.style.display = 'block';
-                    card.style.animation = 'fadeInUp 0.5s ease forwards';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
+            currentStyleFilter = btn.dataset.filter;
+            applyFilters();
         });
     });
+
+    eventButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            eventButtons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentEventFilter = btn.dataset.event;
+            applyFilters();
+        });
+    });
+
+    applyFilters();
 }
 
 // Add fadeInUp animation dynamically

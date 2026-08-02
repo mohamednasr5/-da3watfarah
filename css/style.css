@@ -766,6 +766,45 @@ input, textarea {
     background: var(--bg-secondary);
 }
 
+.event-templates-filter {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 22px;
+}
+
+.event-filter-btn {
+    padding: 11px 22px;
+    background: transparent;
+    border: 2px solid var(--primary-gold, #D4AF37);
+    border-radius: var(--radius-xl, 30px);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--primary-gold, #D4AF37);
+    cursor: pointer;
+    transition: all var(--transition-normal, .2s);
+}
+
+.event-filter-btn:hover,
+.event-filter-btn.active {
+    background: var(--primary-gold, #D4AF37);
+    color: #fff;
+}
+
+.templates-empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-secondary, #777);
+}
+
+.templates-empty-state i {
+    font-size: 2.2rem;
+    color: var(--primary-gold, #D4AF37);
+    margin-bottom: 14px;
+    display: block;
+}
+
 .templates-filter {
     display: flex;
     justify-content: center;

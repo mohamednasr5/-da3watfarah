@@ -1034,6 +1034,26 @@
                                         <input type="radio" name="eventTypeRadio" value="katb_ketab">
                                         <span data-i18n="event_type_katb"><i class="fas fa-book-quran"></i> دعوة كتب كتاب</span>
                                     </label>
+                                    <label class="event-type-option">
+                                        <input type="radio" name="eventTypeRadio" value="henna">
+                                        <span data-i18n="event_type_henna"><i class="fas fa-hand-sparkles"></i> ليلة الحناء</span>
+                                    </label>
+                                    <label class="event-type-option">
+                                        <input type="radio" name="eventTypeRadio" value="birthday">
+                                        <span data-i18n="event_type_birthday"><i class="fas fa-birthday-cake"></i> دعوة عيد ميلاد</span>
+                                    </label>
+                                    <label class="event-type-option">
+                                        <input type="radio" name="eventTypeRadio" value="newborn">
+                                        <span data-i18n="event_type_newborn"><i class="fas fa-baby"></i> دعوة مولود</span>
+                                    </label>
+                                    <label class="event-type-option">
+                                        <input type="radio" name="eventTypeRadio" value="graduation">
+                                        <span data-i18n="event_type_graduation"><i class="fas fa-graduation-cap"></i> دعوة تخرج</span>
+                                    </label>
+                                    <label class="event-type-option">
+                                        <input type="radio" name="eventTypeRadio" value="ramadan">
+                                        <span data-i18n="event_type_ramadan"><i class="fas fa-moon"></i> إفطار رمضان</span>
+                                    </label>
                                 </div>
                             </div>
 
@@ -1104,6 +1124,10 @@
                         
                         <div class="templates-grid" id="templatesGrid">
                             <!-- Templates will be loaded here -->
+                        </div>
+                        <div id="templatesEmptyMsg" style="display:none; text-align:center; padding:40px 15px; color:#888;">
+                            <i class="fas fa-hourglass-half" style="font-size:1.8rem; color:var(--primary-gold,#D4AF37); display:block; margin-bottom:10px;"></i>
+                            قوالب هذا القسم قريبًا... تابعنا
                         </div>
                         
                         <!-- Live Preview Panel -->
@@ -1697,6 +1721,7 @@
                 nameAr: 'عصري',
                 nameEn: 'Modern',
                 category: 'حديث وأنيق',
+                eventCategories: ['wedding', 'engagement', 'katb_ketab'],
                 previewFile: 'preview-modern.html',
                 thumbnail: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiB2aWV3Qm94PSIwIDAgNDAwIDUwMCI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImJnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzFBMUEyRSIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMyRDJENDQiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImZnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzFBMUEyRSIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNFOTQ1NjAiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgPC9kZWZzPgogIDxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiBmaWxsPSJ1cmwoI2JnKSIvPgogIDxyZWN0IHg9IjE0IiB5PSIxNCIgd2lkdGg9IjM3MiIgaGVpZ2h0PSI0NzIiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI0U5NDU2MCIgc3Ryb2tlLXdpZHRoPSIyIi8+CiAgPHJlY3QgeD0iMTYwIiB5PSIxMTUiIHdpZHRoPSI4MCIgaGVpZ2h0PSI4MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJ1cmwoI2ZnKSIgc3Ryb2tlLXdpZHRoPSIzIi8+PGNpcmNsZSBjeD0iMjAwIiBjeT0iMTU1IiByPSIxOCIgZmlsbD0idXJsKCNmZykiLz4KICA8dGV4dCB4PSIyMDAiIHk9IjMzMCIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsIHNlcmlmIiBmb250LXNpemU9IjMwIiBmaWxsPSIjMUExQTJFIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7Yudi12LHZijwvdGV4dD4KICA8bGluZSB4MT0iMTUwIiB5MT0iMzUyIiB4Mj0iMjUwIiB5Mj0iMzUyIiBzdHJva2U9IiNFOTQ1NjAiIHN0cm9rZS13aWR0aD0iMiIvPgo8L3N2Zz4=',
                 colors: { primary: '#1A1A2E', secondary: '#E94560' },
@@ -1710,6 +1735,7 @@
                 nameAr: 'الذهبي الفاخر',
                 nameEn: 'Gold Luxury',
                 category: 'كلاسيكي فاخر',
+                eventCategories: ['wedding', 'engagement', 'katb_ketab'],
                 previewFile: 'preview-classic.html',
                 thumbnail: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiB2aWV3Qm94PSIwIDAgNDAwIDUwMCI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImJnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI0ZGRjhGMCIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNGREVGRDgiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImZnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzhCNDUxMyIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNENEFGMzciLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgPC9kZWZzPgogIDxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiBmaWxsPSJ1cmwoI2JnKSIvPgogIDxyZWN0IHg9IjE0IiB5PSIxNCIgd2lkdGg9IjM3MiIgaGVpZ2h0PSI0NzIiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI0Q0QUYzNyIgc3Ryb2tlLXdpZHRoPSIyIi8+CiAgPHJlY3QgeD0iMjIiIHk9IjIyIiB3aWR0aD0iMzU2IiBoZWlnaHQ9IjQ1NiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjRDRBRjM3IiBzdHJva2Utd2lkdGg9IjEiIG9wYWNpdHk9IjAuNiIvPgogIDxjaXJjbGUgY3g9IjIwMCIgY3k9IjE1MCIgcj0iNDYiIGZpbGw9Im5vbmUiIHN0cm9rZT0idXJsKCNmZykiIHN0cm9rZS13aWR0aD0iMyIvPjxwYXRoIGQ9Ik0yMDAgMTIwIEwyMTAgMTQ1IEwyMzcgMTQ4IEwyMTcgMTY1IEwyMjMgMTkyIEwyMDAgMTc4IEwxNzcgMTkyIEwxODMgMTY1IEwxNjMgMTQ4IEwxOTAgMTQ1IFoiIGZpbGw9InVybCgjZmcpIi8+CiAgPHRleHQgeD0iMjAwIiB5PSIzMzAiIGZvbnQtZmFtaWx5PSJHZW9yZ2lhLCBzZXJpZiIgZm9udC1zaXplPSIzMCIgZmlsbD0iIzhCNDUxMyIgdGV4dC1hbmNob3I9Im1pZGRsZSI+2KfZhNiw2YfYqNmKINin2YTZgdin2K7YsTwvdGV4dD4KICA8bGluZSB4MT0iMTUwIiB5MT0iMzUyIiB4Mj0iMjUwIiB5Mj0iMzUyIiBzdHJva2U9IiNDRDg1M0YiIHN0cm9rZS13aWR0aD0iMiIvPgogIDx0ZXh0IHg9IjIwMCIgeT0iMzg1IiBmb250LWZhbWlseT0iR2VvcmdpYSwgc2VyaWYiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiNDRDg1M0YiIHRleHQtYW5jaG9yPSJtaWRkbGUiPtmC2KfZhNioINmD2YTYp9iz2YrZg9mKINmB2KfYrtixPC90ZXh0Pgo8L3N2Zz4=',
                 colors: { primary: '#8B4513', secondary: '#D4AF37' },
@@ -1723,6 +1749,7 @@
                 nameAr: 'العتيق البورجوندي',
                 nameEn: 'Antique Burgundy',
                 category: 'كلاسيكي فاخر',
+                eventCategories: ['wedding', 'engagement', 'katb_ketab'],
                 previewFile: 'preview-classic-2.html',
                 thumbnail: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiB2aWV3Qm94PSIwIDAgNDAwIDUwMCI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImJnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI0ZCRjNFNyIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNGMURDQzciLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImZnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzZCMUUyQiIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNDOUE2NEEiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgPC9kZWZzPgogIDxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiBmaWxsPSJ1cmwoI2JnKSIvPgogIDxyZWN0IHg9IjE0IiB5PSIxNCIgd2lkdGg9IjM3MiIgaGVpZ2h0PSI0NzIiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI0M5QTY0QSIgc3Ryb2tlLXdpZHRoPSIyIi8+CiAgPHJlY3QgeD0iMjIiIHk9IjIyIiB3aWR0aD0iMzU2IiBoZWlnaHQ9IjQ1NiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjQzlBNjRBIiBzdHJva2Utd2lkdGg9IjEiIG9wYWNpdHk9IjAuNiIvPgogIDxwYXRoIGQ9Ik0xNTAgMTEwIFEyMDAgOTAgMjUwIDExMCBRMjY1IDE1MCAyNTAgMTkwIFEyMDAgMjEwIDE1MCAxOTAgUTEzNSAxNTAgMTUwIDExMCBaIiBmaWxsPSJub25lIiBzdHJva2U9InVybCgjZmcpIiBzdHJva2Utd2lkdGg9IjMiLz48Y2lyY2xlIGN4PSIyMDAiIGN5PSIxNTAiIHI9IjE0IiBmaWxsPSJ1cmwoI2ZnKSIvPgogIDx0ZXh0IHg9IjIwMCIgeT0iMzMwIiBmb250LWZhbWlseT0iR2VvcmdpYSwgc2VyaWYiIGZvbnQtc2l6ZT0iMzAiIGZpbGw9IiM2QjFFMkIiIHRleHQtYW5jaG9yPSJtaWRkbGUiPtin2YTYudiq2YrZgiDYp9mE2KjZiNix2KzZiNmG2K/ZijwvdGV4dD4KICA8bGluZSB4MT0iMTUwIiB5MT0iMzUyIiB4Mj0iMjUwIiB5Mj0iMzUyIiBzdHJva2U9IiM4QzJGM0YiIHN0cm9rZS13aWR0aD0iMiIvPgogIDx0ZXh0IHg9IjIwMCIgeT0iMzg1IiBmb250LWZhbWlseT0iR2VvcmdpYSwgc2VyaWYiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiM4QzJGM0YiIHRleHQtYW5jaG9yPSJtaWRkbGUiPtmC2KfZhNioINmD2YTYp9iz2YrZg9mKINmB2KfYrtixPC90ZXh0Pgo8L3N2Zz4=',
                 colors: { primary: '#6B1E2B', secondary: '#C9A64A' },
@@ -1736,6 +1763,7 @@
                 nameAr: 'اللؤلؤي الناعم',
                 nameEn: 'Soft Pearl',
                 category: 'كلاسيكي فاخر',
+                eventCategories: ['wedding', 'engagement', 'katb_ketab'],
                 previewFile: 'preview-classic-3.html',
                 thumbnail: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiB2aWV3Qm94PSIwIDAgNDAwIDUwMCI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImJnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI0ZCRjdGMiIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNGMEUyQ0YiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImZnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI0E5ODQ2QiIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNFOEM2QTAiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgPC9kZWZzPgogIDxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiBmaWxsPSJ1cmwoI2JnKSIvPgogIDxyZWN0IHg9IjE0IiB5PSIxNCIgd2lkdGg9IjM3MiIgaGVpZ2h0PSI0NzIiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI0U4QzZBMCIgc3Ryb2tlLXdpZHRoPSIyIi8+CiAgPHJlY3QgeD0iMjIiIHk9IjIyIiB3aWR0aD0iMzU2IiBoZWlnaHQ9IjQ1NiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjRThDNkEwIiBzdHJva2Utd2lkdGg9IjEiIG9wYWNpdHk9IjAuNiIvPgogIDxjaXJjbGUgY3g9IjE3NSIgY3k9IjE1MCIgcj0iMTAiIGZpbGw9InVybCgjZmcpIi8+PGNpcmNsZSBjeD0iMjAwIiBjeT0iMTQwIiByPSIxMiIgZmlsbD0idXJsKCNmZykiLz48Y2lyY2xlIGN4PSIyMjgiIGN5PSIxNTIiIHI9IjkiIGZpbGw9InVybCgjZmcpIi8+PGNpcmNsZSBjeD0iMjAwIiBjeT0iMTY1IiByPSI3IiBmaWxsPSJ1cmwoI2ZnKSIgb3BhY2l0eT0iMC43Ii8+CiAgPHRleHQgeD0iMjAwIiB5PSIzMzAiIGZvbnQtZmFtaWx5PSJHZW9yZ2lhLCBzZXJpZiIgZm9udC1zaXplPSIzMCIgZmlsbD0iI0E5ODQ2QiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+2KfZhNmE2KTZhNik2Yog2KfZhNmG2KfYudmFPC90ZXh0PgogIDxsaW5lIHgxPSIxNTAiIHkxPSIzNTIiIHgyPSIyNTAiIHkyPSIzNTIiIHN0cm9rZT0iI0M5QTI3QyIgc3Ryb2tlLXdpZHRoPSIyIi8+CiAgPHRleHQgeD0iMjAwIiB5PSIzODUiIGZvbnQtZmFtaWx5PSJHZW9yZ2lhLCBzZXJpZiIgZm9udC1zaXplPSIxNCIgZmlsbD0iI0M5QTI3QyIgdGV4dC1hbmNob3I9Im1pZGRsZSI+2YLYp9mE2Kgg2YPZhNin2LPZitmD2Yog2YHYp9iu2LE8L3RleHQ+Cjwvc3ZnPg==',
                 colors: { primary: '#A9846B', secondary: '#E8C6A0' },
@@ -1749,6 +1777,7 @@
                 nameAr: 'الزمردي الملكي',
                 nameEn: 'Emerald Classic',
                 category: 'كلاسيكي فاخر',
+                eventCategories: ['wedding', 'engagement', 'katb_ketab'],
                 previewFile: 'preview-classic-4.html',
                 thumbnail: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiB2aWV3Qm94PSIwIDAgNDAwIDUwMCI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImJnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzBGMkUyMiIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMxNTU1MzgiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImZnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzBCM0QyRSIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNENEFGMzciLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgPC9kZWZzPgogIDxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiBmaWxsPSJ1cmwoI2JnKSIvPgogIDxyZWN0IHg9IjE0IiB5PSIxNCIgd2lkdGg9IjM3MiIgaGVpZ2h0PSI0NzIiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI0Q0QUYzNyIgc3Ryb2tlLXdpZHRoPSIyIi8+CiAgPHJlY3QgeD0iMjIiIHk9IjIyIiB3aWR0aD0iMzU2IiBoZWlnaHQ9IjQ1NiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjRDRBRjM3IiBzdHJva2Utd2lkdGg9IjEiIG9wYWNpdHk9IjAuNiIvPgogIDxwYXRoIGQ9Ik0yMDAgMTA1IEwyMTIgMTQwIEwyNDggMTQwIEwyMTkgMTYxIEwyMzAgMTk3IEwyMDAgMTc2IEwxNzAgMTk3IEwxODEgMTYxIEwxNTIgMTQwIEwxODggMTQwIFoiIGZpbGw9InVybCgjZmcpIi8+CiAgPHRleHQgeD0iMjAwIiB5PSIzMzAiIGZvbnQtZmFtaWx5PSJHZW9yZ2lhLCBzZXJpZiIgZm9udC1zaXplPSIzMCIgZmlsbD0iIzBCM0QyRSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+2KfZhNiy2YXYsdiv2Yog2KfZhNmF2YTZg9mKPC90ZXh0PgogIDxsaW5lIHgxPSIxNTAiIHkxPSIzNTIiIHgyPSIyNTAiIHkyPSIzNTIiIHN0cm9rZT0iIzE0NUM0MSIgc3Ryb2tlLXdpZHRoPSIyIi8+CiAgPHRleHQgeD0iMjAwIiB5PSIzODUiIGZvbnQtZmFtaWx5PSJHZW9yZ2lhLCBzZXJpZiIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzE0NUM0MSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+2YLYp9mE2Kgg2YPZhNin2LPZitmD2Yog2YHYp9iu2LE8L3RleHQ+Cjwvc3ZnPg==',
                 colors: { primary: '#0B3D2E', secondary: '#D4AF37' },
@@ -1762,6 +1791,7 @@
                 nameAr: 'الفضي الأنيق',
                 nameEn: 'Elegant Silver',
                 category: 'كلاسيكي فاخر',
+                eventCategories: ['wedding', 'engagement', 'katb_ketab'],
                 previewFile: 'preview-classic-5.html',
                 thumbnail: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiB2aWV3Qm94PSIwIDAgNDAwIDUwMCI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImJnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI0ZBRkFGQSIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNFNEU0RTQiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImZnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzJCMkIyQiIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNCOUI5QjkiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgPC9kZWZzPgogIDxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiBmaWxsPSJ1cmwoI2JnKSIvPgogIDxyZWN0IHg9IjE0IiB5PSIxNCIgd2lkdGg9IjM3MiIgaGVpZ2h0PSI0NzIiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI0I5QjlCOSIgc3Ryb2tlLXdpZHRoPSIyIi8+CiAgPHJlY3QgeD0iMjIiIHk9IjIyIiB3aWR0aD0iMzU2IiBoZWlnaHQ9IjQ1NiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjQjlCOUI5IiBzdHJva2Utd2lkdGg9IjEiIG9wYWNpdHk9IjAuNiIvPgogIDxyZWN0IHg9IjE3MCIgeT0iMTIwIiB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIGZpbGw9Im5vbmUiIHN0cm9rZT0idXJsKCNmZykiIHN0cm9rZS13aWR0aD0iMyIgdHJhbnNmb3JtPSJyb3RhdGUoNDUgMjAwIDE1MCkiLz4KICA8dGV4dCB4PSIyMDAiIHk9IjMzMCIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsIHNlcmlmIiBmb250LXNpemU9IjMwIiBmaWxsPSIjMkIyQjJCIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7Yp9mE2YHYttmKINin2YTYo9mG2YrZgjwvdGV4dD4KICA8bGluZSB4MT0iMTUwIiB5MT0iMzUyIiB4Mj0iMjUwIiB5Mj0iMzUyIiBzdHJva2U9IiM3QTdBN0EiIHN0cm9rZS13aWR0aD0iMiIvPgogIDx0ZXh0IHg9IjIwMCIgeT0iMzg1IiBmb250LWZhbWlseT0iR2VvcmdpYSwgc2VyaWYiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiM3QTdBN0EiIHRleHQtYW5jaG9yPSJtaWRkbGUiPtmC2KfZhNioINmD2YTYp9iz2YrZg9mKINmB2KfYrtixPC90ZXh0Pgo8L3N2Zz4=',
                 colors: { primary: '#2B2B2B', secondary: '#B9B9B9' },
@@ -1775,6 +1805,7 @@
                 nameAr: 'الوردي الكلاسيكي',
                 nameEn: 'Rosewood Blush',
                 category: 'كلاسيكي فاخر',
+                eventCategories: ['wedding', 'engagement', 'katb_ketab'],
                 previewFile: 'preview-classic-6.html',
                 thumbnail: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiB2aWV3Qm94PSIwIDAgNDAwIDUwMCI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImJnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI0ZCRjFFRSIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNGMEQ5RDIiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImZnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzhCNUU1RSIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNDODlGN0MiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgPC9kZWZzPgogIDxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiBmaWxsPSJ1cmwoI2JnKSIvPgogIDxyZWN0IHg9IjE0IiB5PSIxNCIgd2lkdGg9IjM3MiIgaGVpZ2h0PSI0NzIiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI0M4OUY3QyIgc3Ryb2tlLXdpZHRoPSIyIi8+CiAgPHJlY3QgeD0iMjIiIHk9IjIyIiB3aWR0aD0iMzU2IiBoZWlnaHQ9IjQ1NiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjQzg5RjdDIiBzdHJva2Utd2lkdGg9IjEiIG9wYWNpdHk9IjAuNiIvPgogIDxjaXJjbGUgY3g9IjIwMCIgY3k9IjE1MCIgcj0iMTAiIGZpbGw9InVybCgjZmcpIi8+PHBhdGggZD0iTTIwMCAxNDAgQyAyMTAgMTIwLCAyMzUgMTI1LCAyMzIgMTQ1IEMgMjUwIDE0MCwgMjU1IDE2NSwgMjM1IDE2OCBDIDI0NSAxODUsIDIyMiAxOTUsIDIxMiAxNzggQyAyMDUgMTk1LCAxODIgMTkwLCAxODUgMTcyIEMgMTY1IDE3OCwgMTU1IDE1NSwgMTc1IDE0OCBDIDE2NSAxMzIsIDE4OCAxMTgsIDIwMCAxNDAgWiIgZmlsbD0idXJsKCNmZykiIG9wYWNpdHk9IjAuODUiLz4KICA8dGV4dCB4PSIyMDAiIHk9IjMzMCIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsIHNlcmlmIiBmb250LXNpemU9IjMwIiBmaWxsPSIjOEI1RTVFIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7Yp9mE2YjYsdiv2Yog2KfZhNmD2YTYp9iz2YrZg9mKPC90ZXh0PgogIDxsaW5lIHgxPSIxNTAiIHkxPSIzNTIiIHgyPSIyNTAiIHkyPSIzNTIiIHN0cm9rZT0iI0E4NzM3MyIgc3Ryb2tlLXdpZHRoPSIyIi8+CiAgPHRleHQgeD0iMjAwIiB5PSIzODUiIGZvbnQtZmFtaWx5PSJHZW9yZ2lhLCBzZXJpZiIgZm9udC1zaXplPSIxNCIgZmlsbD0iI0E4NzM3MyIgdGV4dC1hbmNob3I9Im1pZGRsZSI+2YLYp9mE2Kgg2YPZhNin2LPZitmD2Yog2YHYp9iu2LE8L3RleHQ+Cjwvc3ZnPg==',
                 colors: { primary: '#8B5E5E', secondary: '#C89F7C' },
@@ -1788,6 +1819,7 @@
                 nameAr: 'ملكي',
                 nameEn: 'Royal',
                 category: 'ملكي فاخر',
+                eventCategories: ['wedding', 'engagement', 'katb_ketab'],
                 previewFile: 'preview-royal.html',
                 thumbnail: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiB2aWV3Qm94PSIwIDAgNDAwIDUwMCI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImJnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzE0MTQyOCIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMyMjIyNEEiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImZnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzFBMUEzRSIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNENEFGMzciLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgPC9kZWZzPgogIDxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiBmaWxsPSJ1cmwoI2JnKSIvPgogIDxyZWN0IHg9IjE0IiB5PSIxNCIgd2lkdGg9IjM3MiIgaGVpZ2h0PSI0NzIiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI0Q0QUYzNyIgc3Ryb2tlLXdpZHRoPSIyIi8+CiAgPHBhdGggZD0iTTE2MCAxNzUgTDE3MCAxMjAgTDIwMCAxNDUgTDIzMCAxMjAgTDI0MCAxNzUgWiIgZmlsbD0idXJsKCNmZykiLz48Y2lyY2xlIGN4PSIyMDAiIGN5PSIxMTIiIHI9IjkiIGZpbGw9InVybCgjZmcpIi8+CiAgPHRleHQgeD0iMjAwIiB5PSIzMzAiIGZvbnQtZmFtaWx5PSJHZW9yZ2lhLCBzZXJpZiIgZm9udC1zaXplPSIzMCIgZmlsbD0iIzFBMUEzRSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+2YXZhNmD2Yo8L3RleHQ+CiAgPGxpbmUgeDE9IjE1MCIgeTE9IjM1MiIgeDI9IjI1MCIgeTI9IjM1MiIgc3Ryb2tlPSIjRDRBRjM3IiBzdHJva2Utd2lkdGg9IjIiLz4KPC9zdmc+',
                 colors: { primary: '#1A1A3E', secondary: '#D4AF37' },
@@ -1801,6 +1833,7 @@
                 nameAr: 'الوردة الحمراء',
                 nameEn: 'Classic Rose',
                 category: 'رومانسي رقيق',
+                eventCategories: ['wedding', 'engagement', 'katb_ketab'],
                 previewFile: 'preview-romantic.html',
                 thumbnail: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiB2aWV3Qm94PSIwIDAgNDAwIDUwMCI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImJnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI0ZGRjBGMyIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNGRkQ5RTMiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImZnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI0Q0QTVBNSIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNFOEI0QkMiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgPC9kZWZzPgogIDxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiBmaWxsPSJ1cmwoI2JnKSIvPgogIDxyZWN0IHg9IjE0IiB5PSIxNCIgd2lkdGg9IjM3MiIgaGVpZ2h0PSI0NzIiIHJ4PSIyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjRThCNEJDIiBzdHJva2Utd2lkdGg9IjIiLz4KICA8cGF0aCBkPSJNMjAwIDE3NSBDMTcwIDE1MCAxNTAgMTI1IDE3MCAxMDggQzE4NSA5NiAyMDAgMTA4IDIwMCAxMjIgQzIwMCAxMDggMjE1IDk2IDIzMCAxMDggQzI1MCAxMjUgMjMwIDE1MCAyMDAgMTc1IFoiIGZpbGw9InVybCgjZmcpIi8+CiAgPHRleHQgeD0iMjAwIiB5PSIzMzAiIGZvbnQtZmFtaWx5PSJHZW9yZ2lhLCBzZXJpZiIgZm9udC1zaXplPSIyOCIgZmlsbD0iI0Q0QTVBNSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+2KfZhNmI2LHYr9ipINin2YTYrdmF2LHYp9ihPC90ZXh0PgogIDxsaW5lIHgxPSIxNTAiIHkxPSIzNTIiIHgyPSIyNTAiIHkyPSIzNTIiIHN0cm9rZT0iI0U4QjRCQyIgc3Ryb2tlLXdpZHRoPSIyIi8+CiAgPHRleHQgeD0iMjAwIiB5PSIzODUiIGZvbnQtZmFtaWx5PSJHZW9yZ2lhLCBzZXJpZiIgZm9udC1zaXplPSIxMyIgZmlsbD0iI0Q0QTVBNSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+2YLYp9mE2Kgg2LHZiNmF2KfZhtiz2Yo8L3RleHQ+Cjwvc3ZnPg==',
                 colors: { primary: '#D4A5A5', secondary: '#E8B4BC' },
@@ -1814,6 +1847,7 @@
                 nameAr: 'الخوخي الحالم',
                 nameEn: 'Dreamy Peach',
                 category: 'رومانسي رقيق',
+                eventCategories: ['wedding', 'engagement', 'katb_ketab'],
                 previewFile: 'preview-romantic-2.html',
                 thumbnail: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiB2aWV3Qm94PSIwIDAgNDAwIDUwMCI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImJnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI0ZGRjZFRSIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNGOURFQzMiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImZnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI0U4QTg3QyIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNGNEM5QTgiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgPC9kZWZzPgogIDxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiBmaWxsPSJ1cmwoI2JnKSIvPgogIDxyZWN0IHg9IjE0IiB5PSIxNCIgd2lkdGg9IjM3MiIgaGVpZ2h0PSI0NzIiIHJ4PSIyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjRjRDOUE4IiBzdHJva2Utd2lkdGg9IjIiLz4KICA8Y2lyY2xlIGN4PSIyMDAiIGN5PSIxNDUiIHI9IjM0IiBmaWxsPSJ1cmwoI2ZnKSIgb3BhY2l0eT0iMC45Ii8+CiAgPHRleHQgeD0iMjAwIiB5PSIzMzAiIGZvbnQtZmFtaWx5PSJHZW9yZ2lhLCBzZXJpZiIgZm9udC1zaXplPSIyOCIgZmlsbD0iI0U4QTg3QyIgdGV4dC1hbmNob3I9Im1pZGRsZSI+2KfZhNiu2YjYrtmKINin2YTYrdin2YTZhTwvdGV4dD4KICA8bGluZSB4MT0iMTUwIiB5MT0iMzUyIiB4Mj0iMjUwIiB5Mj0iMzUyIiBzdHJva2U9IiNGNEM5QTgiIHN0cm9rZS13aWR0aD0iMiIvPgogIDx0ZXh0IHg9IjIwMCIgeT0iMzg1IiBmb250LWZhbWlseT0iR2VvcmdpYSwgc2VyaWYiIGZvbnQtc2l6ZT0iMTMiIGZpbGw9IiNFOEE4N0MiIHRleHQtYW5jaG9yPSJtaWRkbGUiPtmC2KfZhNioINix2YjZhdin2YbYs9mKPC90ZXh0Pgo8L3N2Zz4=',
                 colors: { primary: '#E8A87C', secondary: '#F4C9A8' },
@@ -1827,6 +1861,7 @@
                 nameAr: 'اللافندر الرومانسي',
                 nameEn: 'Lavender Romance',
                 category: 'رومانسي رقيق',
+                eventCategories: ['wedding', 'engagement', 'katb_ketab'],
                 previewFile: 'preview-romantic-3.html',
                 thumbnail: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiB2aWV3Qm94PSIwIDAgNDAwIDUwMCI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImJnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI0Y2RjJGQiIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNERkNDRjIiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImZnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzlDODlCOCIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNDOUI2RTQiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgPC9kZWZzPgogIDxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiBmaWxsPSJ1cmwoI2JnKSIvPgogIDxyZWN0IHg9IjE0IiB5PSIxNCIgd2lkdGg9IjM3MiIgaGVpZ2h0PSI0NzIiIHJ4PSIyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjQzlCNkU0IiBzdHJva2Utd2lkdGg9IjIiLz4KICA8cGF0aCBkPSJNMjAwIDEwNSBMMjA3IDEzOCBMMjQwIDE0NSBMMjA3IDE1MiBMMjAwIDE4NSBMMTkzIDE1MiBMMTYwIDE0NSBMMTkzIDEzOCBaIiBmaWxsPSJ1cmwoI2ZnKSIvPgogIDx0ZXh0IHg9IjIwMCIgeT0iMzMwIiBmb250LWZhbWlseT0iR2VvcmdpYSwgc2VyaWYiIGZvbnQtc2l6ZT0iMjgiIGZpbGw9IiM5Qzg5QjgiIHRleHQtYW5jaG9yPSJtaWRkbGUiPtin2YTZhNin2YHZhtiv2LEg2KfZhNix2YjZhdin2YbYs9mKPC90ZXh0PgogIDxsaW5lIHgxPSIxNTAiIHkxPSIzNTIiIHgyPSIyNTAiIHkyPSIzNTIiIHN0cm9rZT0iI0M5QjZFNCIgc3Ryb2tlLXdpZHRoPSIyIi8+CiAgPHRleHQgeD0iMjAwIiB5PSIzODUiIGZvbnQtZmFtaWx5PSJHZW9yZ2lhLCBzZXJpZiIgZm9udC1zaXplPSIxMyIgZmlsbD0iIzlDODlCOCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+2YLYp9mE2Kgg2LHZiNmF2KfZhtiz2Yo8L3RleHQ+Cjwvc3ZnPg==',
                 colors: { primary: '#9C89B8', secondary: '#C9B6E4' },
@@ -1840,6 +1875,7 @@
                 nameAr: 'الأحمر الشغوف',
                 nameEn: 'Fiery Passion',
                 category: 'رومانسي رقيق',
+                eventCategories: ['wedding', 'engagement', 'katb_ketab'],
                 previewFile: 'preview-romantic-4.html',
                 thumbnail: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiB2aWV3Qm94PSIwIDAgNDAwIDUwMCI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImJnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI0ZGRjNGMyIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNGM0MyQzYiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImZnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI0E2MzAzQyIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNFMEE2QUMiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgPC9kZWZzPgogIDxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiBmaWxsPSJ1cmwoI2JnKSIvPgogIDxyZWN0IHg9IjE0IiB5PSIxNCIgd2lkdGg9IjM3MiIgaGVpZ2h0PSI0NzIiIHJ4PSIyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjRTBBNkFDIiBzdHJva2Utd2lkdGg9IjIiLz4KICA8cGF0aCBkPSJNMjAwIDE3OCBDMTY1IDE1MCAxNDUgMTIyIDE2OCAxMDIgQzE4NSA4OCAyMDAgMTAyIDIwMCAxMTggQzIwMCAxMDIgMjE1IDg4IDIzMiAxMDIgQzI1NSAxMjIgMjM1IDE1MCAyMDAgMTc4IFoiIGZpbGw9InVybCgjZmcpIi8+CiAgPHRleHQgeD0iMjAwIiB5PSIzMzAiIGZvbnQtZmFtaWx5PSJHZW9yZ2lhLCBzZXJpZiIgZm9udC1zaXplPSIyOCIgZmlsbD0iI0E2MzAzQyIgdGV4dC1hbmNob3I9Im1pZGRsZSI+2KfZhNij2K3ZhdixINin2YTYtNi62YjZgTwvdGV4dD4KICA8bGluZSB4MT0iMTUwIiB5MT0iMzUyIiB4Mj0iMjUwIiB5Mj0iMzUyIiBzdHJva2U9IiNFMEE2QUMiIHN0cm9rZS13aWR0aD0iMiIvPgogIDx0ZXh0IHg9IjIwMCIgeT0iMzg1IiBmb250LWZhbWlseT0iR2VvcmdpYSwgc2VyaWYiIGZvbnQtc2l6ZT0iMTMiIGZpbGw9IiNBNjMwM0MiIHRleHQtYW5jaG9yPSJtaWRkbGUiPtmC2KfZhNioINix2YjZhdin2YbYs9mKPC90ZXh0Pgo8L3N2Zz4=',
                 colors: { primary: '#A6303C', secondary: '#E0A6AC' },
@@ -1853,6 +1889,7 @@
                 nameAr: 'السماء الزرقاء',
                 nameEn: 'Dreamy Sky Blue',
                 category: 'رومانسي رقيق',
+                eventCategories: ['wedding', 'engagement', 'katb_ketab'],
                 previewFile: 'preview-romantic-5.html',
                 thumbnail: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiB2aWV3Qm94PSIwIDAgNDAwIDUwMCI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImJnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI0YxRjdGQyIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNDNkUwRjIiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImZnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzZFOEZCMCIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNBRUNCRTMiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgPC9kZWZzPgogIDxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiBmaWxsPSJ1cmwoI2JnKSIvPgogIDxyZWN0IHg9IjE0IiB5PSIxNCIgd2lkdGg9IjM3MiIgaGVpZ2h0PSI0NzIiIHJ4PSIyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjQUVDQkUzIiBzdHJva2Utd2lkdGg9IjIiLz4KICA8cGF0aCBkPSJNMTcwIDE1MCBRMTg1IDEyMCAyMDAgMTUwIFEyMTUgMTIwIDIzMCAxNTAgUTIyNSAxNjUgMjAwIDE2MCBRMTc1IDE2NSAxNzAgMTUwIFoiIGZpbGw9InVybCgjZmcpIi8+CiAgPHRleHQgeD0iMjAwIiB5PSIzMzAiIGZvbnQtZmFtaWx5PSJHZW9yZ2lhLCBzZXJpZiIgZm9udC1zaXplPSIyOCIgZmlsbD0iIzZFOEZCMCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+2KfZhNiz2YXYp9ihINin2YTYstix2YLYp9ihPC90ZXh0PgogIDxsaW5lIHgxPSIxNTAiIHkxPSIzNTIiIHgyPSIyNTAiIHkyPSIzNTIiIHN0cm9rZT0iI0FFQ0JFMyIgc3Ryb2tlLXdpZHRoPSIyIi8+CiAgPHRleHQgeD0iMjAwIiB5PSIzODUiIGZvbnQtZmFtaWx5PSJHZW9yZ2lhLCBzZXJpZiIgZm9udC1zaXplPSIxMyIgZmlsbD0iIzZFOEZCMCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+2YLYp9mE2Kgg2LHZiNmF2KfZhtiz2Yo8L3RleHQ+Cjwvc3ZnPg==',
                 colors: { primary: '#6E8FB0', secondary: '#AECBE3' },
@@ -1866,6 +1903,7 @@
                 nameAr: 'الشمبانيا الوردية',
                 nameEn: 'Rose Champagne',
                 category: 'رومانسي رقيق',
+                eventCategories: ['wedding', 'engagement', 'katb_ketab'],
                 previewFile: 'preview-romantic-6.html',
                 thumbnail: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiB2aWV3Qm94PSIwIDAgNDAwIDUwMCI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImJnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI0ZCRjZFRiIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNFQUQ0QjciLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImZnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI0IwODk2OCIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNFN0M5QTkiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgPC9kZWZzPgogIDxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiBmaWxsPSJ1cmwoI2JnKSIvPgogIDxyZWN0IHg9IjE0IiB5PSIxNCIgd2lkdGg9IjM3MiIgaGVpZ2h0PSI0NzIiIHJ4PSIyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjRTdDOUE5IiBzdHJva2Utd2lkdGg9IjIiLz4KICA8Y2lyY2xlIGN4PSIyMDAiIGN5PSIxNTAiIHI9IjgiIGZpbGw9InVybCgjZmcpIi8+PHBhdGggZD0iTTE3MCAxNjAgUTIwMCAxMDAgMjMwIDE2MCBRMjE1IDE3NSAyMDAgMTY4IFExODUgMTc1IDE3MCAxNjAgWiIgZmlsbD0idXJsKCNmZykiIG9wYWNpdHk9IjAuOSIvPgogIDx0ZXh0IHg9IjIwMCIgeT0iMzMwIiBmb250LWZhbWlseT0iR2VvcmdpYSwgc2VyaWYiIGZvbnQtc2l6ZT0iMjgiIGZpbGw9IiNCMDg5NjgiIHRleHQtYW5jaG9yPSJtaWRkbGUiPtin2YTYtNmF2KjYp9mG2YrYpyDYp9mE2YjYsdiv2YrYqTwvdGV4dD4KICA8bGluZSB4MT0iMTUwIiB5MT0iMzUyIiB4Mj0iMjUwIiB5Mj0iMzUyIiBzdHJva2U9IiNFN0M5QTkiIHN0cm9rZS13aWR0aD0iMiIvPgogIDx0ZXh0IHg9IjIwMCIgeT0iMzg1IiBmb250LWZhbWlseT0iR2VvcmdpYSwgc2VyaWYiIGZvbnQtc2l6ZT0iMTMiIGZpbGw9IiNCMDg5NjgiIHRleHQtYW5jaG9yPSJtaWRkbGUiPtmC2KfZhNioINix2YjZhdin2YbYs9mKPC90ZXh0Pgo8L3N2Zz4=',
                 colors: { primary: '#B08968', secondary: '#E7C9A9' },
@@ -1879,6 +1917,7 @@
                 nameAr: 'إسلامي',
                 nameEn: 'Islamic',
                 category: 'إسلامي أصيل',
+                eventCategories: ['wedding', 'engagement', 'katb_ketab'],
                 previewFile: 'preview-islamic.html',
                 thumbnail: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiB2aWV3Qm94PSIwIDAgNDAwIDUwMCI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImJnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzBGMkUxMiIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMxQjVFMjAiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImZnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzFCNUUyMCIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNENEFGMzciLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgPC9kZWZzPgogIDxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiBmaWxsPSJ1cmwoI2JnKSIvPgogIDxyZWN0IHg9IjE0IiB5PSIxNCIgd2lkdGg9IjM3MiIgaGVpZ2h0PSI0NzIiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI0Q0QUYzNyIgc3Ryb2tlLXdpZHRoPSIyIi8+CiAgPHBhdGggZD0iTTIwMCAxMDUgTDIyMCAxNDUgTDIwMCAxODUgTDE4MCAxNDUgWiIgZmlsbD0idXJsKCNmZykiLz48Y2lyY2xlIGN4PSIyMDAiIGN5PSIxNDUiIHI9IjM1IiBmaWxsPSJub25lIiBzdHJva2U9InVybCgjZmcpIiBzdHJva2Utd2lkdGg9IjIiLz4KICA8dGV4dCB4PSIyMDAiIHk9IjMzMCIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsIHNlcmlmIiBmb250LXNpemU9IjMwIiBmaWxsPSIjMUI1RTIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7Ypdiz2YTYp9mF2Yo8L3RleHQ+CiAgPGxpbmUgeDE9IjE1MCIgeTE9IjM1MiIgeDI9IjI1MCIgeTI9IjM1MiIgc3Ryb2tlPSIjRDRBRjM3IiBzdHJva2Utd2lkdGg9IjIiLz4KPC9zdmc+',
                 colors: { primary: '#1B5E20', secondary: '#D4AF37' },
@@ -1892,6 +1931,7 @@
                 nameAr: 'بوهيمي',
                 nameEn: 'Bohemian',
                 category: 'بوهيمي عصري',
+                eventCategories: ['wedding', 'engagement', 'katb_ketab'],
                 previewFile: 'preview-bohemian.html',
                 thumbnail: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiB2aWV3Qm94PSIwIDAgNDAwIDUwMCI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImJnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI0ZCRjNFQSIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNGMEU0RDMiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImZnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI0MxN0Y1OSIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiM5Q0FGODgiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgPC9kZWZzPgogIDxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiBmaWxsPSJ1cmwoI2JnKSIvPgogIDxyZWN0IHg9IjE0IiB5PSIxNCIgd2lkdGg9IjM3MiIgaGVpZ2h0PSI0NzIiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzlDQUY4OCIgc3Ryb2tlLXdpZHRoPSIyIi8+CiAgPHBhdGggZD0iTTIwMCAxMTAgTDIxMCAxNDAgTDI0MCAxNDAgTDIxNSAxNTggTDIyNSAxOTAgTDIwMCAxNzAgTDE3NSAxOTAgTDE4NSAxNTggTDE2MCAxNDAgTDE5MCAxNDAgWiIgZmlsbD0idXJsKCNmZykiIG9wYWNpdHk9IjAuOSIvPgogIDx0ZXh0IHg9IjIwMCIgeT0iMzMwIiBmb250LWZhbWlseT0iR2VvcmdpYSwgc2VyaWYiIGZvbnQtc2l6ZT0iMzAiIGZpbGw9IiNDMTdGNTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiPtio2YjZh9mK2YXZijwvdGV4dD4KICA8bGluZSB4MT0iMTUwIiB5MT0iMzUyIiB4Mj0iMjUwIiB5Mj0iMzUyIiBzdHJva2U9IiM5Q0FGODgiIHN0cm9rZS13aWR0aD0iMiIvPgo8L3N2Zz4=',
                 colors: { primary: '#C17F59', secondary: '#9CAF88' },
@@ -1905,6 +1945,7 @@
                 nameAr: 'فني',
                 nameEn: 'Artistic',
                 category: 'فني وإبداعي',
+                eventCategories: ['wedding', 'engagement', 'katb_ketab'],
                 previewFile: 'templates-new/preview-artistic.html',
                 thumbnail: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiB2aWV3Qm94PSIwIDAgNDAwIDUwMCI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImJnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzFhMGEyZSIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjUwJSIgc3RvcC1jb2xvcj0iIzRhMTk0MiIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMxNjIxM2UiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImcyIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2U5NDU2MCIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjUwJSIgc3RvcC1jb2xvcj0iIzg0NDRhZCIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNmMzkzMTIiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgPC9kZWZzPgogIDxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiBmaWxsPSJ1cmwoI2JnKSIvPgogIDxjaXJjbGUgY3g9IjEwMCIgY3k9IjEwMCIgcj0iODAiIGZpbGw9IiNlOTQ1NjAiIG9wYWNpdHk9IjAuMyIgZmlsdGVyPSJibHVyKDQwcHgpIi8+CiAgPGNpcmNsZSBjeD0iMzAwIiBjeT0iNDAwIiByPSI2MCIgZmlsbD0iIzg0NGRhZCIgb3BhY2l0eT0iMC4zIiBmaWx0ZXI9ImJsdXIoNDBweCkiLz4KICA8Y2lyY2xlIGN4PSIzMjAiIGN5PSIxMjAiIHI9IjQwIiBmaWxsPSIjZjM5MzEyIiBvcGFjaXR5PSIwLjMiIGZpbHRlcj0iYmx1cig0MHB4KSIvPgogIDxyZWN0IHg9IjgwIiB5PSIxNzAiIHdpZHRoPSIyNDAiIGhlaWdodD0iMTYwIiByeD0iMjAiIGZpbGw9InJnYmEoMjYsIDEwLCA0NiwgMC43KSIgc3Ryb2tlPSJ1cmwoIzIpIiBzdHJva2Utd2lkdGg9IjMiLz4KICA8dGV4dCB4PSIyMDAiIHk9IjI2MCIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsIHNlcmlmIiBmb250LXNpemU9IjI0IiBmaWxsPSIjZjM5MzEyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7ihpOg4A8L3RleHQ+CiAgPHRleHQgeD0iMjAwIiB5PSIyOTAiIGZvbnQtZmFtaWx5PSJHZW9yZ2lhLCBzZXJpZiIgZm9udC1zaXplPSIxOCIgZmlsbD0iI2U5NDU2MCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+2KXZhDYuTYq2KjbjCDYqtis2LPZhSA8L3RleHQ+CiAgPGNpcmNsZSBjeD0iMjAwIiBjeT0iMzcwIiByPSIxNSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZjM5MzEyIiBzdHJva2Utd2lkdGg9IjIiLz4KPC9zdmc+',
                 colors: { primary: '#4a1942', secondary: '#e94560' },
@@ -1918,6 +1959,7 @@
                 nameAr: 'نخبة',
                 nameEn: 'Elite',
                 category: 'فاخر ومميز',
+                eventCategories: ['wedding', 'engagement', 'katb_ketab'],
                 previewFile: 'templates-new/preview-elite.html',
                 thumbnail: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiB2aWV3Qm94PSIwIDAgNDAwIDUwMCI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImJnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzBmMGYxYSIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMxYTFhMmUiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgPC9kZWZzPgogIDxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiBmaWxsPSJ1cmwoI2JnKSIvPgogIDxyZWN0IHg9IjYwIiB5PSI2MCIgd2lkdGg9IjI4MCIgaGVpZ2h0PSIzODAiIHJ4PSIzMCIgZmlsbD0icmdiYSgyNiwgMjYsIDQ2LCAwLjk1KSIgc3Ryb2tlPSIjZDRhZjM3IiBzdHJva2Utd2lkdGg9IjIiLz4KICA8cGF0aCBkPSJNNjAgOTAgTDkwIDkwIEw5MCA2MCBMTEwIDYwIEwxMTAgOTAgTTE0MCA5MCBMMTcwIDkgTDE3MCA2MCBMMTkwIDYwIEwxOTAgOTBNMjQwIDkwIEwyNzAgOTAgTDI3MCA2MCBMMjkwIDYwIEwyOTAgOTBNMzQwIDkwIEwzNzAgOTAgTDM3MCA2MCBMMTMwIDYwIEwzMjAgOTBNMzQwIDQxMCBMNzAgNDEwIEw3MCA0NDAgTDkwIDQ0MCBMOTAgNDEwIEwxMTAgNDEwIEwxMTAgNDQwIEwxMzAgNDQwIEwxMzAgNDEwIEwxNDAgNDEwIEwxNDAgNDQwIEwxNzAgNDQwIEwxNzAgNDEwIEwxOTAgNDEwIEwxOTAgNDQwIEwyMTAgNDQwIEwyMTAgNDEwIEwyNDAgNDEwIEwyNDAgNDQwIEwyNzAgNDQwIEwyNzAgNDEwIEwyOTAgNDEwIEwyOTAgNDQwIEwzMTAgNDQwIEwzMTAgNDEwIEwzMjAgNDEwIEwzMjAgNDQwIEwzNDAgNDQwIEwzNDAgNDEwIiBzdHJva2U9IiNkNGFmMzciIHN0cm9rZS13aWR0aD0iMiIgZmlsbD0ibm9uZSIvPgogIDx0ZXh0IHg9IjIwMCIgeT0iMjIwIiBmb250LWZhbWlseT0iR2VvcmdpYSwgc2VyaWYiIGZvbnQtc2l6ZT0iMjgiIGZpbGw9IiNkNGFmMzciIHRleHQtYW5jaG9yPSJtaWRkbGUiPkmAnjIg8J+RjDwvdGV4dD4KICA8dGV4dCB4PSIyMDAiIHk9IjI2MCIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsIHNlcmlmIiBmb250LXNpemU9IjIyIiBmaWxsPSIjZjRlNGJjIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7Yqtiu2KfYrCDYp9mE2K3ZhSA8L3RleHQ+CiAgPHBvbHlnb24gcG9pbnRzPSIyMDAsMzAyIDIxNSwzMTggMjA1LDMyOCIgZmlsbD0iI2Q0YWYzNyIvPgo8L3N2Zz4=',
                 colors: { primary: '#1a1a2e', secondary: '#d4af37' },
@@ -1931,6 +1973,7 @@
                 nameAr: 'ورود',
                 nameEn: 'Floral',
                 category: 'وردي ورومانسي',
+                eventCategories: ['wedding', 'engagement', 'katb_ketab'],
                 previewFile: 'templates-new/preview-floral.html',
                 thumbnail: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiB2aWV3Qm94PSIwIDAgNDAwIDUwMCI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImJnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2ZkZjJmOCIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjUwJSIgc3RvcC1jb2xvcj0iI2ZjZTdmMyIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNiY2ZlZjgiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgPC9kZWZzPgogIDxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiBmaWxsPSJ1cmwoI2JnKSIvPgogIDxyZWN0IHg9IjcwIiB5PSI3MCIgd2lkdGg9IjI2MCIgaGVpZ2h0PSIzNjAiIHJ4PSI0MCIgZmlsbD0icmdiYSgyNTUsIDI1NSwgMjU1LCAwLjkpIiBzdHJva2U9I2U4YjRiYyIgc3Ryb2tlLXdpZHRoPSIyIi8+CiAgPGNpcmNsZSBjeD0iMjAwIiBjeT0iMTQwIiByPSIzMCIgZmlsbD0iIzZkNDU1MiIgb3BhY2l0eT0iMC44Ii8+CiAgPHRleHQgeD0iMjAwIiB5PSIxNDQiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjI0IiBmaWxsPSIjZmZmIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7ihpXeio08L3RleHQ+CiAgPHRleHQgeD0iMjAwIiB5PSIyNDAiIGZvbnQtZmFtaWx5PSJHZW9yZ2lhLCBzZXJpZiIgZm9udC1zaXplPSIyNCIgZmlsbD0iIzZkNDU1MiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+2KrYudi02LYr9in2YU8L3RleHQ+CiAgPHRleHQgeD0iMjAwIiB5PSIyNzAiIGZvbnQtZmFtaWx5PSJHZW9yZ2lhLCBzZXJpZiIgZm9udC1zaXplPSIyMCIgZmlsbD0iIzhiNWE2ZiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+2LLYp9mE2YUg2KfYhtuM2LkgzwvdGV4dD4KICA8bGluZSB4MT0iMTYwIiB5MT0iMzEwIiB4Mj0iMjQwIiB5Mj0iMzEwIiBzdHJva2U9I2U4YjRiYyIHN0cm9rZS13aWR0aD0iMiIvPgo8L3N2Zz4=',
                 colors: { primary: '#8b5a6f', secondary: '#e8b4bc' },
@@ -1944,6 +1987,7 @@
                 nameAr: 'بسيط',
                 nameEn: 'Minimal',
                 category: 'بسيط وأنيق',
+                eventCategories: ['wedding', 'engagement', 'katb_ketab'],
                 previewFile: 'templates-new/preview-minimal.html',
                 thumbnail: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiB2aWV3Qm94PSIwIDAgNDAwIDUwMCI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImJnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2ZhZmFmYSIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNmNWY1ZjQiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgPC9kZWZzPgogIDxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiBmaWxsPSJ1cmwoI2JnKSIvPgogIDxyZWN0IHg9IjgwIiB5PSI4MCIgd2lkdGg9IjI0MCIgaGVpZ2h0PSIzNDAiIGZpbGw9IiNmZmYiIHN0cm9rZT0iI2U0ZTRlNyIgc3Ryb2tlLXdpZHRoPSIxIi8+CiAgPHJlY3QgeD0iMTAwIiB5PSIxMDAiIHdpZHRoPSIyMDAiIGhlaWdodD0iMzAwIiBmaWxsPSJub25lIiBzdHJva2U9I2U0ZTRlNyIgc3Ryb2tlLXdpZHRoPSIxIi8+CiAgPHRleHQgeD0iMjAwIiB5PSIyMTAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjI2IiBmb250LXdlaWdodD0iMzAwIiBmaWxsPSIjMTgxODEiIHRleHQtYW5jaG9yPSJtaWRkbGUiPtmE2LfYp9mEPC90ZXh0PgogIDx0ZXh0IHg9IjIwMCIgeT0iMjQ1IiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNCIgZmlsbD0iI2ExYTFhYSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+JjwvdGV4dD4KICA8dGV4dCB4PSIyMDAiIHk9IjI4MCIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjYiIGZvbnQtd2VpZ2h0PSIzMDAiIGZpbGw9IiMxODE4MSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+2LnYsdio2LkZTwvdGV4dD4KICA8bGluZSB4MT0iMTcwIiB5MT0iMzEwIiB4Mj0iMjMwIiB5Mj0iMzEwIiBzdHJva2U9IiMxODE4MSIgc3Ryb2tlLXdpZHRoPSIxIi8+Cjwvc3ZnPg==',
                 colors: { primary: '#18181b', secondary: '#737373' },
@@ -1957,6 +2001,7 @@
                 nameAr: 'طبيعة',
                 nameEn: 'Nature',
                 category: 'طبيعي هادئ',
+                eventCategories: ['wedding', 'engagement', 'katb_ketab'],
                 previewFile: 'templates-new/preview-nature.html',
                 thumbnail: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiB2aWV3Qm94PSIwIDAgNDAwIDUwMCI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImJnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2VjZmRmNSIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjUwJSIgc3RvcC1jb2xvcj0iI2QxZmFlNSIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNhN2YzZDAiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgPC9kZWZzPgogIDxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiBmaWxsPSJ1cmwoI2JnKSIvPgogIDxyZWN0IHg9IjcwIiB5PSI3MCIgd2lkdGg9IjI2MCIgaGVpZ2h0PSIzNjAiIHJ4PSIzNSIgZmlsbD0icmdiYSgyNTUsIDI1NSwgMjU1LCAwLjkyKSIgc3Ryb2tlPSIjNGFkZTgwIiBzdHJva2Utd2lkdGg9IjIiIG9wYWNpdHk9IjAuNiIvPgogIDxjaXJjbGUgY3g9IjIwMCIgY3k9IjE0MCIgcj0iMjUiIGZpbGw9IiMxYTRkM2UiLz4KICA8dGV4dCB4PSIyMDAiIHk9IjE0NCIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjAiIGZpbGw9IiNmZmYiIHRleHQtYW5jaG9yPSJtaWRkbGUiPsiJcmmzJ8KJjDwvdGV4dD4KICA8dGV4dCB4PSIyMDAiIHk9IjI0MCIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsIHNlcmlmIiBmb250LXNpemU9IjI0IiBmaWxsPSIjMWE0ZDNlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7Yqdiv2K3YqiDYp9mE2LHZiiA8L3RleHQ+CiAgPHRleHQgeD0iMjAwIiB5PSIyNzAiIGZvbnQtZmFtaWx5PSJHZW9yZ2lhLCBzZXJpZiIgZm9udC1zaXplPSIxOCIgZmlsbD0iIzE2NjUzNCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+2KfYrtiq2YUg2KfYstio2Yc8L3RleHQ+CiAgPGxpbmUgeDE9IjE2MCIgeTE9IjMwMCIgeDI9IjI0MCIgeTI9IjMwMCIgc3Ryb2tlPSIjNGFkZTgwIiBzdHJva2Utd2lkdGg9IjIiLz4KPC9zdmc+',
                 colors: { primary: '#1a4d3e', secondary: '#4ade80' },
@@ -1970,6 +2015,7 @@
                 nameAr: 'نجوم',
                 nameEn: 'Starry',
                 category: 'نجومي ساحر',
+                eventCategories: ['wedding', 'engagement', 'katb_ketab'],
                 previewFile: 'templates-new/preview-starry.html',
                 thumbnail: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiB2aWV3Qm94PSIwIDAgNDAwIDUwMCI+CiAgPGRlZnM+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImJnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzAzMDcxMiIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjUwJSIgc3RvcC1jb2xvcj0iIzBjMTQ0NSIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMxZTFiNGIiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgPC9kZWZzPgogIDxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiBmaWxsPSJ1cmwoI2JnKSIvPgogIDxjaXJjbGUgY3g9IjgwIiBjeT0iODAiIHI9IjMiIGZpbGw9IiNmZmYiIG9wYWNpdHk9IjAuOCIvPgogIDxjaXJjbGUgY3g9IjMyMCIgY3k9IjEyMCIgcj0iMiIgZmlsbD0iI2ZmZiIgb3BhY2l0eT0iMC42Ii8+CiAgPGNpcmNsZSBjeD0iMjgwIiBjeT0iNjAiIHI9IjIuNSIgZmlsbD0iI2ZmZiIgb3BhY2l0eT0iMC43Ii8+CiAgPGNpcmNsZSBjeD0iMTIwIiBjeT0iMjAwIiByPSIyIiBmaWxsPSIjZmZmIiBvcGFjaXR5PSIwLjUiLz4KICA8Y2lyY2xlIGN4PSIzNjAiIGN5PSIyODAiIHI9IjMiIGZpbGw9IiNmZmYiIG9wYWNpdHk9IjAuNyIvPgogIDxjaXJjbGUgY3g9IjYwIiBjeT0iNDAwIiByPSIyIiBmaWxsPSIjZmZmIiBvcGFjaXR5PSIwLjYiLz4KICA8Y2lyY2xlIGN4PSIyNDAiIGN5PSIzNjAiIHI9IjEuNSIgZmlsbD0iI2ZmZiIgb3BhY2l0eT0iMC40Ii8+CiAgPHJlY3QgeD0iNzAiIHk9IjcwIiB3aWR0aD0iMjYwIiBoZWlnaHQ9IjM2MCIgcng9IjM1IiBmaWxsPSJyZ2JhKDEyLCAyMCwgNjksIDAuNikiIHN0cm9rZT0iI2E3OGJmYSIgc3Ryb2tlLXdpZHRoPSIxIi8+CiAgPGNpcmNsZSBjeD0iMjAwIiBjeT0iMTQwIiByPSIyOCIgZmlsbD0iI2JiYmYyNCIgb3BhY2l0eT0iMC45Ii8+CiAgPHRleHQgeD0iMjAwIiB5PSIxNDgiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE4IiBmaWxsPSIjZmZmIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7inLwg8J+RjDwvdGV4dD4KICA8dGV4dCB4PSIyMDAiIHk9IjI0MCIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsIHNlcmlmIiBmb250LXNpemU9IjIyIiBmaWxsPSJ1cmwoI2cxKSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+InmC2LXYp9mEIOmC2LnYqSDYp9mE2LHYriA8L3RleHQ+CiAgPHBvbHlnb24gcG9pbnRzPSIyMDAsMjgyIDIwOCwyOTQgMTkyLDI5NCIgZmlsbD0iI2E3OGJmYSIvPgogIDxsaW5lIHgxPSIxNjAiIHkxPSIzMTAiIHgyPSIyNDAiIHkyPSIzMTAiIHN0cm9rZT0iI2E3OGJmYSIgc3Ryb2tlLXdpZHRoPSIxIi8+Cjwvc3ZnPg==',
                 colors: { primary: '#0c1445', secondary: '#a78bfa' },
@@ -1991,6 +2037,7 @@
                 nameEn: 'Editorial Noir',
                 category: 'فاخر VIP',
                 eventCategory: 'wedding',
+                hasVideo: false,
                 previewFile: 'vip/wedding/demo-editorial-noir/demo-editorial-noir.html',
                 thumbnail: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiB2aWV3Qm94PSIwIDAgNDAwIDUwMCI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjMWExQTFGIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjMDAwIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSI1MDAiIGZpbGw9InVybCgjZykiLz48cmVjdCB4PSI4MCIgeT0iNjAiIHdpZHRoPSIyNDAiIGhlaWdodD0iMzgwIiBmaWxsPSJub25lIiBzdHJva2U9IiMzMzMiIHN0cm9rZS13aWR0aD0iMSIvPjx0ZXh0IHg9IjIwMCIgeT0iMTgwIiBmb250LWZhbWlseT0ic2VyaWYiIGZvbnQtc2l6ZT0iMjAiIGZpbGw9IiNmZmYiIHRleHQtYW5jaG9yPSJtaWRkbGUiPuKMgzwvdGV4dD48dGV4dCB4PSIyMDAiIHk9IjIxMCIgZm9udC1mYW1pbHk9InNlcmlmIiBmb250LXNpemU9IjE0IiBmaWxsPSIjOTk5IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7Yp9mE2YXYp9ixPC90ZXh0Pjwvc3ZnPg==',
                 colors: { primary: '#1A1A1F', secondary: '#D4AF37' },
@@ -2003,6 +2050,7 @@
                 nameEn: 'Garden Blush',
                 category: 'فاخر VIP',
                 eventCategory: 'wedding',
+                hasVideo: true,
                 previewFile: 'vip/wedding/demo-garden-blush/demo-garden-blush.html',
                 thumbnail: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiB2aWV3Qm94PSIwIDAgNDAwIDUwMCI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjZmZmMGY1Ii8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjZjRiOGI4Ii8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSI1MDAiIGZpbGw9InVybCgjZykiLz48Y2lyY2xlIGN4PSIyMDAiIGN5PSIxNDAiIHI9IjMwIiBmaWxsPSIjZTBhMGEwIi8+PHRleHQgeD0iMjAwIiB5PSIxNDYiIGZvbnQtZmFtaWx5PSJzZXJpZiIgZm9udC1zaXplPSIxOCIgZmlsbD0iI2ZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+8J+RpjwvdGV4dD48dGV4dCB4PSIyMDAiIHk9IjI1MCIgZm9udC1mYW1pbHk9InNlcmlmIiBmb250LXNpemU9IjE2IiBmaWxsPSIjZTBhMGEwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7Yp9mE2YXYp9ixPC90ZXh0Pjwvc3ZnPg==',
                 colors: { primary: '#e0a0a0', secondary: '#f4b8b8' },
@@ -2015,6 +2063,7 @@
                 nameEn: 'Gate of Joy',
                 category: 'فاخر VIP',
                 eventCategory: 'wedding',
+                hasVideo: true,
                 previewFile: 'vip/wedding/demo-gate-of-joy/demo-gate-of-joy.html',
                 thumbnail: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiB2aWV3Qm94PSIwIDAgNDAwIDUwMCI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjMkQxQjM2Ii8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjMUExQTJFIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSI1MDAiIGZpbGw9InVybCgjZykiLz48cmVjdCB4PSIxMDAiIHk9IjEwMCIgd2lkdGg9IjIwMCIgaGVpZ2h0PSIzMCIgcng9IjUiIGZpbGw9IiNENEFGMzciLz48cmVjdCB4PSIxMjAiIHk9IjE0MCIgd2lkdGg9IjE2MCIgaGVpZ2h0PSIxMDAiIHJ4PSI1IiBmaWxsPSIjZmZmIiBzdHJva2U9IiNENEFGMzciIHN0cm9rZS13aWR0aD0iMiIvPjx0ZXh0IHg9IjIwMCIgeT0iMjQwIiBmb250LWZhbWlseT0ic2VyaWYiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiNENEFGMzciIHRleHQtYW5jaG9yPSJtaWRkbGUiPuKAnOKAgTwvdGV4dD48dGV4dCB4PSIyMDAiIHk9IjI2MCIgZm9udC1mYW1pbHk9InNlcmlmIiBmb250LXNpemU9IjEyIiBmaWxsPSIjOTk5IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7Yp9mE2YXYp9ixPC90ZXh0Pjwvc3ZnPg==',
                 colors: { primary: '#1A1A2E', secondary: '#D4AF37' },
@@ -2027,6 +2076,7 @@
                 nameEn: 'Grand Hall',
                 category: 'فاخر VIP',
                 eventCategory: 'wedding',
+                hasVideo: true,
                 previewFile: 'vip/wedding/demo-grand-hall/demo-grand-hall.html',
                 thumbnail: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiB2aWV3Qm94PSIwIDAgNDAwIDUwMCI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjMkQxQjM2Ii8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjMUIxQjI4Ii8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSI1MDAiIGZpbGw9InVybCgjZykiLz48cmVjdCB4PSI5MCIgeT0iMTIwIiB3aWR0aD0iMjIwIiBoZWlnaHQ9IjI2MCIgcng9IjEwIiBmaWxsPSJub25lIiBzdHJva2U9IiNENEFGMzciIHN0cm9rZS13aWR0aD0iMiIvPjx0ZXh0IHg9IjIwMCIgeT0iMjUwIiBmb250LWZhbWlseT0ic2VyaWYiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiNENEFGMzciIHRleHQtYW5jaG9yPSJtaWRkbGUiPtiM2Lkg2KfZhdyA8L3RleHQ+PC9zdmc+',
                 colors: { primary: '#1B1B28', secondary: '#D4AF37' },
@@ -2039,6 +2089,7 @@
                 nameEn: 'Moon & Stars',
                 category: 'فاخر VIP',
                 eventCategory: 'wedding',
+                hasVideo: true,
                 previewFile: 'vip/wedding/demo-moon-stars/demo-moon-stars.html',
                 thumbnail: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiB2aWV3Qm94PSIwIDAgNDAwIDUwMCI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjMGExMjQ1Ii8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjMWUxYjRiIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSI1MDAiIGZpbGw9InVybCgjZykiLz48Y2lyY2xlIGN4PSIyMDAiIGN5PSIxMjAiIHI9IjM1IiBmaWxsPSIjRkZGQjI0Ii8+PGNpcmNsZSBjeD0iMTIwIiBjeT0iMjAwIiByPSIyIiBmaWxsPSIjZmZmIi8+PGNpcmNsZSBjeD0iMjgwIiBjeT0iMzAwIiByPSIyIiBmaWxsPSIjZmZmIi8+PGNpcmNsZSBjeD0iMTYwIiBjeT0iMzUwIiByPSIxLjUiIGZpbGw9IiNmZmYiLz48dGV4dCB4PSIyMDAiIHk9IjEyOCIgZm9udC1mYW1pbHk9InNlcmlmIiBmb250LXNpemU9IjIwIiBmaWxsPSIjMGExMjQ1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7ihpI8L3RleHQ+PHRleHQgeD0iMjAwIiB5PSIyNTAiIGZvbnQtZmFtaWx5PSJzZXJpZiIgZm9udC1zaXplPSIxNCIgZmlsbD0iI2E3OGJmYSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+2YXZhduM2Lkg2KfZhNi52K88L3RleHQ+PC9zdmc+',
                 colors: { primary: '#0a1245', secondary: '#a78bfa' },
@@ -2051,6 +2102,7 @@
                 nameEn: 'Royal Maroon',
                 category: 'فاخر VIP',
                 eventCategory: 'wedding',
+                hasVideo: false,
                 previewFile: 'vip/wedding/demo-royal-maroon/demo-royal-maroon.html',
                 thumbnail: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiB2aWV3Qm94PSIwIDAgNDAwIDUwMCI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjMkQwNzI5Ii8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjMTAxQTAxIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSI1MDAiIGZpbGw9InVybCgjZykiLz48cmVjdCB4PSI4MCIgeT0iODAiIHdpZHRoPSIyNDAiIGhlaWdodD0iMzQwIiByeD0iMTUiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI0Q0QUYzNyIgc3Ryb2tlLXdpZHRoPSIyIi8+PGNpcmNsZSBjeD0iMjAwIiBjeT0iMTgwIiByPSIyNSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjRDRBRjM3IiBzdHJva2Utd2lkdGg9IjEiLz48dGV4dCB4PSIyMDAiIHk9IjE4NiIgZm9udC1mYW1pbHk9InNlcmlmIiBmb250LXNpemU9IjE4IiBmaWxsPSIjRDRBRjM3IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7inIU8L3RleHQ+PHRleHQgeD0iMjAwIiB5PSIyNTAiIGZvbnQtZmFtaWx5PSJzZXJpZiIgZm9udC1zaXplPSIxNCIgZmlsbD0iI2M5YTBhMCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+2KfZhNi12YQg2KfYs9iqPC90ZXh0Pjwvc3ZnPg==',
                 colors: { primary: '#2D0729', secondary: '#D4AF37' },
@@ -2063,6 +2115,7 @@
                 nameEn: 'The Doves',
                 category: 'فاخر VIP',
                 eventCategory: 'wedding',
+                hasVideo: true,
                 previewFile: 'vip/wedding/demo-the-doves/demo-the-doves.html',
                 thumbnail: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiB2aWV3Qm94PSIwIDAgNDAwIDUwMCI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjZjBmNGY0Ii8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjZThlOGU4Ii8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSI1MDAiIGZpbGw9InVybCgjZykiLz48cGF0aCBkPSJNMTUwIDI1MCAxODAgMjIwIDIwMCAyNTAgMjIwIDIyMCAyNTAgMjUwIiBzdHJva2U9IiM5OTkiIGZpbGw9Im5vbmUiIHN0cm9rZS13aWR0aD0iMiIvPjx0ZXh0IHg9IjIwMCIgeT0iMjcwIiBmb250LWZhbWlseT0ic2VyaWYiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiM5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiPuKAnOKAgTwvdGV4dD48L3N2Zz4=',
                 colors: { primary: '#f0f4f4', secondary: '#e8e8e8' },
@@ -2075,6 +2128,7 @@
                 nameEn: 'Wax Seal',
                 category: 'فاخر VIP',
                 eventCategory: 'wedding',
+                hasVideo: true,
                 previewFile: 'vip/wedding/demo-wax-seal/demo-wax-seal.html',
                 thumbnail: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiB2aWV3Qm94PSIwIDAgNDAwIDUwMCI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjMWExQTJFIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjMkQyRDQ0Ii8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSI1MDAiIGZpbGw9InVybCgjZykiLz48Y2lyY2xlIGN4PSIyMDAiIGN5PSIxODAiIHI9IjMwIiBmaWxsPSIjQzQwMDAwIi8+PHRleHQgeD0iMjAwIiB5PSIxODYiIGZvbnQtZmFtaWx5PSJzZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0iI2ZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+8J+RpjwvdGV4dD48dGV4dCB4PSIyMDAiIHk9IjI1MCIgZm9udC1mYW1pbHk9InNlcmlmIiBmb250LXNpemU9IjEyIiBmaWxsPSIjOTk5IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7Yp9mE2YXYp9ixPC90ZXh0Pjwvc3ZnPg==',
                 colors: { primary: '#1A1A2E', secondary: '#C40000' },
@@ -2087,6 +2141,7 @@
                 nameEn: 'White Hall',
                 category: 'فاخر VIP',
                 eventCategory: 'wedding',
+                hasVideo: true,
                 previewFile: 'vip/wedding/demo-white-hall/demo-white-hall.html',
                 thumbnail: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiB2aWV3Qm94PSIwIDAgNDAwIDUwMCI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjRkZGRkZGIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjZTBlMGUwIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSI1MDAiIGZpbGw9InVybCgjZykiLz48cmVjdCB4PSI5MCIgeT0iMTAwIiB3aWR0aD0iMjIwIiBoZWlnaHQ9IjMwMCIgcng9IjEwIiBmaWxsPSJub25lIiBzdHJva2U9IiMxYTFhMkUiIHN0cm9rZS13aWR0aD0iMSIvPjx0ZXh0IHg9IjIwMCIgeT0iMjUwIiBmb250LWZhbWlseT0ic2VyaWYiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiMxYTFhMkUiIHRleHQtYW5jaG9yPSJtaWRkbGUiPtiM2Lkg2KfZhdyA8L3RleHQ+PC9zdmc+',
                 colors: { primary: '#FFFFFF', secondary: '#e0e0e0' },
@@ -2100,6 +2155,7 @@
                 nameEn: 'Starry Night',
                 category: 'فاخر VIP',
                 eventCategory: 'engagement',
+                hasVideo: true,
                 previewFile: 'vip/engagement/demo-starry-night/demo-starry-night.html',
                 thumbnail: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiB2aWV3Qm94PSIwIDAgNDAwIDUwMCI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjMGMyODQ1Ii8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjMWUxYjRiIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSI1MDAiIGZpbGw9InVybCgjZykiLz48Y2lyY2xlIGN4PSIxMDAiIGN5PSI4MCIgcj0iMiIgZmlsbD0iI2ZmZiIvPjxjaXJjbGUgY3g9IjMwMCIgY3k9IjEyMCIgcj0iMiIgZmlsbD0iI2ZmZiIvPjxjaXJjbGUgY3g9IjIwMCIgY3k9IjE2MCIgcj0iMyIgZmlsbD0iI2JCQkYyNCIvPjx0ZXh0IHg9IjIwMCIgeT0iMjUwIiBmb250LWZhbWlseT0ic2VyaWYiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiNhNzhiZmEiIHRleHQtYW5jaG9yPSJtaWRkbGUiPti12YXZitiv2Yo8L3RleHQ+PC9zdmc+',
                 colors: { primary: '#0c2845', secondary: '#a78bfa' },
@@ -2112,6 +2168,7 @@
                 nameEn: 'The Ring',
                 category: 'فاخر VIP',
                 eventCategory: 'engagement',
+                hasVideo: true,
                 previewFile: 'vip/engagement/demo-the-ring/demo-the-ring.html',
                 thumbnail: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiB2aWV3Qm94PSIwIDAgNDAwIDUwMCI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjMWExQTJFIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjMkQyRDQ0Ii8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSI1MDAiIGZpbGw9InVybCgjZykiLz48Y2lyY2xlIGN4PSIyMDAiIGN5PSIxNzAiIHI9IjM1IiBmaWxsPSJub25lIiBzdHJva2U9IiNENEFGMzciIHN0cm9rZS13aWR0aD0iMyIvPjx0ZXh0IHg9IjIwMCIgeT0iMjUwIiBmb250LWZhbWlseT0ic2VyaWYiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiNENEFGMzciIHRleHQtYW5jaG9yPSJtaWRkbGUiPti12YXZitiv2Yo8L3RleHQ+PC9zdmc+',
                 colors: { primary: '#1A1A2E', secondary: '#D4AF37' },
@@ -2125,6 +2182,7 @@
                 nameEn: 'Henna Night',
                 category: 'فاخر VIP',
                 eventCategory: 'henna',
+                hasVideo: true,
                 previewFile: 'vip/henna/demo-henna-night/demo-henna-night.html',
                 thumbnail: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiB2aWV3Qm94PSIwIDAgNDAwIDUwMCI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjMkQwNzI5Ii8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjRjQwMDUxIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSI1MDAiIGZpbGw9InVybCgjZykiLz48Y2lyY2xlIGN4PSIyMDAiIGN5PSIxNjAiIHI9IjMwIiBmaWxsPSJub25lIiBzdHJva2U9IiNENEFGMzciIHN0cm9rZS13aWR0aD0iMiIvPjx0ZXh0IHg9IjIwMCIgeT0iMTY2IiBmb250LWZhbWlseT0ic2VyaWYiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiNENEFGMzciIHRleHQtYW5jaG9yPSJtaWRkbGUiPtiM2Lkg2KfYp9ioPC90ZXh0Pjwvc3ZnPg==',
                 colors: { primary: '#2D0729', secondary: '#D4AF37' },
@@ -2138,6 +2196,7 @@
                 nameEn: 'Castle Magic',
                 category: 'فاخر VIP',
                 eventCategory: 'birthday',
+                hasVideo: true,
                 previewFile: 'vip/birthday/demo-castle-magic/demo-castle-magic.html',
                 thumbnail: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiB2aWV3Qm94PSIwIDAgNDAwIDUwMCI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjNjM2NmYxIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjYTg1NUQzIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSI1MDAiIGZpbGw9InVybCgjZykiLz48cmVjdCB4PSIxNjAiIHk9IjE2MCIgd2lkdGg9IjgwIiBoZWlnaHQ9IjEwMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjRkZGIiBzdHJva2Utd2lkdGg9IjIiLz48dGV4dCB4PSIyMDAiIHk9IjI1MCIgZm9udC1mYW1pbHk9InNlcmlmIiBmb250LXNpemU9IjE2IiBmaWxsPSIjRkZGIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7Yp9ix2YXYqtmFINiq2YU8L3RleHQ+PC9zdmc+',
                 colors: { primary: '#6366f1', secondary: '#a855D3' },
@@ -2150,6 +2209,7 @@
                 nameEn: 'Neon Glow',
                 category: 'فاخر VIP',
                 eventCategory: 'birthday',
+                hasVideo: true,
                 previewFile: 'vip/birthday/demo-neon-glow/demo-neon-glow.html',
                 thumbnail: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiB2aWV3Qm94PSIwIDAgNDAwIDUwMCI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjMGYwMTcyIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjMzAxMDI0Ii8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSI1MDAiIGZpbGw9InVybCgjZykiLz48dGV4dCB4PSIyMDAiIHk9IjE4MCIgZm9udC1mYW1pbHk9InNlcmlmIiBmb250LXNpemU9IjI0IiBmaWxsPSIjMDBmZjkxIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7Yp9ix2YXYqtmFINio2LkZTwvdGV4dD48dGV4dCB4PSIyMDAiIHk9IjI1MCIgZm9udC1mYW1pbHk9InNlcmlmIiBmb250LXNpemU9IjEyIiBmaWxsPSIjMDBmZjkxIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7Yp9ix2YXYqtmFINiq2YU8L3RleHQ+PC9zdmc+',
                 colors: { primary: '#0f0172', secondary: '#00ff91' },
@@ -2163,6 +2223,7 @@
                 nameEn: 'Clouds',
                 category: 'فاخر VIP',
                 eventCategory: 'newborn',
+                hasVideo: true,
                 previewFile: 'vip/newborn/demo-clouds/demo-clouds.html',
                 thumbnail: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiB2aWV3Qm94PSIwIDAgNDAwIDUwMCI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjZTBlOWZmIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjYmJkZmVkIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSI1MDAiIGZpbGw9InVybCgjZykiLz48ZWxsaXBzZSBjeD0iMjAwIiBjeT0iMTYwIiByeD0iODAiIHJ5PSI0MCIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjMpIi8+PHRleHQgeD0iMjAwIiB5PSIxNjYiIGZvbnQtZmFtaWx5PSJzZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0iIzU1NSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+2KfYs9iq2YUg2KfYsduM2Lk8L3RleHQ+PC9zdmc+',
                 colors: { primary: '#e0e9ff', secondary: '#bbdfed' },
@@ -2175,6 +2236,7 @@
                 nameEn: 'Rosebud',
                 category: 'فاخر VIP',
                 eventCategory: 'newborn',
+                hasVideo: true,
                 previewFile: 'vip/newborn/demo-rosebud/demo-rosebud.html',
                 thumbnail: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiB2aWV3Qm94PSIwIDAgNDAwIDUwMCI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjZmZmMGY1Ii8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjZjRiOGI4Ii8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSI1MDAiIGZpbGw9InVybCgjZykiLz48Y2lyY2xlIGN4PSIyMDAiIGN5PSIxNjAiIHI9IjMwIiBmaWxsPSIjZjRhMGEwIi8+PHRleHQgeD0iMjAwIiB5PSIxNjYiIGZvbnQtZmFtaWx5PSJzZXJpZiIgZm9udC1zaXplPSIxNiIgZmlsbD0iI2ZmZiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+2KfYs9iq2YUg2KfYsduM2Lk8L3RleHQ+PC9zdmc+',
                 colors: { primary: '#fff0f5', secondary: '#f4a0a0' },
@@ -2188,6 +2250,7 @@
                 nameEn: 'Graduation',
                 category: 'فاخر VIP',
                 eventCategory: 'graduation',
+                hasVideo: true,
                 previewFile: 'vip/graduation/demo-graduation/demo-graduation.html',
                 thumbnail: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIiB2aWV3Qm94PSIwIDAgNDAwIDUwMCI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjMWExQTJFIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjMkQyRDQ0Ii8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSI1MDAiIGZpbGw9InVybCgjZykiLz48cG9seWdvbiBwb2ludHM9IjIwMCwxNjAgMjMwLDE5MCAyMDAsMjIwIDE3MCwxOTAiIGZpbGw9IiNENEFGMzciLz48dGV4dCB4PSIyMDAiIHk9IjI1MCIgZm9udC1mYW1pbHk9InNlcmlmIiBmb250LXNpemU9IjE2IiBmaWxsPSIjRDRBRjM3IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7Yp9ix2YXZhdin2KzZiNmCPC90ZXh0Pjwvc3ZnPg==',
                 colors: { primary: '#1A1A2E', secondary: '#D4AF37' },
@@ -2230,6 +2293,26 @@
                 katb_ketab: {
                     dateLabel: '<i class="fas fa-calendar-alt"></i> تاريخ كتب الكتاب *',
                     venueLabel: '<i class="fas fa-map-marker-alt"></i> مكان كتب الكتاب *'
+                },
+                henna: {
+                    dateLabel: '<i class="fas fa-calendar-alt"></i> تاريخ ليلة الحناء *',
+                    venueLabel: '<i class="fas fa-map-marker-alt"></i> مكان ليلة الحناء *'
+                },
+                birthday: {
+                    dateLabel: '<i class="fas fa-calendar-alt"></i> تاريخ عيد الميلاد *',
+                    venueLabel: '<i class="fas fa-map-marker-alt"></i> مكان الاحتفال *'
+                },
+                newborn: {
+                    dateLabel: '<i class="fas fa-calendar-alt"></i> تاريخ الاحتفال بالمولود *',
+                    venueLabel: '<i class="fas fa-map-marker-alt"></i> مكان الاحتفال *'
+                },
+                graduation: {
+                    dateLabel: '<i class="fas fa-calendar-alt"></i> تاريخ حفل التخرج *',
+                    venueLabel: '<i class="fas fa-map-marker-alt"></i> مكان حفل التخرج *'
+                },
+                ramadan: {
+                    dateLabel: '<i class="fas fa-calendar-alt"></i> تاريخ الإفطار *',
+                    venueLabel: '<i class="fas fa-map-marker-alt"></i> مكان الإفطار *'
                 }
             },
             en: {
@@ -2244,6 +2327,26 @@
                 katb_ketab: {
                     dateLabel: '<i class="fas fa-calendar-alt"></i> Katb El-Ketab Date *',
                     venueLabel: '<i class="fas fa-map-marker-alt"></i> Katb El-Ketab Venue *'
+                },
+                henna: {
+                    dateLabel: '<i class="fas fa-calendar-alt"></i> Henna Night Date *',
+                    venueLabel: '<i class="fas fa-map-marker-alt"></i> Henna Night Venue *'
+                },
+                birthday: {
+                    dateLabel: '<i class="fas fa-calendar-alt"></i> Birthday Date *',
+                    venueLabel: '<i class="fas fa-map-marker-alt"></i> Party Venue *'
+                },
+                newborn: {
+                    dateLabel: '<i class="fas fa-calendar-alt"></i> Celebration Date *',
+                    venueLabel: '<i class="fas fa-map-marker-alt"></i> Venue *'
+                },
+                graduation: {
+                    dateLabel: '<i class="fas fa-calendar-alt"></i> Graduation Date *',
+                    venueLabel: '<i class="fas fa-map-marker-alt"></i> Graduation Venue *'
+                },
+                ramadan: {
+                    dateLabel: '<i class="fas fa-calendar-alt"></i> Iftar Date *',
+                    venueLabel: '<i class="fas fa-map-marker-alt"></i> Iftar Venue *'
                 }
             }
         };
@@ -2409,20 +2512,31 @@
             const grid = document.getElementById('templatesGrid');
             
             // Filter templates by current event type
-            // Non-VIP templates show for wedding/engagement/katb_ketab (no eventCategory = show for all)
-            // VIP templates only show when their eventCategory matches
+            // Non-VIP templates show only for eventCategories they were designed for
+            // (wedding/engagement/katb_ketab by default). VIP templates only show
+            // when their single eventCategory matches the selected type.
             const et = currentEventType();
             const filtered = TEMPLATES_CONFIG.filter(t => {
                 if (t.eventCategory) {
-                    // VIP template: show only if event type matches
-                    // Map: wedding, engagement, henna, birthday, newborn, graduation
                     return t.eventCategory === et;
                 }
-                // Non-VIP template: show for wedding and engagement (existing behavior)
-                return true;
+                if (t.eventCategories) {
+                    return t.eventCategories.includes(et);
+                }
+                return et === 'wedding' || et === 'engagement' || et === 'katb_ketab';
+            });
+
+            // VIP templates that include a video preview appear first,
+            // then VIP templates without video, then the rest.
+            filtered.sort((a, b) => {
+                const rank = t => (t.isVip ? (t.hasVideo ? 0 : 1) : 2);
+                return rank(a) - rank(b);
             });
             
             renderTemplates(filtered);
+
+            const emptyMsg = document.getElementById('templatesEmptyMsg');
+            if (emptyMsg) emptyMsg.style.display = filtered.length === 0 ? 'block' : 'none';
             
             // Try to load from RTDB as well (for future dynamic templates)
             db.getTemplates().then(rtdbTemplates => {
