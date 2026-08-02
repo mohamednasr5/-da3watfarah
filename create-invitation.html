@@ -3611,17 +3611,23 @@ ${venueName ? `- المكان: ${venueName}` : ''}
         // to be percent-encoded, e.g. da3watfarah.com/mohktar-athar)
         // ===================================
         function buildSlug(groomName, brideName) {
-            const clean = (str) => (str || '')
-                .trim()
-                .toLowerCase()
-                .replace(/\s+/g, '-')          // spaces -> hyphen
-                .replace(/[^a-z0-9\u0600-\u06FF\-]/g, ''); // strip unsafe chars (keeps Arabic letters too)
+            const clean = buildSlug.clean;
 
             const g = clean(groomName);
             const b = clean(brideName);
             // Single-person events (graduation/birthday/newborn) leave brideName empty — don't leave a dangling hyphen.
             return b ? `${g}-${b}` : g;
         }
+        // Shared sanitizer, also used directly on the custom-slug field below
+        // (previously a hand-typed custom slug like "Ahmed Al-Mashad" was used
+        // as-is, producing broken URLs with spaces/capitals — e.g.
+        // da3watfarah.com/invite.html?slug=Ahmed%20Al-Mashad — instead of a
+        // clean da3watfarah.com/ahmed-al-mashad link).
+        buildSlug.clean = (str) => (str || '')
+            .trim()
+            .toLowerCase()
+            .replace(/\s+/g, '-')          // spaces -> hyphen
+            .replace(/[^a-z0-9\u0600-\u06FF\-]/g, ''); // strip unsafe chars (keeps Arabic letters too)
 
         // ===================================
         // Live Preview (real template + real data)
@@ -3829,7 +3835,7 @@ ${venueName ? `- المكان: ${venueName}` : ''}
                 publishBtn.disabled = true;
                 publishBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الإرسال...';
 
-                const customSlugValue = document.getElementById('customSlug').value.trim();
+                const customSlugValue = buildSlug.clean(document.getElementById('customSlug').value.trim());
                 let slug = customSlugValue ||
                            buildSlug(document.getElementById('groomName').value, document.getElementById('brideName').value);
 
