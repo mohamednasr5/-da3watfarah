@@ -87,12 +87,12 @@
 
 <div class="gate" id="gate">
   <div class="logo">لوحة المالك</div>
-  <p>أدخل كلمة سر المالك للمتابعة</p>
-  <form id="adminLoginForm">
-    <input type="password" id="adminPassword" placeholder="كلمة السر" autocomplete="off" required>
-    <button type="submit" class="btn" id="adminLoginBtn">دخول</button>
-    <p id="adminLoginError"></p>
-  </form>
+  <p>سجّل الدخول بحساب جوجل المصرّح له</p>
+  <button type="button" class="btn" id="googleLoginBtn" style="display:flex;align-items:center;justify-content:center;gap:10px;">
+    <svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg"><path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.92c1.7-1.57 2.68-3.88 2.68-6.62z"/><path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.92-2.26c-.8.54-1.84.86-3.04.86-2.34 0-4.32-1.58-5.03-3.7H.96v2.33A9 9 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.97 10.72A5.4 5.4 0 0 1 3.68 9c0-.6.1-1.18.29-1.72V4.95H.96A9 9 0 0 0 0 9c0 1.45.35 2.83.96 4.05l3.01-2.33z"/><path fill="#EA4335" d="M9 3.58c1.32 0 2.51.45 3.44 1.35l2.59-2.59C13.46.89 11.43 0 9 0A9 9 0 0 0 .96 4.95l3.01 2.33C4.68 5.16 6.66 3.58 9 3.58z"/></svg>
+    <span>تسجيل الدخول بحساب جوجل</span>
+  </button>
+  <p id="adminLoginError"></p>
 </div>
 
 <div id="dashboard" style="display:none">
@@ -262,13 +262,18 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getAuth, onAuthStateChanged, signOut, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getAuth, onAuthStateChanged, signOut, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
   import { getDatabase, ref, get, remove, update, onValue, off } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-  // Worker endpoint that verifies the admin password (521988 by default,
-  // see worker.js) and, on success, hands back the hidden Firebase admin
-  // account used to satisfy database.rules.json.
-  const ADMIN_WORKER_URL = 'https://da3watfarah.nonm1724.workers.dev';
+  // Only these Google accounts are allowed into the admin panel. This is a
+  // client-side convenience check for a fast, friendly error message — the
+  // REAL enforcement is in database.rules.json, which checks auth.token.email
+  // against this same list before allowing any write (update/delete) on
+  // /invitations. Keep both lists in sync if you add/remove an admin.
+  const ALLOWED_ADMIN_EMAILS = [
+    'elfannanm@gmail.com',
+    'mohamednasrofficial@gmail.com'
+  ];
 
   // ===== إعدادات فايربيز — استبدل بالقيم الخاصة بمشروعك =====
   const firebaseConfig = {
@@ -285,15 +290,9 @@
   const auth = getAuth(app);
   const db = getDatabase(app);
 
-  // Setup note (one-time, done by the site owner — not the admin typing
-  // the password every day):
-  // 1) Create one Firebase user (Firebase Console, or register.html) to
-  //    act as the hidden admin account.
-  // 2) In the Realtime Database add: admins/{that user's uid} = true
-  // 3) On the Worker (Settings > Variables and secrets) set:
-  //    ADMIN_FIREBASE_EMAIL, ADMIN_FIREBASE_PASSWORD, and optionally
-  //    ADMIN_PASSWORD (defaults to 521988 — see worker.js).
-  // After that, admin.html only ever asks for the numeric password.
+  // One-time setup needed on Firebase Console:
+  // Authentication → Sign-in method → enable "Google".
+  // That's it — no hidden password account needed anymore.
 
   let allInvitations = {}; // keyed by invitationId (push key from db.js)
   let currentFilter = 'all';
@@ -310,62 +309,38 @@
   onAuthStateChanged(auth, async (user) => {
     if (!user) return;
     const errorEl = document.getElementById('adminLoginError');
-    try {
-      const adminSnap = await get(ref(db, 'admins/' + user.uid));
-      if (!adminSnap.exists() || adminSnap.val() !== true) {
-        if (errorEl) errorEl.textContent = 'هذا الحساب غير مسجّل كأدمن في قاعدة البيانات (admins/' + user.uid + ').';
-        await signOut(auth);
-        return; // مش أدمن، يفضل على شاشة الدخول
-      }
-      document.getElementById('gate').style.display = 'none';
-      document.getElementById('dashboard').style.display = 'block';
-      loadInvitations();
-    } catch (err) {
-      console.error('Admin check error:', err);
-      if (errorEl) errorEl.textContent = 'تعذر التحقق من صلاحيات الأدمن (Permission denied). تأكد من نشر database.rules.json المحدّثة على فايربيز.';
+    const email = (user.email || '').toLowerCase();
+    if (!ALLOWED_ADMIN_EMAILS.map(e => e.toLowerCase()).includes(email)) {
+      if (errorEl) errorEl.textContent = `هذا الحساب (${user.email}) غير مصرّح له بدخول لوحة الأدمن.`;
       await signOut(auth);
+      return; // مش من الإيميلات المصرّح لها، يفضل على شاشة الدخول
     }
+    document.getElementById('gate').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'block';
+    loadInvitations();
   });
 
   document.getElementById('logoutBtn').addEventListener('click', () => signOut(auth).then(() => location.reload()));
 
-  // Password-only admin login. The password is checked on the Worker
-  // (never in this front-end file); on success the Worker returns the
-  // hidden Firebase admin credentials used to actually sign in.
-  document.getElementById('adminLoginForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const passwordInput = document.getElementById('adminPassword');
-    const loginBtn = document.getElementById('adminLoginBtn');
+  document.getElementById('googleLoginBtn').addEventListener('click', async () => {
+    const btn = document.getElementById('googleLoginBtn');
     const errorEl = document.getElementById('adminLoginError');
-    const password = passwordInput.value;
-
     errorEl.textContent = '';
-    loginBtn.disabled = true;
-    loginBtn.textContent = 'جارٍ التحقق...';
-
+    btn.disabled = true;
     try {
-      const res = await fetch(`${ADMIN_WORKER_URL}/api/admin/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ password })
-      });
-      const data = await res.json();
-
-      if (!res.ok || !data.success) {
-        errorEl.textContent = data.error || 'كلمة السر غير صحيحة';
-        return;
-      }
-
-      await signInWithEmailAndPassword(auth, data.email, data.password);
-      // onAuthStateChanged above takes it from here (checks admins/{uid}
-      // then shows the dashboard).
+      const provider = new GoogleAuthProvider();
+      await signInWithPopup(auth, provider);
+      // onAuthStateChanged above takes it from here (checks the email
+      // allowlist then shows the dashboard).
     } catch (err) {
       console.error('Admin login error:', err);
-      errorEl.textContent = 'تعذر تسجيل الدخول، حاول مرة أخرى';
+      if (err?.code === 'auth/popup-closed-by-user') {
+        errorEl.textContent = '';
+      } else {
+        errorEl.textContent = 'تعذر تسجيل الدخول بحساب جوجل، حاول مرة أخرى.';
+      }
     } finally {
-      loginBtn.disabled = false;
-      loginBtn.textContent = 'دخول';
-      passwordInput.value = '';
+      btn.disabled = false;
     }
   });
 
