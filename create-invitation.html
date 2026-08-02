@@ -2907,6 +2907,9 @@
             if (step === 4) {
                 generateFinalPreview();
             }
+            if (step === 2 && selectedTemplate) {
+                refreshLivePreview('livePreviewIframe');
+            }
             
             currentStep = step;
         }
@@ -3069,15 +3072,17 @@
         
         function showLivePreview(template) {
             const container = document.getElementById('livePreviewContainer');
-            const iframe = document.getElementById('livePreviewIframe');
             const nameSpan = document.getElementById('selectedTemplateName');
-            
+
             // Update template name
             nameSpan.textContent = template.nameAr;
-            
-            // Load preview in iframe
-            iframe.src = template.previewFile;
-            
+
+            // Show the REAL invitation preview (invite.html in ?preview=1 mode)
+            // with the data already entered in step 1, instead of the generic
+            // static demo file with placeholder names/dates.
+            previewIframeReady['livePreviewIframe'] = false;
+            refreshLivePreview('livePreviewIframe');
+
             // Show container with animation
             container.classList.add('active');
         }
@@ -3538,7 +3543,9 @@ ${venueName ? `- المكان: ${venueName}` : ''}
         // in ?preview=1 mode). The first call sets the iframe src; after that we
         // just postMessage the fresh data so the preview updates instantly without
         // a full reload/flicker as the user keeps typing.
-        let previewIframeReady = false;
+        // Keyed per-iframe since step 2 (livePreviewIframe) and step 4
+        // (finalPreviewIframe) each need their own independent "loaded" state.
+        const previewIframeReady = {};
         function refreshLivePreview(iframeId) {
             const iframe = document.getElementById(iframeId);
             if (!iframe) return;
@@ -3548,9 +3555,9 @@ ${venueName ? `- المكان: ${venueName}` : ''}
                 sessionStorage.setItem('farah_preview_data', JSON.stringify(data));
             } catch (e) { /* ignore quota errors */ }
 
-            if (!previewIframeReady || !iframe.src) {
+            if (!previewIframeReady[iframeId] || !iframe.src) {
                 iframe.src = 'invite.html?preview=1';
-                previewIframeReady = true;
+                previewIframeReady[iframeId] = true;
             } else {
                 iframe.contentWindow?.postMessage({ type: 'farah-preview-update', payload: data }, '*');
             }
@@ -3560,6 +3567,7 @@ ${venueName ? `- المكان: ${venueName}` : ''}
         function scheduleLivePreviewRefresh() {
             clearTimeout(livePreviewDebounce);
             livePreviewDebounce = setTimeout(() => {
+                if (currentStep === 2 && selectedTemplate) refreshLivePreview('livePreviewIframe');
                 if (currentStep === 4) refreshLivePreview('finalPreviewIframe');
             }, 400);
         }
@@ -3601,7 +3609,7 @@ ${venueName ? `- المكان: ${venueName}` : ''}
             
             // Load final preview with the REAL invitation template/colors + the
             // data actually entered by the user (not the generic demo page).
-            previewIframeReady = false;
+            previewIframeReady['finalPreviewIframe'] = false;
             refreshLivePreview('finalPreviewIframe');
         }
         

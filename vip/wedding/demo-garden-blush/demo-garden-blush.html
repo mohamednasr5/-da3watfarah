@@ -447,13 +447,13 @@ document.addEventListener('click', function (e) { if (!qn.contains(e.target)) se
           btn.id='vip-music-toggle';
           btn.setAttribute('aria-label','تشغيل/إيقاف الموسيقى');
           btn.style.cssText='position:fixed;bottom:20px;left:20px;z-index:99998;width:48px;height:48px;border-radius:50%;border:2px solid rgba(212,175,55,0.8);background:rgba(0,0,0,0.6);color:#D4AF37;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;';
-          btn.innerHTML='<i class='fas fa-music'></i>';
+          btn.innerHTML='<i class="fas fa-music"></i>';
           document.body.appendChild(btn);
         }
         var playing=false;
         btn.onclick=function(){
-          if(playing){aud.pause();btn.innerHTML='<i class='fas fa-music'></i>';playing=false;}
-          else{aud.play().catch(function(){});btn.innerHTML='<i class='fas fa-pause'></i>';playing=true;}
+          if(playing){aud.pause();btn.innerHTML='<i class="fas fa-music"></i>';playing=false;}
+          else{aud.play().catch(function(){});btn.innerHTML='<i class="fas fa-pause"></i>';playing=true;}
         };
         document.addEventListener('click',function e(){aud.play().catch(function(){});document.removeEventListener('click',e);},{once:true});
       }
