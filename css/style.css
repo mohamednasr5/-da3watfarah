@@ -1842,20 +1842,3 @@ input, textarea {
 .real-invitations-filter .filter-btn.type-birthday.active { background: #e040fb; border-color: #e040fb; }
 .real-invitations-filter .filter-btn.type-newborn.active { background: #87CEEB; border-color: #87CEEB; color: #333; }
 .real-invitations-filter .filter-btn.type-graduation.active { background: #D4AF37; border-color: #D4AF37; }
-
-/* VIP badge on homepage template cards */
-.badge-vip-home {
-    background: linear-gradient(135deg, #D4AF37, #B8960C) !important;
-    color: #fff !important;
-    font-size: .7rem;
-    font-weight: 700;
-    padding: 3px 10px;
-    border-radius: 20px;
-    text-align: center;
-}
-/* VIP filter button in templates filter */
-.templates-filter .filter-btn[data-filter="vip"].active,
-.templates-filter .filter-btn.active[data-filter="vip"] {
-    background: #D4AF37;
-    border-color: #D4AF37;
-}

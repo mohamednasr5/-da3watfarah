@@ -19,23 +19,23 @@ var VipTemplateRenderer = (function () {
 
     // Map of VIP template IDs to their HTML file paths (relative to site root)
     var VIP_TEMPLATE_MAP = {
-        'vip-editorial-noir': 'vip/wedding/demo-editorial-noir/demo-editorial-noir.html',
-        'vip-garden-blush': 'vip/wedding/demo-garden-blush/demo-garden-blush.html',
-        'vip-gate-of-joy': 'vip/wedding/demo-gate-of-joy/demo-gate-of-joy.html',
-        'vip-grand-hall': 'vip/wedding/demo-grand-hall/demo-grand-hall.html',
-        'vip-moon-stars': 'vip/wedding/demo-moon-stars/demo-moon-stars.html',
-        'vip-royal-maroon': 'vip/wedding/demo-royal-maroon/demo-royal-maroon.html',
-        'vip-the-doves': 'vip/wedding/demo-the-doves/demo-the-doves.html',
-        'vip-wax-seal': 'vip/wedding/demo-wax-seal/demo-wax-seal.html',
-        'vip-white-hall': 'vip/wedding/demo-white-hall/demo-white-hall.html',
-        'vip-starry-night': 'vip/engagement/demo-starry-night/demo-starry-night.html',
-        'vip-the-ring': 'vip/engagement/demo-the-ring/demo-the-ring.html',
-        'vip-henna-night': 'vip/henna/demo-henna-night/demo-henna-night.html',
-        'vip-castle-magic': 'vip/birthday/demo-castle-magic/demo-castle-magic.html',
-        'vip-neon-glow': 'vip/birthday/demo-neon-glow/demo-neon-glow.html',
-        'vip-clouds': 'vip/newborn/demo-clouds/demo-clouds.html',
-        'vip-rosebud': 'vip/newborn/demo-rosebud/demo-rosebud.html',
-        'vip-graduation': 'vip/graduation/demo-graduation/demo-graduation.html'
+        'vip-editorial-noir': 'vip/زفاف/demo-editorial-noir/demo-editorial-noir.html',
+        'vip-garden-blush': 'vip/زفاف/demo-garden-blush/demo-garden-blush.html',
+        'vip-gate-of-joy': 'vip/زفاف/demo-gate-of-joy/demo-gate-of-joy.html',
+        'vip-grand-hall': 'vip/زفاف/demo-grand-hall/demo-grand-hall.html',
+        'vip-moon-stars': 'vip/زفاف/demo-moon-stars/demo-moon-stars.html',
+        'vip-royal-maroon': 'vip/زفاف/demo-royal-maroon/demo-royal-maroon.html',
+        'vip-the-doves': 'vip/زفاف/demo-the-doves/demo-the-doves.html',
+        'vip-wax-seal': 'vip/زفاف/demo-wax-seal/demo-wax-seal.html',
+        'vip-white-hall': 'vip/زفاف/demo-white-hall/demo-white-hall.html',
+        'vip-starry-night': 'vip/خطوبة/demo-starry-night/demo-starry-night.html',
+        'vip-the-ring': 'vip/خطوبة/demo-the-ring/demo-the-ring.html',
+        'vip-henna-night': 'vip/حناء/demo-henna-night/demo-henna-night.html',
+        'vip-castle-magic': 'vip/عيد ميلاد/demo-castle-magic/demo-castle-magic.html',
+        'vip-neon-glow': 'vip/عيد ميلاد/demo-neon-glow/demo-neon-glow.html',
+        'vip-clouds': 'vip/مولود/demo-clouds/demo-clouds.html',
+        'vip-rosebud': 'vip/مولود/demo-rosebud/demo-rosebud.html',
+        'vip-graduation': 'vip/حفلة تخرج/demo-graduation/demo-graduation.html'
     };
 
     // Category-to-event-type mapping for non-wedding event types
