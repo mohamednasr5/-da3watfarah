@@ -1074,6 +1074,30 @@
                                     <option value="female" data-i18n="newborn_gender_female">مولودة (أنثى)</option>
                                 </select>
                             </div>
+
+                            <!-- Extra fields per event category — optional, only shown/used when the
+                                 selected template actually has a place to display them (birthday age,
+                                 newborn weight, graduation major/university). Safe no-op otherwise. -->
+                            <div class="form-group" id="extraAgeGroup" style="display:none;">
+                                <label data-i18n="extra_age_label"><i class="fas fa-cake-candles"></i> العمر (اختياري)</label>
+                                <input type="text" class="form-control" id="extraAge" placeholder="مثال: سبع" data-i18n-placeholder="extra_age_ph">
+                                <small style="color:#6B7280;" data-i18n="extra_age_hint">يظهر تلقائيًا في نص القالب: «... تكمل [العمر] سنوات»</small>
+                            </div>
+
+                            <div class="form-group" id="extraBabyWeightGroup" style="display:none;">
+                                <label data-i18n="extra_weight_label"><i class="fas fa-weight-scale"></i> وزن المولود (اختياري)</label>
+                                <input type="text" class="form-control" id="extraBabyWeight" placeholder="مثال: 3.2 كجم" data-i18n-placeholder="extra_weight_ph">
+                            </div>
+
+                            <div class="form-group" id="extraGraduateMajorGroup" style="display:none;">
+                                <label data-i18n="extra_major_label"><i class="fas fa-graduation-cap"></i> التخصص / الدرجة العلمية (اختياري)</label>
+                                <input type="text" class="form-control" id="extraGraduateMajor" placeholder="مثال: بكالوريوس علوم حاسب" data-i18n-placeholder="extra_major_ph">
+                            </div>
+
+                            <div class="form-group" id="extraGraduateUniversityGroup" style="display:none;">
+                                <label data-i18n="extra_university_label"><i class="fas fa-building-columns"></i> الجامعة / الكلية (اختياري)</label>
+                                <input type="text" class="form-control" id="extraGraduateUniversity" placeholder="مثال: جامعة الملك سعود" data-i18n-placeholder="extra_university_ph">
+                            </div>
                             
                             <div class="form-group" id="groomFatherNameGroup">
                                 <label id="groomFatherFieldLabel" data-i18n="groom_father_label"><i class="fas fa-user-tie"></i> اسم أب العريس</label>
@@ -2310,6 +2334,7 @@
                     dateLabel: '<i class="fas fa-calendar-alt"></i> تاريخ عيد الميلاد *',
                     venueLabel: '<i class="fas fa-map-marker-alt"></i> مكان الاحتفال *',
                     singlePerson: true,
+                    showAge: true,
                     nameLabel: '<i class="fas fa-user"></i> اسم صاحب/صاحبة عيد الميلاد *',
                     namePh: 'أدخل الاسم'
                 },
@@ -2318,6 +2343,7 @@
                     venueLabel: '<i class="fas fa-map-marker-alt"></i> مكان الاحتفال *',
                     singlePerson: true,
                     showNewbornGender: true,
+                    showBabyWeight: true,
                     nameLabel: '<i class="fas fa-baby"></i> اسم المولود *',
                     namePh: 'أدخل اسم المولود'
                 },
@@ -2325,6 +2351,7 @@
                     dateLabel: '<i class="fas fa-calendar-alt"></i> تاريخ حفل التخرج *',
                     venueLabel: '<i class="fas fa-map-marker-alt"></i> مكان حفل التخرج *',
                     singlePerson: true,
+                    showGraduateFields: true,
                     nameLabel: '<i class="fas fa-user"></i> اسم الخريج/الخريجة *',
                     namePh: 'أدخل الاسم'
                 },
@@ -2357,6 +2384,7 @@
                     dateLabel: '<i class="fas fa-calendar-alt"></i> Birthday Date *',
                     venueLabel: '<i class="fas fa-map-marker-alt"></i> Party Venue *',
                     singlePerson: true,
+                    showAge: true,
                     nameLabel: '<i class="fas fa-user"></i> Name *',
                     namePh: 'Enter name'
                 },
@@ -2365,6 +2393,7 @@
                     venueLabel: '<i class="fas fa-map-marker-alt"></i> Venue *',
                     singlePerson: true,
                     showNewbornGender: true,
+                    showBabyWeight: true,
                     nameLabel: '<i class="fas fa-baby"></i> Baby\'s Name *',
                     namePh: 'Enter baby\'s name'
                 },
@@ -2372,6 +2401,7 @@
                     dateLabel: '<i class="fas fa-calendar-alt"></i> Graduation Date *',
                     venueLabel: '<i class="fas fa-map-marker-alt"></i> Graduation Venue *',
                     singlePerson: true,
+                    showGraduateFields: true,
                     nameLabel: '<i class="fas fa-user"></i> Graduate\'s Name *',
                     namePh: 'Enter name'
                 },
@@ -2429,6 +2459,14 @@
                 document.getElementById('brideName').required = true;
                 toggle('newbornGenderGroup', false);
             }
+
+            // Optional per-category extra fields — only relevant to specific
+            // event types, and only used by templates that have a slot for them
+            // (older/other templates simply ignore the value).
+            toggle('extraAgeGroup', !!meta.showAge);
+            toggle('extraBabyWeightGroup', !!meta.showBabyWeight);
+            toggle('extraGraduateMajorGroup', !!meta.showGraduateFields);
+            toggle('extraGraduateUniversityGroup', !!meta.showGraduateFields);
         }
 
         // Prefill the wizard with text generated by the AI writer (ai-writer.html),
@@ -3136,7 +3174,13 @@ ${venueName ? `- مكان الزفاف: ${venueName}` : ''}
                     loveStory: val('loveStory'),
                     religiousVerseEnabled: document.getElementById('religiousVerseToggle')?.checked ?? true,
                     religiousVerseType: document.getElementById('religiousVerseType')?.value || 'quran',
-                    newbornGender: document.getElementById('newbornGender')?.value || 'male'
+                    newbornGender: document.getElementById('newbornGender')?.value || 'male',
+                    extra: {
+                        age: val('extraAge'),
+                        babyWeight: val('extraBabyWeight'),
+                        graduateMajor: val('extraGraduateMajor'),
+                        graduateUniversity: val('extraGraduateUniversity')
+                    }
                 },
                 isPublished: true
             };
@@ -3355,7 +3399,13 @@ ${venueName ? `- مكان الزفاف: ${venueName}` : ''}
                         loveStory: document.getElementById('loveStory').value.trim(),
                         religiousVerseEnabled: document.getElementById('religiousVerseToggle').checked,
                         religiousVerseType: document.getElementById('religiousVerseType').value,
-                        newbornGender: document.getElementById('newbornGender')?.value || 'male'
+                        newbornGender: document.getElementById('newbornGender')?.value || 'male',
+                        extra: {
+                            age: document.getElementById('extraAge')?.value.trim() || '',
+                            babyWeight: document.getElementById('extraBabyWeight')?.value.trim() || '',
+                            graduateMajor: document.getElementById('extraGraduateMajor')?.value.trim() || '',
+                            graduateUniversity: document.getElementById('extraGraduateUniversity')?.value.trim() || ''
+                        }
                     },
                     slug: slug
                 };
@@ -3425,7 +3475,14 @@ ${venueName ? `- مكان الزفاف: ${venueName}` : ''}
 
         function renderPlanGrid() {
             const grid = document.getElementById('planGrid');
-            grid.innerHTML = Object.values(PUBLISH_PLANS).map(plan => `
+            const vipRequired = !!(window.__vipGate && window.__vipGate.required);
+            // If the chosen template is VIP-exclusive, don't offer the free/premium
+            // plans at all — publishing this design requires a VIP subscription.
+            const plansToShow = vipRequired
+                ? { vip: PUBLISH_PLANS.vip }
+                : PUBLISH_PLANS;
+
+            grid.innerHTML = Object.values(plansToShow).map(plan => `
                 <div class="publish-plan-card" data-plan="${plan.id}" onclick="choosePublishPlan('${plan.id}')"
                      style="border:2px solid var(--border-color,#E5E7EB);border-radius:var(--radius-lg);padding:22px 18px;text-align:center;cursor:pointer;transition:all .2s;background:var(--bg-card,#fff);">
                     <i class="fas ${plan.icon}" style="font-size:1.8rem;color:var(--primary-gold);margin-bottom:10px;display:block;"></i>
@@ -3442,6 +3499,14 @@ ${venueName ? `- مكان الزفاف: ${venueName}` : ''}
         }
 
         async function choosePublishPlan(planId) {
+            // Hard guard: a VIP-template invitation can only be published on the
+            // VIP plan. Even if this function is reached with 'free' or 'premium'
+            // (e.g. a stale preselected plan from localStorage), redirect to VIP.
+            const vipRequired = !!(window.__vipGate && window.__vipGate.required);
+            if (vipRequired && planId !== 'vip') {
+                planId = 'vip';
+            }
+
             selectedPublishPlan = PUBLISH_PLANS[planId];
 
             if (selectedPublishPlan.usd === 0) {

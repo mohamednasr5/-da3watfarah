@@ -152,7 +152,7 @@ var VipTemplateRenderer = (function () {
             monogram = name1.charAt(0) + ' و ' + name2.charAt(0);
         }
 
-        return {
+        var result = {
             pageTitle: pageTitle,
             ogDescription: ogDesc,
             ogUrl: window.location.origin + '/' + slug,
@@ -184,6 +184,18 @@ var VipTemplateRenderer = (function () {
             eventLabel: eventLabel,
             _raw: invitationData  // Pass full data for advanced use
         };
+
+        // Optional per-category extras. Only add the key when the user actually
+        // filled it in — the VIP bridge script (applyData) skips null/undefined
+        // values and leaves the template's own default text in place, so a
+        // template that doesn't have a slot for a given key is unaffected.
+        var extra = content.extra || {};
+        if (extra.age) result.personAge = extra.age;
+        if (extra.babyWeight) result.babyWeight = extra.babyWeight;
+        if (extra.graduateMajor) result.graduateMajor = extra.graduateMajor;
+        if (extra.graduateUniversity) result.graduateUniversity = extra.graduateUniversity;
+
+        return result;
     }
 
     /**
