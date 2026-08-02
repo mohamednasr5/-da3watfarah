@@ -2040,6 +2040,19 @@
         // ===================================
         // Category Tabs Functions
         // ===================================
+        // A template can declare its category(ies) either as a plural array
+        // (regular templates: `eventCategories: ['wedding','engagement']`) or
+        // as a single string (VIP templates: `eventCategory: 'henna'`).
+        // Older code only checked the plural array, so VIP-only categories
+        // (henna, birthday, newborn, graduation, ramadan) always counted as
+        // empty and showed "coming soon" even though real VIP templates exist
+        // for them. This helper checks both shapes.
+        function templateMatchesCategory(t, categoryId) {
+            if (t.eventCategories && t.eventCategories.includes(categoryId)) return true;
+            if (t.eventCategory && t.eventCategory === categoryId) return true;
+            return false;
+        }
+
         function renderCategoryTabs() {
             const container = document.getElementById('categoryTabs');
             if (!container) return;
@@ -2049,7 +2062,7 @@
             container.innerHTML = EVENT_CATEGORIES.map(cat => {
                 const count = cat.id === 'all' 
                     ? TEMPLATES_CONFIG.length 
-                    : TEMPLATES_CONFIG.filter(t => t.eventCategories && t.eventCategories.includes(cat.id)).length;
+                    : TEMPLATES_CONFIG.filter(t => templateMatchesCategory(t, cat.id)).length;
                 
                 return `
                     <button type="button" class="category-tab ${selectedCategory === cat.id ? 'active' : ''}" 
@@ -2089,9 +2102,7 @@
             if (categoryId === 'all') {
                 filtered = TEMPLATES_CONFIG;
             } else {
-                filtered = TEMPLATES_CONFIG.filter(t => 
-                    t.eventCategories && t.eventCategories.includes(categoryId)
-                );
+                filtered = TEMPLATES_CONFIG.filter(t => templateMatchesCategory(t, categoryId));
             }
             
             const grid = document.getElementById('templatesGrid');

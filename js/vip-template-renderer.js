@@ -352,24 +352,52 @@ var VipTemplateRenderer = (function () {
                 console.warn('[VIP Renderer] Could not postMessage to iframe:', e);
             }
 
-            // Auto-resize iframe to content height
+            // Auto-resize iframe to content height.
+            //
+            // IMPORTANT: most VIP designs show a full-screen intro (envelope
+            // open animation and/or an entrance video) before the actual
+            // invitation content. While that intro is active, the template's
+            // own script adds a `env-locked` class to its <body> and pins the
+            // intro overlay with `position:fixed; inset:0`. A `position:fixed`
+            // element inside an iframe covers the iframe's CURRENT box, so if
+            // we grow the iframe to the full (very tall) page height while the
+            // intro is still playing, the overlay/video stretches to cover
+            // that whole tall box instead of just one screen's worth — which
+            // is exactly what made entrance videos look distorted/"wide" and
+            // pushed the tap-to-open control off-screen, so the invitation
+            // never appeared to load. Fix: keep the iframe at the normal
+            // viewport-sized height (100vh, set at creation time) for as long
+            // as `env-locked` is present, and only start auto-growing the
+            // iframe to fit the full content once the intro has finished.
             try {
                 var resizeInterval = setInterval(function () {
                     try {
                         var body = iframe.contentDocument.body;
                         var html = iframe.contentDocument.documentElement;
                         if (body && html) {
+                            // Intro (envelope/video/curtain) still playing — don't
+                            // resize yet, or the fixed-position overlay will
+                            // stretch across the enlarged iframe.
+                            if (body.classList.contains('env-locked')) {
+                                return;
+                            }
                             var height = Math.max(body.scrollHeight, body.offsetHeight,
                                                html.clientHeight, html.scrollHeight, html.offsetHeight);
                             iframe.style.height = height + 'px';
-                            // Stop resizing after 10 seconds (content is stable)
+                            // Stop resizing after 10 seconds of being unlocked
+                            // (content is stable by then).
                             clearTimeout(resizeInterval._timer);
                             resizeInterval._timer = setTimeout(function () { clearInterval(resizeInterval); }, 10000);
                         }
                     } catch (e) {
                         clearInterval(resizeInterval);
                     }
-                }, 500);
+                }, 300);
+                // Safety net: some templates have no envelope/intro at all, so
+                // `env-locked` is never present. Make sure we don't poll forever
+                // in that case either — 20s total ought to be more than enough
+                // for any intro animation plus content to settle.
+                setTimeout(function () { clearInterval(resizeInterval); }, 20000);
             } catch (e) { /* cross-origin, skip resize */ }
         });
 
