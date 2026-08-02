@@ -1,1 +1,147 @@
-{"rules": {".read": false, ".write": false, "users": {"$uid": {".read": "$uid === auth.uid", ".write": "$uid === auth.uid", ".validate": "newData.hasChildren(['email', 'createdAt'])", "email": {".validate": "newData.isString() && newData.val().length < 256"}, "displayName": {".validate": "!newData.exists() || newData.isString()"}, "plan": {".validate": "newData.isString() && (newData.val() === 'free' || newData.val() === 'premium' || newData.val() === 'vip')"}, "invitations": {"$invitationId": {".read": "$uid === auth.uid", ".write": "$uid === auth.uid", ".validate": "newData.hasChildren(['couple', 'event', 'design'])", "rsvps": {".read": true, "$rsvpId": {".write": true}}, "wishes": {".read": true, "$wishId": {".write": true, ".validate": "newData.hasChild('name')", "message": {".validate": "!newData.exists() || (newData.isString() && newData.val().length <= 1000)"}}}}}}}, "templates": {".read": true, ".write": false, "$templateId": {".validate": "newData.hasChildren(['id', 'nameAr', 'colors'])"}}, "invitations": {".read": true, "$invitationId": {".write": "auth != null && (data.child('userId').val() === auth.uid || !data.exists() || root.child('admins').child(auth.uid).val() === true)", ".validate": "newData.hasChildren(['userId', 'couple', 'event', 'design', 'slug'])", ".indexOn": ["userId", "slug", "status", "isPublished"], "userId": {".validate": "newData.isString()"}, "slug": {".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 100"}, "eventType": {".validate": "newData.isString() && (newData.val() === 'wedding' || newData.val() === 'engagement' || newData.val() === 'katb_ketab' || newData.val() === 'henna' || newData.val() === 'birthday' || newData.val() === 'newborn' || newData.val() === 'graduation' || newData.val() === 'ramadan')"}, "status": {".validate": "newData.isString() && (newData.val() === 'draft' || newData.val() === 'active' || newData.val() === 'archived' || newData.val() === 'pending_review' || newData.val() === 'rejected')"}, "isPublished": {".validate": "newData.isBoolean()"}, "coverImageSource": {".validate": "!newData.exists() || (newData.isString() && (newData.val() === 'upload' || newData.val() === 'url' || newData.val() === 'random'))"}, "payment": {"status": {".validate": "newData.isString() && (newData.val() === 'unpaid' || newData.val() === 'pending_verification' || newData.val() === 'verified' || newData.val() === 'rejected' || newData.val() === 'not_required')"}, "plan": {".validate": "!newData.exists() || newData.val() === null || (newData.isString() && (newData.val() === 'free' || newData.val() === 'premium' || newData.val() === 'vip'))"}}, "viewsCount": {".write": true, ".validate": "newData.isNumber()"}, "views": {".write": true, ".validate": "newData.isNumber()"}, "couple": {"groomName": {".validate": "newData.isString() && newData.val().length <= 100"}, "brideName": {".validate": "newData.isString() && newData.val().length <= 100"}}, "event": {"date": {".validate": "!newData.exists() || newData.isString()"}, "venue": {".validate": "!newData.exists() || newData.isString() && newData.val().length <= 200"}}, "design": {"templateId": {".validate": "!newData.exists() || newData.isString()"}, "coverImage": {".validate": "!newData.exists() || (newData.isString() && newData.val().length <= 2000)"}, "colors": {".validate": "!newData.exists() || newData.isString()"}}, "rsvps": {".read": true, "$rsvpId": {".write": true, ".validate": "newData.hasChildren(['guestName', 'attending'])", "guestName": {".validate": "newData.isString() && newData.val().length > 0"}, "attending": {".validate": "newData.isBoolean()"}, "guestsCount": {".validate": "!newData.exists() || newData.isNumber()"}}}, "wishes": {".read": true, "$wishId": {".write": true, ".validate": "newData.hasChild('name')", ".indexOn": ["createdAt"], "name": {".validate": "newData.isString() && newData.val().length > 0"}, "message": {".validate": "!newData.exists() || (newData.isString() && newData.val().length <= 1000)"}, "isVisible": {".validate": "!newData.exists() || newData.isBoolean()"}}, "gallery": {".read": true, "$galleryId": {".write": true, ".validate": "newData.hasChild('url')", "url": {".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 2000"}, "guestName": {".validate": "!newData.exists() || (newData.isString() && newData.val().length <= 200)"}, "approved": {".validate": "!newData.exists() || newData.isBoolean()"}, "createdAt": {".validate": "!newData.exists() || newData.isNumber()"}}, "aiGeneratedText": {".validate": "!newData.exists() || newData.isString()"}, "randomCoverHistory": {".validate": "!newData.exists() || newData.isObject()"}}}, "public": {"$slug": {".read": true, ".write": true, "stats": {"views": {".write": true}, "rsvps": {".write": true}}}}, "analytics": {".write": false, ".read": "auth != null"}, "settings": {".write": false, ".read": "auth != null"}}}
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    
+    "users": {
+      "$uid": {
+        ".read": "$uid === auth.uid",
+        ".write": "$uid === auth.uid",
+        ".validate": "newData.hasChildren(['email', 'createdAt'])",
+        "email": { ".validate": "newData.isString() && newData.val().length < 256" },
+        "displayName": { ".validate": "!newData.exists() || newData.isString()" },
+        "plan": { ".validate": "newData.isString() && (newData.val() === 'free' || newData.val() === 'premium' || newData.val() === 'vip')" },
+        "invitations": {
+          "$invitationId": {
+            ".read": "$uid === auth.uid",
+            ".write": "$uid === auth.uid",
+            ".validate": "newData.hasChildren(['couple', 'event', 'design'])",
+            "rsvps": { ".read": true, "$rsvpId": { ".write": true } },
+            "wishes": { 
+              ".read": true, 
+              "$wishId": { 
+                ".write": true, 
+                ".validate": "newData.hasChild('name')", 
+                "message": { ".validate": "!newData.exists() || (newData.isString() && newData.val().length <= 1000)" } 
+              } 
+            }
+          }
+        }
+      }
+    },
+    
+    "templates": {
+      ".read": true,
+      ".write": false,
+      "$templateId": { ".validate": "newData.hasChildren(['id', 'nameAr', 'colors'])" }
+    },
+    
+    "invitations": {
+      ".read": true,
+      "$invitationId": {
+        ".write": "auth != null && (data.child('userId').val() === auth.uid || !data.exists() || root.child('admins').child(auth.uid).val() === true)",
+        ".validate": "newData.hasChildren(['userId', 'couple', 'event', 'design', 'slug'])",
+        ".indexOn": ["userId", "slug", "status", "isPublished"],
+        
+        "userId": { ".validate": "newData.isString()" },
+        "slug": { ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 100" },
+        
+        "eventType": { 
+          ".validate": "newData.isString() && (newData.val() === 'wedding' || newData.val() === 'engagement' || newData.val() === 'katb_ketab' || newData.val() === 'henna' || newData.val() === 'birthday' || newData.val() === 'newborn' || newData.val() === 'graduation' || newData.val() === 'ramadan')" 
+        },
+        
+        "status": { 
+          ".validate": "newData.isString() && (newData.val() === 'draft' || newData.val() === 'active' || newData.val() === 'archived' || newData.val() === 'pending_review' || newData.val() === 'rejected')" 
+        },
+        
+        "isPublished": { ".validate": "newData.isBoolean()" },
+        
+        "coverImageSource": { 
+          ".validate": "!newData.exists() || (newData.isString() && (newData.val() === 'upload' || newData.val() === 'url' || newData.val() === 'random'))" 
+        },
+        
+        "payment": {
+          "status": { ".validate": "newData.isString() && (newData.val() === 'unpaid' || newData.val() === 'pending_verification' || newData.val() === 'verified' || newData.val() === 'rejected' || newData.val() === 'not_required')" },
+          "plan": { ".validate": "!newData.exists() || newData.val() === null || (newData.isString() && (newData.val() === 'free' || newData.val() === 'premium' || newData.val() === 'vip'))" }
+        },
+        
+        "viewsCount": { ".write": true, ".validate": "newData.isNumber()" },
+        "views": { ".write": true, ".validate": "newData.isNumber()" },
+        
+        "couple": {
+          "groomName": { ".validate": "newData.isString() && newData.val().length <= 100" },
+          "brideName": { ".validate": "newData.isString() && newData.val().length <= 100" }
+        },
+        
+        "event": {
+          "date": { ".validate": "!newData.exists() || newData.isString()" },
+          "venue": { ".validate": "!newData.exists() || newData.isString() && newData.val().length <= 200" }
+        },
+        
+        "design": {
+          "templateId": { ".validate": "!newData.exists() || newData.isString()" },
+          "coverImage": { ".validate": "!newData.exists() || (newData.isString() && newData.val().length <= 2000)" },
+          "colors": { ".validate": "!newData.exists() || newData.isString()" }
+        },
+        
+        "rsvps": {
+          ".read": true,
+          "$rsvpId": {
+            ".write": true,
+            ".validate": "newData.hasChildren(['guestName', 'attending'])",
+            "guestName": { ".validate": "newData.isString() && newData.val().length > 0" },
+            "attending": { ".validate": "newData.isBoolean()" },
+            "guestsCount": { ".validate": "!newData.exists() || newData.isNumber()" }
+          }
+        },
+        
+        "wishes": {
+          ".read": true,
+          "$wishId": {
+            ".write": true,
+            ".validate": "newData.hasChild('name')",
+            "name": { ".validate": "newData.isString() && newData.val().length > 0" },
+            "message": { ".validate": "!newData.exists() || (newData.isString() && newData.val().length <= 1000)" },
+            "isVisible": { ".validate": "!newData.exists() || newData.isBoolean()" }
+          }
+        },
+        
+        "gallery": {
+          ".read": true,
+          "$galleryId": {
+            ".write": true,
+            ".validate": "newData.hasChild('url')",
+            "url": { ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 2000" },
+            "guestName": { ".validate": "!newData.exists() || (newData.isString() && newData.val().length <= 200)" },
+            "approved": { ".validate": "!newData.exists() || newData.isBoolean()" },
+            "createdAt": { ".validate": "!newData.exists() || newData.isNumber()" }
+          }
+        },
+        
+        "aiGeneratedText": { ".validate": "!newData.exists() || newData.isString()" },
+        "randomCoverHistory": { ".validate": "!newData.exists() || newData.isObject()" }
+      }
+    },
+    
+    "public": {
+      "$slug": {
+        ".read": true,
+        ".write": true,
+        "stats": {
+          "views": { ".write": true },
+          "rsvps": { ".write": true }
+        }
+      }
+    },
+    
+    "analytics": {
+      ".write": false,
+      ".read": "auth != null"
+    },
+    
+    "settings": {
+      ".write": false,
+      ".read": "auth != null"
+    }
+  }
+}
