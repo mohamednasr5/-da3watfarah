@@ -4219,11 +4219,17 @@ ${venueName ? `- المكان: ${venueName}` : ''}
          * الحصول على نوع المناسبة الحالي من النموذج
          */
         function getCurrentEventType() {
-            const eventTypeSelect = document.getElementById('eventType');
-            if (eventTypeSelect) {
-                return eventTypeSelect.value || 'wedding';
+            // Read the actual section radio buttons (input[name="eventTypeRadio"]),
+            // same source of truth used everywhere else in the wizard via
+            // currentEventType(). Previously this read a #eventType element that
+            // does not exist, so the random image always silently defaulted to
+            // "wedding" no matter which section (birthday, henna, ramadan...) was
+            // actually selected.
+            if (typeof currentEventType === 'function') {
+                return currentEventType();
             }
-            return 'wedding';
+            const checked = document.querySelector('input[name="eventTypeRadio"]:checked');
+            return checked ? checked.value : 'wedding';
         }
         
         /**

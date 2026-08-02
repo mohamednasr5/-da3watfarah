@@ -445,6 +445,7 @@ const COVER_IMAGE_SOURCES = {
     // Wedding images / صور الزفاف
     wedding: {
         unsplash: ['wedding', 'wedding decoration', 'wedding flowers', 'romantic wedding', 'bridal', 'wedding venue'],
+        loremflickr: ['bride,groom', 'wedding,couple', 'bride,wedding', 'wedding,ceremony', 'groom,bride'],
         pexels: ['wedding', 'marriage', 'bridal', 'wedding ceremony'],
         pixabay: ['wedding', 'marriage', 'bridal'],
         colors: ['#D4AF37', '#F5E6D3', '#8B0000', '#FFFFFF'], // Gold, Cream, Dark Red, White
@@ -454,6 +455,7 @@ const COVER_IMAGE_SOURCES = {
     // Engagement images / صور الخطوبة
     engagement: {
         unsplash: ['engagement ring', 'romantic dinner', 'couple love', 'engagement party', 'roses'],
+        loremflickr: ['couple,ring', 'engagement,ring', 'couple,romantic', 'couple,roses'],
         pexels: ['engagement', 'ring', 'couple', 'romantic'],
         pixabay: ['engagement', 'ring', 'love'],
         colors: ['#FF69B4', '#FFD700', '#C0C0C0', '#FFE4E1'], // Pink, Gold, Silver, Misty Rose
@@ -463,6 +465,7 @@ const COVER_IMAGE_SOURCES = {
     // Katb Kitab images / صور كتب الكتاب
     katb_ketab: {
         unsplash: ['islamic decoration', 'arabic calligraphy', 'mosque interior', 'islamic pattern'],
+        loremflickr: ['mosque,islamic', 'quran,islamic', 'arabic,calligraphy', 'mosque,interior'],
         pexels: ['islamic', 'mosque', 'arabic', 'traditional'],
         pixabay: ['islamic', 'mosque', 'arabic'],
         colors: ['#1A5F1A', '#D4AF37', '#FFFFFF', '#2C3E50'], // Green, Gold, White, Dark Blue
@@ -472,6 +475,7 @@ const COVER_IMAGE_SOURCES = {
     // Henna Night images / صور ليلة الحناء
     henna: {
         unsplash: ['henna design', 'henna party', 'arabic celebration', 'women gathering'],
+        loremflickr: ['henna,hands', 'henna,party', 'henna,design'],
         pexels: ['henna', 'celebration', 'party', 'decorated hands'],
         pixabay: ['henna', 'party', 'decoration'],
         colors: ['#8B008B', '#FF1493', '#D4AF37', '#2D1B4E'], // Purple, Pink, Gold, Deep Purple
@@ -481,6 +485,7 @@ const COVER_IMAGE_SOURCES = {
     // Birthday images / صور عيد الميلاد
     birthday: {
         unsplash: ['birthday party', 'birthday cake', 'balloons', 'celebration', 'confetti'],
+        loremflickr: ['birthday,cake', 'balloons,party', 'birthday,celebration', 'confetti,party'],
         pexels: ['birthday', 'cake', 'balloons', 'party'],
         pixabay: ['birthday', 'cake', 'celebration'],
         colors: ['#FF6B6B', '#4ECDC4', '#FFE66D', '#95E1D3'], // Coral, Teal, Yellow, Mint
@@ -490,6 +495,7 @@ const COVER_IMAGE_SOURCES = {
     // Newborn images / صور استقبال مولود
     newborn: {
         unsplash: ['baby', 'newborn', 'baby shower', 'baby feet', 'soft baby'],
+        loremflickr: ['baby,newborn', 'baby,cute', 'baby,shower'],
         pexels: ['baby', 'newborn', 'baby shower', 'cute baby'],
         pixabay: ['baby', 'newborn', 'baby shower'],
         colors: ['#FFB6C1', '#87CEEB', '#F0E68C', '#DDA0DD'], // Light Pink, Sky Blue, Khaki, Plum
@@ -499,6 +505,7 @@ const COVER_IMAGE_SOURCES = {
     // Graduation images / صور التخرج
     graduation: {
         unsplash: ['graduation', 'cap and gown', 'university', 'diploma', 'academic'],
+        loremflickr: ['graduation,cap', 'graduation,university', 'graduation,diploma'],
         pexels: ['graduation', 'university', 'student', 'education'],
         pixabay: ['graduation', 'university', 'education'],
         colors: ['#1E3A5F', '#D4AF37', '#2E4057', '#F5F5DC'], // Navy Blue, Gold, Dark Gray, Beige
@@ -508,6 +515,7 @@ const COVER_IMAGE_SOURCES = {
     // Ramadan images / صور رمضان
     ramadan: {
         unsplash: ['ramadan', 'iftar', 'lanterns', 'moon and stars', 'dates', 'mosque at night'],
+        loremflickr: ['ramadan,lantern', 'mosque,night', 'lantern,moon'],
         pexels: ['ramadan', 'iftar', 'lantern', 'islamic'],
         pixabay: ['ramadan', 'lantern', 'moon', 'islamic'],
         colors: ['#6B8E23', '#D4AF37', '#1a1a2e', '#8B4513'], // Olive Green, Gold, Dark Purple, Saddle Brown
@@ -595,6 +603,30 @@ async function fetchFromUnsplash(eventType, options = {}) {
 }
 
 /**
+ * Fetch a REAL photo (not a placeholder) from LoremFlickr, category-aware.
+ * جلب صورة حقيقية (وليست بديلة) من LoremFlickr حسب قسم المناسبة
+ * source.unsplash.com is permanently shut down since 2024, so this is the
+ * primary working real-photo source (no API key needed).
+ * 
+ * @param {string} eventType - Type of event (wedding, engagement, etc.)
+ * @param {Object} options - Additional options
+ * @returns {Promise<string>} URL of a real matching photo
+ */
+async function fetchFromLoremFlickr(eventType, options = {}) {
+    const config = COVER_IMAGE_SOURCES[eventType];
+    if (!config) {
+        console.warn(`Unknown event type: ${eventType}, falling back to wedding`);
+        return fetchFromLoremFlickr('wedding', options);
+    }
+    
+    const tags = getRandomItem(config.loremflickr || config.unsplash);
+    const width = options.width || 800;
+    const height = options.height || 600;
+    
+    return `https://loremflickr.com/${width}/${height}/${encodeURIComponent(tags)}?random=${Date.now()}`;
+}
+
+/**
  * Fetch random cover image from Picsum Photos (Free, reliable alternative)
  * جلب صورة عشوائية من Picsum Photos (مجاني وموثوق)
  * 
@@ -629,14 +661,26 @@ async function fetchFromWorkerAPI(eventType) {
         }
         
         const data = await response.json();
+        if (!data || !data.imageUrl) {
+            throw new Error('Worker returned no imageUrl');
+        }
         return data;
     } catch (error) {
-        console.warn('Worker API failed, falling back to placeholder:', error.message);
-        return {
-            imageUrl: generatePlaceholderImage(eventType),
-            source: 'placeholder',
-            error: error.message
-        };
+        console.warn('Worker API failed, falling back to a real photo via LoremFlickr:', error.message);
+        try {
+            return {
+                imageUrl: await fetchFromLoremFlickr(eventType),
+                source: 'loremflickr-fallback',
+                error: error.message
+            };
+        } catch (fallbackError) {
+            // Only reached if even LoremFlickr URL-building fails / لن يحدث إلا في حالة خطأ غير متوقع
+            return {
+                imageUrl: generatePlaceholderImage(eventType),
+                source: 'placeholder',
+                error: fallbackError.message
+            };
+        }
     }
 }
 
@@ -687,6 +731,12 @@ async function getRandomCoverImage(eventType, options = {}) {
             case 'worker':
                 result = await fetchFromWorkerAPI(eventType);
                 break;
+            case 'loremflickr':
+                result = {
+                    imageUrl: await fetchFromLoremFlickr(eventType, { width, height }),
+                    source: 'loremflickr'
+                };
+                break;
             case 'unsplash':
                 result = {
                     imageUrl: await fetchFromUnsplash(eventType, { width, height }),
@@ -720,12 +770,23 @@ async function getRandomCoverImage(eventType, options = {}) {
     } catch (error) {
         console.error('Error fetching random cover image:', error);
         
-        // Fallback to placeholder
+        // Try a real photo before giving up to a gradient placeholder
+        // محاولة صورة حقيقية قبل اللجوء للصورة البديلة
+        let fallbackImageUrl;
+        let fallbackSource;
+        try {
+            fallbackImageUrl = await fetchFromLoremFlickr(eventType, { width, height });
+            fallbackSource = 'loremflickr-fallback';
+        } catch (e) {
+            fallbackImageUrl = generatePlaceholderImage(eventType, width, height);
+            fallbackSource = 'placeholder-fallback';
+        }
+        
         const fallbackResult = {
             success: true,
             eventType,
-            imageUrl: generatePlaceholderImage(eventType, width, height),
-            source: 'placeholder-fallback',
+            imageUrl: fallbackImageUrl,
+            source: fallbackSource,
             error: error.message,
             timestamp: new Date().toISOString()
         };
@@ -766,14 +827,14 @@ async function getRandomCoverImagesBatch(eventType, count = 6) {
     const config = COVER_IMAGE_SOURCES[eventType] || COVER_IMAGE_SOURCES.wedding;
     
     for (let i = 0; i < count; i++) {
-        const query = getRandomItem(config.unsplash);
-        const url = `https://source.unsplash.com/400x300/?${encodeURIComponent(query)}&sig=${Date.now()}-${i}`;
+        const query = getRandomItem(config.loremflickr || config.unsplash);
+        const url = `https://loremflickr.com/400/300/${encodeURIComponent(query)}?random=${Date.now()}-${i}`;
         
         images.push({
             id: `${eventType}-${i}`,
             url,
             query,
-            thumbnail: url.replace('400x300', '200x150')
+            thumbnail: `https://loremflickr.com/200/150/${encodeURIComponent(query)}?random=${Date.now()}-${i}`
         });
     }
     
@@ -1041,7 +1102,8 @@ if (typeof module !== 'undefined' && module.exports) {
         getAvailableStyles,
         setupRandomCoverButton,
         preloadImage,
-        generatePlaceholderImage
+        generatePlaceholderImage,
+        fetchFromLoremFlickr
     };
 }
 

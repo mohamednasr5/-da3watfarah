@@ -633,41 +633,49 @@ function errorResponse(message, status, headers) {
 const COVER_IMAGE_CONFIG = {
     wedding: {
         queries: ['wedding', 'wedding decoration', 'wedding flowers', 'romantic wedding', 'bridal'],
+        flickr: ['bride,groom', 'wedding,couple', 'bride,wedding', 'wedding,ceremony', 'groom,bride'],
         colors: ['#D4AF37', '#F5E6D3', '#8B0000', '#FFFFFF'],
         fallbackText: 'زفاف سعيد'
     },
     engagement: {
         queries: ['engagement ring', 'romantic dinner', 'couple love', 'engagement party', 'roses'],
+        flickr: ['couple,ring', 'engagement,ring', 'couple,romantic', 'couple,roses'],
         colors: ['#FF69B4', '#FFD700', '#C0C0C0', '#FFE4E1'],
         fallbackText: 'خطوبة سعيدة'
     },
     katb_ketab: {
         queries: ['islamic decoration', 'arabic calligraphy', 'mosque interior', 'islamic pattern'],
+        flickr: ['mosque,islamic', 'quran,islamic', 'arabic,calligraphy', 'mosque,interior'],
         colors: ['#1A5F1A', '#D4AF37', '#FFFFFF', '#2C3E50'],
         fallbackText: 'كتب الكتاب'
     },
     henna: {
         queries: ['henna design', 'henna party', 'arabic celebration', 'women gathering'],
+        flickr: ['henna,hands', 'henna,party', 'henna,design'],
         colors: ['#8B008B', '#FF1493', '#D4AF37', '#2D1B4E'],
         fallbackText: 'ليلة حناء'
     },
     birthday: {
         queries: ['birthday party', 'birthday cake', 'balloons', 'celebration', 'confetti'],
+        flickr: ['birthday,cake', 'balloons,party', 'birthday,celebration', 'confetti,party'],
         colors: ['#FF6B6B', '#4ECDC4', '#FFE66D', '#95E1D3'],
         fallbackText: 'عيد ميلاد سعيد'
     },
     newborn: {
         queries: ['baby', 'newborn', 'baby shower', 'baby feet', 'soft baby'],
+        flickr: ['baby,newborn', 'baby,cute', 'baby,shower'],
         colors: ['#FFB6C1', '#87CEEB', '#F0E68C', '#DDA0DD'],
         fallbackText: 'مبارك المولود'
     },
     graduation: {
         queries: ['graduation', 'cap and gown', 'university', 'diploma', 'academic'],
+        flickr: ['graduation,cap', 'graduation,university', 'graduation,diploma'],
         colors: ['#1E3A5F', '#D4AF37', '#2E4057', '#F5F5DC'],
         fallbackText: 'مبروك التخرج'
     },
     ramadan: {
         queries: ['ramadan', 'iftar', 'lanterns', 'moon and stars', 'dates', 'mosque at night'],
+        flickr: ['ramadan,lantern', 'mosque,night', 'lantern,moon'],
         colors: ['#6B8E23', '#D4AF37', '#1a1a2e', '#8B4513'],
         fallbackText: 'رمضان كريم'
     }
@@ -735,7 +743,7 @@ async function handleRandomCover(request, env, corsHeaders, url) {
         const eventType = url.searchParams.get('event') || 'wedding';
         const width = parseInt(url.searchParams.get('width')) || 800;
         const height = parseInt(url.searchParams.get('height')) || 600;
-        const preferredSource = url.searchParams.get('source') || 'unsplash';
+        const preferredSource = url.searchParams.get('source') || 'loremflickr';
         
         // Validate event type / التحقق من نوع المناسبة
         if (!VALID_EVENT_TYPES.includes(eventType)) {
@@ -753,8 +761,18 @@ async function handleRandomCover(request, env, corsHeaders, url) {
         // Try to get image based on preferred source
         // محاولة الحصول على الصورة بناءً على المصدر المفضل
         switch (preferredSource) {
+            case 'loremflickr': {
+                // Real Creative-Commons photos from Flickr, keyword-matched per event
+                // section - no API key needed, and unlike source.unsplash.com (shut
+                // down permanently in 2024) this is currently working.
+                const flickrTags = config.flickr[Math.floor(Math.random() * config.flickr.length)];
+                imageUrl = `https://loremflickr.com/${width}/${height}/${encodeURIComponent(flickrTags)}?random=${Date.now()}`;
+                break;
+            }
+                
             case 'unsplash':
-                // Unsplash Source API (deprecated but functional)
+                // source.unsplash.com has been permanently shut down since 2024 -
+                // kept only for backward compatibility, do not use as default.
                 const query = config.queries[Math.floor(Math.random() * config.queries.length)];
                 const timestamp = Date.now();
                 imageUrl = `https://source.unsplash.com/${width}x${height}/?${encodeURIComponent(query)}&sig=${timestamp}`;
