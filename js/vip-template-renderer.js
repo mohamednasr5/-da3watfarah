@@ -23,7 +23,7 @@ var VipTemplateRenderer = (function () {
         'vip-garden-blush': 'vip/wedding/demo-garden-blush/demo-garden-blush.html',
         'vip-gate-of-joy': 'vip/wedding/demo-gate-of-joy/demo-gate-of-joy.html',
         'vip-grand-hall': 'vip/wedding/demo-grand-hall/demo-grand-hall.html',
-        'vip-moon-stars': 'vip/wedding/demo-moon-stars/demo-moon-stars.html',
+        'vip-moon-stars': 'vip/ramadan/demo-moon-stars/demo-moon-stars.html',
         'vip-royal-maroon': 'vip/wedding/demo-royal-maroon/demo-royal-maroon.html',
         'vip-the-doves': 'vip/wedding/demo-the-doves/demo-the-doves.html',
         'vip-wax-seal': 'vip/wedding/demo-wax-seal/demo-wax-seal.html',
@@ -45,7 +45,8 @@ var VipTemplateRenderer = (function () {
         'حناء': 'henna',
         'عيد ميلاد': 'birthday',
         'مولود': 'newborn',
-        'حفلة تخرج': 'graduation'
+        'حفلة تخرج': 'graduation',
+        'رمضان': 'ramadan'
     };
 
     /**
@@ -89,7 +90,8 @@ var VipTemplateRenderer = (function () {
             henna: 'ليلة حناء',
             birthday: 'حفلة عيد ميلاد',
             newborn: 'بشارة مولود',
-            graduation: 'حفل تخرج'
+            graduation: 'حفل تخرج',
+            ramadan: 'إفطار رمضان'
         };
         var eventLabel = eventTypeLabels[eventType] || 'حفل زفاف';
 
@@ -124,6 +126,8 @@ var VipTemplateRenderer = (function () {
             pageTitle = 'أهلاً ب' + prefix + ' ' + personName;
         } else if (eventType === 'graduation') {
             pageTitle = 'حفل تخرج ' + personName;
+        } else if (eventType === 'ramadan') {
+            pageTitle = personName ? ('إفطار رمضان – ' + personName) : 'إفطار رمضان';
         } else {
             pageTitle = eventLabel + ' ' + coupleNames;
         }
@@ -226,8 +230,8 @@ var VipTemplateRenderer = (function () {
         var loader = document.getElementById('invitationLoader');
         if (loader) loader.classList.add('hidden');
 
-        // Hide the df-footer
-        var footer = document.getElementById('df-footer');
+        // Hide the shared df-footer (it's a class, not an id, on the <footer> element)
+        var footer = document.querySelector('.df-footer');
         if (footer) footer.style.display = 'none';
 
         // Hide the language switcher from parent
@@ -235,6 +239,10 @@ var VipTemplateRenderer = (function () {
         if (langSwitcher) langSwitcher.style.display = 'none';
 
         // Clear container and create iframe
+        // NOTE: the shared df-footer above lives inside this same container, so
+        // clearing innerHTML removes it along with everything else. That means the
+        // "صُنع بـ ♥ على دعوة فرح" credit line would otherwise vanish entirely for
+        // VIP invitations. We re-add a compact version of it below, after the iframe.
         container.innerHTML = '';
         container.classList.add('loaded');
         container.style.padding = '0';
@@ -248,6 +256,14 @@ var VipTemplateRenderer = (function () {
         iframe.setAttribute('tabindex', '0');
 
         container.appendChild(iframe);
+
+        // Re-add the site credit line (removed along with df-footer above).
+        var creditBar = document.createElement('div');
+        creditBar.id = 'vip-credit-bar';
+        creditBar.setAttribute('dir', 'rtl');
+        creditBar.style.cssText = 'display:flex;align-items:center;justify-content:center;gap:.4rem;padding:.9rem 1rem;background:#fff;border-top:1px solid #eee;font-family:inherit;font-size:.85rem;color:#555;';
+        creditBar.innerHTML = '<span>💍</span><span>صُنع بـ <i class="fas fa-heart" style="color:#e0245e;"></i> على <a href="https://da3watfarah.com/" target="_top" style="color:#111;font-weight:600;text-decoration:none;">دعوة فرح</a></span>';
+        container.appendChild(creditBar);
 
         // Expose RSVP handler globally so the iframe's bridge can call it
         window.__vipRsvpHandler = function (form) {
