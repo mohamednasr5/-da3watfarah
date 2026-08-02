@@ -2742,6 +2742,35 @@
             return checked ? checked.value : 'wedding';
         }
 
+        // Occasion wording used inside the AI prompt / fallback template (Arabic)
+        const EVENT_OCCASION_AR = {
+            wedding: 'حفل زفاف',
+            engagement: 'حفل خطوبة',
+            katb_ketab: 'حفل كتب كتاب',
+            henna: 'ليلة حناء',
+            birthday: 'حفل عيد ميلاد',
+            newborn: 'حفل استقبال مولود',
+            graduation: 'حفل تخرج',
+            ramadan: 'دعوة إفطار رمضان'
+        };
+
+        // Plain-text label (no icon markup, no trailing *) for "person 1" of the
+        // current event type — "العريس" for couple events, "صاحب/ة العيد" for
+        // birthday, etc. Used in the review/summary card.
+        function personLabel(eventType, lang) {
+            const meta = (EVENT_TYPE_FIELD_META[lang] || EVENT_TYPE_FIELD_META.ar)[eventType]
+                || (EVENT_TYPE_FIELD_META[lang] || EVENT_TYPE_FIELD_META.ar).wedding;
+            if (meta.singlePerson && meta.nameLabel) {
+                return meta.nameLabel.replace(/<[^>]*>/g, '').replace('*', '').trim();
+            }
+            return lang === 'en' ? 'Groom' : 'العريس';
+        }
+
+        function isSinglePersonEvent(eventType) {
+            const meta = EVENT_TYPE_FIELD_META.ar[eventType] || EVENT_TYPE_FIELD_META.ar.wedding;
+            return !!meta.singlePerson;
+        }
+
         function setEventType(type) {
             const radio = document.querySelector(`input[name="eventTypeRadio"][value="${type}"]`);
             if (radio) radio.checked = true;
@@ -3118,12 +3147,14 @@
         // AI Text Generation for "نص الدعوة"
         // ===================================
         async function generateInvitationTextAI() {
+            const eventType = currentEventType();
+            const isSingle = isSinglePersonEvent(eventType);
             const groomName = document.getElementById('groomName').value.trim();
-            const brideName = document.getElementById('brideName').value.trim();
+            const brideName = isSingle ? '' : document.getElementById('brideName').value.trim();
             const weddingDate = document.getElementById('weddingDate').value;
             const venueName = document.getElementById('venueName')?.value.trim() || '';
 
-            if (!groomName || !brideName) {
+            if (!groomName || (!isSingle && !brideName)) {
                 db.showNotification(L('ai_need_names'), 'error');
                 return;
             }
@@ -3139,12 +3170,13 @@
                 let text = '';
                 if (window.nvidiaConfig?.apiKey && window.r2Config?.workerUrl) {
                     try {
-                        const prompt = `اكتب نص دعوة زفاف احترافي وقصير باللغة العربية.
+                        const occasion = EVENT_OCCASION_AR[eventType] || EVENT_OCCASION_AR.wedding;
+                        const p1Label = personLabel(eventType, 'ar');
+                        const prompt = `اكتب نص ${occasion} احترافي وقصير باللغة العربية.
 التفاصيل:
-- اسم العريس: ${groomName}
-- اسم العروس: ${brideName}
-${weddingDate ? `- تاريخ الزفاف: ${weddingDate}` : ''}
-${venueName ? `- مكان الزفاف: ${venueName}` : ''}
+- ${p1Label}: ${groomName}
+${!isSingle ? `- العروس: ${brideName}\n` : ''}${weddingDate ? `- التاريخ: ${weddingDate}` : ''}
+${venueName ? `- المكان: ${venueName}` : ''}
 اكتب النص فقط بدون أي مقدمة أو شرح.`;
 
                         const response = await fetch(`${window.r2Config.workerUrl}/api/ai/generate`, {
@@ -3166,7 +3198,7 @@ ${venueName ? `- مكان الزفاف: ${venueName}` : ''}
                 }
 
                 if (!text) {
-                    text = generateInvitationTemplate({ groomName, brideName, weddingDate, venueName });
+                    text = generateInvitationTemplate({ eventType, isSingle, groomName, brideName, weddingDate, venueName });
                 }
 
                 document.getElementById('invitationText').value = text;
@@ -3181,12 +3213,14 @@ ${venueName ? `- مكان الزفاف: ${venueName}` : ''}
             }
         }
 
-        function generateInvitationTemplate({ groomName, brideName, weddingDate, venueName }) {
+        function generateInvitationTemplate({ eventType, isSingle, groomName, brideName, weddingDate, venueName }) {
+            const occasion = EVENT_OCCASION_AR[eventType] || EVENT_OCCASION_AR.wedding;
+            const names = isSingle ? groomName : `${groomName} و${brideName}`;
             const dateStr = weddingDate ? new Date(weddingDate).toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric' }) : '';
             const options = [
-                `يسرنا ويسعدنا دعوتكم لحضور حفل زفاف ${groomName} و${brideName}${dateStr ? `\nفي يوم ${dateStr}` : ''}${venueName ? `\nفي ${venueName}` : ''}\nحضوركم يزيدنا فخراً وسعادة بهذه المناسبة الغالية على قلوبنا`,
-                `بقلوب مفعمة بالفرح والسرور، ندعوكم لمشاركتنا أجمل لحظات حياتنا في حفل زفاف ${groomName} و${brideName}${dateStr ? `\nيوم ${dateStr}` : ''}${venueName ? ` بـ${venueName}` : ''}\nننتظر حضوركم الكريم لنكمل معاً فرحة هذا اليوم`,
-                `✨ دعوة خاصة لحضور حفل زفافنا ✨\n${groomName} و${brideName}${dateStr ? `\n📅 ${dateStr}` : ''}${venueName ? `\n📍 ${venueName}` : ''}\nيسعدنا تشريفكم لمشاركتنا هذه الفرحة الغالية`
+                `يسرنا ويسعدنا دعوتكم لحضور ${occasion} ${names}${dateStr ? `\nفي يوم ${dateStr}` : ''}${venueName ? `\nفي ${venueName}` : ''}\nحضوركم يزيدنا فخراً وسعادة بهذه المناسبة الغالية على قلوبنا`,
+                `بقلوب مفعمة بالفرح والسرور، ندعوكم لمشاركتنا أجمل لحظات ${occasion} ${names}${dateStr ? `\nيوم ${dateStr}` : ''}${venueName ? ` بـ${venueName}` : ''}\nننتظر حضوركم الكريم لنكمل معاً فرحة هذا اليوم`,
+                `✨ دعوة خاصة لحضور ${occasion} ✨\n${names}${dateStr ? `\n📅 ${dateStr}` : ''}${venueName ? `\n📍 ${venueName}` : ''}\nيسعدنا تشريفكم لمشاركتنا هذه الفرحة الغالية`
             ];
             return options[Math.floor(Math.random() * options.length)];
         }
@@ -3541,6 +3575,11 @@ ${venueName ? `- مكان الزفاف: ${venueName}` : ''}
         // Generate Final Preview
         // ===================================
         function generateFinalPreview() {
+            const eventType = currentEventType();
+            const isSingle = isSinglePersonEvent(eventType);
+            const lang = ciLang();
+            const p1Label = personLabel(eventType, lang);
+
             const slug = document.getElementById('customSlug').value.trim() || 
                          buildSlug(document.getElementById('groomName').value, document.getElementById('brideName').value);
             
@@ -3548,14 +3587,15 @@ ${venueName ? `- مكان الزفاف: ${venueName}` : ''}
             document.getElementById('previewUrl').textContent = `da3watfarah.com/${slug}`;
             
             // Update summary
+            const brideRow = isSingle ? '' : `<div><strong style="color:#D4AF37;">${lang === 'en' ? 'Bride' : 'العروس'}:</strong> <span style="color:white;">${document.getElementById('brideName').value}</span></div>`;
             document.getElementById('invitationSummary').innerHTML = `
                 <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:15px;text-align:right;background:rgba(255,255,255,0.1);padding:20px;border-radius:var(--radius-md);">
-                    <div><strong style="color:#D4AF37;">العريس:</strong> <span style="color:white;">${document.getElementById('groomName').value}</span></div>
-                    <div><strong style="color:#D4AF37;">العروس:</strong> <span style="color:white;">${document.getElementById('brideName').value}</span></div>
-                    <div><strong style="color:#D4AF37;">التاريخ:</strong> <span style="color:white;">${formatDateForDisplay(document.getElementById('weddingDate').value)}</span></div>
-                    <div><strong style="color:#D4AF37;">الوقت:</strong> <span style="color:white;">${document.getElementById('weddingTime').value}</span></div>
-                    <div><strong style="color:#D4AF37;">القاعة:</strong> <span style="color:white;">${document.getElementById('venueName').value}</span></div>
-                    <div><strong style="color:#D4AF37;">القالب:</strong> <span style="color:white;">${selectedTemplate?.nameAr || '-'}</span></div>
+                    <div><strong style="color:#D4AF37;">${p1Label}:</strong> <span style="color:white;">${document.getElementById('groomName').value}</span></div>
+                    ${brideRow}
+                    <div><strong style="color:#D4AF37;">${lang === 'en' ? 'Date' : 'التاريخ'}:</strong> <span style="color:white;">${formatDateForDisplay(document.getElementById('weddingDate').value)}</span></div>
+                    <div><strong style="color:#D4AF37;">${lang === 'en' ? 'Time' : 'الوقت'}:</strong> <span style="color:white;">${document.getElementById('weddingTime').value}</span></div>
+                    <div><strong style="color:#D4AF37;">${lang === 'en' ? 'Venue' : 'القاعة'}:</strong> <span style="color:white;">${document.getElementById('venueName').value}</span></div>
+                    <div><strong style="color:#D4AF37;">${lang === 'en' ? 'Template' : 'القالب'}:</strong> <span style="color:white;">${selectedTemplate?.nameAr || '-'}</span></div>
                 </div>
             `;
             

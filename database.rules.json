@@ -119,7 +119,7 @@
         },
         
         "aiGeneratedText": { ".validate": "!newData.exists() || newData.isString()" },
-        "randomCoverHistory": { ".validate": "!newData.exists() || newData.isObject()" }
+        "randomCoverHistory": { ".validate": "!newData.exists() || newData.hasChildren()" }
       }
     },
     
