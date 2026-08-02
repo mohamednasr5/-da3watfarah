@@ -776,8 +776,29 @@
                             </div>
                         </div>
                         
+                        <!-- Output Language Selection -->
+                        <div class="form-group">
+                            <label>لغة النص</label>
+                            <div class="style-options">
+                                <div class="style-option">
+                                    <input type="radio" name="outputLanguage" value="ar" id="langAr" checked>
+                                    <label for="langAr" class="style-option-label">
+                                        <i class="fas fa-language"></i>
+                                        <span>العربية</span>
+                                    </label>
+                                </div>
+                                <div class="style-option">
+                                    <input type="radio" name="outputLanguage" value="en" id="langEn">
+                                    <label for="langEn" class="style-option-label">
+                                        <i class="fas fa-language"></i>
+                                        <span>English</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Templates Quick Access -->
-                        <div class="templates-section">
+                        <div class="templates-section" id="templatesSection">
                             <label style="font-weight: 600; color: var(--text-primary);">نصوص جاهزة:</label>
                             <div class="template-chips" id="templateChips">
                                 <span class="template-chip" onclick="useTemplate('traditional')">دعوة تقليدية</span>
@@ -785,6 +806,9 @@
                                 <span class="template-chip" onclick="useTemplate('islamic')">دعوة إسلامية</span>
                                 <span class="template-chip" onclick="useTemplate('short')">نص قصير</span>
                             </div>
+                            <p class="template-note" id="templateNote" style="display:none; font-size:.85rem; color: var(--text-secondary); margin-top:6px;">
+                                النصوص الجاهزة متاحة بالعربية فقط حالياً. اختر "إنشاء بالذكاء الاصطناعي" للحصول على نص بالإنجليزية.
+                            </p>
                         </div>
                         
                         <!-- Generate Button -->
@@ -1326,6 +1350,24 @@
                 radio.addEventListener('change', applyEventTypeLabels);
             });
             applyEventTypeLabels();
+
+            document.querySelectorAll('input[name="outputLanguage"]').forEach(radio => {
+                radio.addEventListener('change', applyOutputLanguageUI);
+            });
+            applyOutputLanguageUI();
+        }
+
+        // Toggle the "ready-made templates" note/state based on selected language
+        // (the quick template chips only have Arabic text for now)
+        function applyOutputLanguageUI() {
+            const isEn = document.querySelector('input[name="outputLanguage"]:checked')?.value === 'en';
+            const note = document.getElementById('templateNote');
+            const chips = document.querySelectorAll('#templateChips .template-chip');
+            if (note) note.style.display = isEn ? 'block' : 'none';
+            chips.forEach(chip => {
+                chip.style.opacity = isEn ? '0.5' : '1';
+                chip.style.pointerEvents = isEn ? 'none' : 'auto';
+            });
         }
         
         async function handleGenerate(e) {
@@ -1341,6 +1383,7 @@
             const weddingLocation = document.getElementById('weddingLocation').value.trim();
             const additionalDetails = document.getElementById('additionalDetails').value.trim();
             const writingStyle = document.querySelector('input[name="writingStyle"]:checked').value;
+            const outputLanguage = document.querySelector('input[name="outputLanguage"]:checked').value;
             
             // Validation
             const meta = EVENT_TYPE_META[eventType];
@@ -1361,7 +1404,8 @@
                 weddingDate,
                 weddingLocation,
                 additionalDetails,
-                writingStyle
+                writingStyle,
+                outputLanguage
             });
         }
         
@@ -1384,7 +1428,7 @@
                 }
                 
                 // Display result with typing effect
-                await displayWithTypingEffect(result);
+                await displayWithTypingEffect(result, params.outputLanguage);
                 
                 // Save to history
                 saveToHistory(result, params);
@@ -1397,7 +1441,7 @@
                 
                 // Fallback to template on error
                 const fallbackText = generateFromTemplate(params);
-                await displayWithTypingEffect(fallbackText);
+                await displayWithTypingEffect(fallbackText, params.outputLanguage);
                 saveToHistory(fallbackText, params);
                 enableOutputButtons(true);
                 
@@ -1437,9 +1481,58 @@
             }
         }
         
+        // English style descriptions + event nouns (used only when outputLanguage === 'en')
+        const styleDescriptionsEn = {
+            formal: 'formal and elegant, using refined, ceremonial language suitable for official occasions',
+            emotional: 'warm and heartfelt, expressing deep feelings and love',
+            simple: 'simple and direct, using clear, easy-to-understand language',
+            poetic: 'poetic and beautiful, using rich literary and figurative language'
+        };
+
+        const EVENT_TYPE_META_EN = {
+            wedding: { promptNoun: 'wedding invitation', occasionNoun: 'wedding celebration', groomLabel: "Groom's name", brideLabel: "Bride's name", dateNoun: 'Wedding date', locationNoun: 'Venue' },
+            engagement: { promptNoun: 'engagement invitation', occasionNoun: 'engagement party', groomLabel: "Groom's name", brideLabel: "Bride's name", dateNoun: 'Date', locationNoun: 'Venue' },
+            katb_ketab: { promptNoun: 'marriage contract (Katb El-Kitab) invitation', occasionNoun: 'Katb El-Kitab ceremony', groomLabel: "Groom's name", brideLabel: "Bride's name", dateNoun: 'Date', locationNoun: 'Venue' },
+            henna: { promptNoun: 'henna night invitation', occasionNoun: 'henna night celebration', groomLabel: "Groom's name", brideLabel: "Bride's name", dateNoun: 'Date', locationNoun: 'Venue' },
+            birthday: { promptNoun: 'birthday invitation', occasionNoun: 'birthday celebration', groomLabel: "Celebrant's name", brideLabel: '', dateNoun: 'Date', locationNoun: 'Venue' },
+            newborn: { promptNoun: 'newborn celebration invitation', occasionNoun: "baby's welcome celebration", groomLabel: "Baby's name", brideLabel: "Mother's name", dateNoun: 'Date', locationNoun: 'Venue' },
+            graduation: { promptNoun: 'graduation invitation', occasionNoun: 'graduation ceremony', groomLabel: "Graduate's name", brideLabel: '', dateNoun: 'Date', locationNoun: 'Venue' },
+            ramadan: { promptNoun: 'Ramadan gathering invitation', occasionNoun: 'Ramadan gathering', groomLabel: "Host's name", brideLabel: 'Occasion type (Iftar/Suhoor)', dateNoun: 'Date', locationNoun: 'Venue' }
+        };
+
         // Build the prompt for AI
         function buildPrompt(params) {
-            const meta = EVENT_TYPE_META[params.eventType || 'wedding'];
+            const isEn = params.outputLanguage === 'en';
+            const meta = isEn
+                ? EVENT_TYPE_META_EN[params.eventType || 'wedding']
+                : EVENT_TYPE_META[params.eventType || 'wedding'];
+            const styleDesc = isEn
+                ? styleDescriptionsEn[params.writingStyle]
+                : styleDescriptions[params.writingStyle];
+
+            if (isEn) {
+                let detailsLines = `- ${meta.groomLabel}: ${params.groomName}`;
+                if (!EVENT_TYPE_META[params.eventType]?.hideBride && params.brideName) {
+                    detailsLines += `\n- ${meta.brideLabel}: ${params.brideName}`;
+                }
+                if (params.weddingDate) detailsLines += `\n- ${meta.dateNoun}: ${params.weddingDate}`;
+                if (params.weddingLocation) detailsLines += `\n- ${meta.locationNoun}: ${params.weddingLocation}`;
+                if (params.additionalDetails) detailsLines += `\n- Additional details: ${params.additionalDetails}`;
+
+                return `Write a professional ${meta.promptNoun} in English, ${styleDesc}, exclusively for a ${meta.occasionNoun}.
+
+Details:
+${detailsLines}
+
+Requirements:
+1. Write a complete, polished ${meta.promptNoun}
+2. Use a ${styleDesc} tone
+3. Make it suitable for display on a digital invitation card
+4. Use vocabulary specifically appropriate for a ${meta.occasionNoun}
+
+Write only the invitation text, with no introduction or explanation:`;
+            }
+
             let detailsLines = `- ${meta.groomLabel}: ${params.groomName}`;
             if (!meta.hideBride && params.brideName) {
                 detailsLines += `
@@ -1451,14 +1544,14 @@
 - ${meta.locationNoun}: ${params.weddingLocation}`;
             if (params.additionalDetails) detailsLines += `
 - تفاصيل إضافية: ${params.additionalDetails}`;
-            return `اكتب نص ${meta.promptNoun} احترافي باللغة العربية بالأسلوب ${styleDescriptions[params.writingStyle]}، خاص بمناسبة ${meta.occasionNoun} فقط.
+            return `اكتب نص ${meta.promptNoun} احترافي باللغة العربية بالأسلوب ${styleDesc}، خاص بمناسبة ${meta.occasionNoun} فقط.
 
 التفاصيل:
 ${detailsLines}
 
 المطلوب:
 1. اكتب نص كامل ومتكامل لـ ${meta.promptNoun}
-2. استخدم أسلوب ${styleDescriptions[params.writingStyle]}
+2. استخدم أسلوب ${styleDesc}
 3. اجعل النص مناسباً للعرض في بطاقة دعوة إلكترونية
 4. استخدم كلمات ومفردات مناسبة تحديداً لـ ${meta.occasionNoun}
 
@@ -1467,6 +1560,10 @@ ${detailsLines}
         
         // Fallback template generation
         function generateFromTemplate(params) {
+            if (params.outputLanguage === 'en') {
+                return generateFromTemplateEn(params);
+            }
+
             const typeTemplates = templates[params.eventType] || templates.wedding;
             let text = typeTemplates[params.writingStyle === 'poetic' ? 'traditional' : 
                          params.writingStyle === 'simple' ? 'modern' : 'traditional'];
@@ -1478,6 +1575,42 @@ ${detailsLines}
                        .replace('{location}', params.weddingLocation || '[المكان]');
             
             return text;
+        }
+
+        // Simple English fallback (used when the AI call fails and English was requested;
+        // the "ready-made" Arabic template chips have no English equivalent yet)
+        function generateFromTemplateEn(params) {
+            const meta = EVENT_TYPE_META_EN[params.eventType] || EVENT_TYPE_META_EN.wedding;
+            const hideBride = EVENT_TYPE_META[params.eventType]?.hideBride;
+            const date = params.weddingDate ? formatDateEn(params.weddingDate) : '[Date]';
+            const location = params.weddingLocation || '[Venue]';
+            const names = hideBride ? params.groomName : `${params.groomName} & ${params.brideName || ''}`.trim();
+
+            const openings = {
+                formal: `With great pleasure, we invite you to join us in celebrating our ${meta.occasionNoun}.`,
+                emotional: `With hearts full of joy, we would love for you to share this special moment with us.`,
+                simple: `We're celebrating our ${meta.occasionNoun} and would love to have you there!`,
+                poetic: `Like a story that finds its most beautiful chapter, we invite you to celebrate our ${meta.occasionNoun} with us.`
+            };
+
+            return `${openings[params.writingStyle] || openings.formal}
+
+${names}
+
+📅 ${date}
+📍 ${location}
+
+${params.additionalDetails ? params.additionalDetails + '\n\n' : ''}We look forward to celebrating with you!`;
+        }
+
+        // English date formatter (mirrors formatDateArabic)
+        function formatDateEn(dateStr) {
+            try {
+                const d = new Date(dateStr);
+                return d.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            } catch (e) {
+                return dateStr;
+            }
         }
         
         // ===================================
@@ -1501,14 +1634,15 @@ ${detailsLines}
             document.getElementById('generateBtn').disabled = true;
         }
         
-        async function displayWithTypingEffect(text) {
+        async function displayWithTypingEffect(text, outputLanguage) {
             const output = document.getElementById('outputContent');
             generatedText = text;
             
             // Format text with paragraphs
             const formattedText = text.split('\n').filter(p => p.trim()).map(p => `<p>${p}</p>`).join('');
             
-            output.innerHTML = `<div class="generated-text">${formattedText}<span class="typing-cursor"></span></div>`;
+            const dir = outputLanguage === 'en' ? 'ltr' : 'rtl';
+            output.innerHTML = `<div class="generated-text" dir="${dir}" style="text-align:${outputLanguage === 'en' ? 'left' : 'right'}">${formattedText}<span class="typing-cursor"></span></div>`;
             
             // Remove cursor after a moment
             setTimeout(() => {
