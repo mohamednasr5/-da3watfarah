@@ -253,16 +253,16 @@ revealEls.forEach(function (el) { el.classList.add('is-in'); });
 }
 var cdEl = document.querySelector('[data-countdown]');
 if (cdEl) {
-var raw = cdEl.getAttribute('data-countdown');
-var target = raw ? new Date(raw.replace(' ', 'T')) : null;
 var cdDays = cdEl.querySelector('[data-cd="days"]');
 var cdHours = cdEl.querySelector('[data-cd="hours"]');
 var cdMins = cdEl.querySelector('[data-cd="mins"]');
 var cdSecs = cdEl.querySelector('[data-cd="secs"]');
 var pad = function (n) { return String(n).padStart(2, '0'); };
+var cdTarget = null;
+var cdTimer = null;
 function tick() {
-if (!target || isNaN(target.getTime())) { return; }
-var diff = target.getTime() - Date.now();
+if (!cdTarget || isNaN(cdTarget.getTime())) { return; }
+var diff = cdTarget.getTime() - Date.now();
 if (diff < 0) { diff = 0; }
 var d = Math.floor(diff / 86400000);
 var h = Math.floor((diff % 86400000) / 3600000);
@@ -273,7 +273,15 @@ if (cdHours) { cdHours.textContent = pad(h); }
 if (cdMins) { cdMins.textContent = pad(m); }
 if (cdSecs) { cdSecs.textContent = pad(s); }
 }
-if (target && !isNaN(target.getTime())) { tick(); setInterval(tick, 1000); }
+window.__vipStartCountdown = function (raw) {
+var t = raw ? new Date(String(raw).replace(' ', 'T')) : null;
+if (!t || isNaN(t.getTime())) { return; }
+cdTarget = t;
+if (cdTimer) { clearInterval(cdTimer); }
+tick();
+cdTimer = setInterval(tick, 1000);
+};
+window.__vipStartCountdown(cdEl.getAttribute('data-countdown'));
 }
 var canvas = document.getElementById('t2-petals');
 var ctx = canvas && canvas.getContext ? canvas.getContext('2d') : null;
@@ -403,6 +411,7 @@ document.addEventListener('click', function (e) { if (!qn.contains(e.target)) se
         el.src=val;
       } else if(key==='eventDateTime'){
         el.setAttribute('data-countdown',val);
+        if(typeof window.__vipStartCountdown==='function'){ window.__vipStartCountdown(val); }
       } else if(key==='rsvpAction'){
         el.setAttribute('action',val);
       } else if(key==='googleMapsUrl'){

@@ -266,23 +266,35 @@ revealEls.forEach(function (el) { el.classList.add('is-in'); });
 }
 var cdEl = document.querySelector('[data-countdown]');
 if (cdEl) {
-var raw = cdEl.getAttribute('data-countdown');
-var target = raw ? new Date(raw.replace(' ', 'T')) : null;
 var cdDays = cdEl.querySelector('[data-cd="days"]');
 var cdHours = cdEl.querySelector('[data-cd="hours"]');
 var cdMins = cdEl.querySelector('[data-cd="mins"]');
 var cdSecs = cdEl.querySelector('[data-cd="secs"]');
 var pad = function (n) { return String(n).padStart(2, '0'); };
+var cdTarget = null;
+var cdTimer = null;
 function tick() {
-if (!target || isNaN(target.getTime())) { return; }
-var diff = target.getTime() - Date.now();
+if (!cdTarget || isNaN(cdTarget.getTime())) { return; }
+var diff = cdTarget.getTime() - Date.now();
 if (diff < 0) { diff = 0; }
-if (cdDays) { cdDays.textContent = pad(Math.floor(diff / 86400000)); }
-if (cdHours) { cdHours.textContent = pad(Math.floor((diff % 86400000) / 3600000)); }
-if (cdMins) { cdMins.textContent = pad(Math.floor((diff % 3600000) / 60000)); }
-if (cdSecs) { cdSecs.textContent = pad(Math.floor((diff % 60000) / 1000)); }
+var d = Math.floor(diff / 86400000);
+var h = Math.floor((diff % 86400000) / 3600000);
+var m = Math.floor((diff % 3600000) / 60000);
+var s = Math.floor((diff % 60000) / 1000);
+if (cdDays) { cdDays.textContent = pad(d); }
+if (cdHours) { cdHours.textContent = pad(h); }
+if (cdMins) { cdMins.textContent = pad(m); }
+if (cdSecs) { cdSecs.textContent = pad(s); }
 }
-if (target && !isNaN(target.getTime())) { tick(); setInterval(tick, 1000); }
+window.__vipStartCountdown = function (raw) {
+var t = raw ? new Date(String(raw).replace(' ', 'T')) : null;
+if (!t || isNaN(t.getTime())) { return; }
+cdTarget = t;
+if (cdTimer) { clearInterval(cdTimer); }
+tick();
+cdTimer = setInterval(tick, 1000);
+};
+window.__vipStartCountdown(cdEl.getAttribute('data-countdown'));
 }
 })();
 </script> <style>#einvite-qn { position: fixed; bottom: 1.1rem; inset-inline-end: 1.1rem; z-index: 9000; } #einvite-qn .qn-toggle { width: 48px; height: 48px; border-radius: 50%; border: 1px solid rgba(255, 255, 255, .18); background: rgba(20, 20, 20, .62); backdrop-filter: blur(10px); cursor: pointer; display: flex; align-items: center; justify-content: center; color: #fff; transition: transform .25s ease, background .25s ease; -webkit-tap-highlight-color: transparent; } #einvite-qn .qn-toggle:hover { transform: translateY(-2px); background: rgba(20, 20, 20, .78); } #einvite-qn .qn-toggle svg { width: 20px; height: 20px; } #einvite-qn .qn-toggle .qn-x { display: none; } #einvite-qn.open .qn-toggle .qn-grid { display: none; } #einvite-qn.open .qn-toggle .qn-x { display: block; } #einvite-qn .qn-list { position: absolute; bottom: 60px; inset-inline-end: 0; display: flex; flex-direction: column; gap: .45rem; align-items: flex-end; pointer-events: none; } [dir="rtl"] #einvite-qn .qn-list { align-items: flex-start; } #einvite-qn .qn-item { display: flex; align-items: center; gap: .6rem; background: rgba(20, 20, 20, .78); backdrop-filter: blur(10px); color: #fff; border: 1px solid rgba(255, 255, 255, .16); border-radius: 999px; padding: .5rem .95rem; font-size: .82rem; font-weight: 500; letter-spacing: .02em; cursor: pointer; text-decoration: none; white-space: nowrap; opacity: 0; transform: translateY(10px) scale(.92); transition: opacity .3s ease, transform .3s ease; } #einvite-qn.open .qn-item { opacity: 1; transform: none; pointer-events: auto; } #einvite-qn .qn-item svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 1.8; } #einvite-qn .qn-item:hover { background: rgba(20, 20, 20, .95); } @media (prefers-reduced-motion: reduce) { #einvite-qn .qn-item { transition: opacity .15s ease; transform: none; } }</style> <div id="einvite-qn"> <div class="qn-list" role="menu"> <button type="button" class="qn-item" role="menuitem" data-qn-target="hero" style="transition-delay: 245ms"> <svg viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75"/></svg> البداية </button> <button type="button" class="qn-item" role="menuitem" data-qn-target="families" style="transition-delay: 210ms"> <svg viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"/></svg> العائلتان </button> <button type="button" class="qn-item" role="menuitem" data-qn-target="countdown" style="transition-delay: 175ms"> <svg viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> العد التنازلي </button> <button type="button" class="qn-item" role="menuitem" data-qn-target="details" style="transition-delay: 140ms"> <svg viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/></svg> التفاصيل </button> <button type="button" class="qn-item" role="menuitem" data-qn-target="map" style="transition-delay: 105ms"> <svg viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6.75V15m6-6v8.25m.503 3.498l4.875-2.437c.381-.19.622-.58.622-1.006V4.82c0-.836-.88-1.38-1.628-1.006l-3.869 1.934c-.317.159-.69.159-1.006 0L9.503 3.252a1.125 1.125 0 00-1.006 0L3.622 5.689C3.24 5.88 3 6.27 3 6.695V19.18c0 .836.88 1.38 1.628 1.006l3.869-1.934c.317-.159.69-.159 1.006 0l4.994 2.497c.317.158.69.158 1.006 0z"/></svg> الموقع </button> <button type="button" class="qn-item" role="menuitem" data-qn-target="faq" style="transition-delay: 70ms"> <svg viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z"/></svg> الأسئلة الشائعة </button> <button type="button" class="qn-item" role="menuitem" data-qn-target="rsvp" style="transition-delay: 35ms"> <svg viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> تأكيد الحضور </button> <button type="button" class="qn-item" role="menuitem" data-qn-target="footer" style="transition-delay: 0ms"> <svg viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"/></svg> الختام </button> </div> <button type="button" class="qn-toggle" aria-expanded="false" aria-label="التنقل السريع"> <svg class="qn-grid" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="4" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5"/></svg> <svg class="qn-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" d="M6 18L18 6M6 6l12 12"/></svg> </button> </div> <script>
@@ -340,6 +352,7 @@ document.addEventListener('click', function (e) { if (!qn.contains(e.target)) se
         el.src=val;
       } else if(key==='eventDateTime'){
         el.setAttribute('data-countdown',val);
+        if(typeof window.__vipStartCountdown==='function'){ window.__vipStartCountdown(val); }
       } else if(key==='rsvpAction'){
         el.setAttribute('action',val);
       } else if(key==='googleMapsUrl'){
