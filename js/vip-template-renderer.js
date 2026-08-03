@@ -369,16 +369,32 @@ var VipTemplateRenderer = (function () {
             // viewport-sized height (100vh, set at creation time) for as long
             // as `env-locked` is present, and only start auto-growing the
             // iframe to fit the full content once the intro has finished.
+            //
+            // NOTE: `env-locked` is removed from <body> as soon as the intro
+            // *starts* closing, but every VIP template keeps the actual
+            // overlay element (#einvite-envelope) in the DOM for another
+            // 0.8-1.6s while it fades out (position:fixed, opacity/visibility
+            // transition), then calls `.remove()` on it once the fade is
+            // done. If we resize the iframe the moment `env-locked` is gone
+            // (as this used to do), the still-fading, still-fixed overlay
+            // gets stretched across the newly tall iframe box for that
+            // window — which shows up as a large blank/dark gap the guest
+            // has to scroll past before the real content appears. So we wait
+            // for BOTH signals: `env-locked` gone AND #einvite-envelope no
+            // longer present in the DOM.
             try {
+                var resizeTimer = null;
                 var resizeInterval = setInterval(function () {
                     try {
                         var body = iframe.contentDocument.body;
                         var html = iframe.contentDocument.documentElement;
                         if (body && html) {
-                            // Intro (envelope/video/curtain) still playing — don't
-                            // resize yet, or the fixed-position overlay will
-                            // stretch across the enlarged iframe.
-                            if (body.classList.contains('env-locked')) {
+                            // Intro (envelope/video/curtain) still playing, or
+                            // still fading out — don't resize yet, or the
+                            // fixed-position overlay will stretch across the
+                            // enlarged iframe and look like a big empty gap.
+                            if (body.classList.contains('env-locked') ||
+                                iframe.contentDocument.getElementById('einvite-envelope')) {
                                 return;
                             }
                             var height = Math.max(body.scrollHeight, body.offsetHeight,
@@ -386,13 +402,13 @@ var VipTemplateRenderer = (function () {
                             iframe.style.height = height + 'px';
                             // Stop resizing after 10 seconds of being unlocked
                             // (content is stable by then).
-                            clearTimeout(resizeInterval._timer);
-                            resizeInterval._timer = setTimeout(function () { clearInterval(resizeInterval); }, 10000);
+                            clearTimeout(resizeTimer);
+                            resizeTimer = setTimeout(function () { clearInterval(resizeInterval); }, 10000);
                         }
                     } catch (e) {
                         clearInterval(resizeInterval);
                     }
-                }, 300);
+                }, 200);
                 // Safety net: some templates have no envelope/intro at all, so
                 // `env-locked` is never present. Make sure we don't poll forever
                 // in that case either — 20s total ought to be more than enough
