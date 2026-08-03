@@ -138,6 +138,19 @@ var VipTemplateRenderer = (function () {
         // Invitation body text
         var invitationText = content.invitationText || content.welcomeText || '';
 
+        // Birthday-only: build the "<name> يكمل/تكمل X سنوات" sentence with
+        // correct Arabic gender agreement from the birthdayGender + birthdayAge
+        // fields, instead of leaving the template's own hardcoded (and
+        // gender-mismatched) default in place. Only included when we actually
+        // have a name + age, so an empty value doesn't blank out the
+        // template's fallback text via data-bind.
+        var ageSentence = '';
+        if (eventType === 'birthday' && personName && content.birthdayAge) {
+            var isFemale = content.birthdayGender === 'female';
+            var verb = isFemale ? 'تكمل' : 'يكمل';
+            ageSentence = personName + ' ' + verb + ' ' + content.birthdayAge + ' سنوات';
+        }
+
         // Google Maps URL
         var mapsUrl = event.googleMapsUrl ||
             (event.venue ? ('https://maps.google.com/?q=' + encodeURIComponent(event.venue + ', ' + (event.address || ''))) : 'https://maps.google.com/?q=24.6905,46.6853');
@@ -169,6 +182,7 @@ var VipTemplateRenderer = (function () {
             venueAddress: event.address || '',
             googleMapsUrl: mapsUrl,
             invitationText: invitationText,
+            ageSentence: ageSentence || undefined,
             welcomeText: content.welcomeText || '',
             rsvpAction: rsvpAction,
             invitationId: invitationData.key || invitationData.id || '',

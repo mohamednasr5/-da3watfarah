@@ -1286,6 +1286,19 @@
                                     <option value="female" data-i18n="newborn_gender_female">مولودة (أنثى)</option>
                                 </select>
                             </div>
+
+                            <div class="form-group" id="birthdayGenderGroup" style="display:none;">
+                                <label data-i18n="birthday_gender_label"><i class="fas fa-venus-mars"></i> صاحب/صاحبة العيد *</label>
+                                <select class="form-control" id="birthdayGender">
+                                    <option value="male" data-i18n="birthday_gender_male">ولد</option>
+                                    <option value="female" data-i18n="birthday_gender_female">بنت</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group" id="birthdayAgeGroup" style="display:none;">
+                                <label data-i18n="birthday_age_label"><i class="fas fa-birthday-cake"></i> العمر (بالسنوات)</label>
+                                <input type="number" min="1" max="120" class="form-control" id="birthdayAge" placeholder="مثال: 7" data-i18n-placeholder="birthday_age_ph">
+                            </div>
                             
                             <div class="form-group" id="groomFatherNameGroup">
                                 <label id="groomFatherFieldLabel" data-i18n="groom_father_label"><i class="fas fa-user-tie"></i> اسم أب العريس</label>
@@ -2710,6 +2723,7 @@
                     dateLabel: '<i class="fas fa-calendar-alt"></i> تاريخ عيد الميلاد *',
                     venueLabel: '<i class="fas fa-map-marker-alt"></i> مكان الاحتفال *',
                     singlePerson: true,
+                    showBirthdayGender: true,
                     nameLabel: '<i class="fas fa-user"></i> اسم صاحب/صاحبة عيد الميلاد *',
                     namePh: 'أدخل الاسم'
                 },
@@ -2757,6 +2771,7 @@
                     dateLabel: '<i class="fas fa-calendar-alt"></i> Birthday Date *',
                     venueLabel: '<i class="fas fa-map-marker-alt"></i> Party Venue *',
                     singlePerson: true,
+                    showBirthdayGender: true,
                     nameLabel: '<i class="fas fa-user"></i> Name *',
                     namePh: 'Enter name'
                 },
@@ -2847,6 +2862,8 @@
                 toggle('parentsNamesGroup', false);
                 document.getElementById('brideName').required = false;
                 toggle('newbornGenderGroup', !!meta.showNewbornGender);
+                toggle('birthdayGenderGroup', !!meta.showBirthdayGender);
+                toggle('birthdayAgeGroup', !!meta.showBirthdayGender);
             } else {
                 groomLabelEl.innerHTML = '<i class="fas fa-user"></i> اسم العريس *';
                 groomInput.placeholder = 'أدخل اسم العريس';
@@ -2857,6 +2874,8 @@
                 toggle('parentsNamesGroup', true);
                 document.getElementById('brideName').required = true;
                 toggle('newbornGenderGroup', false);
+                toggle('birthdayGenderGroup', false);
+                toggle('birthdayAgeGroup', false);
             }
         }
 
@@ -3682,7 +3701,9 @@ ${venueName ? `- المكان: ${venueName}` : ''}
                     loveStory: val('loveStory'),
                     religiousVerseEnabled: document.getElementById('religiousVerseToggle')?.checked ?? true,
                     religiousVerseType: document.getElementById('religiousVerseType')?.value || 'quran',
-                    newbornGender: document.getElementById('newbornGender')?.value || 'male'
+                    newbornGender: document.getElementById('newbornGender')?.value || 'male',
+                    birthdayGender: document.getElementById('birthdayGender')?.value || 'male',
+                    birthdayAge: document.getElementById('birthdayAge')?.value || ''
                 },
                 isPublished: true
             };
@@ -3910,7 +3931,9 @@ ${venueName ? `- المكان: ${venueName}` : ''}
                         loveStory: document.getElementById('loveStory').value.trim(),
                         religiousVerseEnabled: document.getElementById('religiousVerseToggle').checked,
                         religiousVerseType: document.getElementById('religiousVerseType').value,
-                        newbornGender: document.getElementById('newbornGender')?.value || 'male'
+                        newbornGender: document.getElementById('newbornGender')?.value || 'male',
+                        birthdayGender: document.getElementById('birthdayGender')?.value || 'male',
+                        birthdayAge: document.getElementById('birthdayAge')?.value || ''
                     },
                     slug: slug
                 };

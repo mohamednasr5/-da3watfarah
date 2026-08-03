@@ -29,7 +29,12 @@
     const EVENT_TYPE_BADGES = {
         wedding: { label: '💍 فرح', color: '#D4AF37' },
         engagement: { label: '💎 خطوبة', color: '#B76E79' },
-        katb_ketab: { label: '📖 كتب كتاب', color: '#0F766E' }
+        katb_ketab: { label: '📖 كتب كتاب', color: '#0F766E' },
+        henna: { label: '✋ حناء', color: '#C17F59' },
+        birthday: { label: '🎂 عيد ميلاد', color: '#E8734A' },
+        newborn: { label: '👶 مولود', color: '#4B9CD3' },
+        graduation: { label: '🎓 تخرج', color: '#5B4B8A' },
+        ramadan: { label: '🌙 رمضان', color: '#1B5E20' }
     };
     function getEventType(inv) {
         return (inv.event && inv.event.eventType) || inv.eventType || 'wedding';

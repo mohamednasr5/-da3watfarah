@@ -1929,7 +1929,7 @@
         <section class="inv-cta-section">
             <h3 data-i18n="cta_title">🌸 عجبتك الدعوة؟</h3>
             <p data-i18n="cta_desc">اعمل دعوة فرحك أو خطوبتك بنفس الشكل — صمّمها وشوفها مجاناً، في دقايق وبدون تسجيل.</p>
-            <a href="https://da3watfarah.com/" target="_top" class="inv-cta-btn" data-i18n="cta_btn">ابدأ فرحك</a>
+            <a href="https://da3watfarah.com/" target="_top" class="inv-cta-btn" id="ctaBtn">ابدأ فرحك</a>
         </section>
 
         <!-- Footer -->
@@ -2614,6 +2614,8 @@
             };
             const typeMeta = EVENT_TYPE_META[eventType] || EVENT_TYPE_META.wedding;
             document.getElementById('invitationContainer').classList.add(`event-type-${eventType}`);
+            window.__dfCurrentEventType = eventType;
+            updateCtaCopy(eventType, document.documentElement.lang || 'ar');
             renderOccasionMotif(eventType);
             addOccasionParticles(eventType);
 
@@ -3618,6 +3620,26 @@
             return (dict[key] !== undefined) ? dict[key] : (DF_I18N.ar[key] || key);
         };
 
+        // "Liked this invitation? Make your own" CTA button text, per event
+        // type so it reads naturally instead of always saying "Start your
+        // wedding" on a birthday/engagement/etc. invitation.
+        var CTA_BTN_COPY = {
+            wedding:     { ar: 'ابدأ فرحك',           en: 'Start your wedding invite' },
+            engagement:  { ar: 'ابدأ خطوبتك',         en: 'Start your engagement invite' },
+            katb_ketab:  { ar: 'ابدأ كتب كتابك',       en: 'Start your Katb El-Ketab invite' },
+            henna:       { ar: 'ابدأ دعوة حنتك',       en: 'Start your henna night invite' },
+            birthday:    { ar: 'ابدأ عيد ميلادك',      en: 'Start your birthday invite' },
+            newborn:     { ar: 'ابدأ بمولودك',         en: 'Start your newborn invite' },
+            graduation:  { ar: 'ابدأ دعوة التخرج',     en: 'Start your graduation invite' },
+            ramadan:     { ar: 'ابدأ عزومتك',          en: 'Start your Ramadan invite' }
+        };
+        function updateCtaCopy(eventType, lang) {
+            var btn = document.getElementById('ctaBtn');
+            if (!btn) return;
+            var copy = CTA_BTN_COPY[eventType] || CTA_BTN_COPY.wedding;
+            btn.textContent = (lang === 'en' ? copy.en : copy.ar);
+        }
+
         function applyTranslations(lang) {
             var dict = DF_I18N[lang] || DF_I18N.ar;
             document.querySelectorAll('[data-i18n]').forEach(function(el) {
@@ -3646,6 +3668,7 @@
                 b.style.color = active ? '#1A1A2E' : '#fff';
             });
             applyTranslations(lang);
+            updateCtaCopy(window.__dfCurrentEventType || 'wedding', lang);
             try { localStorage.setItem('df_lang', lang); } catch (e) {}
         };
 

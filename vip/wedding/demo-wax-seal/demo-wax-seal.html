@@ -243,7 +243,11 @@ btn.innerHTML = btn.dataset.origHtml || btn.innerHTML;
 });
 });
 })();
-</script> </section> <footer data-einvite-section="footer" class="ei-footer"> <div class="ei-wrap"> <div class="ei-footer-top"> <p class="ei-footer-msg ei-reveal">وبارك الله لهما وجمع بينهما في خير</p> <span class="ei-footer-date"><span data-bind="eventDateDisplay" data-bind-default="15 يناير 2026">15 يناير 2026</span></span> </div> <div class="ei-footer-bot"> <span>عقد قران <span data-bind="coupleNames" data-bind-default="محمد و منى">محمد و منى</span></span> <i aria-hidden="true"></i> </div> </div> </footer> <script>
+</script> </section> <section class="df-cta-section" data-einvite-section="df-cta" style="text-align:center;padding:5rem clamp(1.4rem,5vw,5rem);background:var(--ei-bg-2, var(--ei-bg));border-top:1px solid var(--ei-line);">
+<h3 style="font-family:var(--ei-font-ar, var(--ei-font-display));font-weight:600;font-size:clamp(1.5rem,3vw,2.2rem);color:var(--ei-ink);margin-bottom:.8rem;">🌸 عجبتك الدعوة؟</h3>
+<p style="max-width:480px;margin:0 auto 2rem;color:var(--ei-soft);line-height:1.8;font-size:1rem;font-family:var(--ei-font-ar, var(--ei-font-body));">اعمل دعوة فرحك أو خطوبتك بنفس الشكل — صمّمها وشوفها مجاناً، في دقايق وبدون تسجيل.</p>
+<a href="https://da3watfarah.com/" target="_top" style="display:inline-block;padding:1rem 2.6rem;border-radius:999px;background:var(--ei-accent);color:var(--ei-bg);text-decoration:none;font-weight:700;font-family:var(--ei-font-ar, inherit);">ابدأ فرحك</a>
+</section> <footer data-einvite-section="footer" class="ei-footer"> <div class="ei-wrap"> <div class="ei-footer-top"> <p class="ei-footer-msg ei-reveal">وبارك الله لهما وجمع بينهما في خير</p> <span class="ei-footer-date"><span data-bind="eventDateDisplay" data-bind-default="15 يناير 2026">15 يناير 2026</span></span> </div> <div class="ei-footer-bot"> <span>عقد قران <span data-bind="coupleNames" data-bind-default="محمد و منى">محمد و منى</span></span> <i aria-hidden="true"></i> </div> </div> </footer> <script>
 (function () {
 'use strict';
 var revealEls = document.querySelectorAll('.ei-reveal');
@@ -388,12 +392,18 @@ document.addEventListener('click', function (e) { if (!qn.contains(e.target)) se
           btn.innerHTML='<i class="fas fa-music"></i>';
           document.body.appendChild(btn);
         }
-        var playing=false;
         btn.onclick=function(){
-          if(playing){aud.pause();btn.innerHTML='<i class="fas fa-music"></i>';playing=false;}
-          else{aud.play().catch(function(){});btn.innerHTML='<i class="fas fa-pause"></i>';playing=true;}
+          if(aud.paused){aud.play().catch(function(){});}
+          else{aud.pause();}
         };
-        document.addEventListener('click',function e(){aud.play().catch(function(){});document.removeEventListener('click',e);},{once:true});
+        aud.addEventListener('play',function(){btn.innerHTML='<i class="fas fa-pause"></i>';});
+        aud.addEventListener('pause',function(){btn.innerHTML='<i class="fas fa-music"></i>';});
+        // Autoplay is usually blocked until the visitor interacts with the
+        // page — start playback on their first interaction anywhere, same
+        // as the regular (non-VIP) templates. The play/pause listeners
+        // above keep the button icon in sync automatically either way.
+        var __vipMusicStart=function(){aud.play().catch(function(){});['click','touchstart','scroll','keydown'].forEach(function(evt){document.removeEventListener(evt,__vipMusicStart);});};
+        ['click','touchstart','scroll','keydown'].forEach(function(evt){document.addEventListener(evt,__vipMusicStart,{once:true,passive:true});});
       }
     }
     // RSVP form: override submit to use Firebase push (same as invite.html)
