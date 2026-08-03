@@ -159,6 +159,19 @@ var VipTemplateRenderer = (function () {
         var slug = invitationData.slug || 'invitation';
         var rsvpAction = 'https://da3wa.online/e/' + slug + '/rsvp';
 
+        // Event Schedule + FAQ (unified sections, same rules as Normal
+        // templates: empty array = section hidden, handled by
+        // vip/assets/vip-dynamic-sections.js on the template side).
+        var unified = (window.UnifiedInvitationSchema)
+            ? window.UnifiedInvitationSchema.migrateInvitation(invitationData)
+            : null;
+        var eventSchedule = (unified && unified.eventSchedule.length)
+            ? unified.eventSchedule
+            : (invitationData.eventSchedule || content.eventSchedule || []);
+        var faq = (unified && unified.faq.length)
+            ? unified.faq
+            : (invitationData.faq || content.faq || []);
+
         // Monogram
         var monogram = '';
         if (name1 && name2) {
@@ -196,6 +209,8 @@ var VipTemplateRenderer = (function () {
             },
             eventType: eventType,
             eventLabel: eventLabel,
+            eventSchedule: eventSchedule,
+            faq: faq,
             _raw: invitationData  // Pass full data for advanced use
         };
     }
