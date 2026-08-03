@@ -2610,6 +2610,60 @@
                     countdownTitle: 'العد التنازلي لكتب الكتاب',
                     rsvpSubtitle: 'يسعدنا أن تؤكدوا حضوركم معنا في هذه اللحظة المباركة',
                     iconClass: 'fa-book-quran'
+                },
+                henna: {
+                    badgeLabel: '🌿 ليلة حناء',
+                    pageTitlePrefix: 'ليلة حناء',
+                    heroDefaultTitle: 'يدعوكم لمشاركتها ليلة الحناء',
+                    ogDescriptionDefault: 'ندعوكم لحضور ليلة الحناء',
+                    eventNameDefault: 'ليلة الحناء',
+                    countdownTitle: 'العد التنازلي لليلة الحناء',
+                    rsvpSubtitle: 'يسعدنا أن تؤكدوا حضوركم معنا في هذه الليلة الجميلة',
+                    iconClass: 'fa-hand-sparkles'
+                },
+                birthday: {
+                    badgeLabel: '🎂 دعوة عيد ميلاد',
+                    pageTitlePrefix: 'عيد ميلاد',
+                    heroDefaultTitle: 'يدعوكم لمشاركته/ا فرحة عيد الميلاد',
+                    ogDescriptionDefault: 'ندعوكم لحضور حفل عيد الميلاد',
+                    eventNameDefault: 'حفل عيد الميلاد',
+                    countdownTitle: 'العد التنازلي لعيد الميلاد',
+                    rsvpSubtitle: 'يسعدنا أن تؤكدوا حضوركم معنا في هذا اليوم المميز',
+                    iconClass: 'fa-birthday-cake',
+                    singlePerson: true
+                },
+                newborn: {
+                    badgeLabel: '👶 بشارة مولود',
+                    pageTitlePrefix: 'بشارة مولود',
+                    heroDefaultTitle: 'يسعدنا مشاركتكم فرحة المولود الجديد',
+                    ogDescriptionDefault: 'ندعوكم لمشاركتنا فرحة المولود',
+                    eventNameDefault: 'حفل استقبال المولود',
+                    countdownTitle: 'العد التنازلي للاحتفال',
+                    rsvpSubtitle: 'يسعدنا أن تؤكدوا حضوركم معنا في هذه الفرحة',
+                    iconClass: 'fa-baby',
+                    singlePerson: true
+                },
+                graduation: {
+                    badgeLabel: '🎓 حفل تخرج',
+                    pageTitlePrefix: 'حفل تخرج',
+                    heroDefaultTitle: 'يدعوكم لمشاركته/ا فرحة التخرج',
+                    ogDescriptionDefault: 'ندعوكم لحضور حفل التخرج',
+                    eventNameDefault: 'حفل التخرج',
+                    countdownTitle: 'العد التنازلي لحفل التخرج',
+                    rsvpSubtitle: 'يسعدنا أن تؤكدوا حضوركم معنا في هذا الإنجاز',
+                    iconClass: 'fa-graduation-cap',
+                    singlePerson: true
+                },
+                ramadan: {
+                    badgeLabel: '🌙 إفطار رمضان',
+                    pageTitlePrefix: 'دعوة إفطار رمضان',
+                    heroDefaultTitle: 'يتشرفون بدعوتكم لمائدة الإفطار',
+                    ogDescriptionDefault: 'ندعوكم لمشاركتنا مائدة إفطار رمضان',
+                    eventNameDefault: 'إفطار رمضان',
+                    countdownTitle: 'العد التنازلي للإفطار',
+                    rsvpSubtitle: 'يسعدنا أن تؤكدوا حضوركم معنا على مائدة الإفطار',
+                    iconClass: 'fa-moon',
+                    singlePerson: true
                 }
             };
             const typeMeta = EVENT_TYPE_META[eventType] || EVENT_TYPE_META.wedding;
@@ -2627,10 +2681,15 @@
             applyTheme(templateFile, design.primaryColor, design.secondaryColor);
 
             // Update page title and meta
+            // Single-person events (birthday/newborn/graduation/ramadan) store their
+            // one name in couple.groomName (same field the wizard collects it into);
+            // there is no "second person" to join with "و" in that case.
+            const isSingle = !!typeMeta.singlePerson;
             const groomName = couple.groomName || data.groomName || '';
             const brideName = couple.brideName || data.brideName || '';
-            document.getElementById('pageTitle').textContent = `${typeMeta.pageTitlePrefix} ${groomName} و ${brideName}`;
-            document.getElementById('ogTitle').textContent = `${typeMeta.pageTitlePrefix} ${groomName} و ${brideName}`;
+            const namesForTitle = isSingle ? groomName : `${groomName} و ${brideName}`;
+            document.getElementById('pageTitle').textContent = `${typeMeta.pageTitlePrefix} ${namesForTitle}`;
+            document.getElementById('ogTitle').textContent = `${typeMeta.pageTitlePrefix} ${namesForTitle}`;
             document.getElementById('ogDescription').textContent = content.invitationText || data.invitationText || typeMeta.ogDescriptionDefault;
 
             // Occasion badge on the cover
@@ -2650,10 +2709,19 @@
                 document.getElementById('coverImage').src = template.defaultCover;
             }
 
-            // Couple names
+            // Couple names (or the single name, for single-person events)
             document.getElementById('groomName').textContent = groomName;
-            document.getElementById('brideName').textContent = brideName;
-            document.getElementById('memoriesTitle').textContent = `ذكريات ${groomName || 'العريس'} و ${brideName || 'العروسة'}`;
+            const brideNameEl = document.getElementById('brideName');
+            const ampersandEl = document.querySelector('.couple-names .ampersand');
+            if (isSingle) {
+                if (brideNameEl) brideNameEl.style.display = 'none';
+                if (ampersandEl) ampersandEl.style.display = 'none';
+                document.getElementById('memoriesTitle').textContent = `ذكريات ${groomName || ''}`.trim();
+            } else {
+                if (brideNameEl) { brideNameEl.style.display = ''; brideNameEl.textContent = brideName; }
+                if (ampersandEl) ampersandEl.style.display = '';
+                document.getElementById('memoriesTitle').textContent = `ذكريات ${groomName || 'العريس'} و ${brideName || 'العروسة'}`;
+            }
 
             // Bismillah / Welcome text
             const welcomeText = content.welcomeText || data.welcomeText || data.bismillah || '';
@@ -2662,7 +2730,18 @@
             }
 
             // Wedding title
-            const weddingTitle = content.weddingTitle || data.weddingTitle || typeMeta.heroDefaultTitle;
+            let weddingTitle = content.weddingTitle || data.weddingTitle || typeMeta.heroDefaultTitle;
+            // Birthday: prefer the gender-correct "<name> يكمل/تكمل X سنوات" sentence
+            // (built the same way as the VIP renderer) over the generic hero line,
+            // when we actually have a name + age to build it from.
+            if (eventType === 'birthday' && groomName && content.birthdayAge) {
+                const isFemale = content.birthdayGender === 'female';
+                weddingTitle = `${groomName} ${isFemale ? 'تكمل' : 'يكمل'} ${content.birthdayAge} سنوات`;
+            } else if (eventType === 'newborn' && content.newbornGender) {
+                weddingTitle = content.newbornGender === 'female'
+                    ? 'يسعدنا مشاركتكم فرحة مولودتنا'
+                    : 'يسعدنا مشاركتكم فرحة مولودنا';
+            }
             document.getElementById('weddingTitle').querySelector('span').textContent = weddingTitle;
 
             // Welcome section: religious verse (Quranic ayah or Bible verse), toggleable
@@ -3656,6 +3735,9 @@
             });
             var pageTitleEl = document.getElementById('pageTitle');
             if (pageTitleEl && dict.page_title) document.title = dict.page_title;
+            document.querySelectorAll('.df-footer-bottom p, [data-i18n="footer_copyright"]').forEach(function (el) {
+                el.innerHTML = el.innerHTML.replace(/20\d{2}/, String(new Date().getFullYear()));
+            });
         }
 
         window.switchLang = function(lang) {

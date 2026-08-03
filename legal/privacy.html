@@ -82,8 +82,9 @@
 </main>
 
 <footer>
-  &copy; 2026 <a href="https://da3watfarah.com/">دعوة فرح</a>. جميع الحقوق محفوظة.
+  &copy; <span id="dfYear"></span> <a href="https://da3watfarah.com/">دعوة فرح</a>. جميع الحقوق محفوظة.
 </footer>
+<script>document.getElementById("dfYear").textContent=new Date().getFullYear();</script>
 
 </body>
 </html>

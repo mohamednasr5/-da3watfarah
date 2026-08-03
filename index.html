@@ -3117,6 +3117,10 @@
                 document.title = t.page_title;
             }
 
+            document.querySelectorAll('.df-footer-bottom p, [data-i18n="footer_copyright"]').forEach(function (el) {
+                el.innerHTML = el.innerHTML.replace(/20\d{2}/, String(new Date().getFullYear()));
+            });
+
             // Update template card names and descriptions
             const cards = document.querySelectorAll('.template-card');
             cards.forEach(function(card, i) {

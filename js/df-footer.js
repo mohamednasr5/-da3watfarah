@@ -35,6 +35,19 @@
         };
     }
 
+    function updateFooterYear() {
+        var year = String(new Date().getFullYear());
+        document.querySelectorAll('.df-footer-bottom p, [data-i18n="footer_copyright"]').forEach(function (el) {
+            el.innerHTML = el.innerHTML.replace(/20\d{2}/, year);
+        });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', updateFooterYear);
+    } else {
+        updateFooterYear();
+    }
+
     if (typeof window.copyInvitationLink !== 'function') {
         window.copyInvitationLink = function () {
             navigator.clipboard.writeText(window.location.href).then(function () {

@@ -1401,7 +1401,7 @@
                         <h3 style="margin-bottom: 25px;" data-i18n="step3_h3"><i class="fas fa-pen-fancy" style="color: var(--primary-gold);"></i> المحتوى والتصميم</h3>
                         
                         <div class="form-grid">
-                            <div class="form-group full-width">
+                            <div class="form-group full-width" id="religiousVerseGroup">
                                 <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
                                     <input type="checkbox" id="religiousVerseToggle" checked style="width:auto;margin:0">
                                     <span data-i18n="verse_toggle_label"><i class="fas fa-star-and-crescent"></i> تفعيل الآية الدينية في أعلى الدعوة</span>
@@ -1414,7 +1414,7 @@
                                 </div>
                             </div>
 
-                            <div class="form-group full-width">
+                            <div class="form-group full-width" id="welcomeTextGroup">
                                 <label data-i18n="welcome_text_label"><i class="fas fa-star-and-crescent"></i> نص الترحيب (اتركه فارغًا لاستخدام الآية الدينية أعلاه تلقائيًا)</label>
                                 <textarea class="form-control" id="welcomeText" placeholder="﴿وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُم مِّنْ أَنفُسِكُمْ أَزْوَاجًا﴾"></textarea>
                             </div>
@@ -1430,7 +1430,7 @@
                                 <textarea class="form-control" id="invitationText" placeholder="يسرنا ويسعدنا أن ندعوكم لحضور زفاف..." data-i18n-placeholder="invitation_text_ph" required></textarea>
                             </div>
                             
-                            <div class="form-group full-width">
+                            <div class="form-group full-width" id="loveStoryGroup">
                                 <label data-i18n="love_story_label"><i class="fas fa-heart"></i> قصة الحب (اختياري)</label>
                                 <textarea class="form-control" id="loveStory" placeholder="اكتب قصة تعارفكما..." data-i18n-placeholder="love_story_ph"></textarea>
                             </div>
@@ -1504,7 +1504,7 @@
                                 <div id="musicPreview"></div>
                             </div>
                             
-                            <div class="form-group full-width">
+                            <div class="form-group full-width" id="colorsGroup">
                                 <label data-i18n="colors_label"><i class="fas fa-palette"></i> الألوان</label>
                                 <div class="color-options">
                                     <div class="color-option selected" data-colors='{"primary":"#8B4513","secondary":"#D4AF37"}' style="background: linear-gradient(135deg, #8B4513, #D4AF37);" onclick="selectColor(this)"></div>
@@ -1628,6 +1628,7 @@
     <!-- App Scripts -->
     <script src="js/firebase-config.js"></script>
     <script src="js/db.js"></script>
+    <script src="js/template-field-manifests.js"></script>
     <script src="js/sidebar.js"></script>
     <script src="js/notifications.js"></script>
     
@@ -2805,6 +2806,34 @@
             return checked ? checked.value : 'wedding';
         }
 
+        // Step 3 ("المحتوى والتصميم") holds a few fields that only make sense
+        // for regular (non-VIP) templates, which render through invite.html's
+        // single shared skeleton (welcome text / love story / religious verse
+        // toggle / color picker). None of the 18 VIP designs have a data-bind
+        // for any of those — they ship with their own fixed palette and copy —
+        // so showing them for a VIP template would just be dead inputs the
+        // publish step silently ignores. Hide them once a VIP template is
+        // selected, and restore them for regular templates.
+        var STEP3_OPTIONAL_GROUPS = {
+            welcomeText: 'welcomeTextGroup',
+            loveStory: 'loveStoryGroup',
+            religiousVerse: 'religiousVerseGroup',
+            colors: 'colorsGroup'
+        };
+
+        function applyTemplateFieldVisibility(template) {
+            const manifest = (template && window.TemplateFieldManifests)
+                ? window.TemplateFieldManifests.getManifest(template.id)
+                : null;
+            const unused = (template && template.isVip)
+                ? (manifest ? manifest.unusedStep3Fields : ['welcomeText', 'loveStory', 'religiousVerse', 'colors'])
+                : [];
+            Object.keys(STEP3_OPTIONAL_GROUPS).forEach(function (key) {
+                const el = document.getElementById(STEP3_OPTIONAL_GROUPS[key]);
+                if (el) el.style.display = unused.indexOf(key) !== -1 ? 'none' : '';
+            });
+        }
+
         // Occasion wording used inside the AI prompt / fallback template (Arabic)
         const EVENT_OCCASION_AR = {
             wedding: 'حفل زفاف',
@@ -3115,6 +3144,7 @@
             
             // Set selected template
             selectedTemplate = template;
+            applyTemplateFieldVisibility(template);
             
             // === VIP Gating: if user selected a VIP template directly from the grid
             // (not via the /vip/ hub with ?vip=1), activate the VIP gate so the
