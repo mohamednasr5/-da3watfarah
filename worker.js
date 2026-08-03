@@ -536,7 +536,7 @@ async function handleOgImage(request, env, url) {
     } catch (e) {
         console.error('OG image generation error:', e);
         // Fallback so a broken image generator never breaks link previews
-        return new Response(null, { status: 302, headers: { Location: (env.PUBLIC_URL ? env.PUBLIC_URL + '/og-default.jpg' : 'https://da3watfarah.com/assets/images/og-cover.jpg') } });
+        return new Response(null, { status: 302, headers: { Location: (env.PUBLIC_URL ? env.PUBLIC_URL + '/og-default.jpg' : 'https://da3watfarah.com/10.png') } });
     }
 }
 
