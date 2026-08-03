@@ -1622,6 +1622,157 @@
         .success-message.show {
             display: block;
         }
+
+        /* ============================================
+           Event Schedule + FAQ — Step 5 (Normal templates)
+           Same component / same logic as the VIP renderer
+           (vip/assets/vip-dynamic-sections.js): hidden when
+           empty, unlimited items, styled with the active
+           template's theme variables so it matches every
+           design automatically without per-template CSS.
+        ============================================ */
+        .schedule-section .timeline-list,
+        .faq-section .faq-list {
+            max-width: 720px;
+            margin: 0 auto;
+        }
+
+        .timeline-item {
+            display: grid;
+            grid-template-columns: 96px 28px 1fr;
+            align-items: start;
+            gap: 14px;
+            padding: 18px 0;
+            border-bottom: 1px dashed rgba(0, 0, 0, 0.12);
+            opacity: 0;
+            transform: translateY(16px);
+            animation: dfTimelineIn 0.6s ease forwards;
+        }
+
+        .timeline-item:last-child {
+            border-bottom: none;
+        }
+
+        .timeline-time {
+            font-weight: 700;
+            color: var(--theme-primary, #8B4513);
+            font-variant-numeric: tabular-nums;
+            white-space: nowrap;
+            padding-top: 2px;
+        }
+
+        .timeline-marker {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100%;
+        }
+
+        .timeline-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--theme-secondary, #D4AF37);
+            box-shadow: 0 0 0 4px var(--theme-light, rgba(212, 175, 55, 0.15));
+            flex-shrink: 0;
+        }
+
+        .timeline-line {
+            flex: 1;
+            width: 2px;
+            background: rgba(0, 0, 0, 0.08);
+            margin-top: 4px;
+        }
+
+        .timeline-item:last-child .timeline-line {
+            display: none;
+        }
+
+        .timeline-content {
+            padding-top: 1px;
+        }
+
+        .timeline-title {
+            font-weight: 600;
+            color: var(--theme-text, #333);
+            font-size: 1.02rem;
+        }
+
+        @keyframes dfTimelineIn {
+            to { opacity: 1; transform: none; }
+        }
+
+        .faq-list {
+            border-top: 1px solid rgba(0, 0, 0, 0.08);
+        }
+
+        .faq-item {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+        }
+
+        .faq-item summary {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            cursor: pointer;
+            list-style: none;
+            padding: 18px 4px;
+        }
+
+        .faq-item summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .faq-num {
+            flex-shrink: 0;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #fff;
+            background: var(--theme-primary, #8B4513);
+        }
+
+        .faq-question {
+            flex: 1;
+            font-weight: 600;
+            color: var(--theme-text, #333);
+        }
+
+        .faq-chevron {
+            width: 9px;
+            height: 9px;
+            border-inline-end: 2px solid var(--theme-primary, #8B4513);
+            border-bottom: 2px solid var(--theme-primary, #8B4513);
+            transform: rotate(45deg);
+            transition: transform 0.3s;
+            flex-shrink: 0;
+        }
+
+        .faq-item[open] .faq-chevron {
+            transform: rotate(225deg);
+        }
+
+        .faq-answer {
+            padding: 0 4px 20px 48px;
+            color: var(--theme-text, #555);
+            opacity: 0.85;
+            line-height: 1.8;
+        }
+
+        @media (max-width: 600px) {
+            .timeline-item {
+                grid-template-columns: 78px 22px 1fr;
+                gap: 10px;
+            }
+            .faq-answer {
+                padding-inline-start: 44px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -1740,6 +1891,15 @@
                 </button>
                 <p class="memories-note" data-i18n="memories_note">✨ هتظهر صورتك بعد موافقة العروسين</p>
             </div>
+        </section>
+
+        <!-- Event Schedule Section (optional — hidden automatically when empty) -->
+        <section class="inv-section schedule-section" id="scheduleSection" style="display: none;" data-aos="fade-up">
+            <div class="section-title">
+                <i class="fas fa-list-ol"></i>
+                <h2 data-i18n="schedule_title">برنامج الحفل</h2>
+            </div>
+            <div class="timeline-list" id="scheduleList"></div>
         </section>
 
         <!-- Event Details Section -->
@@ -1916,6 +2076,15 @@
             </div>
             
             <div class="wishes-list" id="wishesList"></div>
+        </section>
+
+        <!-- FAQ Section (optional — hidden automatically when empty) -->
+        <section class="inv-section faq-section" id="faqSection" style="display: none;" data-aos="fade-up">
+            <div class="section-title">
+                <i class="fas fa-circle-question"></i>
+                <h2 data-i18n="faq_title">الأسئلة الشائعة</h2>
+            </div>
+            <div class="faq-list" id="faqList"></div>
         </section>
 
         <!-- Music Player -->
@@ -2304,6 +2473,22 @@
                 hasFloatingFlowers: true
             }
         };
+
+        // ---------------------------------------------------------------
+        // Numbered color variants (classic-2..6, romantic-2..6): same
+        // base design/effects as their parent template, only the accent
+        // colors differ (applied via applyColorOverride from each
+        // template's own `colors` in TEMPLATES_CONFIG). Registered here
+        // by reference to the base entry — zero CSS duplication — so
+        // these 10 selectable designs render with their real base
+        // template instead of silently falling back to preview-classic.
+        // ---------------------------------------------------------------
+        ['preview-classic-2', 'preview-classic-3', 'preview-classic-4', 'preview-classic-5', 'preview-classic-6'].forEach(key => {
+            TEMPLATES[key] = TEMPLATES['preview-classic'];
+        });
+        ['preview-romantic-2', 'preview-romantic-3', 'preview-romantic-4', 'preview-romantic-5', 'preview-romantic-6'].forEach(key => {
+            TEMPLATES[key] = TEMPLATES['preview-romantic'];
+        });
 
         // ===================================
         // Helper Functions
@@ -2871,6 +3056,12 @@
             window.ownerGalleryImages = design.galleryImages || data.galleryImages || [];
             renderMemoriesGrid();
 
+            // Event Schedule + FAQ — same optional, unlimited-items, hide-if-empty
+            // logic as the VIP templates (vip-dynamic-sections.js), applied here
+            // once for every Normal template via the shared theme CSS variables.
+            renderScheduleSection(data.eventSchedule || content.eventSchedule);
+            renderFaqSection(data.faq || content.faq);
+
             // Music
             const musicUrl = design.musicUrl || data.musicUrl || data.songUrl || '';
             if (musicUrl) {
@@ -3174,6 +3365,70 @@
                 submitBtn.innerHTML = originalContent;
             }
         });
+
+        // ===== Event Schedule + FAQ (Step 5 — Normal templates) =====
+        // Mirrors vip/assets/vip-dynamic-sections.js exactly: unlimited items,
+        // sorted by `order` if present, section hidden completely when the
+        // array is empty/missing (including old invitations saved before this
+        // feature existed — safe fallback to []).
+        function escapeInviteHtml(str) {
+            return String(str == null ? '' : str).replace(/[&<>"']/g, c => (
+                { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
+            ));
+        }
+
+        function normalizeOrdered(arr) {
+            if (!Array.isArray(arr)) return [];
+            return arr.slice().sort((a, b) => (typeof a?.order === 'number' ? a.order : 0) - (typeof b?.order === 'number' ? b.order : 0));
+        }
+
+        function renderScheduleSection(items) {
+            const section = document.getElementById('scheduleSection');
+            const list = document.getElementById('scheduleList');
+            if (!section || !list) return;
+            const arr = normalizeOrdered(items).filter(it => (it?.title || it?.time));
+            if (!arr.length) {
+                section.style.display = 'none';
+                list.innerHTML = '';
+                return;
+            }
+            section.style.display = '';
+            list.innerHTML = arr.map((item, idx) => `
+                <div class="timeline-item" style="animation-delay:${(idx * 0.07).toFixed(2)}s">
+                    <span class="timeline-time">${escapeInviteHtml(item.time || '')}</span>
+                    <span class="timeline-marker" aria-hidden="true">
+                        <span class="timeline-dot"></span>
+                        <span class="timeline-line"></span>
+                    </span>
+                    <span class="timeline-content">
+                        <span class="timeline-title">${escapeInviteHtml(item.title || '')}</span>
+                    </span>
+                </div>
+            `).join('');
+        }
+
+        function renderFaqSection(items) {
+            const section = document.getElementById('faqSection');
+            const list = document.getElementById('faqList');
+            if (!section || !list) return;
+            const arr = normalizeOrdered(items).filter(it => (it?.question || it?.answer));
+            if (!arr.length) {
+                section.style.display = 'none';
+                list.innerHTML = '';
+                return;
+            }
+            section.style.display = '';
+            list.innerHTML = arr.map((item, idx) => `
+                <details class="faq-item">
+                    <summary>
+                        <span class="faq-num">${String(idx + 1).padStart(2, '0')}</span>
+                        <span class="faq-question">${escapeInviteHtml(item.question || '')}</span>
+                        <i class="faq-chevron" aria-hidden="true"></i>
+                    </summary>
+                    <p class="faq-answer">${escapeInviteHtml(item.answer || '')}</p>
+                </details>
+            `).join('');
+        }
 
         // ===== Memories gallery: owner photos + approved guest photos =====
         window.ownerGalleryImages = window.ownerGalleryImages || [];
@@ -3557,6 +3812,8 @@
                 cd_days: "يوم", cd_hours: "ساعة", cd_minutes: "دقيقة", cd_seconds: "ثانية",
                 map_title: "الموقع على الخريطة",
                 directions_btn: "احصل على الاتجاهات",
+                schedule_title: "برنامج الحفل",
+                faq_title: "الأسئلة الشائعة",
                 rsvp_title: "تأكيد الحضور",
                 rsvp_subtitle: "يسعدنا أن تؤكدوا حضوركم معنا في هذا اليوم المميز",
                 rsvp_name_label: "الاسم الكريم *",
@@ -3634,6 +3891,8 @@
                 cd_days: "Days", cd_hours: "Hours", cd_minutes: "Minutes", cd_seconds: "Seconds",
                 map_title: "Location on Map",
                 directions_btn: "Get Directions",
+                schedule_title: "Event Schedule",
+                faq_title: "Frequently Asked Questions",
                 rsvp_title: "RSVP",
                 rsvp_subtitle: "We would be delighted if you confirm your attendance with us on this special day",
                 rsvp_name_label: "Full Name *",

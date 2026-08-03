@@ -477,6 +477,11 @@
             border: 1px solid #D4AF37;
         }
 
+        .badge-featured {
+            background: linear-gradient(135deg, #7C3AED, #4C1D95);
+            color: white;
+        }
+
         /* VIP requirement banner shown when arriving from a VIP-exclusive design */
         .vip-required-banner {
             display: flex;
@@ -3308,7 +3313,7 @@
                         <i class="fas fa-check"></i>
                     </div>
                     <div class="template-preview-wrapper">
-                        <img class="template-preview" src="${template.thumbnail}" alt="${ciLang() === 'en' && template.nameEn ? template.nameEn : template.nameAr}">
+                        <img class="template-preview" src="${template.thumbnail}" alt="${ciLang() === 'en' && template.nameEn ? template.nameEn : template.nameAr}" loading="lazy">
                         <div class="template-overlay">
                             <span class="preview-btn" onclick="event.stopPropagation(); openPreviewModal('${template.id}')">
                                 <i class="fas fa-eye"></i> ${L('preview_btn')}
@@ -3316,6 +3321,7 @@
                         </div>
                         ${template.isNew ? `<span class="template-badge badge-new">${L('badge_new')}</span>` : ''}
                         ${template.isPopular ? `<span class="template-badge badge-popular">${L('badge_popular')}</span>` : ''}
+                        ${template.isFeatured ? `<span class="template-badge badge-featured">${L('badge_featured') || (ciLang() === 'en' ? 'Featured' : 'مميز')}</span>` : ''}
                         ${template.isPremium ? `<span class="template-badge badge-premium">${L('badge_premium')}</span>` : ''}
                         ${template.isVip ? `<span class="template-badge badge-vip">${L('badge_vip')}</span>` : ''}
                     </div>
