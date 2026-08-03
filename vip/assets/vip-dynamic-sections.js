@@ -163,11 +163,33 @@
         });
     }
 
+    // ===================================================
+    // VIP-only difference: intro/opening animation toggle.
+    // Every VIP template (18/18) shares the same envelope markup
+    // (#einvite-envelope / body.env-locked / .gone), confirmed across
+    // all of them, so this ONE implementation handles the skip for
+    // every template instead of editing each one individually.
+    // Normal templates never have this element, so this is a no-op
+    // there — the "everything else is identical" rule stays intact.
+    // ===================================================
+    function applyIntroToggle(introEnabled) {
+        var envelope = document.getElementById('einvite-envelope');
+        if (!envelope) return; // template has no intro (or this is a Normal template)
+        if (introEnabled === false) {
+            envelope.classList.add('gone');
+            envelope.classList.remove('playing');
+            document.body.classList.remove('env-locked');
+        }
+        // introEnabled !== false -> leave the template's native
+        // tap-to-enter behavior untouched (default VIP experience).
+    }
+
     function handlePayload(payload) {
         if (!payload) return;
         injectStyleOnce();
         try { renderSchedule(payload.eventSchedule); } catch (e) { console.warn('[vip-dynamic-sections] schedule', e); }
         try { renderFaq(payload.faq); } catch (e) { console.warn('[vip-dynamic-sections] faq', e); }
+        try { applyIntroToggle(payload.introEnabled); } catch (e) { console.warn('[vip-dynamic-sections] intro', e); }
     }
 
     window.addEventListener('message', function (e) {

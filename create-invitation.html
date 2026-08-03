@@ -1650,6 +1650,17 @@
                                 </div>
                             </div>
 
+                            <!-- VIP-only difference #1: intro/opening animation before entering
+                                 the invitation. Hidden entirely for Normal templates — every other
+                                 section on this page is identical for Normal & VIP. -->
+                            <div class="form-group full-width builder-section" id="vipIntroGroup" style="display:none;">
+                                <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+                                    <input type="checkbox" id="vipIntroToggle" checked style="width:auto;margin:0">
+                                    <span data-i18n="vip_intro_toggle_label"><i class="fas fa-crown" style="color:#D4AF37;"></i> تفعيل شاشة الدخول الافتتاحية (خاص بقوالب VIP)</span>
+                                </label>
+                                <p class="builder-section-hint" data-i18n="vip_intro_toggle_hint">لو مفعّلة، الضيف هيشوف انيميشن/فيديو افتتاحي قبل ما يدخل الدعوة (زي فتح الظرف). لو عطّلتها، الدعوة هتفتح مباشرة زي القوالب العادية.</p>
+                            </div>
+
                             <!-- Event Schedule (optional, unlimited items, same for Normal & VIP) -->
                             <div class="form-group full-width builder-section" id="eventScheduleGroup">
                                 <div class="builder-section-header">
@@ -3333,6 +3344,7 @@
             // Set selected template
             selectedTemplate = template;
             applyTemplateFieldVisibility(template);
+            updateVipIntroToggleVisibility(template);
             
             // === VIP Gating: if user selected a VIP template directly from the grid
             // (not via the /vip/ hub with ?vip=1), activate the VIP gate so the
@@ -4110,6 +4122,16 @@ ${venueName ? `- المكان: ${venueName}` : ''}
         //    numbering, and each item validated before publish.
         // ===================================================
 
+        // Unified display pipeline note: the ONLY visual difference between
+        // a Normal and a VIP invitation is this intro toggle — everything
+        // else (schedule, faq, gallery, rsvp, ...) uses identical fields
+        // and identical form UI regardless of isVip.
+        function updateVipIntroToggleVisibility(template) {
+            const group = document.getElementById('vipIntroGroup');
+            if (!group) return;
+            group.style.display = (template && template.isVip) ? 'block' : 'none';
+        }
+
         function addScheduleItem(title = '', time = '') {
             eventScheduleItems.push({ id: nextBuilderId(), title, time });
             renderScheduleList();
@@ -4349,6 +4371,13 @@ ${venueName ? `- المكان: ${venueName}` : ''}
                     // optional: an empty array hides the section on
                     // every template automatically.
                     isVip: selectedTemplate?.isVip || false,
+                    // VIP-only difference: intro/opening animation toggle.
+                    // Meaningless (and ignored) for Normal templates.
+                    vip: {
+                        introEnabled: selectedTemplate?.isVip
+                            ? document.getElementById('vipIntroToggle')?.checked !== false
+                            : false
+                    },
                     eventSchedule: collectEventSchedule(),
                     faq: collectFaq(),
                     slug: slug

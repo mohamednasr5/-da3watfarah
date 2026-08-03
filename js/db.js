@@ -307,6 +307,7 @@ async function createInvitation(invitationData) {
             // of any event type (see js/unified-invitation-schema.js). Empty
             // arrays are valid and mean the section stays hidden on render.
             isVip: invitationData.isVip || invitationData.design?.isVipTemplate || false,
+            vip: invitationData.vip || { introEnabled: false },
             type: invitationData.eventType || invitationData.event?.eventType || null,
             eventSchedule: Array.isArray(invitationData.eventSchedule) ? invitationData.eventSchedule : [],
             faq: Array.isArray(invitationData.faq) ? invitationData.faq : [],

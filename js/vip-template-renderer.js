@@ -172,6 +172,12 @@ var VipTemplateRenderer = (function () {
             ? unified.faq
             : (invitationData.faq || content.faq || []);
 
+        // VIP-only difference (everything else identical): whether the
+        // intro/opening animation plays before the guest enters. Defaults
+        // to true (the template's native behavior) unless the invitation
+        // explicitly disabled it.
+        var introEnabled = !(invitationData.vip && invitationData.vip.introEnabled === false);
+
         // Monogram
         var monogram = '';
         if (name1 && name2) {
@@ -211,6 +217,7 @@ var VipTemplateRenderer = (function () {
             eventLabel: eventLabel,
             eventSchedule: eventSchedule,
             faq: faq,
+            introEnabled: introEnabled,
             _raw: invitationData  // Pass full data for advanced use
         };
     }
