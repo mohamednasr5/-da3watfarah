@@ -77,6 +77,10 @@ export default {
             return handleAiGenerate(request, env, corsHeaders);
         }
 
+        if (url.pathname === '/api/ai/translate' && request.method === 'POST') {
+            return handleAiTranslate(request, env, corsHeaders);
+        }
+
         if (url.pathname === '/api/admin/login' && request.method === 'POST') {
             return handleAdminLogin(request, env, corsHeaders);
         }
@@ -139,6 +143,7 @@ export default {
                 'DELETE /api/delete - Delete file from R2',
                 'GET /api/list - List files in bucket',
                 'POST /api/ai/generate - Generate invitation text via AI',
+                'POST /api/ai/translate - Translate invitation text (AR<->EN) via AI',
                 'POST /api/admin/login - Owner login with a single password (no email)',
                 'GET /api/random-cover?event=wedding - Get random cover image for event type',
                 'GET /files/:key - Serve file from R2',
@@ -400,6 +405,105 @@ async function handleAiGenerate(request, env, corsHeaders) {
     } catch (error) {
         console.error('AI generate error:', error);
         return errorResponse('Failed to generate text', 500, corsHeaders);
+    }
+}
+
+/**
+ * Translate a batch of Arabic invitation strings to English (or vice versa)
+ * via the AI, used by vip/assets/vip-i18n.js on every VIP template so the
+ * EN/AR switcher can translate BOTH the template's own static copy
+ * (section titles, labels, FAQ, etc. — sent as data-i18n text) AND the
+ * couple's own entered data (names, custom invitation text, venue, etc. —
+ * sent as data-bind text), without anyone having to hand-write an EN
+ * dictionary for every invitation.
+ *
+ * Request body:  { texts: string[], target: "en" | "ar", context?: string }
+ * Response body: { success: true, translations: string[] }  (same length +
+ *                 order as `texts`, one-to-one)
+ *
+ * The caller (vip-i18n.js) caches the result in localStorage per template,
+ * so this endpoint is only hit once per unique invitation text — not on
+ * every language toggle.
+ */
+async function handleAiTranslate(request, env, corsHeaders) {
+    try {
+        if (!env.NVIDIA_API_KEY) {
+            return errorResponse('مفتاح NVIDIA_API_KEY غير مضبوط على هذا الـ Worker.', 500, corsHeaders);
+        }
+
+        const body = await request.json();
+        const texts = Array.isArray(body.texts) ? body.texts.map((t) => String(t == null ? '' : t)) : [];
+        const target = body.target === 'ar' ? 'ar' : 'en';
+
+        if (!texts.length) {
+            return jsonResponse({ success: true, translations: [] }, corsHeaders);
+        }
+        // Keep batches sane — a single invitation page has well under 150
+        // translatable strings, but guard against abuse either way.
+        const capped = texts.slice(0, 200);
+
+        const targetLabel = target === 'en' ? 'English' : 'Arabic';
+        const systemPrompt =
+            `You translate short strings from a wedding/event invitation website from Arabic to ${targetLabel}. ` +
+            'You will receive a JSON array of strings (in the original order). ' +
+            'Return ONLY a JSON array of the same length, in the same order, with each string translated. ' +
+            'Rules: keep personal names transliterated naturally (do not translate names literally); ' +
+            'keep numbers, dates and times as-is unless the surrounding words need translating too; ' +
+            'keep the tone warm and appropriate for a formal invitation; ' +
+            'do not add, remove, merge, or reorder array items; ' +
+            'if a string is empty, return an empty string in that position; ' +
+            'output must be valid JSON and nothing else — no markdown fences, no commentary.';
+
+        const res = await fetch('https://integrate.api.nvidia.com/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${env.NVIDIA_API_KEY}`,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                model: 'meta/llama-3.1-70b-instruct',
+                messages: [
+                    { role: 'system', content: systemPrompt },
+                    { role: 'user', content: JSON.stringify(capped) },
+                ],
+                temperature: 0.2,
+                max_tokens: 2000,
+            }),
+        });
+
+        if (!res.ok) {
+            const errText = await res.text();
+            console.error('NVIDIA API translate error:', errText);
+            return errorResponse('تعذر ترجمة النص عبر الذكاء الاصطناعي الآن', 502, corsHeaders);
+        }
+
+        const data = await res.json();
+        let raw = (data.choices?.[0]?.message?.content || '').trim();
+        // Strip ```json fences if the model added them despite instructions.
+        raw = raw.replace(/^```json\s*/i, '').replace(/^```\s*/i, '').replace(/```\s*$/i, '').trim();
+
+        let translations;
+        try {
+            translations = JSON.parse(raw);
+        } catch (parseErr) {
+            console.error('AI translate: could not parse model output as JSON:', raw);
+            return errorResponse('تعذرت قراءة نتيجة الترجمة', 502, corsHeaders);
+        }
+
+        if (!Array.isArray(translations)) {
+            return errorResponse('نتيجة الترجمة غير صالحة', 502, corsHeaders);
+        }
+
+        // Defensive: pad/truncate to exactly match the input length so the
+        // caller can always zip translations[i] with texts[i] safely.
+        while (translations.length < capped.length) translations.push(capped[translations.length]);
+        translations = translations.slice(0, capped.length).map((t) => (t == null ? '' : String(t)));
+
+        return jsonResponse({ success: true, translations }, corsHeaders);
+
+    } catch (error) {
+        console.error('AI translate error:', error);
+        return errorResponse('Failed to translate text', 500, corsHeaders);
     }
 }
 
