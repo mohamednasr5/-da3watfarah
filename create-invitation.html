@@ -156,6 +156,140 @@
         @media (max-width: 600px) {
             .event-type-select { grid-template-columns: 1fr; }
         }
+
+        /* ===================================================
+           Event Schedule / FAQ Builder (unified — used by ALL
+           invitation types, Normal & VIP alike)
+           =================================================== */
+        .builder-section {
+            background: var(--bg-secondary, #F9FAFB);
+            border: 1px solid var(--border-color, #E5E7EB);
+            border-radius: var(--radius-lg, 14px);
+            padding: 20px;
+        }
+
+        .builder-section-header { margin-bottom: 14px; }
+
+        .builder-section-hint {
+            color: var(--text-secondary, #6B7280);
+            font-size: 0.85rem;
+            margin-top: 6px;
+        }
+
+        .builder-empty {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            padding: 26px 10px;
+            color: var(--text-secondary, #9CA3AF);
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        .builder-empty i { font-size: 1.6rem; color: var(--primary-gold, #D4AF37); }
+
+        .builder-list { display: flex; flex-direction: column; gap: 10px; }
+
+        .builder-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            background: var(--bg-card, #fff);
+            border: 1px solid var(--border-color, #E5E7EB);
+            border-radius: var(--radius-md, 10px);
+            padding: 12px 14px;
+            transition: box-shadow .2s, transform .2s, opacity .2s;
+            animation: builderItemIn .3s ease;
+        }
+
+        @keyframes builderItemIn {
+            from { opacity: 0; transform: translateY(-6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .builder-item.dragging { opacity: .4; }
+        .builder-item.drag-over { box-shadow: 0 0 0 2px var(--primary-gold, #D4AF37) inset; }
+
+        .builder-item-handle {
+            cursor: grab;
+            color: var(--text-secondary, #9CA3AF);
+            padding: 6px 2px;
+            user-select: none;
+            touch-action: none;
+        }
+        .builder-item-handle:active { cursor: grabbing; }
+
+        .builder-item-number {
+            flex-shrink: 0;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: var(--primary-gold, #D4AF37);
+            color: #fff;
+            font-size: .8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 2px;
+        }
+
+        .builder-item-fields {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 140px;
+            gap: 10px;
+        }
+
+        .builder-item-fields.faq-fields {
+            grid-template-columns: 1fr;
+        }
+
+        .builder-item-fields input,
+        .builder-item-fields textarea {
+            width: 100%;
+            padding: 9px 12px;
+            border: 1px solid var(--border-color, #E5E7EB);
+            border-radius: var(--radius-sm, 8px);
+            font-family: inherit;
+            font-size: 0.92rem;
+        }
+
+        .builder-item-fields textarea { resize: vertical; min-height: 44px; }
+
+        .builder-item-remove {
+            flex-shrink: 0;
+            background: none;
+            border: none;
+            color: #EF4444;
+            cursor: pointer;
+            padding: 6px 8px;
+            font-size: 1rem;
+            border-radius: 8px;
+            transition: background .2s;
+        }
+        .builder-item-remove:hover { background: rgba(239, 68, 68, .1); }
+
+        .builder-add-btn {
+            margin-top: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            background: var(--primary-gold, #D4AF37);
+            color: #fff;
+            border: none;
+            border-radius: var(--radius-md, 10px);
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity .2s;
+        }
+        .builder-add-btn:hover { opacity: .9; }
+
+        @media (max-width: 600px) {
+            .builder-item-fields { grid-template-columns: 1fr; }
+        }
         
         .form-group label {
             display: block;
@@ -1515,6 +1649,38 @@
                                     <div class="color-option" data-colors='{"primary":"#1A1A3E","secondary":"#D4AF37"}' style="background: linear-gradient(135deg, #1A1A3E, #D4AF37);" onclick="selectColor(this)"></div>
                                 </div>
                             </div>
+
+                            <!-- Event Schedule (optional, unlimited items, same for Normal & VIP) -->
+                            <div class="form-group full-width builder-section" id="eventScheduleGroup">
+                                <div class="builder-section-header">
+                                    <label data-i18n="event_schedule_label"><i class="fas fa-list-ol"></i> برنامج الحفل (اختياري)</label>
+                                    <p class="builder-section-hint" data-i18n="event_schedule_hint">أضف فقرات البرنامج بالترتيب (مثال: استقبال الضيوف - 7:00 م). اتركه فارغًا لإخفاء هذا القسم من الدعوة.</p>
+                                </div>
+                                <div class="builder-list" id="scheduleList"></div>
+                                <div class="builder-empty" id="scheduleEmptyMsg">
+                                    <i class="fas fa-calendar-day"></i>
+                                    <span data-i18n="event_schedule_empty">لسه معملتش أي فقرة — دوس "إضافة فقرة" تحت لإضافة أول عنصر</span>
+                                </div>
+                                <button type="button" class="builder-add-btn" onclick="addScheduleItem()">
+                                    <i class="fas fa-plus"></i> <span data-i18n="add_schedule_item_btn">إضافة فقرة للبرنامج</span>
+                                </button>
+                            </div>
+
+                            <!-- FAQ (optional, unlimited items, same logic as Event Schedule) -->
+                            <div class="form-group full-width builder-section" id="faqGroup">
+                                <div class="builder-section-header">
+                                    <label data-i18n="faq_label"><i class="fas fa-circle-question"></i> الأسئلة الشائعة (اختياري)</label>
+                                    <p class="builder-section-hint" data-i18n="faq_hint">أضف أي أسئلة متوقعة من ضيوفك مع إجاباتها. اتركه فارغًا لإخفاء هذا القسم من الدعوة.</p>
+                                </div>
+                                <div class="builder-list" id="faqList"></div>
+                                <div class="builder-empty" id="faqEmptyMsg">
+                                    <i class="fas fa-circle-question"></i>
+                                    <span data-i18n="faq_empty">لسه معملتش أي سؤال — دوس "إضافة سؤال" تحت لإضافة أول سؤال</span>
+                                </div>
+                                <button type="button" class="builder-add-btn" onclick="addFaqItem()">
+                                    <i class="fas fa-plus"></i> <span data-i18n="add_faq_item_btn">إضافة سؤال</span>
+                                </button>
+                            </div>
                         </div>
                     </div>
 
@@ -2038,6 +2204,15 @@
         let uploadedMusic = null;
         let modalTemplateId = null;
         let selectedCategory = 'all'; // New: Selected category for filtering
+
+        // Event Schedule & FAQ — unified builder state (same for every
+        // invitation type, Normal or VIP). Both are fully optional;
+        // an empty array means the section is hidden on the invitation
+        // page (see vip-dynamic-sections.js / invite.html rendering).
+        let eventScheduleItems = []; // [{ id, title, time }]
+        let faqItems = [];           // [{ id, question, answer }]
+        let builderIdCounter = 0;
+        function nextBuilderId() { return 'b' + (++builderIdCounter) + '_' + Date.now().toString(36); }
         
         // ===================================
         // Event Categories Configuration
@@ -3048,6 +3223,19 @@
                         db.showNotification(L('write_invitation_text'), 'error');
                         return false;
                     }
+                    // Both sections are optional as a whole, but a row the
+                    // user started filling shouldn't be silently dropped
+                    // half-finished — ask them to complete or remove it.
+                    const incompleteSchedule = eventScheduleItems.some(it => (it.title || '').trim() ? !(it.time || '').trim() : !!(it.time || '').trim());
+                    if (incompleteSchedule) {
+                        db.showNotification('فيه فقرة في برنامج الحفل ناقصة (الاسم أو التوقيت) — أكملها أو احذفها', 'error');
+                        return false;
+                    }
+                    const incompleteFaq = faqItems.some(it => (it.question || '').trim() ? !(it.answer || '').trim() : !!(it.answer || '').trim());
+                    if (incompleteFaq) {
+                        db.showNotification('فيه سؤال شائع ناقص (السؤال أو الإجابة) — أكمله أو احذفه', 'error');
+                        return false;
+                    }
                     return true;
                     
                 default:
@@ -3913,6 +4101,167 @@ ${venueName ? `- المكان: ${venueName}` : ''}
         let selectedPaymentMethod = null;
         let selectedReceiptUrl = null;
 
+        // ===================================================
+        // Event Schedule & FAQ Builder
+        // One shared implementation used by ALL invitation types
+        // and both Normal & VIP templates. Rules:
+        //  - Empty list -> section stays hidden on the invitation page.
+        //  - Unlimited items, add/remove/reorder (drag & drop), auto
+        //    numbering, and each item validated before publish.
+        // ===================================================
+
+        function addScheduleItem(title = '', time = '') {
+            eventScheduleItems.push({ id: nextBuilderId(), title, time });
+            renderScheduleList();
+        }
+
+        function removeScheduleItem(id) {
+            eventScheduleItems = eventScheduleItems.filter(it => it.id !== id);
+            renderScheduleList();
+        }
+
+        function updateScheduleItem(id, field, value) {
+            const item = eventScheduleItems.find(it => it.id === id);
+            if (item) item[field] = value;
+        }
+
+        function renderScheduleList() {
+            const list = document.getElementById('scheduleList');
+            const empty = document.getElementById('scheduleEmptyMsg');
+            if (!list) return;
+            empty.style.display = eventScheduleItems.length ? 'none' : 'flex';
+            list.innerHTML = eventScheduleItems.map((item, idx) => `
+                <div class="builder-item" draggable="true" data-id="${item.id}"
+                     ondragstart="onBuilderDragStart(event,'schedule')"
+                     ondragover="onBuilderDragOver(event)"
+                     ondragleave="onBuilderDragLeave(event)"
+                     ondrop="onBuilderDrop(event,'schedule')"
+                     ondragend="onBuilderDragEnd(event)">
+                    <span class="builder-item-handle" title="اسحب لإعادة الترتيب"><i class="fas fa-grip-vertical"></i></span>
+                    <span class="builder-item-number">${idx + 1}</span>
+                    <div class="builder-item-fields">
+                        <input type="text" placeholder="اسم الفقرة (مثال: استقبال الضيوف)"
+                               value="${escapeAttr(item.title)}"
+                               oninput="updateScheduleItem('${item.id}','title',this.value)">
+                        <input type="text" placeholder="التوقيت (مثال: 7:00 م)"
+                               value="${escapeAttr(item.time)}"
+                               oninput="updateScheduleItem('${item.id}','time',this.value)">
+                    </div>
+                    <button type="button" class="builder-item-remove" title="حذف" onclick="removeScheduleItem('${item.id}')">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function addFaqItem(question = '', answer = '') {
+            faqItems.push({ id: nextBuilderId(), question, answer });
+            renderFaqList();
+        }
+
+        function removeFaqItem(id) {
+            faqItems = faqItems.filter(it => it.id !== id);
+            renderFaqList();
+        }
+
+        function updateFaqItem(id, field, value) {
+            const item = faqItems.find(it => it.id === id);
+            if (item) item[field] = value;
+        }
+
+        function renderFaqList() {
+            const list = document.getElementById('faqList');
+            const empty = document.getElementById('faqEmptyMsg');
+            if (!list) return;
+            empty.style.display = faqItems.length ? 'none' : 'flex';
+            list.innerHTML = faqItems.map((item, idx) => `
+                <div class="builder-item" draggable="true" data-id="${item.id}"
+                     ondragstart="onBuilderDragStart(event,'faq')"
+                     ondragover="onBuilderDragOver(event)"
+                     ondragleave="onBuilderDragLeave(event)"
+                     ondrop="onBuilderDrop(event,'faq')"
+                     ondragend="onBuilderDragEnd(event)">
+                    <span class="builder-item-handle" title="اسحب لإعادة الترتيب"><i class="fas fa-grip-vertical"></i></span>
+                    <span class="builder-item-number">${idx + 1}</span>
+                    <div class="builder-item-fields faq-fields">
+                        <input type="text" placeholder="السؤال (مثال: هل يتوفر موقف سيارات؟)"
+                               value="${escapeAttr(item.question)}"
+                               oninput="updateFaqItem('${item.id}','question',this.value)">
+                        <textarea placeholder="الإجابة" rows="2"
+                                  oninput="updateFaqItem('${item.id}','answer',this.value)">${escapeHtml(item.answer)}</textarea>
+                    </div>
+                    <button type="button" class="builder-item-remove" title="حذف" onclick="removeFaqItem('${item.id}')">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function escapeAttr(str) {
+            return String(str || '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+        }
+        function escapeHtml(str) {
+            return String(str || '').replace(/[&<>]/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;' }[c]));
+        }
+
+        // --- Shared drag & drop reordering for both builders ---
+        let __dragState = null;
+
+        function onBuilderDragStart(e, kind) {
+            const el = e.currentTarget;
+            __dragState = { kind, id: el.dataset.id };
+            el.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+        }
+
+        function onBuilderDragOver(e) {
+            e.preventDefault();
+            e.currentTarget.classList.add('drag-over');
+        }
+
+        function onBuilderDragLeave(e) {
+            e.currentTarget.classList.remove('drag-over');
+        }
+
+        function onBuilderDrop(e, kind) {
+            e.preventDefault();
+            e.currentTarget.classList.remove('drag-over');
+            if (!__dragState || __dragState.kind !== kind) return;
+
+            const targetId = e.currentTarget.dataset.id;
+            const sourceId = __dragState.id;
+            if (targetId === sourceId) return;
+
+            const arr = kind === 'schedule' ? eventScheduleItems : faqItems;
+            const fromIdx = arr.findIndex(it => it.id === sourceId);
+            const toIdx = arr.findIndex(it => it.id === targetId);
+            if (fromIdx === -1 || toIdx === -1) return;
+
+            const [moved] = arr.splice(fromIdx, 1);
+            arr.splice(toIdx, 0, moved);
+
+            if (kind === 'schedule') renderScheduleList(); else renderFaqList();
+        }
+
+        function onBuilderDragEnd(e) {
+            e.currentTarget.classList.remove('dragging');
+            __dragState = null;
+        }
+
+        // Returns clean arrays ready to save (drops fully-empty rows,
+        // keeps `order` explicit per the unified schema).
+        function collectEventSchedule() {
+            return eventScheduleItems
+                .filter(it => (it.title || '').trim() || (it.time || '').trim())
+                .map((it, idx) => ({ title: (it.title || '').trim(), time: (it.time || '').trim(), order: idx }));
+        }
+
+        function collectFaq() {
+            return faqItems
+                .filter(it => (it.question || '').trim() || (it.answer || '').trim())
+                .map((it, idx) => ({ question: (it.question || '').trim(), answer: (it.answer || '').trim(), order: idx }));
+        }
+
         async function publishInvitation() {
             const publishBtn = document.getElementById('publishBtn');
             const originalContent = publishBtn.innerHTML;
@@ -3995,6 +4344,13 @@ ${venueName ? `- المكان: ${venueName}` : ''}
                         birthdayGender: document.getElementById('birthdayGender')?.value || 'male',
                         birthdayAge: document.getElementById('birthdayAge')?.value || ''
                     },
+                    // Unified fields (same shape for Normal & VIP — see
+                    // js/unified-invitation-schema.js). Both arrays are
+                    // optional: an empty array hides the section on
+                    // every template automatically.
+                    isVip: selectedTemplate?.isVip || false,
+                    eventSchedule: collectEventSchedule(),
+                    faq: collectFaq(),
                     slug: slug
                 };
 

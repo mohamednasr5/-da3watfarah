@@ -303,6 +303,13 @@ async function createInvitation(invitationData) {
             event: invitationData.event || {},
             design: invitationData.design || {},
             content: invitationData.content || {},
+            // Unified schema fields — same shape for Normal & VIP invitations
+            // of any event type (see js/unified-invitation-schema.js). Empty
+            // arrays are valid and mean the section stays hidden on render.
+            isVip: invitationData.isVip || invitationData.design?.isVipTemplate || false,
+            type: invitationData.eventType || invitationData.event?.eventType || null,
+            eventSchedule: Array.isArray(invitationData.eventSchedule) ? invitationData.eventSchedule : [],
+            faq: Array.isArray(invitationData.faq) ? invitationData.faq : [],
             slug: invitationData.slug,
             url: `https://da3watfarah.com/${invitationData.slug}`,
             status: 'pending_review',
