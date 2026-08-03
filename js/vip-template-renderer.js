@@ -370,49 +370,81 @@ var VipTemplateRenderer = (function () {
             // as `env-locked` is present, and only start auto-growing the
             // iframe to fit the full content once the intro has finished.
             //
-            // NOTE: `env-locked` is removed from <body> as soon as the intro
-            // *starts* closing, but every VIP template keeps the actual
-            // overlay element (#einvite-envelope) in the DOM for another
-            // 0.8-1.6s while it fades out (position:fixed, opacity/visibility
-            // transition), then calls `.remove()` on it once the fade is
-            // done. If we resize the iframe the moment `env-locked` is gone
-            // (as this used to do), the still-fading, still-fixed overlay
-            // gets stretched across the newly tall iframe box for that
-            // window — which shows up as a large blank/dark gap the guest
-            // has to scroll past before the real content appears. So we wait
-            // for BOTH signals: `env-locked` gone AND #einvite-envelope no
-            // longer present in the DOM.
+            // ALSO IMPORTANT: `env-locked` is removed from <body> as soon as
+            // the intro *starts* closing, but every VIP template keeps the
+            // actual overlay element (#einvite-envelope) in the DOM for
+            // another 0.8-1.6s while it fades out, then calls `.remove()` on
+            // it once the fade is done. We wait for BOTH signals — env-locked
+            // gone AND #einvite-envelope removed — before resizing at all.
+            //
+            // THE BIG ONE: the section right after the intro (`.ei-hero` /
+            // `.ev-hero` / `.t2-hero`, depending on the template) is
+            // `min-height: 100vh` so it fills exactly one screen when the
+            // page is opened normally. But `100vh` inside an iframe is
+            // relative to the IFRAME'S OWN box, not the browser window. So
+            // the moment we measure the content's height and grow the iframe
+            // to match, that hero section's "100vh" *also* grows to match
+            // the new, taller iframe — which makes the next measurement even
+            // taller, which grows the iframe again, and so on. That runaway
+            // feedback loop is exactly what caused the invitation to flash
+            // into view correctly for an instant and then balloon into one
+            // huge mostly-blank page (the hero section stretched to fill
+            // almost the whole thing). Fix: as soon as the intro is gone, we
+            // freeze that hero section's height in real pixels (based on the
+            // actual browser window, which doesn't change when the iframe
+            // resizes) *before* taking any measurement, so growing the
+            // iframe can never feed back into a bigger "100vh".
             try {
-                var resizeTimer = null;
+                var settled = false;
+                var resizeCount = 0;
                 var resizeInterval = setInterval(function () {
                     try {
-                        var body = iframe.contentDocument.body;
-                        var html = iframe.contentDocument.documentElement;
-                        if (body && html) {
-                            // Intro (envelope/video/curtain) still playing, or
-                            // still fading out — don't resize yet, or the
-                            // fixed-position overlay will stretch across the
-                            // enlarged iframe and look like a big empty gap.
-                            if (body.classList.contains('env-locked') ||
-                                iframe.contentDocument.getElementById('einvite-envelope')) {
-                                return;
-                            }
-                            var height = Math.max(body.scrollHeight, body.offsetHeight,
-                                               html.clientHeight, html.scrollHeight, html.offsetHeight);
-                            iframe.style.height = height + 'px';
-                            // Stop resizing after 10 seconds of being unlocked
-                            // (content is stable by then).
-                            clearTimeout(resizeTimer);
-                            resizeTimer = setTimeout(function () { clearInterval(resizeInterval); }, 10000);
+                        var doc = iframe.contentDocument;
+                        var body = doc.body;
+                        var html = doc.documentElement;
+                        if (!body || !html) { return; }
+
+                        // Intro (envelope/video/curtain) still playing, or
+                        // still fading out — don't touch anything yet, or the
+                        // fixed-position overlay will stretch across the
+                        // enlarged iframe and look like a big empty gap.
+                        if (body.classList.contains('env-locked') ||
+                            doc.getElementById('einvite-envelope')) {
+                            return;
+                        }
+
+                        // First tick after the intro is fully gone: freeze
+                        // the 100vh hero section to the real window height in
+                        // px, once, so it can't keep growing with the iframe.
+                        if (!settled) {
+                            settled = true;
+                            try {
+                                var freezeStyle = doc.createElement('style');
+                                var realVh = window.innerHeight + 'px';
+                                freezeStyle.textContent =
+                                    '.ei-hero,.ev-hero,.t2-hero{min-height:' + realVh + ' !important;height:auto !important;}';
+                                doc.head.appendChild(freezeStyle);
+                            } catch (e2) { /* ignore, worst case old behavior */ }
+                        }
+
+                        var height = Math.max(body.scrollHeight, body.offsetHeight,
+                                           html.clientHeight, html.scrollHeight, html.offsetHeight);
+                        iframe.style.height = height + 'px';
+                        resizeCount++;
+                        // A handful of follow-up measurements (images/fonts
+                        // loading late, RSVP form expanding, etc.) is enough
+                        // — now that the hero height is frozen, these can't
+                        // runaway like before.
+                        if (resizeCount >= 8) {
+                            clearInterval(resizeInterval);
                         }
                     } catch (e) {
                         clearInterval(resizeInterval);
                     }
-                }, 200);
+                }, 400);
                 // Safety net: some templates have no envelope/intro at all, so
                 // `env-locked` is never present. Make sure we don't poll forever
-                // in that case either — 20s total ought to be more than enough
-                // for any intro animation plus content to settle.
+                // in that case either.
                 setTimeout(function () { clearInterval(resizeInterval); }, 20000);
             } catch (e) { /* cross-origin, skip resize */ }
         });
