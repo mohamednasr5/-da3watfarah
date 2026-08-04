@@ -577,7 +577,7 @@ const RESERVED_PATHS = new Set([
     '/gallery.html', '/my-invitations.html', '/settings.html', '/overview.html',
     '/create-invitation.html', '/music.html', '/ai-writer.html', '/404.html',
     '/robots.txt', '/sitemap.xml', '/sitemap-invitations.xml', '/llms.txt',
-    '/manifest.json', '/sw.js'
+    '/manifest.json', '/sw.js', '/health'
 ]);
 
 function isPrettyInviteSlug(pathname) {
