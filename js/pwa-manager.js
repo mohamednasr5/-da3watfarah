@@ -195,13 +195,7 @@ class PWAManager {
     if (banner) {
       banner.classList.add('show');
       console.log('👁️ عرض بانر التثبيت');
-
-      // إخفاء البانر تلقائياً بعد 10 ثوانٍ إذا لم يتفاعل المستخدم
-      setTimeout(() => {
-        if (banner.classList.contains('show')) {
-          this.hideInstallBanner();
-        }
-      }, 10000);
+      // البانر يبقى ظاهرًا حتى يتفاعل المستخدم (تثبيت أو إغلاق) لزيادة فرصة التثبيت
     }
   }
 
