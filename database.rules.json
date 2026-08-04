@@ -4,9 +4,10 @@
     ".write": false,
     
     "users": {
+      ".read": "auth != null && (auth.token.email === 'elfannanm@gmail.com' || auth.token.email === 'mohamednasrofficial@gmail.com')",
       "$uid": {
-        ".read": "$uid === auth.uid",
-        ".write": "$uid === auth.uid",
+        ".read": "$uid === auth.uid || auth.token.email === 'elfannanm@gmail.com' || auth.token.email === 'mohamednasrofficial@gmail.com'",
+        ".write": "$uid === auth.uid || auth.token.email === 'elfannanm@gmail.com' || auth.token.email === 'mohamednasrofficial@gmail.com'",
         ".validate": "newData.hasChildren(['email', 'createdAt'])",
         "email": { ".validate": "newData.isString() && newData.val().length < 256" },
         "displayName": { ".validate": "!newData.exists() || newData.isString()" },

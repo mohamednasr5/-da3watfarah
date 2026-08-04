@@ -38,6 +38,10 @@
   .tag.type-wedding{background:rgba(201,162,39,.18);color:var(--gold-light)}
   .tag.type-engagement{background:rgba(183,110,121,.2);color:#E8B4B8}
   .tag.type-katb_ketab{background:rgba(15,118,110,.2);color:#5EEAD4}
+  .tag.plan-vip{background:rgba(232,183,102,.2);color:var(--gold-light)}
+  .tag.plan-premium{background:rgba(94,234,212,.18);color:#5EEAD4}
+  .tag.plan-free{background:rgba(169,179,172,.15);color:var(--text-dim)}
+  select.plan-select{padding:6px 10px;border-radius:8px;border:1px solid var(--line);background:var(--panel2);color:var(--text);font-family:'Cairo';font-size:12px}
   .row-actions{display:flex;gap:6px;flex-wrap:wrap}
   .row-actions button, .row-actions a{font-size:11px;padding:6px 10px;border-radius:8px;border:none;cursor:pointer;text-decoration:none;color:#0B0F0E;font-weight:700;font-family:'Cairo'}
   .gate{display:flex;align-items:center;justify-content:center;min-height:100vh;flex-direction:column;gap:14px}
@@ -98,9 +102,16 @@
 <div id="dashboard" style="display:none">
   <header>
     <div class="logo">لوحة المالك — دعوة فرح</div>
-    <button class="btn" id="logoutBtn">تسجيل الخروج</button>
+    <div style="display:flex;gap:8px;align-items:center">
+      <div class="tabs" id="mainViewTabs">
+        <button class="tab active" data-view="invitations"><i class="fas fa-envelope-open-text"></i> الدعوات</button>
+        <button class="tab" data-view="users"><i class="fas fa-users"></i> المستخدمون</button>
+      </div>
+      <button class="btn" id="logoutBtn">تسجيل الخروج</button>
+    </div>
   </header>
   <main>
+    <section id="viewInvitations">
     <div class="stats">
       <div class="stat"><b id="statTotal">0</b><span>إجمالي الدعوات</span></div>
       <div class="stat"><b id="statPending">0</b><span>بانتظار المراجعة</span></div>
@@ -147,6 +158,44 @@
       </table>
       <div class="empty" id="emptyState" style="display:none">لا توجد دعوات مطابقة</div>
     </div>
+    </section>
+
+    <section id="viewUsers" style="display:none">
+      <div class="stats" style="grid-template-columns:repeat(4,1fr)">
+        <div class="stat"><b id="statUsersTotal">0</b><span>إجمالي المستخدمين</span></div>
+        <div class="stat"><b id="statUsersVip">0</b><span>👑 مشتركو VIP</span></div>
+        <div class="stat"><b id="statUsersPremium">0</b><span>⭐ مشتركو بريميوم</span></div>
+        <div class="stat"><b id="statUsersFree">0</b><span>مجاني</span></div>
+      </div>
+
+      <div class="toolbar">
+        <div class="tabs" id="userPlanTabs">
+          <button class="tab active" data-plan="all">الكل</button>
+          <button class="tab" data-plan="vip">👑 VIP</button>
+          <button class="tab" data-plan="premium">⭐ بريميوم</button>
+          <button class="tab" data-plan="free">مجاني</button>
+        </div>
+        <input id="userSearch" placeholder="ابحث بالاسم أو البريد...">
+      </div>
+
+      <div id="userInvitesFilterBanner" style="display:none;margin-bottom:14px;padding:10px 16px;background:var(--panel2);border:1px solid var(--line);border-radius:10px;font-size:13px;display:flex;align-items:center;justify-content:space-between;gap:10px">
+        <span id="userInvitesFilterText"></span>
+        <button class="btn" id="clearUserInvitesFilterBtn" style="padding:5px 12px">إظهار كل الدعوات</button>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>الاسم</th><th>البريد الإلكتروني</th><th>نوع الحساب</th><th>عدد الدعوات</th>
+              <th>تاريخ التسجيل</th><th>إجراءات</th>
+            </tr>
+          </thead>
+          <tbody id="userTable"></tbody>
+        </table>
+        <div class="empty" id="userEmptyState" style="display:none">لا يوجد مستخدمون مطابقون</div>
+      </div>
+    </section>
   </main>
 </div>
 
@@ -298,6 +347,11 @@
   let currentFilter = 'all';
   let currentTypeFilter = 'all';
   let currentSearch = '';
+  let currentUserIdFilter = null; // set when jumping from a user's row to "their invitations"
+
+  let allUsers = {}; // keyed by uid
+  let currentUserPlanFilter = 'all';
+  let currentUserSearch = '';
 
   const EVENT_TYPE_TAGS = {
     wedding: { text: '💍 فرح', cls: 'type-wedding' },
@@ -318,6 +372,18 @@
     document.getElementById('gate').style.display = 'none';
     document.getElementById('dashboard').style.display = 'block';
     loadInvitations();
+    loadUsers();
+  });
+
+  // ===== Main view switcher (الدعوات / المستخدمون) =====
+  document.getElementById('mainViewTabs').addEventListener('click', (e) => {
+    const btn = e.target.closest('.tab');
+    if (!btn) return;
+    document.querySelectorAll('#mainViewTabs .tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    const view = btn.dataset.view;
+    document.getElementById('viewInvitations').style.display = view === 'invitations' ? 'block' : 'none';
+    document.getElementById('viewUsers').style.display = view === 'users' ? 'block' : 'none';
   });
 
   document.getElementById('logoutBtn').addEventListener('click', () => signOut(auth).then(() => location.reload()));
@@ -359,6 +425,133 @@
     applyFiltersAndRender();
   }
 
+  // ===================================
+  // Users management (account type / VIP control)
+  // ===================================
+  const planLabels = { free: 'مجاني', premium: 'بريميوم', vip: 'VIP' };
+
+  async function loadUsers(){
+    const snap = await get(ref(db, 'users'));
+    allUsers = snap.exists() ? snap.val() : {};
+    renderUserStats();
+    applyUserFiltersAndRender();
+  }
+
+  function renderUserStats(){
+    const entries = Object.entries(allUsers);
+    document.getElementById('statUsersTotal').textContent = entries.length;
+    document.getElementById('statUsersVip').textContent = entries.filter(([,v]) => v.plan === 'vip').length;
+    document.getElementById('statUsersPremium').textContent = entries.filter(([,v]) => v.plan === 'premium').length;
+    document.getElementById('statUsersFree').textContent = entries.filter(([,v]) => !v.plan || v.plan === 'free').length;
+  }
+
+  function matchesUserPlanFilter(u){
+    if (currentUserPlanFilter === 'all') return true;
+    if (currentUserPlanFilter === 'free') return !u.plan || u.plan === 'free';
+    return u.plan === currentUserPlanFilter;
+  }
+
+  function matchesUserSearch(u){
+    if (!currentUserSearch) return true;
+    const q = currentUserSearch;
+    return (u.email||'').toLowerCase().includes(q) || (u.displayName||'').toLowerCase().includes(q);
+  }
+
+  function applyUserFiltersAndRender(){
+    const uids = Object.keys(allUsers).filter(uid => matchesUserPlanFilter(allUsers[uid]) && matchesUserSearch(allUsers[uid]));
+    renderUserTable(uids);
+  }
+
+  function countUserInvitations(uid){
+    return Object.values(allInvitations).filter(inv => inv.userId === uid).length;
+  }
+
+  function renderUserTable(uids){
+    const tbody = document.getElementById('userTable');
+    const emptyState = document.getElementById('userEmptyState');
+    tbody.innerHTML = '';
+
+    if (uids.length === 0){
+      emptyState.style.display = 'block';
+      return;
+    }
+    emptyState.style.display = 'none';
+
+    uids.sort((a,b) => (allUsers[b].createdAt||0) - (allUsers[a].createdAt||0)).forEach(uid => {
+      const u = allUsers[uid];
+      const plan = u.plan || 'free';
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${u.displayName || '—'}</td>
+        <td style="direction:ltr">${u.email||''}</td>
+        <td>
+          <select class="plan-select" data-plan-select="${uid}">
+            <option value="free" ${plan==='free'?'selected':''}>مجاني</option>
+            <option value="premium" ${plan==='premium'?'selected':''}>بريميوم</option>
+            <option value="vip" ${plan==='vip'?'selected':''}>👑 VIP</option>
+          </select>
+        </td>
+        <td>${countUserInvitations(uid)}</td>
+        <td>${u.createdAt ? new Date(u.createdAt).toLocaleDateString('ar-EG') : '-'}</td>
+        <td class="row-actions">
+          <button style="background:var(--gold-light)" data-save-plan="${uid}">حفظ</button>
+          <button style="background:var(--gold-light)" data-view-invites="${uid}">دعواته</button>
+        </td>`;
+      tbody.appendChild(tr);
+    });
+
+    tbody.querySelectorAll('[data-save-plan]').forEach(b => b.addEventListener('click', async () => {
+      const uid = b.dataset.savePlan;
+      const select = tbody.querySelector(`[data-plan-select="${uid}"]`);
+      const newPlan = select.value;
+      const original = b.textContent;
+      b.disabled = true;
+      b.textContent = '...جارٍ الحفظ';
+      try {
+        await update(ref(db, `users/${uid}`), { plan: newPlan, updatedAt: Date.now() });
+        allUsers[uid].plan = newPlan;
+        b.textContent = 'تم ✓';
+        renderUserStats();
+      } catch (err) {
+        console.error('Error updating user plan:', err);
+        b.textContent = 'فشل الحفظ';
+      } finally {
+        setTimeout(() => { b.disabled = false; b.textContent = original; }, 1400);
+      }
+    }));
+
+    tbody.querySelectorAll('[data-view-invites]').forEach(b => b.addEventListener('click', () => {
+      const uid = b.dataset.viewInvites;
+      currentUserIdFilter = uid;
+      document.getElementById('userInvitesFilterBanner').style.display = 'flex';
+      document.getElementById('userInvitesFilterText').textContent =
+        `عرض دعوات: ${allUsers[uid].displayName || allUsers[uid].email || uid}`;
+      applyFiltersAndRender();
+      // Switch to the invitations view so the filtered table is visible
+      document.querySelector('#mainViewTabs [data-view="invitations"]').click();
+    }));
+  }
+
+  document.getElementById('clearUserInvitesFilterBtn').addEventListener('click', () => {
+    currentUserIdFilter = null;
+    document.getElementById('userInvitesFilterBanner').style.display = 'none';
+    applyFiltersAndRender();
+  });
+
+  document.getElementById('userPlanTabs').addEventListener('click', (e) => {
+    const btn = e.target.closest('.tab');
+    if (!btn) return;
+    document.querySelectorAll('#userPlanTabs .tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    currentUserPlanFilter = btn.dataset.plan;
+    applyUserFiltersAndRender();
+  });
+
+  document.getElementById('userSearch').addEventListener('input', (e) => {
+    currentUserSearch = e.target.value.trim().toLowerCase();
+    applyUserFiltersAndRender();
+  });
+
   function renderStats(){
     const entries = Object.entries(allInvitations);
     document.getElementById('statTotal').textContent = entries.length;
@@ -397,7 +590,8 @@
 
   function applyFiltersAndRender(){
     const ids = Object.keys(allInvitations).filter(id =>
-      matchesFilter(allInvitations[id]) && matchesType(allInvitations[id]) && matchesSearch(allInvitations[id]));
+      matchesFilter(allInvitations[id]) && matchesType(allInvitations[id]) && matchesSearch(allInvitations[id]) &&
+      (!currentUserIdFilter || allInvitations[id].userId === currentUserIdFilter));
     renderTable(ids);
   }
 

@@ -436,6 +436,10 @@ async function toggleInvitationPublish(invitationId, publish) {
  * @param {string} [paymentInfo.method]      payment method key (omitted for free plan)
  * @param {string} [paymentInfo.methodLabel] Arabic label for the method
  * @param {string} [paymentInfo.receiptUrl]  URL of the uploaded receipt image (R2)
+ * @param {string} [paymentInfo.status]      explicit payment status override — used when the
+ *                                            user already has a paid VIP/premium account (set by
+ *                                            the admin in admin.html) and no receipt is needed;
+ *                                            defaults to 'not_required' for free / 'pending_verification' otherwise
  */
 async function submitPaymentInfo(invitationId, paymentInfo) {
     if (!currentUserId) throw new Error('Not authenticated');
@@ -444,7 +448,7 @@ async function submitPaymentInfo(invitationId, paymentInfo) {
         const isFree = paymentInfo.plan === 'free';
 
         const paymentUpdate = {
-            'payment/status': isFree ? 'not_required' : 'pending_verification',
+            'payment/status': paymentInfo.status || (isFree ? 'not_required' : 'pending_verification'),
             'payment/plan': paymentInfo.plan || null,
             'payment/planLabel': paymentInfo.planLabel || null,
             'payment/amount': paymentInfo.amount ?? null,

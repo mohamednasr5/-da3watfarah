@@ -2280,6 +2280,14 @@
         // ===================================
         window.__vipGate = { required: false, source: null };
 
+        // A user's account type (free/premium/vip) is set by the admin in
+        // admin.html and loaded into window.userData by js/db.js. VIP
+        // members already have full access to VIP designs, so they should
+        // never be asked to pay for them again.
+        function isVipUser() {
+            return window.userData?.plan === 'vip';
+        }
+
         (function initVipGate() {
             try {
                 const params = new URLSearchParams(window.location.search);
@@ -2287,7 +2295,7 @@
                 const sourceParam = params.get('source');
 
                 if (fromVip) {
-                    localStorage.setItem('da3wa_selected_plan', 'vip');
+                    if (!isVipUser()) localStorage.setItem('da3wa_selected_plan', 'vip');
                     if (sourceParam) localStorage.setItem('da3wa_vip_source_template', sourceParam);
                 }
 
@@ -2301,6 +2309,22 @@
         function renderVipBanner(containerSelector) {
             if (!window.__vipGate || !window.__vipGate.required) return '';
             const name = window.__vipGate.source ? `"${window.__vipGate.source}"` : '';
+
+            if (isVipUser()) {
+                return `
+                    <div class="vip-required-banner" id="vipRequiredBanner">
+                        <i class="fas fa-crown"></i>
+                        <div>
+                            <strong>أنت عضو VIP ولديك كل المميزات ✨</strong>
+                            يمكنك استخدام هذا التصميم ${name} وكل تصاميم VIP الأخرى بدون أي رسوم إضافية.
+                        </div>
+                        <button type="button" class="vip-close" onclick="document.getElementById('vipRequiredBanner').remove()">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                `;
+            }
+
             return `
                 <div class="vip-required-banner" id="vipRequiredBanner">
                     <i class="fas fa-crown"></i>
@@ -2316,6 +2340,16 @@
             `;
         }
 
+        // Re-render any VIP banner already in the DOM once we actually know
+        // the user's account plan (auth + user profile load is async, so on
+        // first paint isVipUser() may not have the real answer yet).
+        function refreshVipBannerIfPresent() {
+            const existing = document.getElementById('vipRequiredBanner');
+            if (existing && window.__vipGate && window.__vipGate.required) {
+                existing.outerHTML = renderVipBanner();
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             if (window.__vipGate && window.__vipGate.required) {
                 const wizardBody = document.querySelector('.wizard-body') || document.querySelector('.wizard-content.active');
@@ -2323,6 +2357,13 @@
                     wizardBody.insertAdjacentHTML('afterbegin', renderVipBanner());
                 }
             }
+        });
+
+        document.addEventListener('da3wat:authReady', function() {
+            if (isVipUser()) {
+                try { localStorage.removeItem('da3wa_selected_plan'); } catch (e) {}
+            }
+            refreshVipBannerIfPresent();
         });
 
         // ===================================
@@ -3470,14 +3511,19 @@
             
             // === VIP Gating: if user selected a VIP template directly from the grid
             // (not via the /vip/ hub with ?vip=1), activate the VIP gate so the
-            // paywall banner and plan pre-selection trigger correctly.
-            if (template.isVip && !window.__vipGate.required) {
-                window.__vipGate = { required: true, source: template.nameAr };
-                localStorage.setItem('da3wa_selected_plan', 'vip');
-                if (template.nameAr) localStorage.setItem('da3wa_vip_source_template', template.nameAr);
-                // Show the VIP banner in the wizard body if it exists
+            // banner shows — either the paywall (regular users) or the "you
+            // already have full access" message (VIP-plan account holders,
+            // set by the admin in admin.html).
+            if (template.isVip) {
+                if (!window.__vipGate.required) {
+                    window.__vipGate = { required: true, source: template.nameAr };
+                    if (!isVipUser()) localStorage.setItem('da3wa_selected_plan', 'vip');
+                    if (template.nameAr) localStorage.setItem('da3wa_vip_source_template', template.nameAr);
+                }
                 const wizardBody = document.querySelector('.wizard-content.active');
-                if (wizardBody && !wizardBody.querySelector('.vip-gate-banner')) {
+                if (wizardBody) {
+                    const existingBanner = wizardBody.querySelector('.vip-required-banner');
+                    if (existingBanner) existingBanner.remove();
                     wizardBody.insertAdjacentHTML('afterbegin', renderVipBanner());
                 }
             }
@@ -4595,6 +4641,14 @@ ${venueName ? `- المكان: ${venueName}` : ''}
 
         // Step 1 of the gate: "sent for review" message + package picker
         function showReviewGateState() {
+            // Members whose account is already set to VIP by the admin
+            // never see a paywall or a plan picker — they're already
+            // covered, so publish straight to admin review.
+            if (isVipUser()) {
+                submitAsVipMember();
+                return;
+            }
+
             const wizardContent = document.querySelector('.wizard-content.active');
 
             wizardContent.innerHTML = `
@@ -4620,6 +4674,47 @@ ${venueName ? `- المكان: ${venueName}` : ''}
             const preselectedPlan = consumePreselectedPlan();
             if (preselectedPlan && PUBLISH_PLANS[preselectedPlan]) {
                 choosePublishPlan(preselectedPlan);
+            }
+        }
+
+        // VIP-plan account holders (set by the admin) already have full
+        // access to every feature and template — send their invitation
+        // straight to admin review with no payment step at all.
+        async function submitAsVipMember() {
+            const wizardContent = document.querySelector('.wizard-content.active');
+            document.querySelector('.wizard-nav').style.display = 'none';
+
+            wizardContent.innerHTML = `
+                <div class="success-animation">
+                    <i class="fas fa-crown" style="color:var(--primary-gold);"></i>
+                    <h2>أنت عضو VIP ولديك كل المميزات ✨</h2>
+                    <p>جارٍ إرسال دعوتك للإدارة للمراجعة والنشر — بدون أي رسوم إضافية...</p>
+                </div>
+            `;
+
+            const res = await db.submitPaymentInfo(pendingInvitationId, {
+                plan: 'vip',
+                planLabel: 'VIP (عضوية مسبقة)',
+                amount: 0,
+                currency: 'usd',
+                status: 'not_required'
+            });
+
+            if (res.success) {
+                wizardContent.innerHTML = `
+                    <div class="success-animation">
+                        <i class="fas fa-crown" style="color:var(--primary-gold);"></i>
+                        <h2>أنت عضو VIP ولديك كل المميزات ✨</h2>
+                        <p>تم إرسال دعوتك للإدارة للمراجعة، وستُنشر برابطها العام فور الاعتماد — بدون أي رسوم إضافية لأنك مشترك VIP بالفعل.</p>
+                        <div style="display:flex;gap:15px;justify-content:center;flex-wrap:wrap;margin-top:20px;">
+                            <a href="my-invitations.html" class="btn-wizard btn-prev" style="padding:14px 28px;">
+                                <i class="fas fa-list"></i> دعواتي
+                            </a>
+                        </div>
+                    </div>
+                `;
+            } else {
+                db.showNotification(res.error || L('toast_generic_error'), 'error');
             }
         }
 
