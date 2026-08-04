@@ -128,6 +128,27 @@ function updateInvitationUI(data) {
         invitationTextEl.querySelector('.main-invitation-text').innerHTML = data.invitationText;
     }
     
+    // Update love story (optional section - only shown if the couple actually wrote one)
+    const loveStorySection = document.getElementById('loveStorySection');
+    const loveStoryContent = document.getElementById('loveStoryContent');
+    if (loveStorySection && loveStoryContent) {
+        const loveStory = (data.loveStory || '').trim();
+        if (loveStory) {
+            // Allow the couple to separate multiple moments with a blank line;
+            // each becomes its own timeline item. A single paragraph still works fine.
+            const chapters = loveStory.split(/\n\s*\n/).map(c => c.trim()).filter(Boolean);
+            loveStoryContent.innerHTML = chapters.map(chapter => `
+                <div class="timeline-item">
+                    <p>${chapter.replace(/\n/g, '<br>')}</p>
+                </div>
+            `).join('');
+            loveStorySection.style.display = '';
+        } else {
+            loveStoryContent.innerHTML = '';
+            loveStorySection.style.display = 'none';
+        }
+    }
+
     // Update parents names
     const parentsNamesEl = document.getElementById('parentsNames');
     if (parentsNamesEl && data.parentsNames) {
