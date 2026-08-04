@@ -3587,6 +3587,102 @@
             window.currentInvitationSlug = data.slug;
         }
 
+        // Builds the "event is over" message shown once the countdown hits
+        // zero, tailored to the invitation's event type (wedding, engagement,
+        // katb el-ketab, henna, birthday, newborn, graduation, ramadan) and
+        // language, using the couple's/child's actual name(s) when available.
+        function buildExpiredCountdownMessage(escapeHtml) {
+            const eventType = window.__dfCurrentEventType || 'wedding';
+            const lang = document.documentElement.lang || 'ar';
+            const custom = window.__dfCustom || {};
+
+            const groomRaw = (custom.groomName || document.getElementById('groomName')?.textContent || '').trim();
+            const brideRaw = (custom.brideName || document.getElementById('brideName')?.textContent || '').trim();
+            const groom = (groomRaw && groomRaw !== '—') ? escapeHtml(groomRaw) : '';
+            const bride = (brideRaw && brideRaw !== '—') ? escapeHtml(brideRaw) : '';
+
+            // Names joined for two-person events; falls back gracefully if only
+            // one of the two names is available.
+            const namesAr = (groom && bride) ? `${groom} و ${bride}` : (groom || bride || '');
+            const namesEn = (groom && bride) ? `${groom} &amp; ${bride}` : (groom || bride || '');
+            const singleNameAr = groom || bride || '';
+            const singleNameEn = groom || bride || '';
+
+            const MESSAGES = {
+                wedding: {
+                    icon: '💍',
+                    ar: namesAr
+                        ? `حفل زفاف ${namesAr} انتهى، بس اللحظات الحلوة عمرها ما تنتهي 💍<br>أدعوا لـ ${namesAr} بالسعادة والمودة الدائمة`
+                        : `حفل الزفاف انتهى، بس اللحظات الحلوة عمرها ما تنتهي 💍<br>ربنا يسعد العروسين ويرزقهم بالذرية الصالحة`,
+                    en: namesAr
+                        ? `${namesEn}'s wedding has ended, but sweet moments never end 💍<br>Wishing ${namesEn} a lifetime of love and happiness`
+                        : `The wedding celebration has ended, but sweet moments never end 💍<br>Wishing the couple a lifetime of love and happiness`
+                },
+                engagement: {
+                    icon: '💎',
+                    ar: namesAr
+                        ? `حفل خطوبة ${namesAr} انتهى، بس اللحظات الحلوة عمرها ما تنتهي 💎<br>أدعوا لـ ${namesAr} بالتوفيق وقرب الفرحة الكبيرة`
+                        : `حفل الخطوبة انتهى، بس اللحظات الحلوة عمرها ما تنتهي 💎<br>ربنا يوفقهم ويقرّب فرحتهم الكبيرة`,
+                    en: namesAr
+                        ? `${namesEn}'s engagement celebration has ended, but sweet moments never end 💎<br>Wishing ${namesEn} the best on their journey ahead`
+                        : `The engagement celebration has ended, but sweet moments never end 💎<br>Wishing the couple the best on their journey ahead`
+                },
+                katb_ketab: {
+                    icon: '📖',
+                    ar: namesAr
+                        ? `حفل كتب كتاب ${namesAr} انتهى، بس اللحظات الحلوة عمرها ما تنتهي 📖<br>أدعوا لـ ${namesAr} بالبركة وتمام الفرحة`
+                        : `حفل كتب الكتاب انتهى، بس اللحظات الحلوة عمرها ما تنتهي 📖<br>ربنا يبارك لهم ويكمل فرحتهم`,
+                    en: namesAr
+                        ? `${namesEn}'s Katb El-Ketab ceremony has ended, but sweet moments never end 📖<br>Wishing ${namesEn} a blessed journey ahead`
+                        : `The Katb El-Ketab ceremony has ended, but sweet moments never end 📖<br>Wishing the couple a blessed journey ahead`
+                },
+                henna: {
+                    icon: '🌿',
+                    ar: namesAr
+                        ? `ليلة حناء ${namesAr} انتهت، بس اللحظات الحلوة عمرها ما تنتهي 🌿<br>أدعوا لـ ${namesAr} بفرحة تدوم`
+                        : `ليلة الحناء انتهت، بس اللحظات الحلوة عمرها ما تنتهي 🌿<br>ربنا يديم عليهم الفرحة`,
+                    en: namesAr
+                        ? `${namesEn}'s henna night has ended, but sweet moments never end 🌿<br>Wishing ${namesEn} lasting joy`
+                        : `The henna night has ended, but sweet moments never end 🌿<br>Wishing lasting joy for the couple`
+                },
+                birthday: {
+                    icon: '🎂',
+                    ar: singleNameAr
+                        ? `عيد ميلاد ${singleNameAr} انتهى، بس اللحظات الحلوة عمرها ما تنتهي 🎂<br>أدعوا لـ ${singleNameAr} بطول العمر وتحقيق الأحلام`
+                        : `عيد الميلاد انتهى، بس اللحظات الحلوة عمرها ما تنتهي 🎂<br>ربنا يديم عليه/ا الصحة والسعادة`,
+                    en: singleNameEn
+                        ? `${singleNameEn}'s birthday has ended, but sweet moments never end 🎂<br>Wishing ${singleNameEn} a long, happy life full of dreams come true`
+                        : `The birthday celebration has ended, but sweet moments never end 🎂<br>Wishing health and happiness always`
+                },
+                newborn: {
+                    icon: '👶',
+                    ar: singleNameAr
+                        ? `فرحة استقبال ${singleNameAr} انتهت، بس اللحظات الحلوة عمرها ما تنتهي 👶<br>أدعوا لـ ${singleNameAr} بالصحة والعافية وحسن التربية`
+                        : `فرحة استقبال المولود انتهت، بس اللحظات الحلوة عمرها ما تنتهي 👶<br>ربنا يحفظه/ا وينبته/ا نبات حسن`,
+                    en: singleNameEn
+                        ? `The celebration of ${singleNameEn}'s arrival has ended, but sweet moments never end 👶<br>Wishing ${singleNameEn} health and a wonderful life ahead`
+                        : `The newborn celebration has ended, but sweet moments never end 👶<br>Wishing the little one health and a wonderful life ahead`
+                },
+                graduation: {
+                    icon: '🎓',
+                    ar: singleNameAr
+                        ? `حفل تخرج ${singleNameAr} انتهى، بس اللحظات الحلوة عمرها ما تنتهي 🎓<br>أدعوا لـ ${singleNameAr} بمستقبل مشرق وتوفيق دائم`
+                        : `حفل التخرج انتهى، بس اللحظات الحلوة عمرها ما تنتهي 🎓<br>ربنا يوفقه/ا في مستقبله/ا`,
+                    en: singleNameEn
+                        ? `${singleNameEn}'s graduation ceremony has ended, but sweet moments never end 🎓<br>Wishing ${singleNameEn} a bright future full of success`
+                        : `The graduation ceremony has ended, but sweet moments never end 🎓<br>Wishing a bright future full of success`
+                },
+                ramadan: {
+                    icon: '🌙',
+                    ar: `موعد الإفطار انتهى، بس اللحظات الحلوة عمرها ما تنتهي 🌙<br>رمضان كريم، وكل عام وأنتم بخير`,
+                    en: `Iftar time has ended, but sweet moments never end 🌙<br>Ramadan Kareem, and best wishes to you all year round`
+                }
+            };
+
+            const entry = MESSAGES[eventType] || MESSAGES.wedding;
+            return { icon: entry.icon, html: lang === 'en' ? entry.en : entry.ar };
+        }
+
         // Initialize countdown timer
         function initCountdown(targetDate) {
             if (!targetDate || isNaN(targetDate.getTime())) return;
@@ -3604,16 +3700,12 @@
                 if (distance <= 0) {
                     if (timerHandle) clearInterval(timerHandle);
 
-                    const groom = (document.getElementById('groomName')?.textContent || '').trim();
-                    const bride = (document.getElementById('brideName')?.textContent || '').trim();
-                    const namesLine = (groom && bride && groom !== '—' && bride !== '—')
-                        ? `${escapeHtml(groom)} &amp; ${escapeHtml(bride)} اتجوزوا`
-                        : 'تمّ الزواج بإذن الله';
+                    const { icon, html } = buildExpiredCountdownMessage(escapeHtml);
 
                     document.getElementById('countdownTimer').innerHTML = `
                         <div class="countdown-item married-message" style="grid-column: span 4;">
-                            <span class="countdown-number married-icon">💍</span>
-                            <span class="countdown-label married-label">${namesLine}<br>ربنا يسعدهم ويرزقهم بالذرية الصالحة</span>
+                            <span class="countdown-number married-icon">${icon}</span>
+                            <span class="countdown-label married-label">${html}</span>
                         </div>
                     `;
                     return;
