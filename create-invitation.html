@@ -1583,10 +1583,10 @@
                                     <input type="file" id="coverInput" accept="image/*" hidden>
                                 </div>
                                 <button type="button" id="randomCoverBtn" class="random-cover-btn" onclick="handleRandomCoverImage()">
-                                    <i class="fas fa-dice"></i> صورة عشوائية
+                                    <i class="fas fa-dice"></i> <span data-i18n="random_cover_btn">صورة عشوائية</span>
                                 </button>
                                 <button type="button" class="random-cover-btn" onclick="openMediaLibrary('image')">
-                                    <i class="fas fa-photo-film"></i> اختر من الصور المرفوعة سابقًا
+                                    <i class="fas fa-photo-film"></i> <span data-i18n="choose_uploaded_image_btn">اختر من الصور المرفوعة سابقًا</span>
                                 </button>
                                 <div class="upload-progress" id="coverUploadProgress">
                                     <div class="upload-progress-track"><div class="upload-progress-fill" id="coverUploadProgressFill"></div></div>
@@ -1629,7 +1629,7 @@
                                     <input type="file" id="musicInput" accept="audio/*" hidden>
                                 </div>
                                 <button type="button" class="random-cover-btn" onclick="openMediaLibrary('audio')">
-                                    <i class="fas fa-record-vinyl"></i> اختر من الأغاني المرفوعة سابقًا
+                                    <i class="fas fa-record-vinyl"></i> <span data-i18n="choose_uploaded_audio_btn">اختر من الأغاني المرفوعة سابقًا</span>
                                 </button>
                                 <div class="upload-progress" id="musicUploadProgress">
                                     <div class="upload-progress-track"><div class="upload-progress-fill" id="musicUploadProgressFill"></div></div>
@@ -1775,7 +1775,7 @@
     <div class="preview-modal" id="mediaLibraryModal">
         <div class="preview-modal-content" style="max-width:900px;">
             <div class="preview-modal-header">
-                <h4 id="mediaLibraryTitle">اختر من الملفات المرفوعة سابقًا</h4>
+                <h4 id="mediaLibraryTitle" data-i18n="media_lib_title_image">اختر من الملفات المرفوعة سابقًا</h4>
                 <button class="preview-modal-close" onclick="closeMediaLibrary()">
                     <i class="fas fa-times"></i>
                 </button>
@@ -1783,10 +1783,10 @@
             <div class="preview-modal-body" style="overflow-y:auto; padding:20px;">
                 <div id="mediaLibraryLoading" style="text-align:center; padding:40px; color:#888;">
                     <i class="fas fa-spinner fa-spin" style="font-size:1.8rem; display:block; margin-bottom:10px;"></i>
-                    جارٍ التحميل...
+                    <span data-i18n="media_lib_loading">جارٍ التحميل...</span>
                 </div>
                 <div id="mediaLibraryEmpty" style="display:none; text-align:center; padding:40px; color:#888;">
-                    لا توجد ملفات مرفوعة سابقًا بعد.
+                    <span data-i18n="media_lib_empty">لا توجد ملفات مرفوعة سابقًا بعد.</span>
                 </div>
                 <div id="mediaLibraryGridImages" style="display:none; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:12px;"></div>
                 <div id="mediaLibraryListAudio" style="display:none; flex-direction:column; gap:10px;"></div>
@@ -1953,7 +1953,39 @@
                 category_newborn: 'مولود',
                 category_graduation: 'تخرج',
                 category_ramadan: 'رمضان',
-                templates_count: '{count} قالب'
+                templates_count: '{count} قالب',
+                // Event type picker (was missing EN counterparts — fell back to Arabic)
+                event_type_henna: '<i class="fas fa-hand-sparkles"></i> ليلة الحناء',
+                event_type_birthday: '<i class="fas fa-birthday-cake"></i> دعوة عيد ميلاد',
+                event_type_newborn: '<i class="fas fa-baby"></i> دعوة مولود',
+                event_type_graduation: '<i class="fas fa-graduation-cap"></i> دعوة تخرج',
+                event_type_ramadan: '<i class="fas fa-moon"></i> إفطار رمضان',
+                newborn_gender_label: '<i class="fas fa-venus-mars"></i> المولود *',
+                newborn_gender_male: 'مولود (ذكر)',
+                newborn_gender_female: 'مولودة (أنثى)',
+                birthday_gender_label: '<i class="fas fa-venus-mars"></i> صاحب/صاحبة العيد *',
+                birthday_gender_male: 'ولد',
+                birthday_gender_female: 'بنت',
+                birthday_age_label: '<i class="fas fa-birthday-cake"></i> العمر (بالسنوات)',
+                birthday_age_ph: 'مثال: 7',
+                vip_intro_toggle_label: '<i class="fas fa-crown" style="color:#D4AF37;"></i> تفعيل شاشة الدخول الافتتاحية (خاص بقوالب VIP)',
+                vip_intro_toggle_hint: 'لو مفعّلة، الضيف هيشوف انيميشن/فيديو افتتاحي قبل ما يدخل الدعوة (زي فتح الظرف). لو عطّلتها، الدعوة هتفتح مباشرة زي القوالب العادية.',
+                event_schedule_label: '<i class="fas fa-list-ol"></i> برنامج الحفل (اختياري)',
+                event_schedule_hint: 'أضف فقرات البرنامج بالترتيب (مثال: استقبال الضيوف - 7:00 م). اتركه فارغًا لإخفاء هذا القسم من الدعوة.',
+                event_schedule_empty: 'لسه معملتش أي فقرة — دوس "إضافة فقرة" تحت لإضافة أول عنصر',
+                add_schedule_item_btn: 'إضافة فقرة للبرنامج',
+                faq_label: '<i class="fas fa-circle-question"></i> الأسئلة الشائعة (اختياري)',
+                faq_hint: 'أضف أي أسئلة متوقعة من ضيوفك مع إجاباتها. اتركه فارغًا لإخفاء هذا القسم من الدعوة.',
+                faq_empty: 'لسه معملتش أي سؤال — دوس "إضافة سؤال" تحت لإضافة أول سؤال',
+                add_faq_item_btn: 'إضافة سؤال',
+                // Media library / cover image pickers
+                random_cover_btn: 'صورة عشوائية',
+                choose_uploaded_image_btn: 'اختر من الصور المرفوعة سابقًا',
+                choose_uploaded_audio_btn: 'اختر من الأغاني المرفوعة سابقًا',
+                media_lib_title_image: 'اختر صورة من الصور المرفوعة سابقًا',
+                media_lib_title_audio: 'اختر أغنية من الأغاني المرفوعة سابقًا',
+                media_lib_loading: 'جارٍ التحميل...',
+                media_lib_empty: 'لا توجد ملفات مرفوعة سابقًا بعد.'
             },
             en: {
                 page_title: 'Create New Invitation | Da3wetFarah',
@@ -2089,7 +2121,39 @@
                 category_newborn: 'Newborn',
                 category_graduation: 'Graduation',
                 category_ramadan: 'Ramadan',
-                templates_count: '{count} templates'
+                templates_count: '{count} templates',
+                // Event type picker (Step 5/6 additions that were missing here)
+                event_type_henna: '<i class="fas fa-hand-sparkles"></i> Henna Night',
+                event_type_birthday: '<i class="fas fa-birthday-cake"></i> Birthday Invitation',
+                event_type_newborn: '<i class="fas fa-baby"></i> Newborn Invitation',
+                event_type_graduation: '<i class="fas fa-graduation-cap"></i> Graduation Invitation',
+                event_type_ramadan: '<i class="fas fa-moon"></i> Ramadan Iftar',
+                newborn_gender_label: '<i class="fas fa-venus-mars"></i> Baby *',
+                newborn_gender_male: 'Baby boy',
+                newborn_gender_female: 'Baby girl',
+                birthday_gender_label: '<i class="fas fa-venus-mars"></i> Birthday person *',
+                birthday_gender_male: 'Boy',
+                birthday_gender_female: 'Girl',
+                birthday_age_label: '<i class="fas fa-birthday-cake"></i> Age (years)',
+                birthday_age_ph: 'e.g. 7',
+                vip_intro_toggle_label: '<i class="fas fa-crown" style="color:#D4AF37;"></i> Enable opening intro screen (VIP templates only)',
+                vip_intro_toggle_hint: "If enabled, guests will see an intro animation/video before entering the invitation (like opening an envelope). If disabled, the invitation opens directly like the regular templates.",
+                event_schedule_label: '<i class="fas fa-list-ol"></i> Event Schedule (optional)',
+                event_schedule_hint: 'Add the schedule items in order (e.g. Guests Arrival - 7:00 PM). Leave it empty to hide this section from the invitation.',
+                event_schedule_empty: 'No items added yet — tap "Add Schedule Item" below to add the first one',
+                add_schedule_item_btn: 'Add Schedule Item',
+                faq_label: '<i class="fas fa-circle-question"></i> Frequently Asked Questions (optional)',
+                faq_hint: 'Add any questions your guests might ask, along with the answers. Leave it empty to hide this section from the invitation.',
+                faq_empty: 'No questions added yet — tap "Add Question" below to add the first one',
+                add_faq_item_btn: 'Add Question',
+                // Media library / cover image pickers
+                random_cover_btn: 'Random Image',
+                choose_uploaded_image_btn: 'Choose from previously uploaded images',
+                choose_uploaded_audio_btn: 'Choose from previously uploaded songs',
+                media_lib_title_image: 'Choose an image from your uploads',
+                media_lib_title_audio: 'Choose a song from your uploads',
+                media_lib_loading: 'Loading...',
+                media_lib_empty: 'No files uploaded yet.'
             }
         };
 
@@ -3416,7 +3480,7 @@
             const gridImages = document.getElementById('mediaLibraryGridImages');
             const listAudio = document.getElementById('mediaLibraryListAudio');
 
-            title.textContent = type === 'audio' ? 'اختر أغنية من الأغاني المرفوعة سابقًا' : 'اختر صورة من الصور المرفوعة سابقًا';
+            title.textContent = type === 'audio' ? L('media_lib_title_audio') : L('media_lib_title_image');
             modal.classList.add('active');
             loading.style.display = 'block';
             empty.style.display = 'none';
@@ -4803,7 +4867,7 @@ ${venueName ? `- المكان: ${venueName}` : ''}
             } finally {
                 // Restore button state / استعادة حالة الزر
                 btn.disabled = false;
-                btn.innerHTML = '<i class="fas fa-dice"></i> صورة عشوائية';
+                btn.innerHTML = '<i class="fas fa-dice"></i> ' + L('random_cover_btn');
             }
         }
         

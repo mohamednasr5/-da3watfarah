@@ -2471,6 +2471,270 @@
                 `,
                 defaultCover: 'https://images.unsplash.com/photo-1519741497674-611481863552?w=1920&q=80',
                 hasFloatingFlowers: true
+            },
+            // ---------------------------------------------------------------
+            // The 6 "templates-new/" designs (artistic, elite, floral,
+            // minimal, nature, starry) — converted from standalone static
+            // pages into real dynamic theme entries (same mechanism as
+            // every design above): shared HTML structure + CSS variables
+            // + the same class hooks (.text-card, .event-card, .rsvp-card,
+            // etc.), colors/fonts/effects matched to each original design
+            // in templates-new/. Keyed with the "templates-new/" prefix
+            // because that's exactly what's stored in design.templateFile
+            // (previewFile minus ".html") — without this prefix they were
+            // silently falling back to preview-classic.
+            // ---------------------------------------------------------------
+            'templates-new/preview-artistic': {
+                name: 'فني',
+                styles: `
+                    :root {
+                        --theme-primary: #4a1942;
+                        --theme-secondary: #e94560;
+                        --theme-accent: #f39c12;
+                        --theme-purple: #8e44ad;
+                        --theme-text: #F4E4E9;
+                        --theme-light: rgba(233, 69, 96, 0.15);
+                    }
+                    body { background: linear-gradient(135deg, #1a0a2e 0%, #4a1942 50%, #16213e 100%) !important; color: #F4E4E9; }
+                    .cover-overlay { background: linear-gradient(135deg, rgba(74, 25, 66, 0.65) 0%, rgba(233, 69, 96, 0.45) 50%, rgba(243, 156, 18, 0.35) 100%) !important; }
+                    .couple-names h1 { color: #fff; font-family: 'Aref Ruqaa', serif; text-shadow: 0 0 25px rgba(243, 156, 18, 0.6); }
+                    .bismillah-text { color: #f39c12 !important; }
+                    .text-card { background: linear-gradient(145deg, #FFFFFF 0%, #FDF6F8 100%); border-radius: 30px; border: 1px solid rgba(233, 69, 96, 0.25); box-shadow: 0 15px 45px rgba(74, 25, 66, 0.25); }
+                    .card-header { background: linear-gradient(135deg, #4a1942 0%, #e94560 60%, #f39c12 100%); }
+                    .event-card { background: white; border-radius: 22px; border: 1px solid rgba(233, 69, 96, 0.25); box-shadow: 0 8px 30px rgba(74, 25, 66, 0.12); }
+                    .event-icon { background: linear-gradient(135deg, #8e44ad, #e94560, #f39c12); }
+                    .countdown-container { background: linear-gradient(145deg, #1a0a2e, #4a1942); border-radius: 24px; border: 1px solid rgba(243, 156, 18, 0.3); }
+                    .countdown-number { color: #f39c12; text-shadow: 0 0 15px rgba(243, 156, 18, 0.5); }
+                    .countdown-title { color: #fff; }
+                    .countdown-label { color: rgba(244, 228, 233, 0.85); }
+                    .married-label { color: #fff !important; }
+                    .rsvp-card { background: linear-gradient(145deg, #FFFFFF 0%, #FDF6F8 100%); border-radius: 26px; border: 1px solid rgba(233, 69, 96, 0.25); box-shadow: 0 15px 45px rgba(74, 25, 66, 0.2); }
+                    .rsvp-header { background: linear-gradient(135deg, #4a1942, #e94560); color: white; }
+                    .map-header { background: linear-gradient(135deg, #4a1942, #e94560); }
+                    .btn-primary { background: linear-gradient(135deg, #e94560, #f39c12) !important; }
+                    .gold-icon { color: #f39c12; }
+                    .decorative-line { background: linear-gradient(90deg, #8e44ad, #e94560, #f39c12); }
+                    .welcome-text { background: linear-gradient(145deg, #FDF6F8, #fff); border-right: 4px solid #e94560; border-radius: 18px; }
+                    .wish-avatar { background: linear-gradient(135deg, #8e44ad, #e94560); }
+                    .option-box.attending { border-color: #e94560; background: rgba(233, 69, 96, 0.12); }
+                    .music-toggle { background: linear-gradient(135deg, #8e44ad, #e94560); }
+                    .section-title h2, .section-title i { color: #F4E4E9 !important; }
+                    .timeline-title { color: #F4E4E9 !important; }
+                    .timeline-line, .faq-list, .faq-item { border-color: rgba(244, 228, 233, 0.18) !important; }
+                    .faq-question { color: #F4E4E9 !important; }
+                    .faq-answer { color: rgba(244, 228, 233, 0.75) !important; }
+                    .artistic-splashes { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; overflow: hidden; }
+                    .art-splash { position: absolute; border-radius: 50%; filter: blur(45px); opacity: 0.32; animation: artSplashFloat 15s ease-in-out infinite; }
+                    @keyframes artSplashFloat { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-50px) scale(1.15); } }
+                `,
+                defaultCover: 'https://images.unsplash.com/photo-1502635385003-ee1e6a1a742d?w=1920&q=80',
+                hasArtisticSplashes: true
+            },
+            'templates-new/preview-elite': {
+                name: 'نخبة',
+                styles: `
+                    :root {
+                        --theme-primary: #1a1a2e;
+                        --theme-secondary: #d4af37;
+                        --theme-accent: #16213e;
+                        --theme-gold-light: #f4e4bc;
+                        --theme-text: #f4e4bc;
+                        --theme-light: rgba(212, 175, 55, 0.15);
+                    }
+                    body { background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 50%, #16213e 100%) !important; color: #f4e4bc; }
+                    .cover-overlay { background: linear-gradient(180deg, rgba(15, 15, 26, 0.55) 0%, rgba(212, 175, 55, 0.35) 100%) !important; }
+                    .couple-names h1 { color: #d4af37; font-family: 'Aref Ruqaa', serif; text-shadow: 0 0 25px rgba(212, 175, 55, 0.55); }
+                    .bismillah-text { color: #d4af37 !important; }
+                    .text-card { background: linear-gradient(145deg, rgba(26, 26, 46, 0.97), rgba(22, 33, 62, 0.97)); color: #f4e4bc; border: 1px solid rgba(212, 175, 55, 0.4); border-radius: 30px; }
+                    .card-header { background: linear-gradient(135deg, #1a1a2e, #16213e); border-bottom: 2px solid #d4af37; }
+                    .event-card { background: rgba(26, 26, 46, 0.92); color: #f4e4bc; border: 1px solid rgba(212, 175, 55, 0.35); border-radius: 20px; }
+                    .event-icon { background: linear-gradient(135deg, #d4af37, #b8860c); }
+                    .countdown-container { background: rgba(26, 26, 46, 0.95); border: 1px solid rgba(212, 175, 55, 0.4); border-radius: 24px; }
+                    .countdown-number { color: #d4af37; text-shadow: 0 0 15px rgba(212, 175, 55, 0.5); }
+                    .countdown-title { color: #d4af37; }
+                    .countdown-label { color: rgba(244, 228, 188, 0.8); }
+                    .married-label { color: #f4e4bc !important; }
+                    .rsvp-card { background: rgba(26, 26, 46, 0.97); color: #f4e4bc; border: 1px double #d4af37; border-radius: 24px; }
+                    .rsvp-header { background: linear-gradient(135deg, #1a1a2e, #16213e); color: #d4af37; border-bottom: 2px solid #d4af37; }
+                    .map-header { background: linear-gradient(135deg, #1a1a2e, #16213e); }
+                    .btn-primary { background: linear-gradient(135deg, #d4af37, #b8860c) !important; color: #1a1a2e; }
+                    .gold-icon { color: #d4af37; }
+                    .decorative-line { background: #d4af37; }
+                    .welcome-text { background: rgba(212, 175, 55, 0.08); border: 1px solid rgba(212, 175, 55, 0.35); color: #f4e4bc; border-radius: 18px; }
+                    .wish-avatar { background: linear-gradient(135deg, #d4af37, #b8860c); color: #1a1a2e; }
+                    .option-box.attending { border-color: #d4af37; background: rgba(212, 175, 55, 0.15); }
+                    .music-toggle { background: linear-gradient(135deg, #d4af37, #b8860c); color: #1a1a2e; }
+                    .section-title h2, .section-title i { color: #f4e4bc !important; }
+                    .timeline-title { color: #f4e4bc !important; }
+                    .timeline-line, .faq-list, .faq-item { border-color: rgba(212, 175, 55, 0.2) !important; }
+                    .faq-question { color: #f4e4bc !important; }
+                    .faq-answer { color: rgba(244, 228, 188, 0.75) !important; }
+                    .gold-particles { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; overflow: hidden; }
+                    .gold-particle { position: absolute; width: 3px; height: 3px; border-radius: 50%; background: #d4af37; box-shadow: 0 0 6px #d4af37, 0 0 12px rgba(212, 175, 55, 0.5); animation: goldParticleFloat 7s ease-in-out infinite; }
+                    @keyframes goldParticleFloat { 0% { transform: translateY(0); opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { transform: translateY(-130px); opacity: 0; } }
+                `,
+                defaultCover: 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=1920&q=80',
+                hasGoldParticles: true
+            },
+            'templates-new/preview-floral': {
+                name: 'ورود',
+                styles: `
+                    :root {
+                        --theme-primary: #8b5a6f;
+                        --theme-secondary: #e8b4bc;
+                        --theme-accent: #d4a5a5;
+                        --theme-text: #6d4552;
+                        --theme-light: rgba(232, 180, 188, 0.2);
+                    }
+                    body { background: linear-gradient(180deg, #fdf2f8 0%, #fce7f3 50%, #fbcfe8 100%) !important; color: #6d4552; }
+                    .cover-overlay { background: linear-gradient(180deg, rgba(139, 90, 111, 0.45) 0%, rgba(232, 180, 188, 0.5) 100%) !important; }
+                    .couple-names h1 { color: #fff; font-family: 'Aref Ruqaa', serif; text-shadow: 2px 2px 10px rgba(109, 69, 82, 0.35); }
+                    .bismillah-text { color: #8b5a6f !important; }
+                    .text-card { background: linear-gradient(145deg, #FFFFFF 0%, #fce4ec 100%); border-radius: 40px; border: 1px solid rgba(232, 180, 188, 0.5); box-shadow: 0 15px 40px rgba(139, 90, 111, 0.15); }
+                    .card-header { background: linear-gradient(135deg, #8b5a6f 0%, #e8b4bc 100%); }
+                    .event-card { background: white; border-radius: 22px; border: 1px solid rgba(212, 165, 165, 0.4); box-shadow: 0 8px 25px rgba(139, 90, 111, 0.1); }
+                    .event-icon { background: linear-gradient(135deg, #8b5a6f, #e8b4bc); }
+                    .countdown-container { background: linear-gradient(145deg, #fce4ec, #fdf2f8); border-radius: 30px; }
+                    .countdown-number { color: #8b5a6f; }
+                    .countdown-title { color: #8b5a6f; }
+                    .countdown-label { color: rgba(109, 69, 82, 0.8); }
+                    .married-label { color: #6d4552 !important; }
+                    .rsvp-card { background: linear-gradient(145deg, #FFFFFF, #fce4ec); border-radius: 40px; box-shadow: 0 15px 40px rgba(139, 90, 111, 0.15); }
+                    .rsvp-header { background: linear-gradient(135deg, #8b5a6f, #e8b4bc); color: white; }
+                    .map-header { background: linear-gradient(135deg, #8b5a6f, #e8b4bc); }
+                    .btn-primary { background: linear-gradient(135deg, #8b5a6f, #e8b4bc) !important; }
+                    .gold-icon { color: #8b5a6f; }
+                    .decorative-line { background: linear-gradient(90deg, transparent, #e8b4bc, transparent); }
+                    .welcome-text { background: linear-gradient(145deg, #fce4ec, #fff); border-right: 4px solid #8b5a6f; border-radius: 25px; }
+                    .wish-avatar { background: linear-gradient(135deg, #8b5a6f, #e8b4bc); }
+                    .option-box.attending { border-color: #8b5a6f; background: rgba(232, 180, 188, 0.2); }
+                    .music-toggle { background: linear-gradient(135deg, #8b5a6f, #e8b4bc); }
+                `,
+                defaultCover: 'https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=1920&q=80',
+                hasFloatingPetals: true
+            },
+            'templates-new/preview-minimal': {
+                name: 'بسيط',
+                styles: `
+                    :root {
+                        --theme-primary: #18181b;
+                        --theme-secondary: #737373;
+                        --theme-accent: #a1a1aa;
+                        --theme-text: #18181b;
+                        --theme-light: rgba(24, 24, 27, 0.05);
+                    }
+                    body { background: #fafafa !important; color: #18181b; }
+                    body::before { content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none; background-image: linear-gradient(rgba(0,0,0,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.025) 1px, transparent 1px); background-size: 40px 40px; }
+                    .cover-overlay { background: linear-gradient(180deg, rgba(24, 24, 27, 0.45) 0%, rgba(24, 24, 27, 0.6) 100%) !important; }
+                    .couple-names h1 { color: #fff; font-weight: 300; letter-spacing: 1px; }
+                    .bismillah-text { color: #a1a1aa !important; }
+                    .text-card { background: #fff; border-radius: 4px; border: 1px solid #e4e4e7; box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 10px 40px rgba(0,0,0,0.03); }
+                    .card-header { background: #18181b; }
+                    .event-card { background: white; border-radius: 4px; border: 1px solid #e4e4e7; box-shadow: none; }
+                    .event-icon { background: #18181b; }
+                    .countdown-container { background: #fff; border-radius: 4px; border: 1px solid #e4e4e7; }
+                    .countdown-number { color: #18181b; }
+                    .countdown-title { color: #18181b; }
+                    .countdown-label { color: rgba(24, 24, 27, 0.6); }
+                    .married-label { color: #fff !important; }
+                    .rsvp-card { background: #fff; border-radius: 4px; border: 1px solid #e4e4e7; }
+                    .rsvp-header { background: #18181b; color: white; }
+                    .map-header { background: #18181b; }
+                    .btn-primary { background: #18181b !important; border-radius: 2px; }
+                    .gold-icon { color: #737373; }
+                    .decorative-line { background: #a1a1aa; }
+                    .welcome-text { background: #fafafa; border: 1px solid #e4e4e7; border-radius: 4px; }
+                    .wish-avatar { background: #18181b; }
+                    .option-box.attending { border-color: #18181b; background: rgba(24, 24, 27, 0.05); }
+                    .music-toggle { background: #18181b; }
+                `,
+                defaultCover: 'https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=1920&q=80'
+            },
+            'templates-new/preview-nature': {
+                name: 'طبيعة',
+                styles: `
+                    :root {
+                        --theme-primary: #1a4d3e;
+                        --theme-secondary: #4ade80;
+                        --theme-accent: #166534;
+                        --theme-text: #2d4a3e;
+                        --theme-light: rgba(74, 222, 128, 0.15);
+                    }
+                    body { background: linear-gradient(180deg, #ecfdf5 0%, #d1fae5 40%, #a7f3d0 100%) !important; color: #2d4a3e; }
+                    .cover-overlay { background: linear-gradient(180deg, rgba(26, 77, 62, 0.5) 0%, rgba(74, 222, 128, 0.4) 100%) !important; }
+                    .couple-names h1 { color: #fff; font-family: 'Aref Ruqaa', serif; text-shadow: 2px 2px 10px rgba(22, 101, 52, 0.4); }
+                    .bismillah-text { color: #1a4d3e !important; }
+                    .text-card { background: linear-gradient(145deg, #FFFFFF 0%, #ecfdf5 100%); border-radius: 35px; border: 1px solid rgba(74, 222, 128, 0.35); box-shadow: 0 12px 40px rgba(26, 77, 62, 0.12); }
+                    .card-header { background: linear-gradient(135deg, #1a4d3e, #166534); }
+                    .event-card { background: white; border-radius: 22px; border: 1px solid rgba(74, 222, 128, 0.3); }
+                    .event-icon { background: linear-gradient(135deg, #1a4d3e, #4ade80); }
+                    .countdown-container { background: linear-gradient(145deg, #d1fae5, #ecfdf5); border-radius: 28px; border: 1px solid rgba(74, 222, 128, 0.3); }
+                    .countdown-number { color: #1a4d3e; }
+                    .countdown-title { color: #1a4d3e; }
+                    .countdown-label { color: rgba(45, 74, 62, 0.8); }
+                    .married-label { color: #1a4d3e !important; }
+                    .rsvp-card { background: linear-gradient(145deg, #FFFFFF, #d1fae5); border-radius: 35px; border: 1px solid rgba(74, 222, 128, 0.3); }
+                    .rsvp-header { background: linear-gradient(135deg, #1a4d3e, #166534); color: white; }
+                    .map-header { background: linear-gradient(135deg, #1a4d3e, #166534); }
+                    .btn-primary { background: linear-gradient(135deg, #1a4d3e, #4ade80) !important; }
+                    .gold-icon { color: #4ade80; }
+                    .decorative-line { background: linear-gradient(90deg, transparent, #4ade80, transparent); }
+                    .welcome-text { background: linear-gradient(145deg, #ecfdf5, #fff); border-right: 4px solid #1a4d3e; border-radius: 20px; }
+                    .wish-avatar { background: linear-gradient(135deg, #1a4d3e, #4ade80); }
+                    .option-box.attending { border-color: #4ade80; background: rgba(74, 222, 128, 0.15); }
+                    .music-toggle { background: linear-gradient(135deg, #1a4d3e, #4ade80); }
+                `,
+                defaultCover: 'https://images.unsplash.com/photo-1470137237906-d8a4f71e1966?w=1920&q=80',
+                hasFallingLeaves: true
+            },
+            'templates-new/preview-starry': {
+                name: 'نجوم',
+                styles: `
+                    :root {
+                        --theme-primary: #0c1445;
+                        --theme-secondary: #a78bfa;
+                        --theme-accent: #7c3aed;
+                        --theme-gold: #fbbf24;
+                        --theme-text: #e0e0ff;
+                        --theme-light: rgba(167, 139, 250, 0.15);
+                    }
+                    body { background: linear-gradient(180deg, #030712 0%, #0c1445 40%, #1e1b4b 100%) !important; color: #e0e0ff; }
+                    .cover-overlay { background: linear-gradient(180deg, rgba(3, 7, 18, 0.5) 0%, rgba(124, 58, 237, 0.4) 100%) !important; }
+                    .couple-names h1 { color: #fff; font-family: 'Aref Ruqaa', serif; text-shadow: 0 0 25px rgba(167, 139, 250, 0.6); }
+                    .bismillah-text { color: #a78bfa !important; }
+                    .text-card { background: linear-gradient(145deg, rgba(12, 20, 69, 0.85), rgba(30, 27, 75, 0.85)); color: #e0e0ff; border: 1px solid rgba(167, 139, 250, 0.3); border-radius: 35px; }
+                    .card-header { background: linear-gradient(135deg, #0c1445, #7c3aed); }
+                    .event-card { background: rgba(12, 20, 69, 0.75); color: #e0e0ff; border: 1px solid rgba(167, 139, 250, 0.25); border-radius: 22px; }
+                    .event-icon { background: linear-gradient(135deg, #7c3aed, #a78bfa); }
+                    .countdown-container { background: rgba(12, 20, 69, 0.8); border: 1px solid rgba(167, 139, 250, 0.3); border-radius: 28px; }
+                    .countdown-number { color: #fbbf24; text-shadow: 0 0 15px rgba(251, 191, 36, 0.5); }
+                    .countdown-title { color: #a78bfa; }
+                    .countdown-label { color: rgba(224, 224, 255, 0.85); }
+                    .married-label { color: #fff !important; }
+                    .rsvp-card { background: rgba(12, 20, 69, 0.88); color: #e0e0ff; border: 1px solid rgba(167, 139, 250, 0.3); border-radius: 30px; }
+                    .rsvp-header { background: linear-gradient(135deg, #0c1445, #1e1b4b); color: #e0e0ff; border-bottom: 1px solid rgba(167, 139, 250, 0.4); }
+                    .map-header { background: linear-gradient(135deg, #0c1445, #7c3aed); }
+                    .btn-primary { background: linear-gradient(135deg, #7c3aed, #a78bfa) !important; }
+                    .gold-icon { color: #fbbf24; }
+                    .decorative-line { background: #a78bfa; }
+                    .welcome-text { background: rgba(167, 139, 250, 0.1); border: 1px solid rgba(167, 139, 250, 0.3); color: #e0e0ff; border-radius: 20px; }
+                    .wish-avatar { background: linear-gradient(135deg, #7c3aed, #a78bfa); }
+                    .option-box.attending { border-color: #a78bfa; background: rgba(167, 139, 250, 0.15); }
+                    .music-toggle { background: linear-gradient(135deg, #7c3aed, #a78bfa); }
+                    .section-title h2, .section-title i { color: #e0e0ff !important; }
+                    .timeline-title { color: #e0e0ff !important; }
+                    .timeline-line, .faq-list, .faq-item { border-color: rgba(167, 139, 250, 0.2) !important; }
+                    .faq-question { color: #e0e0ff !important; }
+                    .faq-answer { color: rgba(224, 224, 255, 0.75) !important; }
+                    .starry-night { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; overflow: hidden; }
+                    .star-dot { position: absolute; border-radius: 50%; background: #fff; animation: starTwinkleFloat 4s ease-in-out infinite; }
+                    .shooting-star { position: absolute; width: 2px; height: 2px; background: #fff; border-radius: 50%; box-shadow: 0 0 0 1px rgba(255,255,255,0.1); animation: shootStreak 3s linear infinite; }
+                    .shooting-star::before { content: ''; position: absolute; top: 50%; right: 0; width: 80px; height: 1px; background: linear-gradient(90deg, transparent, #fff); transform: translateY(-50%); }
+                    @keyframes starTwinkleFloat { 0%, 100% { opacity: 0.25; transform: scale(1); } 50% { opacity: 1; transform: scale(1.4); } }
+                    @keyframes shootStreak { 0% { transform: translate(0, 0); opacity: 0; } 5% { opacity: 1; } 20% { transform: translate(-220px, 220px); opacity: 0; } 100% { transform: translate(-220px, 220px); opacity: 0; } }
+                `,
+                defaultCover: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920&q=80',
+                hasStarryNight: true
             }
         };
 
@@ -2631,6 +2895,21 @@
             if (template.hasFloatingFlowers) {
                 addFloatingFlowers();
             }
+            if (template.hasArtisticSplashes) {
+                addArtisticSplashes();
+            }
+            if (template.hasGoldParticles) {
+                addGoldParticles();
+            }
+            if (template.hasFloatingPetals) {
+                addFloatingPetals();
+            }
+            if (template.hasFallingLeaves) {
+                addFallingLeaves();
+            }
+            if (template.hasStarryNight) {
+                addStarryNight();
+            }
         }
 
         // ===================================
@@ -2731,6 +3010,108 @@
             document.body.insertBefore(container, document.body.firstChild);
         }
 
+        // Add artistic paint-splash blur effect (Artistic template)
+        function addArtisticSplashes() {
+            const container = document.createElement('div');
+            container.className = 'artistic-splashes';
+            container.id = 'artisticSplashes';
+            const colors = ['#e94560', '#8e44ad', '#f39c12'];
+            for (let i = 0; i < 6; i++) {
+                const splash = document.createElement('span');
+                splash.className = 'art-splash';
+                const size = 120 + Math.random() * 140;
+                splash.style.width = size + 'px';
+                splash.style.height = size + 'px';
+                splash.style.left = Math.random() * 90 + '%';
+                splash.style.top = Math.random() * 90 + '%';
+                splash.style.background = colors[i % colors.length];
+                splash.style.animationDelay = Math.random() * 6 + 's';
+                splash.style.animationDuration = (10 + Math.random() * 8) + 's';
+                container.appendChild(splash);
+            }
+            document.body.insertBefore(container, document.body.firstChild);
+        }
+
+        // Add floating gold particles effect (Elite template)
+        function addGoldParticles() {
+            const container = document.createElement('div');
+            container.className = 'gold-particles';
+            container.id = 'goldParticles';
+            for (let i = 0; i < 25; i++) {
+                const particle = document.createElement('span');
+                particle.className = 'gold-particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = (60 + Math.random() * 40) + '%';
+                particle.style.animationDelay = Math.random() * 7 + 's';
+                particle.style.animationDuration = (5 + Math.random() * 4) + 's';
+                container.appendChild(particle);
+            }
+            document.body.insertBefore(container, document.body.firstChild);
+        }
+
+        // Add floating petals effect (Floral template)
+        function addFloatingPetals() {
+            const container = document.createElement('div');
+            container.className = 'floating-flowers';
+            container.id = 'floatingPetals';
+            const petals = ['🌸', '🌷', '🌹', '💮', '🏵️'];
+            for (let i = 0; i < 12; i++) {
+                const petal = document.createElement('span');
+                petal.className = 'flower';
+                petal.innerHTML = petals[Math.floor(Math.random() * petals.length)];
+                petal.style.left = Math.random() * 100 + '%';
+                petal.style.animationDelay = Math.random() * 12 + 's';
+                petal.style.animationDuration = (10 + Math.random() * 6) + 's';
+                container.appendChild(petal);
+            }
+            document.body.insertBefore(container, document.body.firstChild);
+        }
+
+        // Add falling leaves effect (Nature template)
+        function addFallingLeaves() {
+            const container = document.createElement('div');
+            container.className = 'floating-flowers';
+            container.id = 'fallingLeaves';
+            const leaves = ['🍃', '🍂', '🌿'];
+            for (let i = 0; i < 14; i++) {
+                const leaf = document.createElement('span');
+                leaf.className = 'flower';
+                leaf.innerHTML = leaves[Math.floor(Math.random() * leaves.length)];
+                leaf.style.left = Math.random() * 100 + '%';
+                leaf.style.animationDelay = Math.random() * 12 + 's';
+                leaf.style.animationDuration = (9 + Math.random() * 6) + 's';
+                container.appendChild(leaf);
+            }
+            document.body.insertBefore(container, document.body.firstChild);
+        }
+
+        // Add twinkling stars + shooting stars effect (Starry template)
+        function addStarryNight() {
+            const container = document.createElement('div');
+            container.className = 'starry-night';
+            container.id = 'starryNight';
+            for (let i = 0; i < 40; i++) {
+                const star = document.createElement('span');
+                star.className = 'star-dot';
+                const size = 1 + Math.random() * 2;
+                star.style.width = size + 'px';
+                star.style.height = size + 'px';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 4 + 's';
+                container.appendChild(star);
+            }
+            for (let i = 0; i < 2; i++) {
+                const shoot = document.createElement('span');
+                shoot.className = 'shooting-star';
+                shoot.style.left = (50 + Math.random() * 40) + '%';
+                shoot.style.top = (Math.random() * 30) + '%';
+                shoot.style.animationDelay = (i * 4 + Math.random() * 3) + 's';
+                container.appendChild(shoot);
+            }
+            document.body.insertBefore(container, document.body.firstChild);
+        }
+
         // Load invitation by ID
         async function loadInvitationById(id) {
             const snapshot = await get(ref(db, `invitations/${id}`));
@@ -2755,6 +3136,203 @@
             return null;
         }
 
+        // ===================================
+        // Event-type copy (badge, page title prefix, hero default title,
+        // OG description, default event name, countdown title, RSVP
+        // subtitle) — bilingual so it responds to switchLang(), not just
+        // the [data-i18n] static labels. Kept at module scope (rather than
+        // inside populateInvitationUI) so both the initial render and
+        // switchLang() can read from the same source of truth.
+        // ===================================
+        const EVENT_TYPE_META_I18N = {
+            wedding: {
+                badgeLabel: { ar: '💍 دعوة زفاف', en: '💍 Wedding Invitation' },
+                pageTitlePrefix: { ar: 'دعوة زفاف', en: 'Wedding Invitation' },
+                heroDefaultTitle: { ar: 'يدعوانكم لمشاركتهما فرحة الزفاف', en: 'Invite you to share their wedding joy' },
+                ogDescriptionDefault: { ar: 'ندعوكم لحضور زفافنا', en: 'You are invited to our wedding' },
+                eventNameDefault: { ar: 'حفل الزفاف', en: 'Wedding Ceremony' },
+                countdownTitle: { ar: 'العد التنازلي للفرح', en: 'Countdown to the Big Day' },
+                rsvpSubtitle: { ar: 'يسعدنا أن تؤكدوا حضوركم معنا في هذا اليوم المميز', en: "We'd love for you to confirm your attendance on this special day" },
+                iconClass: 'fa-ring'
+            },
+            engagement: {
+                badgeLabel: { ar: '💎 دعوة خطوبة', en: '💎 Engagement Invitation' },
+                pageTitlePrefix: { ar: 'دعوة خطوبة', en: 'Engagement Invitation' },
+                heroDefaultTitle: { ar: 'يدعوانكم لمشاركتهما فرحة الخطوبة', en: 'Invite you to share their engagement joy' },
+                ogDescriptionDefault: { ar: 'ندعوكم لحضور حفل خطوبتنا', en: 'You are invited to our engagement celebration' },
+                eventNameDefault: { ar: 'حفل الخطوبة', en: 'Engagement Ceremony' },
+                countdownTitle: { ar: 'العد التنازلي للخطوبة', en: 'Countdown to the Engagement' },
+                rsvpSubtitle: { ar: 'يسعدنا أن تؤكدوا حضوركم معنا في هذه البداية الجميلة', en: "We'd love for you to confirm your attendance at this beautiful beginning" },
+                iconClass: 'fa-gem'
+            },
+            katb_ketab: {
+                badgeLabel: { ar: '📖 دعوة كتب كتاب', en: '📖 Katb El-Ketab Invitation' },
+                pageTitlePrefix: { ar: 'دعوة كتب كتاب', en: 'Katb El-Ketab Invitation' },
+                heroDefaultTitle: { ar: 'يدعوانكم لمشاركتهما فرحة كتب الكتاب', en: 'Invite you to share their Katb El-Ketab joy' },
+                ogDescriptionDefault: { ar: 'ندعوكم لحضور حفل كتب كتابنا', en: 'You are invited to our Katb El-Ketab ceremony' },
+                eventNameDefault: { ar: 'حفل كتب الكتاب', en: 'Katb El-Ketab Ceremony' },
+                countdownTitle: { ar: 'العد التنازلي لكتب الكتاب', en: 'Countdown to Katb El-Ketab' },
+                rsvpSubtitle: { ar: 'يسعدنا أن تؤكدوا حضوركم معنا في هذه اللحظة المباركة', en: "We'd love for you to confirm your attendance at this blessed moment" },
+                iconClass: 'fa-book-quran'
+            },
+            henna: {
+                badgeLabel: { ar: '🌿 ليلة حناء', en: '🌿 Henna Night' },
+                pageTitlePrefix: { ar: 'ليلة حناء', en: 'Henna Night' },
+                heroDefaultTitle: { ar: 'يدعوكم لمشاركتها ليلة الحناء', en: 'Invites you to share her henna night' },
+                ogDescriptionDefault: { ar: 'ندعوكم لحضور ليلة الحناء', en: 'You are invited to the henna night' },
+                eventNameDefault: { ar: 'ليلة الحناء', en: 'Henna Night' },
+                countdownTitle: { ar: 'العد التنازلي لليلة الحناء', en: 'Countdown to Henna Night' },
+                rsvpSubtitle: { ar: 'يسعدنا أن تؤكدوا حضوركم معنا في هذه الليلة الجميلة', en: "We'd love for you to confirm your attendance on this beautiful night" },
+                iconClass: 'fa-hand-sparkles'
+            },
+            birthday: {
+                badgeLabel: { ar: '🎂 دعوة عيد ميلاد', en: '🎂 Birthday Invitation' },
+                pageTitlePrefix: { ar: 'عيد ميلاد', en: 'Birthday' },
+                heroDefaultTitle: { ar: 'يدعوكم لمشاركته/ا فرحة عيد الميلاد', en: 'Invites you to share the birthday joy' },
+                ogDescriptionDefault: { ar: 'ندعوكم لحضور حفل عيد الميلاد', en: 'You are invited to the birthday celebration' },
+                eventNameDefault: { ar: 'حفل عيد الميلاد', en: 'Birthday Celebration' },
+                countdownTitle: { ar: 'العد التنازلي لعيد الميلاد', en: 'Countdown to the Birthday' },
+                rsvpSubtitle: { ar: 'يسعدنا أن تؤكدوا حضوركم معنا في هذا اليوم المميز', en: "We'd love for you to confirm your attendance on this special day" },
+                iconClass: 'fa-birthday-cake',
+                singlePerson: true
+            },
+            newborn: {
+                badgeLabel: { ar: '👶 بشارة مولود', en: '👶 Newborn Announcement' },
+                pageTitlePrefix: { ar: 'بشارة مولود', en: 'Newborn Announcement' },
+                heroDefaultTitle: { ar: 'يسعدنا مشاركتكم فرحة المولود الجديد', en: 'We are happy to share the joy of our new baby with you' },
+                ogDescriptionDefault: { ar: 'ندعوكم لمشاركتنا فرحة المولود', en: 'Join us in celebrating our new arrival' },
+                eventNameDefault: { ar: 'حفل استقبال المولود', en: 'Newborn Celebration' },
+                countdownTitle: { ar: 'العد التنازلي للاحتفال', en: 'Countdown to the Celebration' },
+                rsvpSubtitle: { ar: 'يسعدنا أن تؤكدوا حضوركم معنا في هذه الفرحة', en: "We'd love for you to confirm your attendance at this joyful occasion" },
+                iconClass: 'fa-baby',
+                singlePerson: true
+            },
+            graduation: {
+                badgeLabel: { ar: '🎓 حفل تخرج', en: '🎓 Graduation Celebration' },
+                pageTitlePrefix: { ar: 'حفل تخرج', en: 'Graduation' },
+                heroDefaultTitle: { ar: 'يدعوكم لمشاركته/ا فرحة التخرج', en: 'Invites you to share the graduation joy' },
+                ogDescriptionDefault: { ar: 'ندعوكم لحضور حفل التخرج', en: 'You are invited to the graduation celebration' },
+                eventNameDefault: { ar: 'حفل التخرج', en: 'Graduation Ceremony' },
+                countdownTitle: { ar: 'العد التنازلي لحفل التخرج', en: 'Countdown to Graduation' },
+                rsvpSubtitle: { ar: 'يسعدنا أن تؤكدوا حضوركم معنا في هذا الإنجاز', en: "We'd love for you to confirm your attendance at this achievement" },
+                iconClass: 'fa-graduation-cap',
+                singlePerson: true
+            },
+            ramadan: {
+                badgeLabel: { ar: '🌙 إفطار رمضان', en: '🌙 Ramadan Iftar' },
+                pageTitlePrefix: { ar: 'دعوة إفطار رمضان', en: 'Ramadan Iftar Invitation' },
+                heroDefaultTitle: { ar: 'يتشرفون بدعوتكم لمائدة الإفطار', en: 'Are honored to invite you to their Iftar table' },
+                ogDescriptionDefault: { ar: 'ندعوكم لمشاركتنا مائدة إفطار رمضان', en: 'You are invited to join our Ramadan Iftar table' },
+                eventNameDefault: { ar: 'إفطار رمضان', en: 'Ramadan Iftar' },
+                countdownTitle: { ar: 'العد التنازلي للإفطار', en: 'Countdown to Iftar' },
+                rsvpSubtitle: { ar: 'يسعدنا أن تؤكدوا حضوركم معنا على مائدة الإفطار', en: "We'd love for you to confirm your attendance at our Iftar table" },
+                iconClass: 'fa-moon',
+                singlePerson: true
+            }
+        };
+
+        // Builds the hero title line. If the couple entered their own custom
+        // text, that's their own content and is shown as-is regardless of
+        // language (same as names/venue/address elsewhere). Otherwise this
+        // picks the correct localized system-generated sentence — including
+        // the birthday "<name> turns X" and newborn announcement lines,
+        // which used to be hardcoded Arabic-only.
+        function computeHeroTitle(eventType, lang, customTitleText, groomName, birthdayAge, birthdayGender, newbornGender) {
+            if (customTitleText) return customTitleText;
+            if (eventType === 'birthday' && groomName && birthdayAge) {
+                const isFemale = birthdayGender === 'female';
+                return (lang === 'en')
+                    ? `${groomName} turns ${birthdayAge}`
+                    : `${groomName} ${isFemale ? 'تكمل' : 'يكمل'} ${birthdayAge} سنوات`;
+            }
+            if (eventType === 'newborn' && newbornGender) {
+                if (lang === 'en') {
+                    return (newbornGender === 'female')
+                        ? 'We are happy to share the joy of our baby girl with you'
+                        : 'We are happy to share the joy of our baby boy with you';
+                }
+                return (newbornGender === 'female') ? 'يسعدنا مشاركتكم فرحة مولودتنا' : 'يسعدنا مشاركتكم فرحة مولودنا';
+            }
+            return getTypeMeta(eventType, lang).heroDefaultTitle;
+        }
+
+        // Resolves one EVENT_TYPE_META_I18N entry into plain strings for
+        // the given language (falls back to Arabic if a key is missing).
+        function getTypeMeta(eventType, lang) {
+            const raw = EVENT_TYPE_META_I18N[eventType] || EVENT_TYPE_META_I18N.wedding;
+            const L = (lang === 'en') ? 'en' : 'ar';
+            const pick = (field) => (raw[field] && (raw[field][L] || raw[field].ar)) || '';
+            return {
+                badgeLabel: pick('badgeLabel'),
+                pageTitlePrefix: pick('pageTitlePrefix'),
+                heroDefaultTitle: pick('heroDefaultTitle'),
+                ogDescriptionDefault: pick('ogDescriptionDefault'),
+                eventNameDefault: pick('eventNameDefault'),
+                countdownTitle: pick('countdownTitle'),
+                rsvpSubtitle: pick('rsvpSubtitle'),
+                iconClass: raw.iconClass,
+                singlePerson: !!raw.singlePerson
+            };
+        }
+
+        // Re-applies the language-dependent *default* copy above (badge,
+        // page title, hero title, event name, countdown title, RSVP
+        // subtitle, memories title) when the visitor switches language —
+        // but only for fields the couple didn't override with their own
+        // custom text, which is tracked in window.__dfCustom during the
+        // initial render.
+        function reapplyEventTypeLangText(lang) {
+            const eventType = window.__dfCurrentEventType || 'wedding';
+            const custom = window.__dfCustom || {};
+            const typeMeta = getTypeMeta(eventType, lang);
+            const isSingle = typeMeta.singlePerson;
+            const groomName = custom.groomName || '';
+            const brideName = custom.brideName || '';
+            const namesForTitle = isSingle ? groomName : (lang === 'en' ? `${groomName} & ${brideName}` : `${groomName} و ${brideName}`);
+
+            const pageTitleEl = document.getElementById('pageTitle');
+            if (pageTitleEl) pageTitleEl.textContent = `${typeMeta.pageTitlePrefix} ${namesForTitle}`;
+            const ogTitleEl = document.getElementById('ogTitle');
+            if (ogTitleEl) ogTitleEl.textContent = `${typeMeta.pageTitlePrefix} ${namesForTitle}`;
+
+            const ogDescEl = document.getElementById('ogDescription');
+            if (ogDescEl && !custom.invitationText) ogDescEl.textContent = typeMeta.ogDescriptionDefault;
+
+            const badgeEl = document.getElementById('occasionBadge');
+            if (badgeEl) badgeEl.textContent = typeMeta.badgeLabel;
+
+            const eventNameEl = document.getElementById('eventName');
+            if (eventNameEl && !custom.eventName) eventNameEl.textContent = typeMeta.eventNameDefault;
+
+            const countdownTitleEl = document.querySelector('.countdown-title');
+            if (countdownTitleEl) countdownTitleEl.textContent = typeMeta.countdownTitle;
+
+            const rsvpSubtitleEl = document.querySelector('#rsvpHeader p');
+            if (rsvpSubtitleEl) rsvpSubtitleEl.textContent = typeMeta.rsvpSubtitle;
+
+            const weddingTitleWrap = document.getElementById('weddingTitle');
+            const weddingTitleSpan = weddingTitleWrap ? weddingTitleWrap.querySelector('span') : null;
+            if (weddingTitleSpan) {
+                weddingTitleSpan.textContent = computeHeroTitle(
+                    eventType, lang, custom.weddingTitle, groomName,
+                    custom.birthdayAge, custom.birthdayGender, custom.newbornGender
+                );
+            }
+
+            const memoriesTitleEl = document.getElementById('memoriesTitle');
+            if (memoriesTitleEl) {
+                if (lang === 'en') {
+                    memoriesTitleEl.textContent = isSingle
+                        ? `${groomName || ''} Memories`.trim()
+                        : `${groomName || 'the couple'} & ${brideName || ''} Memories`.trim();
+                } else {
+                    memoriesTitleEl.textContent = isSingle
+                        ? `ذكريات ${groomName || ''}`.trim()
+                        : `ذكريات ${groomName || 'العريس'} و ${brideName || 'العروسة'}`;
+                }
+            }
+        }
+
         // Populate invitation data into UI
         function populateInvitationUI(data) {
             // Extract data from nested structure or flat structure
@@ -2766,96 +3344,11 @@
             // Determine invitation type (wedding / engagement / katb_ketab) and its content meta.
             // Drives the hero badge, default titles, event card label, countdown title and RSVP copy.
             const eventType = event.eventType || data.eventType || 'wedding';
-            const EVENT_TYPE_META = {
-                wedding: {
-                    badgeLabel: '💍 دعوة زفاف',
-                    pageTitlePrefix: 'دعوة زفاف',
-                    heroDefaultTitle: 'يدعوانكم لمشاركتهما فرحة الزفاف',
-                    ogDescriptionDefault: 'ندعوكم لحضور زفافنا',
-                    eventNameDefault: 'حفل الزفاف',
-                    countdownTitle: 'العد التنازلي للفرح',
-                    rsvpSubtitle: 'يسعدنا أن تؤكدوا حضوركم معنا في هذا اليوم المميز',
-                    iconClass: 'fa-ring'
-                },
-                engagement: {
-                    badgeLabel: '💎 دعوة خطوبة',
-                    pageTitlePrefix: 'دعوة خطوبة',
-                    heroDefaultTitle: 'يدعوانكم لمشاركتهما فرحة الخطوبة',
-                    ogDescriptionDefault: 'ندعوكم لحضور حفل خطوبتنا',
-                    eventNameDefault: 'حفل الخطوبة',
-                    countdownTitle: 'العد التنازلي للخطوبة',
-                    rsvpSubtitle: 'يسعدنا أن تؤكدوا حضوركم معنا في هذه البداية الجميلة',
-                    iconClass: 'fa-gem'
-                },
-                katb_ketab: {
-                    badgeLabel: '📖 دعوة كتب كتاب',
-                    pageTitlePrefix: 'دعوة كتب كتاب',
-                    heroDefaultTitle: 'يدعوانكم لمشاركتهما فرحة كتب الكتاب',
-                    ogDescriptionDefault: 'ندعوكم لحضور حفل كتب كتابنا',
-                    eventNameDefault: 'حفل كتب الكتاب',
-                    countdownTitle: 'العد التنازلي لكتب الكتاب',
-                    rsvpSubtitle: 'يسعدنا أن تؤكدوا حضوركم معنا في هذه اللحظة المباركة',
-                    iconClass: 'fa-book-quran'
-                },
-                henna: {
-                    badgeLabel: '🌿 ليلة حناء',
-                    pageTitlePrefix: 'ليلة حناء',
-                    heroDefaultTitle: 'يدعوكم لمشاركتها ليلة الحناء',
-                    ogDescriptionDefault: 'ندعوكم لحضور ليلة الحناء',
-                    eventNameDefault: 'ليلة الحناء',
-                    countdownTitle: 'العد التنازلي لليلة الحناء',
-                    rsvpSubtitle: 'يسعدنا أن تؤكدوا حضوركم معنا في هذه الليلة الجميلة',
-                    iconClass: 'fa-hand-sparkles'
-                },
-                birthday: {
-                    badgeLabel: '🎂 دعوة عيد ميلاد',
-                    pageTitlePrefix: 'عيد ميلاد',
-                    heroDefaultTitle: 'يدعوكم لمشاركته/ا فرحة عيد الميلاد',
-                    ogDescriptionDefault: 'ندعوكم لحضور حفل عيد الميلاد',
-                    eventNameDefault: 'حفل عيد الميلاد',
-                    countdownTitle: 'العد التنازلي لعيد الميلاد',
-                    rsvpSubtitle: 'يسعدنا أن تؤكدوا حضوركم معنا في هذا اليوم المميز',
-                    iconClass: 'fa-birthday-cake',
-                    singlePerson: true
-                },
-                newborn: {
-                    badgeLabel: '👶 بشارة مولود',
-                    pageTitlePrefix: 'بشارة مولود',
-                    heroDefaultTitle: 'يسعدنا مشاركتكم فرحة المولود الجديد',
-                    ogDescriptionDefault: 'ندعوكم لمشاركتنا فرحة المولود',
-                    eventNameDefault: 'حفل استقبال المولود',
-                    countdownTitle: 'العد التنازلي للاحتفال',
-                    rsvpSubtitle: 'يسعدنا أن تؤكدوا حضوركم معنا في هذه الفرحة',
-                    iconClass: 'fa-baby',
-                    singlePerson: true
-                },
-                graduation: {
-                    badgeLabel: '🎓 حفل تخرج',
-                    pageTitlePrefix: 'حفل تخرج',
-                    heroDefaultTitle: 'يدعوكم لمشاركته/ا فرحة التخرج',
-                    ogDescriptionDefault: 'ندعوكم لحضور حفل التخرج',
-                    eventNameDefault: 'حفل التخرج',
-                    countdownTitle: 'العد التنازلي لحفل التخرج',
-                    rsvpSubtitle: 'يسعدنا أن تؤكدوا حضوركم معنا في هذا الإنجاز',
-                    iconClass: 'fa-graduation-cap',
-                    singlePerson: true
-                },
-                ramadan: {
-                    badgeLabel: '🌙 إفطار رمضان',
-                    pageTitlePrefix: 'دعوة إفطار رمضان',
-                    heroDefaultTitle: 'يتشرفون بدعوتكم لمائدة الإفطار',
-                    ogDescriptionDefault: 'ندعوكم لمشاركتنا مائدة إفطار رمضان',
-                    eventNameDefault: 'إفطار رمضان',
-                    countdownTitle: 'العد التنازلي للإفطار',
-                    rsvpSubtitle: 'يسعدنا أن تؤكدوا حضوركم معنا على مائدة الإفطار',
-                    iconClass: 'fa-moon',
-                    singlePerson: true
-                }
-            };
-            const typeMeta = EVENT_TYPE_META[eventType] || EVENT_TYPE_META.wedding;
+            const currentLang = document.documentElement.lang || 'ar';
+            const typeMeta = getTypeMeta(eventType, currentLang);
             document.getElementById('invitationContainer').classList.add(`event-type-${eventType}`);
             window.__dfCurrentEventType = eventType;
-            updateCtaCopy(eventType, document.documentElement.lang || 'ar');
+            updateCtaCopy(eventType, currentLang);
             renderOccasionMotif(eventType);
             addOccasionParticles(eventType);
 
@@ -2873,7 +3366,22 @@
             const isSingle = !!typeMeta.singlePerson;
             const groomName = couple.groomName || data.groomName || '';
             const brideName = couple.brideName || data.brideName || '';
-            const namesForTitle = isSingle ? groomName : `${groomName} و ${brideName}`;
+            const namesForTitle = isSingle ? groomName : (currentLang === 'en' ? `${groomName} & ${brideName}` : `${groomName} و ${brideName}`);
+
+            // Stash the couple's own custom values (not the localized system
+            // defaults) so switchLang() can re-render this exact invitation
+            // in the other language without re-fetching from the database.
+            window.__dfCustom = {
+                groomName,
+                brideName,
+                invitationText: content.invitationText || data.invitationText || '',
+                eventName: event.eventName || data.eventName || '',
+                weddingTitle: content.weddingTitle || data.weddingTitle || '',
+                birthdayAge: content.birthdayAge || '',
+                birthdayGender: content.birthdayGender || '',
+                newbornGender: content.newbornGender || ''
+            };
+
             document.getElementById('pageTitle').textContent = `${typeMeta.pageTitlePrefix} ${namesForTitle}`;
             document.getElementById('ogTitle').textContent = `${typeMeta.pageTitlePrefix} ${namesForTitle}`;
             document.getElementById('ogDescription').textContent = content.invitationText || data.invitationText || typeMeta.ogDescriptionDefault;
@@ -2902,11 +3410,15 @@
             if (isSingle) {
                 if (brideNameEl) brideNameEl.style.display = 'none';
                 if (ampersandEl) ampersandEl.style.display = 'none';
-                document.getElementById('memoriesTitle').textContent = `ذكريات ${groomName || ''}`.trim();
+                document.getElementById('memoriesTitle').textContent = (currentLang === 'en')
+                    ? `${groomName || ''} Memories`.trim()
+                    : `ذكريات ${groomName || ''}`.trim();
             } else {
                 if (brideNameEl) { brideNameEl.style.display = ''; brideNameEl.textContent = brideName; }
                 if (ampersandEl) ampersandEl.style.display = '';
-                document.getElementById('memoriesTitle').textContent = `ذكريات ${groomName || 'العريس'} و ${brideName || 'العروسة'}`;
+                document.getElementById('memoriesTitle').textContent = (currentLang === 'en')
+                    ? `${groomName || 'the couple'} & ${brideName || ''} Memories`.trim()
+                    : `ذكريات ${groomName || 'العريس'} و ${brideName || 'العروسة'}`;
             }
 
             // Bismillah / Welcome text
@@ -2915,19 +3427,13 @@
                 document.getElementById('bismillahText').textContent = welcomeText;
             }
 
-            // Wedding title
-            let weddingTitle = content.weddingTitle || data.weddingTitle || typeMeta.heroDefaultTitle;
-            // Birthday: prefer the gender-correct "<name> يكمل/تكمل X سنوات" sentence
-            // (built the same way as the VIP renderer) over the generic hero line,
-            // when we actually have a name + age to build it from.
-            if (eventType === 'birthday' && groomName && content.birthdayAge) {
-                const isFemale = content.birthdayGender === 'female';
-                weddingTitle = `${groomName} ${isFemale ? 'تكمل' : 'يكمل'} ${content.birthdayAge} سنوات`;
-            } else if (eventType === 'newborn' && content.newbornGender) {
-                weddingTitle = content.newbornGender === 'female'
-                    ? 'يسعدنا مشاركتكم فرحة مولودتنا'
-                    : 'يسعدنا مشاركتكم فرحة مولودنا';
-            }
+            // Wedding title (custom text kept as-is; system-generated
+            // defaults — including the birthday/newborn special cases —
+            // resolved for the current language via computeHeroTitle()).
+            const weddingTitle = computeHeroTitle(
+                eventType, currentLang, content.weddingTitle || data.weddingTitle || '', groomName,
+                content.birthdayAge, content.birthdayGender, content.newbornGender
+            );
             document.getElementById('weddingTitle').querySelector('span').textContent = weddingTitle;
 
             // Welcome section: religious verse (Quranic ayah or Bible verse), toggleable
@@ -4011,6 +4517,9 @@
             });
             applyTranslations(lang);
             updateCtaCopy(window.__dfCurrentEventType || 'wedding', lang);
+            if (window.__dfCurrentEventType) {
+                try { reapplyEventTypeLangText(lang); } catch (e) { /* invitation not loaded yet */ }
+            }
             try { localStorage.setItem('df_lang', lang); } catch (e) {}
         };
 
