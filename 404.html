@@ -143,7 +143,14 @@
   // لو الرابط شكله سلاج دعوة حقيقي، نحوّل فورًا لصفحة الدعوة (بدون عرض هذه الصفحة)
   // عشان ميتأثرش تحميل الدعوات الحقيقية بأي تأخير.
   (function () {
-    var path = window.location.pathname.replace(/^\/+/, '').replace(/\/+$/, '');
+    // window.location.pathname بيرجع القيمة وهي بالفعل percent-encoded لو
+    // فيها حروف عربية (المتصفح بيعملها تلقائيًا)، فلو عملنا عليها
+    // encodeURIComponent تاني هيحصل ترميز مزدوج (%25D9%2585...) والسلاج
+    // مش هيتفك صح في invite.html -> عشان كده لازم نفك الترميز الأول قبل
+    // ما نعيد ترميزه مرة واحدة بس.
+    var rawPath = window.location.pathname.replace(/^\/+/, '').replace(/\/+$/, '');
+    var path = '';
+    try { path = decodeURIComponent(rawPath); } catch (e) { path = rawPath; }
     var reserved = ['', 'index.html', 'login.html', 'editor.html', 'admin.html', 'invite.html', '404.html'];
     if (path && reserved.indexOf(path) === -1) {
       window.location.replace('/invite.html?slug=' + encodeURIComponent(path) + window.location.search.replace(/^\?/, '&'));

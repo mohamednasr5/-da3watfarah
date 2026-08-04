@@ -1480,7 +1480,13 @@
                             </div>
                             
                             <div class="form-group full-width">
-                                <label data-i18n="slug_label"><i class="fas fa-link"></i> الرابط المخصص (Slug)</label>
+                                <div class="label-with-ai">
+                                    <label data-i18n="slug_label"><i class="fas fa-link"></i> الرابط المخصص (Slug)</label>
+                                    <button type="button" class="ai-generate-btn" id="translateNamesBtn" onclick="translateNamesToEnglish()">
+                                        <i class="fas fa-language"></i>
+                                        <span data-i18n="translate_names_btn">ترجمة الأسماء بالإنجليزية</span>
+                                    </button>
+                                </div>
                                 <input type="text" class="form-control" id="customSlug" placeholder="mohamed-mona" dir="ltr">
                                 <small style="color: #6B7280;" data-i18n="slug_hint">سيكون رابط الدعوة: da3watfarah.com/{slug}</small>
                             </div>
@@ -1883,6 +1889,11 @@
                 ai_success: 'تم توليد النص بنجاح',
                 ai_success_fallback: 'تم إنشاء نص جاهز (استخدم زر التوليد مرة أخرى لخيار آخر)',
                 ai_error: 'حدث خطأ أثناء توليد النص',
+                translate_names_btn: 'ترجمة الأسماء بالإنجليزية',
+                translate_names_loading: 'جاري الترجمة...',
+                translate_names_need_names: 'يرجى إدخال الاسم أولاً',
+                translate_names_success: 'تم إنشاء الرابط الإنجليزي بنجاح',
+                translate_names_error: 'تعذر الترجمة الآن، حاول مرة أخرى',
                 upload_failed: 'فشل الرفع', uploading_percent: 'جاري الرفع...',
                 cover_upload_success: 'تم رفع صورة الغلاف بنجاح',
                 image_upload_failed: 'فشل رفع الصورة. جرّب استخدام رابط مباشر بدلاً من ذلك',
@@ -2069,6 +2080,11 @@
                 ai_success: 'Text generated successfully',
                 ai_success_fallback: 'A ready text was generated (click generate again for another option)',
                 ai_error: 'An error occurred while generating the text',
+                translate_names_btn: 'Translate names to English',
+                translate_names_loading: 'Translating...',
+                translate_names_need_names: 'Please enter the name first',
+                translate_names_success: 'English link generated successfully',
+                translate_names_error: 'Translation failed, please try again',
                 upload_failed: 'Upload failed', uploading_percent: 'Uploading...',
                 cover_upload_success: 'Cover image uploaded successfully',
                 image_upload_failed: 'Image upload failed. Try using a direct link instead',
@@ -3746,6 +3762,73 @@ ${venueName ? `- المكان: ${venueName}` : ''}
             }
         }
 
+        // ===================================
+        // Translate groom/bride names to English (AI) and build an
+        // English slug for the public link, e.g. da3watfarah.com/mokhtar&athar
+        // ===================================
+        function slugifyEnglishName(name) {
+            return (name || '')
+                .trim()
+                .toLowerCase()
+                .replace(/\s+/g, '-')
+                .replace(/[^a-z0-9\-]/g, '');
+        }
+
+        async function translateNamesToEnglish() {
+            const eventType = currentEventType();
+            const isSingle = isSinglePersonEvent(eventType);
+            const groomName = document.getElementById('groomName').value.trim();
+            const brideName = isSingle ? '' : document.getElementById('brideName').value.trim();
+
+            if (!groomName || (!isSingle && !brideName)) {
+                db.showNotification(L('translate_names_need_names'), 'error');
+                return;
+            }
+
+            const btn = document.getElementById('translateNamesBtn');
+            const btnText = btn.querySelector('span');
+            const originalText = btnText.textContent;
+            btn.disabled = true;
+            btn.querySelector('i').className = 'fas fa-spinner';
+            btnText.textContent = L('translate_names_loading');
+
+            try {
+                if (!window.r2Config?.workerUrl) throw new Error('worker URL not configured');
+
+                const texts = isSingle ? [groomName] : [groomName, brideName];
+                const response = await fetch(`${window.r2Config.workerUrl}/api/ai/translate`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ texts, target: 'en', context: 'wedding invitation couple names' })
+                });
+                if (!response.ok) throw new Error(`API Error: ${response.statusText}`);
+                const data = await response.json();
+                const translations = Array.isArray(data.translations) ? data.translations : [];
+
+                const enGroom = slugifyEnglishName(translations[0] || '');
+                const enBride = isSingle ? '' : slugifyEnglishName(translations[1] || '');
+
+                if (!enGroom || (!isSingle && !enBride)) throw new Error('empty translation');
+
+                const englishSlug = isSingle ? enGroom : `${enGroom}&${enBride}`;
+                const slugInput = document.getElementById('customSlug');
+                slugInput.value = englishSlug;
+                slugInput.dispatchEvent(new Event('input', { bubbles: true }));
+
+                const previewUrlEl = document.getElementById('previewUrl');
+                if (previewUrlEl) previewUrlEl.textContent = `da3watfarah.com/${englishSlug}`;
+
+                db.showNotification(L('translate_names_success'), 'success');
+            } catch (error) {
+                console.error('Name translation error:', error);
+                db.showNotification(L('translate_names_error'), 'error');
+            } finally {
+                btn.disabled = false;
+                btn.querySelector('i').className = 'fas fa-language';
+                btnText.textContent = originalText;
+            }
+        }
+
         function generateInvitationTemplate({ eventType, isSingle, groomName, brideName, weddingDate, venueName }) {
             const occasion = EVENT_OCCASION_AR[eventType] || EVENT_OCCASION_AR.wedding;
             const names = isSingle ? groomName : `${groomName} و${brideName}`;
@@ -4026,7 +4109,7 @@ ${venueName ? `- المكان: ${venueName}` : ''}
             .trim()
             .toLowerCase()
             .replace(/\s+/g, '-')          // spaces -> hyphen
-            .replace(/[^a-z0-9\u0600-\u06FF\-]/g, ''); // strip unsafe chars (keeps Arabic letters too)
+            .replace(/[^a-z0-9\u0600-\u06FF\-&]/g, ''); // strip unsafe chars (keeps Arabic letters + "&" for AI-translated links like mokhtar&athar too)
 
         // ===================================
         // Live Preview (real template + real data)
