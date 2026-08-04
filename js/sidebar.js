@@ -261,6 +261,14 @@ function updateSidebarUserInfo(userData) {
         const planKey = `plan_${userData.plan}`;
         planEl.textContent = t[planKey] || `${t.plan_free.split(':')[0]}: ${userData.plan}`;
     }
+
+    // Hide the "Upgrade to VIP" card once the user is already on the VIP
+    // plan — it was previously rendered unconditionally for every user,
+    // including those already subscribed to VIP.
+    const upgradeCard = document.querySelector('.sidebar-upgrade');
+    if (upgradeCard) {
+        upgradeCard.style.display = (userData?.plan === 'vip') ? 'none' : '';
+    }
 }
 
 // ===================================

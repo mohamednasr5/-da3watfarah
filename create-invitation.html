@@ -3810,7 +3810,10 @@ ${venueName ? `- المكان: ${venueName}` : ''}
 
         // ===================================
         // Translate groom/bride names to English (AI) and build an
-        // English slug for the public link, e.g. da3watfarah.com/mokhtar&athar
+        // English slug for the public link, e.g. da3watfarah.com/mokhtar-athar
+        // (uses "-" to match buildSlug()'s convention elsewhere in this file —
+        // a slug built with "&" broke when pasted/shared without percent-encoding
+        // and caused "الدعوة غير موجودة" on otherwise-valid links.)
         // ===================================
         function slugifyEnglishName(name) {
             return (name || '')
@@ -3856,7 +3859,7 @@ ${venueName ? `- المكان: ${venueName}` : ''}
 
                 if (!enGroom || (!isSingle && !enBride)) throw new Error('empty translation');
 
-                const englishSlug = isSingle ? enGroom : `${enGroom}&${enBride}`;
+                const englishSlug = isSingle ? enGroom : `${enGroom}-${enBride}`;
                 const slugInput = document.getElementById('customSlug');
                 slugInput.value = englishSlug;
                 slugInput.dispatchEvent(new Event('input', { bubbles: true }));

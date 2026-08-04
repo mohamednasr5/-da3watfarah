@@ -434,6 +434,7 @@ async function handleAiTranslate(request, env, corsHeaders) {
         const body = await request.json();
         const texts = Array.isArray(body.texts) ? body.texts.map((t) => String(t == null ? '' : t)) : [];
         const target = body.target === 'ar' ? 'ar' : 'en';
+        const context = typeof body.context === 'string' ? body.context.trim() : '';
 
         if (!texts.length) {
             return jsonResponse({ success: true, translations: [] }, corsHeaders);
@@ -443,16 +444,40 @@ async function handleAiTranslate(request, env, corsHeaders) {
         const capped = texts.slice(0, 200);
 
         const targetLabel = target === 'en' ? 'English' : 'Arabic';
-        const systemPrompt =
-            `You translate short strings from a wedding/event invitation website from Arabic to ${targetLabel}. ` +
-            'You will receive a JSON array of strings (in the original order). ' +
-            'Return ONLY a JSON array of the same length, in the same order, with each string translated. ' +
-            'Rules: keep personal names transliterated naturally (do not translate names literally); ' +
-            'keep numbers, dates and times as-is unless the surrounding words need translating too; ' +
-            'keep the tone warm and appropriate for a formal invitation; ' +
-            'do not add, remove, merge, or reorder array items; ' +
-            'if a string is empty, return an empty string in that position; ' +
-            'output must be valid JSON and nothing else — no markdown fences, no commentary.';
+
+        // Callers that are translating people's given names (e.g. the
+        // groom/bride name fields, used to build the English URL slug)
+        // pass a context string mentioning "name". Real Arabic first
+        // names are very often also ordinary Arabic words (e.g. أثر,
+        // أمل, نور, وفاء), so a generic translation prompt will render
+        // their *meaning* ("effect", "hope"...) instead of transliterating
+        // the *name itself* ("Athar", "Amal"...). Use a dedicated,
+        // stricter prompt whenever the context signals this is a
+        // person-name request, regardless of language of the context text.
+        const isNameRequest = /name|اسم|أسماء/i.test(context);
+
+        const systemPrompt = isNameRequest
+            ? 'You transliterate Arabic people\'s given names into English letters (romanization), for use in a wedding invitation URL. ' +
+              'You will receive a JSON array of Arabic first names (in the original order). ' +
+              'Return ONLY a JSON array of the same length, in the same order — one romanized name per entry. ' +
+              'CRITICAL: these are personal names, not ordinary words. Even if a name is spelled the same as a common Arabic ' +
+              'word (e.g. "أثر" -> "Athar", NOT "Effect" or "Trace"; "أمل" -> "Amal", NOT "Hope"; "نور" -> "Nour", NOT "Light"), ' +
+              'you must always output the phonetic English spelling of the name, never a translation of its dictionary meaning. ' +
+              'Use standard, natural romanization (e.g. "محمد" -> "Mohamed", "سارة" -> "Sara", "عبدالله" -> "Abdullah"). ' +
+              'Do not add titles, honorifics, or extra words. ' +
+              'do not add, remove, merge, or reorder array items; ' +
+              'if a string is empty, return an empty string in that position; ' +
+              'output must be valid JSON and nothing else — no markdown fences, no commentary.'
+            : `You translate short strings from a wedding/event invitation website from Arabic to ${targetLabel}. ` +
+              'You will receive a JSON array of strings (in the original order). ' +
+              'Return ONLY a JSON array of the same length, in the same order, with each string translated. ' +
+              (context ? `Context: ${context}. ` : '') +
+              'Rules: keep personal names transliterated naturally (do not translate names literally); ' +
+              'keep numbers, dates and times as-is unless the surrounding words need translating too; ' +
+              'keep the tone warm and appropriate for a formal invitation; ' +
+              'do not add, remove, merge, or reorder array items; ' +
+              'if a string is empty, return an empty string in that position; ' +
+              'output must be valid JSON and nothing else — no markdown fences, no commentary.';
 
         const res = await fetch('https://integrate.api.nvidia.com/v1/chat/completions', {
             method: 'POST',

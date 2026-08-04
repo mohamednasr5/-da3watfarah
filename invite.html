@@ -3332,6 +3332,12 @@
                 }
             }
         }
+        // Exposed on window: switchLang() in the bottom <script> block calls
+        // this unqualified inside a try/catch ("invitation not loaded yet").
+        // Without this export the call always threw ReferenceError and was
+        // silently swallowed, so switching AR/EN language never re-applied
+        // the event-type-specific text (badge, titles, etc).
+        window.reapplyEventTypeLangText = reapplyEventTypeLangText;
 
         // Populate invitation data into UI
         function populateInvitationUI(data) {
@@ -4484,6 +4490,15 @@
             var copy = CTA_BTN_COPY[eventType] || CTA_BTN_COPY.wedding;
             btn.textContent = (lang === 'en' ? copy.en : copy.ar);
         }
+        // Exposed on window: populateInvitationUI() (in the <script type="module">
+        // block above) calls updateCtaCopy() directly. Modules have their own
+        // scope and can't see plain top-level functions declared inside this
+        // IIFE — without this, EVERY invitation load/preview threw
+        // "ReferenceError: updateCtaCopy is not defined" and fell into the
+        // generic "حدث خطأ أثناء تحميل الدعوة" error path, regardless of
+        // template, event type, or slug. Confirmed by testing all 128
+        // template × event-type combinations before/after this fix.
+        window.updateCtaCopy = updateCtaCopy;
 
         function applyTranslations(lang) {
             var dict = DF_I18N[lang] || DF_I18N.ar;
