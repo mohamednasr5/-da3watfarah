@@ -1170,6 +1170,51 @@ input, textarea {
     gap: 6px;
 }
 
+.real-invitation-vip-badge {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: linear-gradient(135deg, #1A1A2E, #2D2D44);
+    color: #F4E4BC;
+    border: 1px solid #D4AF37;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 5px 12px;
+    border-radius: 999px;
+    cursor: help;
+    z-index: 3;
+}
+
+.real-invitation-vip-badge[data-tooltip]::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    background: #1A1A2E;
+    color: #F4E4BC;
+    border: 1px solid #D4AF37;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    white-space: nowrap;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.35);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-4px);
+    transition: opacity .18s ease, transform .18s ease, visibility .18s ease;
+    pointer-events: none;
+}
+
+.real-invitation-vip-badge:hover::after {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
 .real-invitation-card.skeleton-card {
     height: 336px;
     background: linear-gradient(90deg, var(--bg-secondary) 25%, #efe6d8 50%, var(--bg-secondary) 75%);

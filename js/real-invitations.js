@@ -11,7 +11,7 @@
  */
 (function () {
     const GRID_ID = 'realInvitationsGrid';
-    const MAX_CARDS = 12;
+    const MAX_CARDS = 24;
     const SKELETON_COUNT = 6;
 
     // Fallback gradient per template, used when an invitation has no
@@ -62,6 +62,10 @@
             : `invite.html?id=${inv.id}`;
     }
 
+    function isVipInvitation(inv) {
+        return !!(inv.isVip || (inv.design && inv.design.isVipTemplate));
+    }
+
     function buildCard(inv, index) {
         const names = coupleLabel(inv);
         const theme = THEME_COLORS[inv.design?.templateId] || DEFAULT_THEME;
@@ -73,6 +77,9 @@
             : `background: linear-gradient(145deg, ${theme.primary}, ${theme.secondary})`;
 
         const typeInfo = EVENT_TYPE_BADGES[getEventType(inv)] || EVENT_TYPE_BADGES.wedding;
+        const vipBadge = isVipInvitation(inv)
+            ? `<span class="real-invitation-vip-badge" data-tooltip="هذا القالب يتطلب الاشتراك في خطة VIP" title="هذا القالب يتطلب الاشتراك في خطة VIP"><i class="fas fa-crown"></i> VIP</span>`
+            : '';
 
         const card = document.createElement('a');
         card.href = invitationUrl(inv);
@@ -83,6 +90,7 @@
         card.setAttribute('data-aos-delay', String(Math.min(index * 80, 400)));
         card.innerHTML = `
             <div class="real-invitation-thumb" style="${thumbStyle}">
+                ${vipBadge}
                 <span style="position:absolute;top:14px;right:14px;background:rgba(0,0,0,.45);color:#fff;font-size:.75rem;font-weight:700;padding:5px 12px;border-radius:999px;border:1px solid ${typeInfo.color}">${typeInfo.label}</span>
                 <div class="real-invitation-overlay">
                     <h3>${escapeHtml(names)}</h3>

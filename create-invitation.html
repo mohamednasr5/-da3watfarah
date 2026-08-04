@@ -475,6 +475,50 @@
             background: linear-gradient(135deg, #1A1A2E, #2D2D44);
             color: #F4E4BC;
             border: 1px solid #D4AF37;
+            cursor: help;
+            position: absolute;
+        }
+
+        .badge-vip[data-tooltip]::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            top: calc(100% + 8px);
+            right: 0;
+            background: #1A1A2E;
+            color: #F4E4BC;
+            border: 1px solid #D4AF37;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            white-space: nowrap;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.35);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-4px);
+            transition: opacity .18s ease, transform .18s ease, visibility .18s ease;
+            z-index: 20;
+            pointer-events: none;
+        }
+
+        .badge-vip[data-tooltip]::before {
+            content: '';
+            position: absolute;
+            top: 100%;
+            right: 14px;
+            border: 6px solid transparent;
+            border-bottom-color: #D4AF37;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity .18s ease, visibility .18s ease;
+            z-index: 20;
+            pointer-events: none;
+        }
+
+        .badge-vip[data-tooltip]:hover::after,
+        .badge-vip[data-tooltip]:hover::before {
+            opacity: 1;
+            visibility: visible;
         }
 
         .badge-featured {
@@ -1892,6 +1936,7 @@
                 modal_default_title: 'معاينة القالب',
                 select_template_btn: 'اختيار هذا القالب', close_btn: 'إغلاق',
                 preview_btn: 'معاينة', badge_new: 'جديد ✓', badge_popular: '⭐ شائع', badge_premium: '👑 مميز', badge_vip: '👑 حصري VIP',
+                vip_template_tooltip: 'هذا القالب يتطلب الاشتراك في خطة VIP',
                 modal_preview_prefix: 'معاينة القالب',
                 fill_required: 'يرجى ملء جميع الحقول المطلوبة',
                 fill_required_star: 'يرجى ملء جميع الحقول المطلوبة (*)',
@@ -2083,6 +2128,7 @@
                 modal_default_title: 'Template Preview',
                 select_template_btn: 'Select This Template', close_btn: 'Close',
                 preview_btn: 'Preview', badge_new: 'New ✓', badge_popular: '⭐ Popular', badge_premium: '👑 Premium', badge_vip: '👑 VIP Exclusive',
+                vip_template_tooltip: 'This template requires a VIP plan subscription',
                 modal_preview_prefix: 'Preview:',
                 fill_required: 'Please fill in all required fields',
                 fill_required_star: 'Please fill in all required fields (*)',
@@ -3493,7 +3539,7 @@
                         ${template.isPopular ? `<span class="template-badge badge-popular">${L('badge_popular')}</span>` : ''}
                         ${template.isFeatured ? `<span class="template-badge badge-featured">${L('badge_featured') || (ciLang() === 'en' ? 'Featured' : 'مميز')}</span>` : ''}
                         ${template.isPremium ? `<span class="template-badge badge-premium">${L('badge_premium')}</span>` : ''}
-                        ${template.isVip ? `<span class="template-badge badge-vip">${L('badge_vip')}</span>` : ''}
+                        ${template.isVip ? `<span class="template-badge badge-vip" data-tooltip="${L('vip_template_tooltip')}" title="${L('vip_template_tooltip')}"><i class="fas fa-crown"></i> ${L('badge_vip')}</span>` : ''}
                     </div>
                     <div class="template-info">
                         <h4>${ciLang() === 'en' && template.nameEn ? template.nameEn : template.nameAr}</h4>
