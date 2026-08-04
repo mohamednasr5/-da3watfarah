@@ -1985,7 +1985,25 @@
                 media_lib_title_image: 'اختر صورة من الصور المرفوعة سابقًا',
                 media_lib_title_audio: 'اختر أغنية من الأغاني المرفوعة سابقًا',
                 media_lib_loading: 'جارٍ التحميل...',
-                media_lib_empty: 'لا توجد ملفات مرفوعة سابقًا بعد.'
+                media_lib_empty: 'لا توجد ملفات مرفوعة سابقًا بعد.',
+                // Toast / notification messages (were hardcoded Arabic at call sites)
+                toast_schedule_incomplete: 'فيه فقرة في برنامج الحفل ناقصة (الاسم أو التوقيت) — أكملها أو احذفها',
+                toast_faq_incomplete: 'فيه سؤال شائع ناقص (السؤال أو الإجابة) — أكمله أو احذفه',
+                toast_music_upload_success: 'تم رفع الموسيقى بنجاح',
+                toast_music_upload_failed: 'فشل رفع الموسيقى. جرّب استخدام رابط مباشر بدلاً من ذلك',
+                toast_music_upload_error: 'تعذر رفع الموسيقى. يمكنك استخدام خيار "رابط مباشر" بدلاً من ذلك',
+                toast_invalid_url: 'يرجى إدخال رابط صحيح يبدأ بـ http:// أو https://',
+                toast_cover_set_from_url: 'تم تعيين صورة الغلاف من الرابط',
+                toast_image_added_from_url: 'تمت إضافة الصورة من الرابط',
+                toast_music_set_from_url: 'تم تعيين الموسيقى من الرابط',
+                toast_slug_taken: 'هذا الرابط مستخدم بالفعل، اختر رابط آخر',
+                toast_sending_review: 'جاري إرسال الدعوة للمراجعة...',
+                toast_send_error: 'حدث خطأ في الإرسال، يرجى المحاولة مرة أخرى',
+                toast_sending_admin: 'جاري إرسال الطلب للإدارة...',
+                toast_generic_error: 'حدث خطأ، حاول مرة أخرى',
+                toast_preview_saved: 'تم حفظ معاينتك! هذه معاينة فقط ولا تنشر رابطاً للعامة 👀',
+                toast_random_image_error: 'حدث خطأ في جلب الصورة',
+                toast_random_image_success: 'تم اختيار صورة الغلاف بنجاح! 🎲'
             },
             en: {
                 page_title: 'Create New Invitation | Da3wetFarah',
@@ -2153,7 +2171,25 @@
                 media_lib_title_image: 'Choose an image from your uploads',
                 media_lib_title_audio: 'Choose a song from your uploads',
                 media_lib_loading: 'Loading...',
-                media_lib_empty: 'No files uploaded yet.'
+                media_lib_empty: 'No files uploaded yet.',
+                // Toast / notification messages
+                toast_schedule_incomplete: 'One of your schedule items is missing a title or a time — finish it or remove it',
+                toast_faq_incomplete: 'One of your FAQ items is missing a question or an answer — finish it or remove it',
+                toast_music_upload_success: 'Music uploaded successfully',
+                toast_music_upload_failed: 'Music upload failed. Try using a direct link instead',
+                toast_music_upload_error: 'Could not upload the music. You can use the "Direct Link" option instead',
+                toast_invalid_url: 'Please enter a valid URL starting with http:// or https://',
+                toast_cover_set_from_url: 'Cover image set from the link',
+                toast_image_added_from_url: 'Image added from the link',
+                toast_music_set_from_url: 'Music set from the link',
+                toast_slug_taken: 'This link is already in use — please choose another one',
+                toast_sending_review: 'Sending your invitation for review...',
+                toast_send_error: 'Something went wrong while sending — please try again',
+                toast_sending_admin: 'Sending your request to the admin team...',
+                toast_generic_error: 'Something went wrong — please try again',
+                toast_preview_saved: 'Your preview has been saved! This is preview-only and does not publish a public link 👀',
+                toast_random_image_error: 'An error occurred while fetching the image',
+                toast_random_image_success: 'Cover image selected successfully! 🎲'
             }
         };
 
@@ -3308,12 +3344,12 @@
                     // half-finished — ask them to complete or remove it.
                     const incompleteSchedule = eventScheduleItems.some(it => (it.title || '').trim() ? !(it.time || '').trim() : !!(it.time || '').trim());
                     if (incompleteSchedule) {
-                        db.showNotification('فيه فقرة في برنامج الحفل ناقصة (الاسم أو التوقيت) — أكملها أو احذفها', 'error');
+                        db.showNotification(L('toast_schedule_incomplete'), 'error');
                         return false;
                     }
                     const incompleteFaq = faqItems.some(it => (it.question || '').trim() ? !(it.answer || '').trim() : !!(it.answer || '').trim());
                     if (incompleteFaq) {
-                        db.showNotification('فيه سؤال شائع ناقص (السؤال أو الإجابة) — أكمله أو احذفه', 'error');
+                        db.showNotification(L('toast_faq_incomplete'), 'error');
                         return false;
                     }
                     return true;
@@ -3855,16 +3891,16 @@ ${venueName ? `- المكان: ${venueName}` : ''}
                 const result = await db.uploadToR2WithProgress(file, 'audio', (pct) => setUploadProgress('music', pct, 'active'));
                 if (result.success) {
                     setMusic(result.url, file.name);
-                    db.showNotification('تم رفع الموسيقى بنجاح', 'success');
+                    db.showNotification(L('toast_music_upload_success'), 'success');
                     setUploadProgress('music', 100, 'hide');
                 } else {
                     setUploadProgress('music', 0, 'error');
-                    db.showNotification(result.error || 'فشل رفع الموسيقى. جرّب استخدام رابط مباشر بدلاً من ذلك', 'error');
+                    db.showNotification(result.error || L('toast_music_upload_failed'), 'error');
                 }
             } catch (error) {
                 console.error('Music upload error:', error);
                 setUploadProgress('music', 0, 'error');
-                db.showNotification('تعذر رفع الموسيقى. يمكنك استخدام خيار "رابط مباشر" بدلاً من ذلك', 'error');
+                db.showNotification(L('toast_music_upload_error'), 'error');
             }
         }
         
@@ -3935,37 +3971,37 @@ ${venueName ? `- المكان: ${venueName}` : ''}
             const input = document.getElementById('coverUrlInput');
             const url = input.value.trim();
             if (!url || !isValidUrl(url)) {
-                db.showNotification('يرجى إدخال رابط صحيح يبدأ بـ http:// أو https://', 'error');
+                db.showNotification(L('toast_invalid_url'), 'error');
                 return;
             }
             setCoverImage(url);
             input.value = '';
-            db.showNotification('تم تعيين صورة الغلاف من الرابط', 'success');
+            db.showNotification(L('toast_cover_set_from_url'), 'success');
         }
         
         function addGalleryUrl() {
             const input = document.getElementById('galleryUrlInput');
             const url = input.value.trim();
             if (!url || !isValidUrl(url)) {
-                db.showNotification('يرجى إدخال رابط صحيح يبدأ بـ http:// أو https://', 'error');
+                db.showNotification(L('toast_invalid_url'), 'error');
                 return;
             }
             uploadedGallery.push(url);
             renderGalleryPreview();
             input.value = '';
-            db.showNotification('تمت إضافة الصورة من الرابط', 'success');
+            db.showNotification(L('toast_image_added_from_url'), 'success');
         }
         
         function useMusicUrl() {
             const input = document.getElementById('musicUrlInput');
             const url = input.value.trim();
             if (!url || !isValidUrl(url)) {
-                db.showNotification('يرجى إدخال رابط صحيح يبدأ بـ http:// أو https://', 'error');
+                db.showNotification(L('toast_invalid_url'), 'error');
                 return;
             }
             setMusic(url, url.split('/').pop());
             input.value = '';
-            db.showNotification('تم تعيين الموسيقى من الرابط', 'success');
+            db.showNotification(L('toast_music_set_from_url'), 'success');
         }
         
         // ===================================
@@ -4390,7 +4426,7 @@ ${venueName ? `- المكان: ${venueName}` : ''}
                     }
                 }
                 if (!isAvailable) {
-                    db.showNotification('هذا الرابط مستخدم بالفعل، اختر رابط آخر', 'error');
+                    db.showNotification(L('toast_slug_taken'), 'error');
                     publishBtn.disabled = false;
                     publishBtn.innerHTML = originalContent;
                     return;
@@ -4453,7 +4489,7 @@ ${venueName ? `- المكان: ${venueName}` : ''}
                     slug: slug
                 };
 
-                db.showNotification('جاري إرسال الدعوة للمراجعة...', 'info');
+                db.showNotification(L('toast_sending_review'), 'info');
 
                 // Create invitation in Firebase (as "pending_review" — see db.js)
                 const result = await db.createInvitation(invitationData);
@@ -4468,7 +4504,7 @@ ${venueName ? `- المكان: ${venueName}` : ''}
 
             } catch (error) {
                 console.error('Publish error:', error);
-                db.showNotification(error.message || 'حدث خطأ في الإرسال، يرجى المحاولة مرة أخرى', 'error');
+                db.showNotification(error.message || L('toast_send_error'), 'error');
                 publishBtn.disabled = false;
                 publishBtn.innerHTML = originalContent;
             }
@@ -4541,7 +4577,7 @@ ${venueName ? `- المكان: ${venueName}` : ''}
                 // Free plan — preview only, no payment and no public
                 // publishing. Submit straight to admin review, then show
                 // the dedicated preview-only confirmation screen.
-                db.showNotification('جاري إرسال الطلب للإدارة...', 'info');
+                db.showNotification(L('toast_sending_admin'), 'info');
                 const res = await db.submitPaymentInfo(pendingInvitationId, {
                     plan: 'free',
                     planLabel: 'مجاني',
@@ -4551,7 +4587,7 @@ ${venueName ? `- المكان: ${venueName}` : ''}
                 if (res.success) {
                     showFreePreviewSubmittedState();
                 } else {
-                    db.showNotification(res.error || 'حدث خطأ، حاول مرة أخرى', 'error');
+                    db.showNotification(res.error || L('toast_generic_error'), 'error');
                 }
                 return;
             }
@@ -4708,7 +4744,7 @@ ${venueName ? `- المكان: ${venueName}` : ''}
 
             document.querySelector('.wizard-nav').style.display = 'none';
 
-            db.showNotification('تم حفظ معاينتك! هذه معاينة فقط ولا تنشر رابطاً للعامة 👀', 'info');
+            db.showNotification(L('toast_preview_saved'), 'info');
         }
 
         // From the free-preview screen, let the couple upgrade this same
@@ -4751,7 +4787,7 @@ ${venueName ? `- المكان: ${venueName}` : ''}
 
             document.querySelector('.wizard-nav').style.display = 'none';
 
-            db.showNotification('تم إرسال طلبك للمراجعة! سيتم التواصل معك عند النشر 🎉', 'success');
+            db.showNotification(L('waiting_review_toast'), 'success');
         }
 
         // ===================================
@@ -4861,7 +4897,7 @@ ${venueName ? `- المكان: ${venueName}` : ''}
                 }
                 
                 if (typeof db !== 'undefined' && db.showNotification) {
-                    db.showNotification('حدث خطأ في جلب الصورة', 'error');
+                    db.showNotification(L('toast_random_image_error'), 'error');
                 }
                 
             } finally {
@@ -4900,7 +4936,7 @@ ${venueName ? `- المكان: ${venueName}` : ''}
             
             // Show success notification / عرض إشعار النجاح
             if (typeof db !== 'undefined' && db.showNotification) {
-                db.showNotification('تم اختيار صورة الغلاف بنجاح! 🎲', 'success');
+                db.showNotification(L('toast_random_image_success'), 'success');
             }
             
             console.log('✅ Random cover image accepted:', imageUrl.substring(0, 50) + '...');
