@@ -726,16 +726,122 @@
         let selectedTracks = new Set();
         let uploadedTracks = [];
         
-        // Recommended Wedding Music (Sample Data)
+        // ===================================
+        // قائمة الأغاني الكاملة من الاستضافة
+        // ===================================
+        const MUSIC_BASE_URL = 'https://pub-67b746453495438199c20622c45722a3.r2.dev/music/';
+        
         const recommendedMusic = [
-            { id: 'r1', title: 'أغنية الحب', artist: 'فنان عربي', duration: '4:32', category: 'romantic', url: '' },
-            { id: 'r2', title: 'ليلة العرس', artist: 'فرقة تراثية', duration: '5:15', category: 'traditional', url: '' },
-            { id: 'r3', title: 'قصتنا', artist: 'مغني حديث', duration: '3:48', category: 'modern', url: '' },
-            { id: 'r4', title: 'عود وربابة', artist: 'موسيقي', duration: '6:20', category: 'instrumental', url: '' },
-            { id: 'r5', title: 'يا أجمل ليلة', artist: 'فنانة عربية', duration: '4:05', category: 'romantic', url: '' },
-            { id: 'r6', title: 'زفة العريس', artist: 'فرقة شعبية', duration: '3:30', category: 'traditional', url: '' },
-            { id: 'r7', title: 'بيانو الحب', artist: 'عازف بيانو', duration: '4:45', category: 'instrumental', url: '' },
-            { id: 'r8', title: 'دوبل سعادة', artist: 'فرقة حديثة', duration: '3:55', category: 'modern', url: '' },
+            // أغاني الأعراس والمناسبات
+            { id: 's1', title: 'أنكتابلي', artist: 'أغنية عرس', duration: '', category: 'romantic', url: MUSIC_BASE_URL + '02.Enkatable.mp3' },
+            { id: 's2', title: 'وا ملاه', artist: 'أغنية فرح', duration: '', category: 'romantic', url: MUSIC_BASE_URL + '02.We_Maloh.mp3' },
+            { id: 's3', title: 'أجمل قصة حب', artist: 'أغنية رومانسية', duration: '', category: 'romantic', url: MUSIC_BASE_URL + '04.Agmal_Qset_Hob.mp3' },
+            { id: 's4', title: 'قولوا لمزون البلد', artist: 'أغنية شعبية', duration: '', category: 'traditional', url: MUSIC_BASE_URL + '04_-_2olo_Lm2zon_ElBalad.mp3' },
+            { id: 's5', title: 'كتبوا كتابك', artist: 'أغنية زفة', duration: '', category: 'traditional', url: MUSIC_BASE_URL + '05_-_Katabo_Ketabek.mp3' },
+            { id: 's6', title: 'عيشني أكثر', artist: 'أغنية رومانسية', duration: '', category: 'romantic', url: MUSIC_BASE_URL + '06-_Ayeshni_Aktar.mp3' },
+            { id: 's7', title: 'روحي واخداني', artist: 'أغنية فرح', duration: '', category: 'romantic', url: MUSIC_BASE_URL + '08_-_Ro7y_Wakhdany.mp3' },
+            { id: 's8', title: 'بينس بين', artist: 'أغنية شعبية', duration: '', category: 'traditional', url: MUSIC_BASE_URL + '09.Bahess_Been.mp3' },
+            { id: 's9', title: 'بيت كبير', artist: 'أغنية فرح', duration: '', category: 'modern', url: MUSIC_BASE_URL + '09.Beit_Kebeer.mp3' },
+            { id: 's10', title: 'جنبت على طول', artist: 'أغنية رومانسية', duration: '', category: 'romantic', url: MUSIC_BASE_URL + '09.Ganbak_Ala_Toul.mp3' },
+            { id: 's11', title: 'لمستك', artist: 'أغنية حزينة', duration: '', category: 'romantic', url: MUSIC_BASE_URL + '09.Lamstek.mp3' },
+            
+            // أغاني رمضان
+            { id: 's12', title: 'مرحبا شهر الصوم', artist: 'عبدالعزيز محمود', duration: '', category: 'traditional', url: MUSIC_BASE_URL + 'Abdelaziz_Mahmoud_-_Merhb_Shahr_Elsoum.mp3' },
+            { id: 's13', title: 'أهلاً رمضان', artist: 'عبدو الصروغي', duration: '', category: 'traditional', url: MUSIC_BASE_URL + 'Abdo_Elsarogy_-_Ahlan_Ramdan.mp3' },
+            { id: 's14', title: 'رمضان جانا', artist: 'محمد عبدالمطلب', duration: '', category: 'traditional', url: MUSIC_BASE_URL + 'Mohamed_Abdelmtlb_-_Ramdan_Gana.mp3' },
+            { id: 's15', title: 'هاتوا الفوانيس', artist: 'محمد فوزي', duration: '', category: 'traditional', url: MUSIC_BASE_URL + 'Mohamed_Fawzy_-_Hatoo_El_Fawnes.mp3' },
+            { id: 's16', title: 'والله بعودة', artist: 'محمد قنديل', duration: '', category: 'modern', url: MUSIC_BASE_URL + 'Mohamed_Qandel_-_Wallah_be3oda.mp3' },
+            { id: 's17', title: 'يا بركة رمضان', artist: 'محمد رشدي', duration: '', category: 'traditional', url: MUSIC_BASE_URL + 'Mohamed_roshdy_-_Ya_Barket_Ramdan.mp3' },
+            
+            // أغاني ألبوماتي (مجموعة متنوعة)
+            { id: 'a1', title: 'يا بالي حبيبي', artist: 'إليسا', duration: '', category: 'romantic', url: MUSIC_BASE_URL + 'Albumaty.Com.Elissa.Aa_Bali_Habibi.mp3' },
+            { id: 'a2', title: 'فرحة محمود', artist: 'محمود العسيلى', duration: '', category: 'modern', url: MUSIC_BASE_URL + 'Albumaty.Com.Mahmoud.El.Esseily.Farha.mp3' },
+            { id: 'a3', title: 'دنيا سمير عيد الميلاد', artist: 'سمير', duration: '', category: 'modern', url: MUSIC_BASE_URL + 'Albumaty.Com_Donia_Samir_Eid_Milad.mp3' },
+            { id: 'a4', title: 'عيد ميلاد سعيد جروب ألبوماتي', artist: 'ألبوماتي', duration: '', category: 'modern', url: MUSIC_BASE_URL + 'Albumaty.Com_Group_Happy_Birth_Day.mp3' },
+            { id: 'a5', title: 'حمادة هلال عيد الميلاد', artist: 'حمادة هلال', duration: '', category: 'modern', url: MUSIC_BASE_URL + 'Albumaty.Com_Hamada_Helal_Eid_Milad.mp3' },
+            { id: 'a6', title: 'كازم الساهر عيد الميلاد', artist: 'كازم الساهر', duration: '', category: 'modern', url: MUSIC_BASE_URL + 'Albumaty.Com_Kazem_Elsaher_Eid_Milad.mp3' },
+            { id: 'a7', title: 'مجد القصام عيد ميلادو', artist: 'مجد القصام', duration: '', category: 'modern', url: MUSIC_BASE_URL + 'Albumaty.Com_Majd_Elkasem_Eid_Milado.mp3' },
+            { id: 'a8', title: 'نانسي عجرم صنا الحلوة', artist: 'نانسي عجرم', duration: '', category: 'modern', url: MUSIC_BASE_URL + 'Albumaty.Com_Nancy_Ajram_Sana_Helwa.mp3' },
+            { id: 'a9', title: 'تامر حسني كل صنا', artist: 'تامر حسني', duration: '', category: 'modern', url: MUSIC_BASE_URL + 'Albumaty.Com_Tamer_Hosni_Koll_Sana.mp3' },
+            { id: 'a10', title: 'مابروفوك مجهول', artist: 'ألبوماتي', duration: '', category: 'modern', url: MUSIC_BASE_URL + 'Albumaty.Com_Unknown_Mabrouk.mp3' },
+            { id: 'a11', title: 'صنا الحلوة فول مجهول', artist: 'ألبوماتي', duration: '', category: 'modern', url: MUSIC_BASE_URL + 'Albumaty.Com_Unknown_Sana_Helwa_Foull.mp3' },
+            { id: 'a12', title: 'وليد توفيق أنزل يا غمال', artist: 'وليد توفيق', duration: '', category: 'romantic', url: MUSIC_BASE_URL + 'Albumaty.Com_Walid_Tawfik_Enzel_Ya_gamel.mp3' },
+            { id: 'a13', title: 'ابوه دب وكتنة', artist: 'ألبوماتي', duration: '', category: 'modern', url: MUSIC_BASE_URL + 'Albumaty.Com_abw_dh_wktna_.mp3' },
+            { id: 'a14', title: 'أحمد سعد الليمون الحلو ده من فيلم أمهم', artist: 'أحمد سعد', duration: '', category: 'modern', url: MUSIC_BASE_URL + 'Albumaty.Com_ahmd_sad_alywm_alhlw_dh_-_mn_fylm_amhm.mp3' },
+            { id: 'a15', title: 'حمادة هلال ألغاز أهلي', artist: 'حمادة هلال', duration: '', category: 'modern', url: MUSIC_BASE_URL + 'Albumaty.Com_hmadh_hlal_alngah_ahly_hdyt.mp3' },
+            { id: 'a16', title: 'حمودة الخدر من جد وجد', artist: 'حمودة الخدر', duration: '', category: 'modern', url: MUSIC_BASE_URL + 'Albumaty.Com_hmwd_alkhdr_mn_gd_wgd.mp3' },
+            { id: 'a17', title: 'حمودة الخدر يا هلا بالهلالم', artist: 'حمودة الخدر', duration: '', category: 'modern', url: MUSIC_BASE_URL + 'Albumaty.Com_hmwd_alkhdr_ya_hla_balhlm.mp3' },
+            { id: 'a18', title: 'منوعات أصبواء', artist: 'ألبوماتي', duration: '', category: 'modern', url: MUSIC_BASE_URL + 'Albumaty.Com_mnwaat_alsbwa.mp3' },
+            { id: 'a19', title: 'منوعات أم كلثم', artist: 'ألبوماتي', duration: '', category: 'traditional', url: MUSIC_BASE_URL + 'Albumaty.Com_mnwaat_am_klth.mp3' },
+            { id: 'a20', title: 'منوعات أول فرحة', artist: 'ألبوماتي', duration: '', category: 'modern', url: MUSIC_BASE_URL + 'Albumaty.Com_mnwaat_awl_frht.mp3' },
+            { id: 'a21', title: 'منوعات بركولة', artist: 'ألبوماتي', duration: '', category: 'modern', url: MUSIC_BASE_URL + 'Albumaty.Com_mnwaat_barkwlh.mp3' },
+            { id: 'a22', title: 'منوعات بسيلة يا الهوى', artist: 'ألبوماتي', duration: '', category: 'romantic', url: MUSIC_BASE_URL + 'Albumaty.Com_mnwaat_bsylha_ya_hlwh.mp3' },
+            { id: 'a23', title: 'منوعات حلكتك', artist: 'ألبوماتي', duration: '', category: 'modern', url: MUSIC_BASE_URL + 'Albumaty.Com_mnwaat_halktk.mp3' },
+            { id: 'a24', title: 'منوعات حلكتك 2', artist: 'ألبوماتي', duration: '', category: 'modern', url: MUSIC_BASE_URL + 'Albumaty.Com_mnwaat_halktk_2.mp3' },
+            { id: 'a25', title: 'منوعات نوس الألياف', artist: 'ألبوماتي', duration: '', category: 'modern', url: MUSIC_BASE_URL + 'Albumaty.Com_mnwaat_nnws_alaylh.mp3' },
+            { id: 'a26', title: 'منوعات وسلي سلي', artist: 'ألبوماتي', duration: '', category: 'modern', url: MUSIC_BASE_URL + 'Albumaty.Com_mnwaat_wsly_sly.mp3' },
+            { id: 'a27', title: 'منوعات يارب تركت منى', artist: 'ألبوماتي', duration: '', category: 'romantic', url: MUSIC_BASE_URL + 'Albumaty.Com_mnwaat_yarb_bark_lmtna.mp3' },
+            { id: 'a28', title: 'منوعات يارب ياربنا', artist: 'ألبوماتي', duration: '', category: 'modern', url: MUSIC_BASE_URL + 'Albumaty.Com_mnwaat_yarb_ya_rbna.mp3' },
+            { id: 'a29', title: 'نداء مغدي هراوي اللمزة', artist: 'نداء مغدي', duration: '', category: 'modern', url: MUSIC_BASE_URL + 'Albumaty.Com_ndaa_mgdy_hnrwh_llmazwn.mp3' },
+            { id: 'a30', title: 'شرطة الأعراس', artist: 'ألبوماتي', duration: '', category: 'traditional', url: MUSIC_BASE_URL + 'Albumaty.Com_ndaa_shrat_st_alarays.mp3' },
+            { id: 'a31', title: 'شرطة النبات ضد الأعراس', artist: 'ألبوماتي', duration: '', category: 'traditional', url: MUSIC_BASE_URL + 'Albumaty.Com_ndaa_shrat_st_albnat_-_hnt_alarws.mp3' },
+            { id: 'a32', title: 'تمر حسني كده - آلاف مستشفى ألام رمضان', artist: 'تمر حسني', duration: '', category: 'modern', url: MUSIC_BASE_URL + 'Albumaty.Com_tamr_hsni_kdha_-_aalan_mstshfi_alanas_rmdan_T├Ô?.maudio' },
+            
+            // أغاني متنوعة
+            { id: 'e1', title: 'آه يا يا وليد', artist: 'الصعاليكي', duration: '', category: 'traditional', url: MUSIC_BASE_URL + 'Elsolasy_Elmareh_-_Aho_Ga_Ya_Willad.mp3' },
+            
+            // نغمات كوم
+            { id: 'n1', title: 'محمد الطوكي وانت بتكتب كتاك', artist: 'نغمات كوم', duration: '', category: 'modern', url: MUSIC_BASE_URL + 'Nghmaty.Com_m7md_al6wky_wint_bktbk_ktabk.mp3' },
+            
+            // ملفات مرقمة
+            { id: 'm1', title: 'مقطع 61', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + '061-i.mp3' },
+            { id: 'm2', title: 'مقطع 62', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + '062-.mp3' },
+            { id: 'm3', title: 'مقطع 64', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + '064-.mp3' },
+            { id: 'm4', title: 'مقطع 66', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + '066-.mp3' },
+            { id: 'm5', title: 'مقطع 67', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + '067-.mp3' },
+            { id: 'm6', title: 'مقطع 68', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + '068-.mp3' },
+            { id: 'm7', title: 'مقطع 69', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + '069-.mp3' },
+            { id: 'm8', title: 'مقطع 70', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + '070-.mp3' },
+            { id: 'm9', title: 'مقطع 71', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + '071-.mp3' },
+            { id: 'm10', title: 'مقطع 72', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + '072-.mp3' },
+            { id: 'm11', title: 'مقطع 73', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + '073-.mp3' },
+            { id: 'm12', title: 'مقطع 74', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + '074-.mp3' },
+            { id: 'm13', title: 'مقطع 75', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + '075-.mp3' },
+            { id: 'm14', title: 'مقطع 77', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + '077-.mp3' },
+            
+            // ملفات m220xxx
+            { id: 'x1', title: 'مقطع موسيقي 336', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + 'm220336.mp3' },
+            { id: 'x2', title: 'مقطع موسيقي 337', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + 'm220337.mp3' },
+            { id: 'x3', title: 'مقطع موسيقي 340', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + 'm220340.mp3' },
+            { id: 'x4', title: 'مقطع موسيقي 343', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + 'm220343.mp3' },
+            { id: 'x5', title: 'مقطع موسيقي 345', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + 'm220345.mp3' },
+            { id: 'x6', title: 'مقطع موسيقي 347', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + 'm220347.mp3' },
+            { id: 'x7', title: 'مقطع موسيقي 348', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + 'm220348.mp3' },
+            { id: 'x8', title: 'مقطع موسيقي 349', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + 'm220349.mp3' },
+            { id: 'x9', title: 'مقطع موسيقي 351', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + 'm220351.mp3' },
+            { id: 'x10', title: 'مقطع موسيقي 354', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + 'm220354.mp3' },
+            { id: 'x11', title: 'مقطع موسيقي 357', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + 'm220357.mp3' },
+            { id: 'x12', title: 'مقطع موسيقي 359', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + 'm220359.mp3' },
+            { id: 'x13', title: 'مقطع موسيقي 360', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + 'm220360.mp3' },
+            { id: 'x14', title: 'مقطع موسيقي 361', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + 'm220361.mp3' },
+            { id: 'x15', title: 'مقطع موسيقي 362', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + 'm220362.mp3' },
+            { id: 'x16', title: 'مقطع موسيقي 369', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + 'm220369.mp3' },
+            { id: 'x17', title: 'مقطع موسيقي 374', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + 'm220374.mp3' },
+            { id: 'x18', title: 'مقطع موسيقي 379', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + 'm220379.mp3' },
+            { id: 'x19', title: 'مقطع موسيقي 380', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + 'm220380.mp3' },
+            { id: 'x20', title: 'مقطع موسيقي 381', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + 'm220381.mp3' },
+            { id: 'x21', title: 'مقطع موسيقي 385', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + 'm220385.mp3' },
+            { id: 'x22', title: 'مقطع موسيقي 386', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + 'm220386.mp3' },
+            { id: 'x23', title: 'مقطع موسيقي 389', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + 'm220389.mp3' },
+            { id: 'x24', title: 'مقطع موسيقي 391', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + 'm220391.mp3' },
+            
+            // ملفات أخرى
+            { id: 'o1', title: 'مقطع 39fU236q', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + '39fU236q.mp3' },
+            { id: 'o2', title: 'مقطع 44', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + '44.mp3' },
+            { id: 'o3', title: 'مقطع 47hb9836', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + '47hb9836.mp3' },
+            { id: 'o4', title: 'ملف 1785531303827_jtpIqi', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + '1785531303827_jtpIqi.mp3' },
+            { id: 'o5', title: 'ملف 1785532492804_8utner', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + '1785532492804_8utner.mp3' },
+            { id: 'o6', title: 'ملف 1785711133997_qmf76u', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + '1785711133997_qmf76u.mp3' },
         ];
         
         // ===================================
@@ -793,12 +899,22 @@
                 activeItem.classList.add('active', 'playing');
             }
             
+            // Stop any simulated progress
+            clearInterval(simulatedInterval);
+            
             // Play audio if URL exists
             if (track.url) {
                 audioPlayer.src = track.url;
-                audioPlayer.play().catch(e => console.log('Playback prevented:', e));
+                audioPlayer.load();
+                audioPlayer.play().catch(e => {
+                    console.log('Playback prevented or error:', e);
+                    // Show notification about playback issue
+                    if (window.db && window.db.showNotification) {
+                        window.db.showNotification('لا يمكن تشغيل الأغنية حالياً', 'error');
+                    }
+                });
             } else {
-                // For demo tracks without actual URLs
+                // For demo tracks without actual URLs - simulate
                 isPlaying = true;
                 setPlayingState(true);
                 simulateProgress();
@@ -943,7 +1059,7 @@
                         <div class="item-title">${track.title}</div>
                         <div class="item-meta">${track.artist} • ${getCategoryName(track.category)}</div>
                     </div>
-                    <span class="item-duration">${track.duration}</span>
+                    <span class="item-duration">${track.duration || '🎵'}</span>
                     <div class="item-actions" onclick="event.stopPropagation()">
                         <button class="item-action-btn ${selectedTracks.has(track.id) ? 'selected' : ''}" 
                                 onclick="toggleSelectTrack('${track.id}', this)"
