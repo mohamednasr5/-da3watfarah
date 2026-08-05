@@ -3284,6 +3284,63 @@
     })();
     </script>
 
+    <!-- تشغيل صوت الخلفية مرة واحدة يوميًا عند أول تفاعل/سكرول -->
+    <script>
+    (function () {
+        var AUDIO_URL = 'https://da3watfarah.com/bg.mp3';
+        var STORAGE_KEY = 'df_bg_audio_played_date';
+
+        function todayStr() {
+            var d = new Date();
+            return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
+        }
+
+        function alreadyPlayedToday() {
+            try {
+                return localStorage.getItem(STORAGE_KEY) === todayStr();
+            } catch (e) {
+                return false;
+            }
+        }
+
+        function markPlayedToday() {
+            try {
+                localStorage.setItem(STORAGE_KEY, todayStr());
+            } catch (e) {}
+        }
+
+        if (alreadyPlayedToday()) return; // تم تشغيله بالفعل اليوم
+
+        var audio = new Audio(AUDIO_URL);
+        audio.loop = false;
+        var started = false;
+
+        function startAudio() {
+            if (started || alreadyPlayedToday()) return;
+            started = true;
+            audio.play().then(function () {
+                markPlayedToday();
+            }).catch(function () {
+                // فشل التشغيل (مثلاً منع المتصفح)، إعادة المحاولة عند تفاعل آخر
+                started = false;
+            });
+            removeListeners();
+        }
+
+        function removeListeners() {
+            window.removeEventListener('scroll', startAudio);
+            document.removeEventListener('click', startAudio);
+            document.removeEventListener('touchstart', startAudio);
+            document.removeEventListener('keydown', startAudio);
+        }
+
+        window.addEventListener('scroll', startAudio, { passive: true, once: true });
+        document.addEventListener('click', startAudio, { once: true });
+        document.addEventListener('touchstart', startAudio, { passive: true, once: true });
+        document.addEventListener('keydown', startAudio, { once: true });
+    })();
+    </script>
+
 </body>
 
 </html>
