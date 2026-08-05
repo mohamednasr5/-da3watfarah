@@ -976,7 +976,7 @@
         // ===================================
         document.addEventListener('DOMContentLoaded', function() {
             initForms();
-            loadUserData();
+            loadSettingsUserData();
             AOS.init({ duration: 600, once: true });
             
             // Listen for user data loaded event
@@ -1024,7 +1024,16 @@
         // ===================================
         // Load & Populate User Data
         // ===================================
-        async function loadUserData() {
+        // Renamed from loadUserData() to avoid clobbering the global
+        // loadUserData() defined in js/db.js (both are plain `function`
+        // declarations attached to `window`, and this page's inline
+        // <script> runs after db.js, so it was silently overwriting it).
+        // That collision meant db.js's onAuthStateChanged handler ended up
+        // calling *this* page's version instead of its own — which never
+        // dispatches the 'userDataLoaded' event — so sidebar.js (which
+        // listens for that event to refresh the user's name/avatar/plan
+        // badge) never updated while on this page.
+        async function loadSettingsUserData() {
             if (!window.currentUserId) return;
             
             try {
@@ -1374,10 +1383,14 @@
         async function deleteAccount() {
             if (!confirm('⚠️ هل أنت متأكد من حذف حسابك؟\n\nهذا الإجراء لا يمكن التراجع عنه وسيؤدي إلى:\n- حذف جميع دعواتك\n- حذف جميع بياناتك\n- فقدان الوصول لحسابك')) return;
             
-            if (!confirm('للتأكيد النهائي، اكتب "حذف" للمتابعة:') !== true) {
-                const confirmation = prompt('يرجى كتابة "حذف" للتأكيد:');
-                if (confirmation !== 'حذف') return;
-            }
+            // Was previously `if (!confirm(...) !== true)` — a confirm()
+            // dialog has no text input, so that call could never actually
+            // capture the typed "حذف" confirmation, and clicking its
+            // Cancel button made the whole condition false with no `return`,
+            // so the account was deleted with NO further confirmation at
+            // all. Replaced with a single explicit type-to-confirm prompt.
+            const confirmation = prompt('للتأكيد النهائي، يرجى كتابة "حذف" للمتابعة:');
+            if (confirmation !== 'حذف') return;
             
             try {
                 const user = window.firebaseAuth.currentUser;
