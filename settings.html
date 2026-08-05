@@ -6,7 +6,7 @@
     <title>الإعدادات | دعوة فرح</title>
     
     <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=m3kRw5iRS26fpD8MjD_5ZuiPzrr_gnod-Hcm1kvV0ZpXXDmnEI1WfmQndAHKYGiTxgm6WsmfS7HjYhtamag8u3-eC8veIRv0NMDopREUVAw-qootmWPr93A-Qoe-Si_XqxfqAbXRpMxxOqT7qdGNY1XZ1tQSkuolc1sMGiXtX9hHE0STaJrC28qfOvJKU8SLU2iYqP0eKNWcIzZ35Q_JT8ubKq7qk32cJ2WeqqeXkgNfC1L0meq9z6SHcw9oQBqmgSqJu-DixIRiYpT0pK4FMq-bN2VJWqbEutPY9mZWR5c46UUinOt7DP4K6uE8L-haQuiDkdDp3s7GlVuSMvN_kw" charset="UTF-8"></script><script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
     
@@ -912,21 +912,21 @@
                             <label>وضع العرض</label>
                             <div style="display: flex; gap: 15px; margin-top: 10px;">
                                 <label style="flex: 1;">
-                                    <input type="radio" name="theme" value="light" onchange="updatePreference('theme', 'light')" style="display:none">
+                                    <input type="radio" name="theme" value="light" style="display:none">
                                     <div style="padding: 20px; border: 2px solid var(--border-color); border-radius: var(--radius-lg); cursor: pointer; text-align: center; transition: all 0.3s;" onclick="selectThemeOption(this, 'light')">
                                         <i class="fas fa-sun" style="font-size: 1.5rem; color: #f59e0b; margin-bottom: 8px;"></i>
                                         <div style="font-weight: 600;">فاتح</div>
                                     </div>
                                 </label>
                                 <label style="flex: 1;">
-                                    <input type="radio" name="theme" value="dark" onchange="updatePreference('theme', 'dark')" style="display:none">
+                                    <input type="radio" name="theme" value="dark" style="display:none">
                                     <div style="padding: 20px; border: 2px solid var(--border-color); border-radius: var(--radius-lg); cursor: pointer; text-align: center; transition: all 0.3s;" onclick="selectThemeOption(this, 'dark')">
                                         <i class="fas fa-moon" style="font-size: 1.5rem; color: #6366f1; margin-bottom: 8px;"></i>
                                         <div style="font-weight: 600;">داكن</div>
                                     </div>
                                 </label>
                                 <label style="flex: 1;">
-                                    <input type="radio" name="theme" value="auto" onchange="updatePreference('theme', 'auto')" style="display:none">
+                                    <input type="radio" name="theme" value="auto" style="display:none">
                                     <div style="padding: 20px; border: 2px solid var(--border-color); border-radius: var(--radius-lg); cursor: pointer; text-align: center; transition: all 0.3s;" onclick="selectThemeOption(this, 'auto')">
                                         <i class="fas fa-adjust" style="font-size: 1.5rem; color: #8b5cf6; margin-bottom: 8px;"></i>
                                         <div style="font-weight: 600">تلقائي</div>
@@ -987,6 +987,20 @@
         });
         
         // ===================================
+        // Theme Functions
+        // ===================================
+        function applyTheme(theme) {
+            if (theme === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            } else if (theme === 'light') {
+                document.documentElement.setAttribute('data-theme', 'light');
+            } else { 
+                const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                document.documentElement.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
+            }
+        }
+
+        // ===================================
         // Form Initialization
         // ===================================
         function initForms() {
@@ -1024,15 +1038,6 @@
         // ===================================
         // Load & Populate User Data
         // ===================================
-        // Renamed from loadUserData() to avoid clobbering the global
-        // loadUserData() defined in js/db.js (both are plain `function`
-        // declarations attached to `window`, and this page's inline
-        // <script> runs after db.js, so it was silently overwriting it).
-        // That collision meant db.js's onAuthStateChanged handler ended up
-        // calling *this* page's version instead of its own — which never
-        // dispatches the 'userDataLoaded' event — so sidebar.js (which
-        // listens for that event to refresh the user's name/avatar/plan
-        // badge) never updated while on this page.
         async function loadSettingsUserData() {
             if (!window.currentUserId) return;
             
@@ -1097,6 +1102,9 @@
                 document.querySelectorAll('[onclick^="selectThemeOption"]').forEach(el => {
                     el.style.borderColor = el.textContent.includes(getThemeLabel(theme)) ? 'var(--gold)' : 'var(--border-color)';
                 });
+
+                // Apply theme based on DB settings
+                applyTheme(theme);
             }
             
             // Populate stats
@@ -1363,6 +1371,9 @@
             element.style.borderColor = 'var(--gold)';
             
             updatePreference('theme', theme);
+            
+            // Apply theme immediately
+            applyTheme(theme);
         }
         
         // ===================================
@@ -1381,14 +1392,13 @@
         }
         
         async function deleteAccount() {
-            if (!confirm('⚠️ هل أنت متأكد من حذف حسابك؟\n\nهذا الإجراء لا يمكن التراجع عنه وسيؤدي إلى:\n- حذف جميع دعواتك\n- حذف جميع بياناتك\n- فقدان الوصول لحسابك')) return;
+            if (!confirm('⚠️ هل أنت متأكد من حذف حسابك؟
+
+هذا الإجراء لا يمكن التراجع عنه وسيؤدي إلى:
+- حذف جميع دعواتك
+- حذف جميع بياناتك
+- فقدان الوصول لحسابك')) return;
             
-            // Was previously `if (!confirm(...) !== true)` — a confirm()
-            // dialog has no text input, so that call could never actually
-            // capture the typed "حذف" confirmation, and clicking its
-            // Cancel button made the whole condition false with no `return`,
-            // so the account was deleted with NO further confirmation at
-            // all. Replaced with a single explicit type-to-confirm prompt.
             const confirmation = prompt('للتأكيد النهائي، يرجى كتابة "حذف" للمتابعة:');
             if (confirmation !== 'حذف') return;
             
