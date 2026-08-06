@@ -420,6 +420,32 @@ input, textarea {
     align-items: center;
     padding-top: 100px;
     overflow: hidden;
+    /* Establish a containment boundary so decorative descendants below
+       (::after glow, .hero-orbs) can't be attributed as page-level
+       Cumulative Layout Shift, even though they're purely decorative,
+       absolutely positioned, and already clipped by overflow:hidden. */
+    contain: layout paint;
+}
+
+/* Animated Gradient Background for Hero.
+   Moved here from css/landing.css (which loads asynchronously) so this
+   pseudo-element exists from the very first paint instead of being
+   inserted after landing.css finishes loading — that late insertion was
+   the cause of the 0.136 CLS flagged on body > section#home > ::after. */
+.hero::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(212, 175, 55, 0.05) 0%, transparent 70%);
+    animation: heroGlow 15s ease-in-out infinite alternate;
+}
+
+@keyframes heroGlow {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    100% { transform: translate(5%, 5%) rotate(5deg); }
 }
 
 .hero-bg-effects {
@@ -427,6 +453,7 @@ input, textarea {
     inset: 0;
     pointer-events: none;
     overflow: hidden;
+    contain: layout paint;
 }
 
 /* Soft grid to give the dark hero some texture/depth */
@@ -445,6 +472,7 @@ input, textarea {
 .hero-orbs {
     position: absolute;
     inset: 0;
+    contain: layout paint;
 }
 
 .hero-orbs .orb {
@@ -453,6 +481,10 @@ input, textarea {
     filter: blur(70px);
     opacity: .45;
     animation: orbDrift 18s ease-in-out infinite alternate;
+    /* Promote to its own compositor layer from the very first frame so
+       the transform animation is never mistaken for a layout shift. */
+    will-change: transform;
+    transform: translateZ(0);
 }
 
 .hero-orbs .orb-gold {

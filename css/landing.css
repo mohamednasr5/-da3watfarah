@@ -97,22 +97,12 @@ html {
     transform: translateY(-5px);
 }
 
-/* Animated Gradient Background for Hero */
-.hero::after {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle, rgba(212, 175, 55, 0.05) 0%, transparent 70%);
-    animation: heroGlow 15s ease-in-out infinite alternate;
-}
-
-@keyframes heroGlow {
-    0% { transform: translate(0, 0) rotate(0deg); }
-    100% { transform: translate(5%, 5%) rotate(5deg); }
-}
+/* Animated Gradient Background for Hero
+   MOVED to css/style.css (loaded synchronously) to fix a Cumulative
+   Layout Shift regression: this file (landing.css) is loaded async via
+   the media="print" -> "all" swap, so this ::after box used to appear
+   AFTER first paint, which Chrome counted as a layout shift on
+   body > section#home > ::after (CLS 0.136). See css/style.css. */
 
 /* Feature Cards Hover Effect */
 .feature-card::before {
