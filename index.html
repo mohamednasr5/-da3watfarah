@@ -2481,8 +2481,11 @@
     <script src="js/main.js" defer></script>
 
     <!-- Firebase SDK (Realtime Database, showcase only): loaded lazily,
-         only when the "real invitations" section actually scrolls into
-         view, so it never blocks first paint / adds unused JS on load. -->
+         only when the "real invitations" section is near the viewport,
+         so it never blocks first paint / adds unused JS on initial load.
+         A safety timeout guarantees it always loads even if the
+         IntersectionObserver never fires (e.g. very short pages or
+         the user never scrolling near the section before leaving). -->
     <script>
     (function () {
         var grid = document.getElementById('realInvitationsGrid');
@@ -2498,16 +2501,27 @@
                     var s = document.createElement('script');
                     s.src = src;
                     s.onload = resolve;
-                    s.onerror = reject;
+                    s.onerror = function () { reject(new Error('Failed to load ' + src)); };
                     document.body.appendChild(s);
                 });
             }
 
-            loadScript('https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js')
-                .then(function () { return loadScript('https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js'); })
+            // Load the two Firebase SDK chunks in parallel (independent of
+            // each other), then firebase-config.js, then the showcase script.
+            Promise.all([
+                loadScript('https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js'),
+                loadScript('https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js')
+            ])
                 .then(function () { return loadScript('js/firebase-config.js'); })
                 .then(function () { return loadScript('js/real-invitations.js'); })
-                .catch(function (err) { console.warn('⚠️ Could not load invitations showcase:', err); });
+                .catch(function (err) {
+                    console.warn('⚠️ Could not load invitations showcase:', err);
+                    // إظهار رسالة بدل ترك السكيلتون معلّقاً للأبد
+                    grid.innerHTML = '<div class="real-invitations-empty">'
+                        + '<i class="fas fa-wifi"></i>'
+                        + '<p>تعذّر تحميل الدعوات حالياً، يرجى إعادة تحميل الصفحة.</p>'
+                        + '</div>';
+                });
         }
 
         if ('IntersectionObserver' in window) {
@@ -2518,14 +2532,20 @@
                         observer.disconnect();
                     }
                 });
-            }, { rootMargin: '300px' });
+            }, { rootMargin: '600px' });
             observer.observe(grid);
         } else {
-            // Fallback: load after the page has settled
             window.addEventListener('load', function () {
                 setTimeout(loadFirebaseShowcase, 1500);
             });
         }
+
+        // شبكة أمان: مهما حدث، لا نترك القسم معلّقاً بلا محاولة تحميل
+        // لأكثر من 6 ثوانٍ بعد اكتمال تحميل الصفحة (يغطي حالات فشل
+        // المراقب أو مستخدم لا يمرّر الصفحة بالسرعة المتوقعة).
+        window.addEventListener('load', function () {
+            setTimeout(loadFirebaseShowcase, 6000);
+        });
     })();
     </script>
 
