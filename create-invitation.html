@@ -1993,11 +1993,10 @@
     <!-- pdf.js: used only to render the first page of an uploaded PDF paper-invitation
          into an image before sending it to the AI scan (vision models require an image, not a raw PDF). -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.0.379/pdf.min.js"></script>
-    <!-- Puter.js: free AI vision used only for the optional "scan paper invitation" auto-fill feature below.
-         Does not touch/replace the existing NVIDIA-based AI features elsewhere in the app. -->
-    <!-- Puter.js is intentionally NOT loaded here. It patches window.fetch/XHR globally,
-         which was breaking Firebase Auth's own requests and force-logging users out.
-         It now runs fully isolated inside a sandboxed iframe — see aiScanIframe below. -->
+    <!-- The "scan paper invitation" auto-fill feature below sends the photo to
+         our own Worker (/api/ai/scan-invitation), which calls an NVIDIA vision
+         model — the same NVIDIA_API_KEY/NIM API used by the other AI features
+         in this app (ai-writer.html, editor.html, invite.html translations). -->
     
     <!-- App Scripts -->
     <script src="js/firebase-config.js"></script>
@@ -4093,102 +4092,83 @@ ${venueName ? `- المكان: ${venueName}` : ''}
 
         // ===================================
         // AI Scan: Paper Wedding Invitation Auto-fill (optional feature)
-        // Uses Puter.js (free, keyless AI vision) — see:
-        // https://developer.puter.com/tutorials/free-unlimited-openai-api/
-        //
-        // IMPORTANT: Puter.js is run inside a sandboxed, isolated <iframe>
-        // (not the main page) because it globally patches window.fetch/XHR,
-        // which was breaking Firebase Auth's token-refresh requests and
-        // force-logging users out. The iframe has its own separate JS
-        // realm, so Puter can never touch this page's fetch/storage/auth.
-        // This is completely separate from the existing NVIDIA-based AI
-        // features used elsewhere in the app; nothing else was touched.
+        // Sends the paper-invitation photo to our own Worker
+        // (POST /api/ai/scan-invitation), which calls an NVIDIA vision
+        // model (NIM API) using the same NVIDIA_API_KEY already configured
+        // on the Worker for the other AI features (ai-writer.html,
+        // editor.html, invite.html translations). No third-party AI
+        // service is used here anymore.
         // ===================================
-        let aiScanIframe = null;
-        let aiScanIframeReady = null;
-        const aiScanPendingRequests = {};
 
-        function ensureAIScanIframe() {
-            if (aiScanIframeReady) return aiScanIframeReady;
+        // NVIDIA's hosted inference endpoint only accepts inline base64
+        // images up to ~180KB of base64 data, so a photo straight from a
+        // phone camera needs to be downscaled/recompressed first. This
+        // progressively lowers JPEG quality, then dimensions, until the
+        // result fits comfortably under that budget.
+        async function compressImageDataUrlForAIScan(dataUrl, maxBase64Chars = 150000) {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                img.onload = () => {
+                    try {
+                        const maxDim = 1600;
+                        let width = img.naturalWidth || img.width;
+                        let height = img.naturalHeight || img.height;
+                        const initialScale = Math.min(1, maxDim / Math.max(width, height));
+                        width = Math.max(1, Math.round(width * initialScale));
+                        height = Math.max(1, Math.round(height * initialScale));
 
-            aiScanIframeReady = new Promise((resolve) => {
-                const iframe = document.createElement('iframe');
-                iframe.id = 'aiScanIframe';
-                iframe.title = 'ai-scan-sandbox';
-                iframe.sandbox = 'allow-scripts allow-popups allow-forms';
-                iframe.style.display = 'none';
-                iframe.srcdoc = `<!DOCTYPE html><html><head></head><body>
-<script src="https://js.puter.com/v2/"><\/script>
-<script>
-window.addEventListener('message', async function(e) {
-    var data = e.data || {};
-    if (data.type !== 'ai-scan-analyze') return;
-    try {
-        if (typeof puter === 'undefined' || !puter.ai || !puter.ai.chat) {
-            throw new Error('puter-not-loaded');
-        }
-        var response = await puter.ai.chat(data.prompt, data.dataUrl, { model: 'gpt-4o' });
-        parent.postMessage({
-            type: 'ai-scan-result',
-            requestId: data.requestId,
-            success: true,
-            response: (typeof response === 'string') ? response : (response && response.message && response.message.content) || (response && response.text) || String(response || '')
-        }, '*');
-    } catch (err) {
-        parent.postMessage({
-            type: 'ai-scan-result',
-            requestId: data.requestId,
-            success: false,
-            error: (err && err.message) ? err.message : String(err)
-        }, '*');
-    }
-});
-window.addEventListener('load', function() {
-    parent.postMessage({ type: 'ai-scan-iframe-ready' }, '*');
-});
-<\/script>
-</body></html>`;
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
 
-                const onMessage = (e) => {
-                    if (e?.data?.type === 'ai-scan-iframe-ready') {
-                        window.removeEventListener('message', onMessage);
-                        resolve(iframe);
+                        let quality = 0.85;
+                        let out = '';
+                        const render = () => {
+                            canvas.width = width;
+                            canvas.height = height;
+                            ctx.clearRect(0, 0, width, height);
+                            ctx.drawImage(img, 0, 0, width, height);
+                            return canvas.toDataURL('image/jpeg', quality);
+                        };
+
+                        out = render();
+                        let attempts = 0;
+                        while (out.length - (out.indexOf(',') + 1) > maxBase64Chars && attempts < 10) {
+                            attempts++;
+                            if (quality > 0.4) {
+                                quality -= 0.15;
+                            } else {
+                                width = Math.max(200, Math.round(width * 0.8));
+                                height = Math.max(200, Math.round(height * 0.8));
+                            }
+                            out = render();
+                        }
+                        resolve(out);
+                    } catch (err) {
+                        reject(err);
                     }
                 };
-                window.addEventListener('message', onMessage);
-                document.body.appendChild(iframe);
-                aiScanIframe = iframe;
+                img.onerror = () => reject(new Error('image-load-failed'));
+                img.src = dataUrl;
             });
-
-            return aiScanIframeReady;
         }
 
-        window.addEventListener('message', (e) => {
-            const data = e?.data;
-            if (!data || data.type !== 'ai-scan-result') return;
-            const pending = aiScanPendingRequests[data.requestId];
-            if (!pending) return;
-            delete aiScanPendingRequests[data.requestId];
-            if (data.success) pending.resolve(data.response);
-            else pending.reject(new Error(data.error || 'ai-scan-failed'));
-        });
+        async function analyzeInvitationViaWorker(dataUrl) {
+            const workerUrl = window.r2Config?.workerUrl;
+            if (!workerUrl) throw new Error('worker-not-configured');
 
-        async function analyzeInvitationInSandbox(prompt, dataUrl) {
-            const iframe = await ensureAIScanIframe();
-            const requestId = 'req_' + Date.now() + '_' + Math.random().toString(36).slice(2);
+            const compressed = await compressImageDataUrlForAIScan(dataUrl);
 
-            return new Promise((resolve, reject) => {
-                aiScanPendingRequests[requestId] = { resolve, reject };
-                iframe.contentWindow.postMessage({ type: 'ai-scan-analyze', requestId, prompt, dataUrl }, '*');
-
-                // Safety timeout so the UI never hangs forever
-                setTimeout(() => {
-                    if (aiScanPendingRequests[requestId]) {
-                        delete aiScanPendingRequests[requestId];
-                        reject(new Error('ai-scan-timeout'));
-                    }
-                }, 60000);
+            const res = await fetch(`${workerUrl}/api/ai/scan-invitation`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ dataUrl: compressed }),
             });
+
+            const result = await res.json().catch(() => null);
+            if (!res.ok || !result || !result.success) {
+                throw new Error((result && result.error) || 'ai-scan-failed');
+            }
+            return result.data || {};
         }
 
         function fileToDataURL(file) {
@@ -4292,25 +4272,7 @@ window.addEventListener('load', function() {
             try {
                 const dataUrl = isPdf ? await pdfFileToImageDataURL(file) : await fileToDataURL(file);
 
-                const prompt = `أنت مساعد متخصص في قراءة دعوات الأفراح والمناسبات العربية الورقية (سواء كانت صورة أو مستند). حلل الملف المرفق واستخرج المعلومات التالية بصيغة JSON فقط، بدون أي نص إضافي أو شرح أو علامات markdown، وبدون أي مقدمات:
-{
-  "groomName": "اسم العريس فقط بدون ألقاب مثل الأستاذ أو الدكتور",
-  "brideName": "اسم العروسة فقط بدون ألقاب",
-  "groomFamily": "اسم عائلة/أب العريس إن وجد، وإلا نص فارغ",
-  "brideFamily": "اسم عائلة/أب العروسة إن وجد، وإلا نص فارغ",
-  "weddingDate": "تاريخ المناسبة بصيغة YYYY-MM-DD فقط إن كان بالإمكان تحديدها بثقة، وإلا نص فارغ",
-  "weddingTime": "توقيت المناسبة بصيغة 24 ساعة HH:MM فقط إن كان بالإمكان تحديده بثقة، وإلا نص فارغ",
-  "venueName": "اسم القاعة أو الفندق أو مكان الاحتفال",
-  "venueAddress": "عنوان القاعة أو مكان الاحتفال إن وجد، وإلا نص فارغ"
-}
-إذا لم تجد معلومة معينة اتركها نص فارغ "" ولا تخترع بيانات غير موجودة في الملف. أعد فقط كائن JSON صالح.`;
-
-                const rawText = await analyzeInvitationInSandbox(prompt, dataUrl) || '';
-
-                const jsonMatch = rawText.match(/\{[\s\S]*\}/);
-                if (!jsonMatch) throw new Error('ai-no-json');
-
-                const parsed = JSON.parse(jsonMatch[0]);
+                const parsed = await analyzeInvitationViaWorker(dataUrl);
                 applyAIScanResults(parsed);
 
                 statusEl.innerHTML = `<i class="fas fa-circle-check" style="color:#2ecc71;"></i> ${L('ai_scan_success')}`;
