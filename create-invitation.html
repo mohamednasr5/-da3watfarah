@@ -986,7 +986,80 @@
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
-        
+
+        /* AI paper-invitation scan box (optional auto-fill feature) */
+        .ai-invitation-scan {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            background: linear-gradient(135deg, rgba(212,175,55,0.10), rgba(212,175,55,0.03));
+            border: 1.5px dashed var(--primary-gold);
+            border-radius: 16px;
+            padding: 18px 20px;
+            margin-bottom: 25px;
+        }
+        .ai-invitation-scan .ai-scan-icon {
+            width: 48px;
+            height: 48px;
+            flex: 0 0 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: var(--primary-gold);
+            color: #fff;
+            font-size: 1.3rem;
+        }
+        .ai-invitation-scan .ai-scan-text {
+            flex: 1 1 220px;
+            min-width: 200px;
+        }
+        .ai-invitation-scan .ai-scan-text h4 {
+            margin: 0 0 4px;
+            font-size: 0.98rem;
+            color: var(--text-primary, #2D2D44);
+        }
+        .ai-invitation-scan .ai-scan-text p {
+            margin: 0;
+            font-size: 0.82rem;
+            color: #6B7280;
+            line-height: 1.5;
+        }
+        .ai-scan-upload-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 24px;
+            background: var(--primary-gold);
+            color: #fff;
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all var(--transition-fast);
+        }
+        .ai-scan-upload-btn:hover:not(:disabled) {
+            filter: brightness(1.08);
+            transform: translateY(-1px);
+        }
+        .ai-scan-upload-btn:disabled {
+            opacity: 0.65;
+            cursor: not-allowed;
+        }
+        .ai-scan-upload-btn .fa-spinner {
+            animation: spin 0.8s linear infinite;
+        }
+        .ai-invitation-scan .ai-scan-status {
+            flex-basis: 100%;
+            font-size: 0.82rem;
+            padding-top: 6px;
+            border-top: 1px dashed rgba(212,175,55,0.4);
+            margin-top: 4px;
+        }
+
         .preview-item {
             position: relative;
             aspect-ratio: 1;
@@ -1459,7 +1532,21 @@
                     <!-- Step 1: Basic Info -->
                     <div class="wizard-content active" id="step1">
                         <h3 style="margin-bottom: 25px;" data-i18n="step1_h3"><i class="fas fa-user-group" style="color: var(--primary-gold);"></i> البيانات الأساسية</h3>
-                        
+
+                        <!-- Optional: scan the paper wedding invitation and let AI auto-fill the fields below -->
+                        <div class="ai-invitation-scan" id="aiInvitationScanBox">
+                            <div class="ai-scan-icon"><i class="fas fa-wand-magic-sparkles"></i></div>
+                            <div class="ai-scan-text">
+                                <h4 data-i18n="ai_scan_title">تعبئة تلقائية بالذكاء الاصطناعي (اختياري)</h4>
+                                <p data-i18n="ai_scan_desc">ارفع صورة أو ملف PDF لدعوة الفرح الورقية، وسيقوم الذكاء الاصطناعي بقراءتها وتعبئة الأسماء والتاريخ والمكان تلقائيًا. يمكنك تعديل أي بيانات بعد ذلك.</p>
+                            </div>
+                            <button type="button" class="ai-scan-upload-btn" id="aiScanUploadBtn" onclick="document.getElementById('aiScanFileInput').click()">
+                                <i class="fas fa-upload"></i> <span id="aiScanBtnText" data-i18n="ai_scan_btn">رفع دعوة الفرح الورقية</span>
+                            </button>
+                            <input type="file" id="aiScanFileInput" accept="image/*,application/pdf" style="display:none" onchange="handleAIScanFileSelected(event)">
+                            <div class="ai-scan-status" id="aiScanStatus" style="display:none;"></div>
+                        </div>
+
                         <div class="form-grid">
                             <div class="form-group full-width">
                                 <label data-i18n="event_type_label"><i class="fas fa-heart"></i> نوع الدعوة *</label>
@@ -1903,6 +1990,9 @@
     
     <!-- AOS Animation -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <!-- Puter.js: free AI vision used only for the optional "scan paper invitation" auto-fill feature below.
+         Does not touch/replace the existing NVIDIA-based AI features elsewhere in the app. -->
+    <script src="https://js.puter.com/v2/"></script>
     
     <!-- App Scripts -->
     <script src="js/firebase-config.js"></script>
@@ -1928,6 +2018,15 @@
                 event_type_wedding: '<i class="fas fa-rings-wedding"></i> دعوة فرح',
                 event_type_engagement: '<i class="fas fa-gem"></i> دعوة خطوبة',
                 event_type_katb: '<i class="fas fa-book-quran"></i> دعوة كتب كتاب',
+                ai_scan_title: 'تعبئة تلقائية بالذكاء الاصطناعي (اختياري)',
+                ai_scan_desc: 'ارفع صورة أو ملف PDF لدعوة الفرح الورقية، وسيقوم الذكاء الاصطناعي بقراءتها وتعبئة الأسماء والتاريخ والمكان تلقائيًا. يمكنك تعديل أي بيانات بعد ذلك.',
+                ai_scan_btn: 'رفع دعوة الفرح الورقية',
+                ai_scan_loading: 'جاري تحليل الدعوة...',
+                ai_scan_analyzing: 'يقوم الذكاء الاصطناعي بقراءة الدعوة وتحليلها...',
+                ai_scan_success: 'تم استخراج بيانات الدعوة بنجاح، برجاء مراجعتها',
+                ai_scan_error: 'تعذر تحليل الدعوة تلقائيًا، برجاء تعبئة البيانات يدويًا',
+                ai_scan_too_large: 'حجم الملف كبير جدًا (الحد الأقصى 8 ميجابايت)',
+                ai_scan_unsupported: 'صيغة الملف غير مدعومة، برجاء رفع صورة أو ملف PDF',
                 groom_name_label: '<i class="fas fa-user"></i> اسم العريس *', groom_name_ph: 'أدخل اسم العريس',
                 bride_name_label: '<i class="fas fa-user"></i> اسم العروس *', bride_name_ph: 'أدخل اسم العروس',
                 groom_father_label: '<i class="fas fa-user-tie"></i> اسم أب العريس',
@@ -2120,6 +2219,15 @@
                 event_type_wedding: '<i class="fas fa-rings-wedding"></i> Wedding Invitation',
                 event_type_engagement: '<i class="fas fa-gem"></i> Engagement Invitation',
                 event_type_katb: '<i class="fas fa-book-quran"></i> Katb El-Ketab Invitation',
+                ai_scan_title: 'AI Auto-fill (Optional)',
+                ai_scan_desc: 'Upload a photo or PDF of your paper wedding invitation and AI will read it and auto-fill the names, date, and venue. You can edit any field afterwards.',
+                ai_scan_btn: 'Upload Paper Invitation',
+                ai_scan_loading: 'Analyzing invitation...',
+                ai_scan_analyzing: 'AI is reading and analyzing your invitation...',
+                ai_scan_success: 'Invitation data extracted successfully, please review it',
+                ai_scan_error: 'Could not auto-analyze the invitation, please fill the data manually',
+                ai_scan_too_large: 'File is too large (8MB max)',
+                ai_scan_unsupported: 'Unsupported file type, please upload an image or a PDF',
                 groom_name_label: '<i class="fas fa-user"></i> Groom\'s Name *', groom_name_ph: "Enter groom's name",
                 bride_name_label: '<i class="fas fa-user"></i> Bride\'s Name *', bride_name_ph: "Enter bride's name",
                 groom_father_label: '<i class="fas fa-user-tie"></i> Groom\'s Father Name',
@@ -3323,6 +3431,11 @@
             const groomFatherLabelEl = document.getElementById('groomFatherFieldLabel');
             const toggle = (id, show) => { const el = document.getElementById(id); if (el) el.style.display = show ? '' : 'none'; };
 
+            // The paper-invitation AI scan box is only relevant for couple events
+            // (wedding/engagement/katb_ketab/henna) since it extracts groom+bride
+            // details. Hide it for single-person events (birthday/newborn/graduation/ramadan).
+            toggle('aiInvitationScanBox', !isSingle);
+
             if (isSingle) {
                 groomLabelEl.innerHTML = meta.nameLabel;
                 groomInput.placeholder = meta.namePh || '';
@@ -3968,6 +4081,135 @@ ${venueName ? `- المكان: ${venueName}` : ''}
                 btn.disabled = false;
                 btn.querySelector('i').className = 'fas fa-language';
                 btnText.textContent = originalText;
+            }
+        }
+
+        // ===================================
+        // AI Scan: Paper Wedding Invitation Auto-fill (optional feature)
+        // Uses Puter.js (free, keyless AI vision) — see:
+        // https://developer.puter.com/tutorials/free-unlimited-openai-api/
+        // This is completely separate from the existing NVIDIA-based AI
+        // features used elsewhere in the app; nothing else was touched.
+        // ===================================
+        function fileToDataURL(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = () => reject(new Error('file-read-failed'));
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // Accepts "YYYY-MM-DD"; returns '' if the AI couldn't confidently produce that format.
+        function normalizeAIDate(value) {
+            if (!value || typeof value !== 'string') return '';
+            const m = value.trim().match(/^(\d{4})-(\d{2})-(\d{2})$/);
+            return m ? value.trim() : '';
+        }
+
+        // Accepts "HH:MM" (24h); returns '' otherwise.
+        function normalizeAITime(value) {
+            if (!value || typeof value !== 'string') return '';
+            const m = value.trim().match(/^([01]?\d|2[0-3]):([0-5]\d)$/);
+            if (!m) return '';
+            return `${m[1].padStart(2, '0')}:${m[2]}`;
+        }
+
+        // Only fills fields the user hasn't already typed something into,
+        // so an AI scan never overwrites manual entries.
+        function applyAIScanResults(data) {
+            const setIfEmpty = (id, value) => {
+                if (!value) return;
+                const el = document.getElementById(id);
+                if (el && !el.value.trim()) {
+                    el.value = String(value).trim();
+                    el.dispatchEvent(new Event('input', { bubbles: true }));
+                }
+            };
+            setIfEmpty('groomName', data.groomName);
+            setIfEmpty('brideName', data.brideName);
+            // No dedicated "family name" field exists in the form, so we use
+            // the closest existing fields (father/family name of each side).
+            setIfEmpty('groomFatherName', data.groomFamily);
+            setIfEmpty('brideFatherName', data.brideFamily);
+            setIfEmpty('weddingDate', normalizeAIDate(data.weddingDate));
+            setIfEmpty('weddingTime', normalizeAITime(data.weddingTime));
+            setIfEmpty('venueName', data.venueName);
+            setIfEmpty('venueAddress', data.venueAddress);
+        }
+
+        async function handleAIScanFileSelected(event) {
+            const file = event.target.files && event.target.files[0];
+            if (!file) return;
+
+            const isImage = file.type.startsWith('image/');
+            const isPdf = file.type === 'application/pdf' || /\.pdf$/i.test(file.name);
+            if (!isImage && !isPdf) {
+                db.showNotification(L('ai_scan_unsupported'), 'error');
+                event.target.value = '';
+                return;
+            }
+
+            const maxSize = 8 * 1024 * 1024; // 8MB
+            if (file.size > maxSize) {
+                db.showNotification(L('ai_scan_too_large'), 'error');
+                event.target.value = '';
+                return;
+            }
+
+            const btn = document.getElementById('aiScanUploadBtn');
+            const btnText = document.getElementById('aiScanBtnText');
+            const statusEl = document.getElementById('aiScanStatus');
+            const originalBtnText = btnText.textContent;
+
+            btn.disabled = true;
+            btn.querySelector('i').className = 'fas fa-spinner';
+            btnText.textContent = L('ai_scan_loading');
+            statusEl.style.display = 'block';
+            statusEl.innerHTML = `<i class="fas fa-spinner fa-spin" style="color: var(--primary-gold);"></i> ${L('ai_scan_analyzing')}`;
+
+            try {
+                if (typeof puter === 'undefined' || !puter.ai || !puter.ai.chat) {
+                    throw new Error('puter-not-loaded');
+                }
+
+                const dataUrl = await fileToDataURL(file);
+
+                const prompt = `أنت مساعد متخصص في قراءة دعوات الأفراح والمناسبات العربية الورقية (سواء كانت صورة أو مستند). حلل الملف المرفق واستخرج المعلومات التالية بصيغة JSON فقط، بدون أي نص إضافي أو شرح أو علامات markdown، وبدون أي مقدمات:
+{
+  "groomName": "اسم العريس فقط بدون ألقاب مثل الأستاذ أو الدكتور",
+  "brideName": "اسم العروسة فقط بدون ألقاب",
+  "groomFamily": "اسم عائلة/أب العريس إن وجد، وإلا نص فارغ",
+  "brideFamily": "اسم عائلة/أب العروسة إن وجد، وإلا نص فارغ",
+  "weddingDate": "تاريخ المناسبة بصيغة YYYY-MM-DD فقط إن كان بالإمكان تحديدها بثقة، وإلا نص فارغ",
+  "weddingTime": "توقيت المناسبة بصيغة 24 ساعة HH:MM فقط إن كان بالإمكان تحديده بثقة، وإلا نص فارغ",
+  "venueName": "اسم القاعة أو الفندق أو مكان الاحتفال",
+  "venueAddress": "عنوان القاعة أو مكان الاحتفال إن وجد، وإلا نص فارغ"
+}
+إذا لم تجد معلومة معينة اتركها نص فارغ "" ولا تخترع بيانات غير موجودة في الملف. أعد فقط كائن JSON صالح.`;
+
+                const response = await puter.ai.chat(prompt, dataUrl, { model: 'gpt-5.6-luna' });
+                const rawText = (typeof response === 'string')
+                    ? response
+                    : (response?.message?.content ?? response?.text ?? String(response ?? ''));
+
+                const jsonMatch = rawText.match(/\{[\s\S]*\}/);
+                if (!jsonMatch) throw new Error('ai-no-json');
+
+                const parsed = JSON.parse(jsonMatch[0]);
+                applyAIScanResults(parsed);
+
+                statusEl.innerHTML = `<i class="fas fa-circle-check" style="color:#2ecc71;"></i> ${L('ai_scan_success')}`;
+                db.showNotification(L('ai_scan_success'), 'success');
+            } catch (error) {
+                console.error('AI invitation scan error:', error);
+                statusEl.innerHTML = `<i class="fas fa-triangle-exclamation" style="color:#e74c3c;"></i> ${L('ai_scan_error')}`;
+                db.showNotification(L('ai_scan_error'), 'error');
+            } finally {
+                btn.disabled = false;
+                btn.querySelector('i').className = 'fas fa-upload';
+                btnText.textContent = originalBtnText;
+                event.target.value = '';
             }
         }
 
