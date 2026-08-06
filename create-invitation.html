@@ -1990,6 +1990,9 @@
     
     <!-- AOS Animation -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <!-- pdf.js: used only to render the first page of an uploaded PDF paper-invitation
+         into an image before sending it to the AI scan (vision models require an image, not a raw PDF). -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.0.379/pdf.min.js"></script>
     <!-- Puter.js: free AI vision used only for the optional "scan paper invitation" auto-fill feature below.
          Does not touch/replace the existing NVIDIA-based AI features elsewhere in the app. -->
     <script src="https://js.puter.com/v2/"></script>
@@ -2025,6 +2028,7 @@
                 ai_scan_analyzing: 'يقوم الذكاء الاصطناعي بقراءة الدعوة وتحليلها...',
                 ai_scan_success: 'تم استخراج بيانات الدعوة بنجاح، برجاء مراجعتها',
                 ai_scan_error: 'تعذر تحليل الدعوة تلقائيًا، برجاء تعبئة البيانات يدويًا',
+                ai_scan_pdf_error: 'تعذر قراءة ملف PDF، برجاء رفع صورة للدعوة بدلاً منه',
                 ai_scan_too_large: 'حجم الملف كبير جدًا (الحد الأقصى 8 ميجابايت)',
                 ai_scan_unsupported: 'صيغة الملف غير مدعومة، برجاء رفع صورة أو ملف PDF',
                 groom_name_label: '<i class="fas fa-user"></i> اسم العريس *', groom_name_ph: 'أدخل اسم العريس',
@@ -2226,6 +2230,7 @@
                 ai_scan_analyzing: 'AI is reading and analyzing your invitation...',
                 ai_scan_success: 'Invitation data extracted successfully, please review it',
                 ai_scan_error: 'Could not auto-analyze the invitation, please fill the data manually',
+                ai_scan_pdf_error: 'Could not read the PDF file, please upload an image of the invitation instead',
                 ai_scan_too_large: 'File is too large (8MB max)',
                 ai_scan_unsupported: 'Unsupported file type, please upload an image or a PDF',
                 groom_name_label: '<i class="fas fa-user"></i> Groom\'s Name *', groom_name_ph: "Enter groom's name",
@@ -4100,6 +4105,27 @@ ${venueName ? `- المكان: ${venueName}` : ''}
             });
         }
 
+        // Vision AI models need an actual image, not a raw PDF file, so we render
+        // the first page of the uploaded PDF onto a canvas and export it as a PNG data URL.
+        async function pdfFileToImageDataURL(file) {
+            if (typeof pdfjsLib === 'undefined') {
+                throw new Error('pdfjs-not-loaded');
+            }
+            if (pdfjsLib.GlobalWorkerOptions && !pdfjsLib.GlobalWorkerOptions.workerSrc) {
+                pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.0.379/pdf.worker.min.js';
+            }
+            const arrayBuffer = await file.arrayBuffer();
+            const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+            const page = await pdf.getPage(1);
+            const viewport = page.getViewport({ scale: 2 });
+            const canvas = document.createElement('canvas');
+            canvas.width = viewport.width;
+            canvas.height = viewport.height;
+            const ctx = canvas.getContext('2d');
+            await page.render({ canvasContext: ctx, viewport }).promise;
+            return canvas.toDataURL('image/png');
+        }
+
         // Accepts "YYYY-MM-DD"; returns '' if the AI couldn't confidently produce that format.
         function normalizeAIDate(value) {
             if (!value || typeof value !== 'string') return '';
@@ -4173,7 +4199,7 @@ ${venueName ? `- المكان: ${venueName}` : ''}
                     throw new Error('puter-not-loaded');
                 }
 
-                const dataUrl = await fileToDataURL(file);
+                const dataUrl = isPdf ? await pdfFileToImageDataURL(file) : await fileToDataURL(file);
 
                 const prompt = `أنت مساعد متخصص في قراءة دعوات الأفراح والمناسبات العربية الورقية (سواء كانت صورة أو مستند). حلل الملف المرفق واستخرج المعلومات التالية بصيغة JSON فقط، بدون أي نص إضافي أو شرح أو علامات markdown، وبدون أي مقدمات:
 {
@@ -4188,7 +4214,7 @@ ${venueName ? `- المكان: ${venueName}` : ''}
 }
 إذا لم تجد معلومة معينة اتركها نص فارغ "" ولا تخترع بيانات غير موجودة في الملف. أعد فقط كائن JSON صالح.`;
 
-                const response = await puter.ai.chat(prompt, dataUrl, { model: 'gpt-5.6-luna' });
+                const response = await puter.ai.chat(prompt, dataUrl, { model: 'gpt-4o' });
                 const rawText = (typeof response === 'string')
                     ? response
                     : (response?.message?.content ?? response?.text ?? String(response ?? ''));
@@ -4203,8 +4229,11 @@ ${venueName ? `- المكان: ${venueName}` : ''}
                 db.showNotification(L('ai_scan_success'), 'success');
             } catch (error) {
                 console.error('AI invitation scan error:', error);
-                statusEl.innerHTML = `<i class="fas fa-triangle-exclamation" style="color:#e74c3c;"></i> ${L('ai_scan_error')}`;
-                db.showNotification(L('ai_scan_error'), 'error');
+                const msg = (error && error.message === 'pdfjs-not-loaded')
+                    ? L('ai_scan_pdf_error')
+                    : L('ai_scan_error');
+                statusEl.innerHTML = `<i class="fas fa-triangle-exclamation" style="color:#e74c3c;"></i> ${msg}`;
+                db.showNotification(msg, 'error');
             } finally {
                 btn.disabled = false;
                 btn.querySelector('i').className = 'fas fa-upload';
