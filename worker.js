@@ -18,6 +18,21 @@
  *   - NVIDIA_API_KEY (secret) -> used by /api/ai/generate
  */
 
+/**
+ * CACHING NOTE (PageSpeed: "استخدام فترات التخزين المؤقت الفعّالة"):
+ * This Worker only handles the routes matched below (/api/*, /files/*,
+ * /invite.html, /sitemap*.xml, etc). Static files like css/style.css,
+ * js/main.js and bg.mp3 are served by GitHub Pages (see the CNAME file),
+ * with Cloudflare only proxying DNS in front of it — this fetch() handler
+ * never sees those requests, so their cache headers can't be fixed here,
+ * and the `_headers` file in this repo has NO effect (GitHub Pages ignores
+ * it; that convention only works on Cloudflare Pages/Netlify).
+ *
+ * REAL FIX: Cloudflare dashboard → Rules → Cache Rules → add a rule for
+ * da3watfarah.com/css/*, /js/*, *.mp3, *.jpg, *.png setting Edge Cache TTL
+ * and Browser Cache TTL (e.g. 7 days for css/js, 30 days for images).
+ * This must be done in the Cloudflare dashboard, not in a committed file.
+ */
 const KNOWN_BUCKET_BINDING_NAMES = ['FARAH', 'R2_BUCKET', 'MEDIA_BUCKET', 'BUCKET', 'R2', 'da3watfarah'];
 
 // Admin panel (admin.html) login password. Used to be a Firebase
