@@ -1,16 +1,21 @@
 /* Self-hosted fonts — replaces Google Fonts external request.
    Eliminates DNS lookup + connect + redirect to fonts.googleapis.com
-   and fonts.gstatic.com, which were part of the critical LCP chain. */
+   and fonts.gstatic.com, which were part of the critical LCP chain.
 
-@font-face{font-family:'Tajawal';font-style:normal;font-weight:300;font-display:swap;src:url('../fonts/tajawal-300.woff2') format('woff2')}
-@font-face{font-family:'Tajawal';font-style:normal;font-weight:400;font-display:swap;src:url('../fonts/tajawal-400.woff2') format('woff2')}
-@font-face{font-family:'Tajawal';font-style:normal;font-weight:500;font-display:swap;src:url('../fonts/tajawal-500.woff2') format('woff2')}
-@font-face{font-family:'Tajawal';font-style:normal;font-weight:700;font-display:swap;src:url('../fonts/tajawal-700.woff2') format('woff2')}
-@font-face{font-family:'Tajawal';font-style:normal;font-weight:800;font-display:swap;src:url('../fonts/tajawal-800.woff2') format('woff2')}
-@font-face{font-family:'Tajawal';font-style:normal;font-weight:900;font-display:swap;src:url('../fonts/tajawal-900.woff2') format('woff2')}
+   Served from Cloudflare R2 (pub-*.r2.dev) instead of a relative "../fonts/"
+   path: GitHub Pages (the static host in front of this repo) never had a
+   /fonts/ folder pushed to it, so relative font URLs 404'd on the live
+   site. R2 already has every file below at these exact filenames. */
 
-@font-face{font-family:'Amiri';font-style:normal;font-weight:400;font-display:swap;src:url('../fonts/amiri-400.woff2') format('woff2')}
-@font-face{font-family:'Amiri';font-style:normal;font-weight:700;font-display:swap;src:url('../fonts/amiri-700.woff2') format('woff2')}
+@font-face{font-family:'Tajawal';font-style:normal;font-weight:300;font-display:swap;src:url('https://pub-67b746453495438199c20622c45722a3.r2.dev/fonts/tajawal-300.woff2') format('woff2')}
+@font-face{font-family:'Tajawal';font-style:normal;font-weight:400;font-display:swap;src:url('https://pub-67b746453495438199c20622c45722a3.r2.dev/fonts/tajawal-400.woff2') format('woff2')}
+@font-face{font-family:'Tajawal';font-style:normal;font-weight:500;font-display:swap;src:url('https://pub-67b746453495438199c20622c45722a3.r2.dev/fonts/tajawal-500.woff2') format('woff2')}
+@font-face{font-family:'Tajawal';font-style:normal;font-weight:700;font-display:swap;src:url('https://pub-67b746453495438199c20622c45722a3.r2.dev/fonts/tajawal-700.woff2') format('woff2')}
+@font-face{font-family:'Tajawal';font-style:normal;font-weight:800;font-display:swap;src:url('https://pub-67b746453495438199c20622c45722a3.r2.dev/fonts/tajawal-800.woff2') format('woff2')}
+@font-face{font-family:'Tajawal';font-style:normal;font-weight:900;font-display:swap;src:url('https://pub-67b746453495438199c20622c45722a3.r2.dev/fonts/tajawal-900.woff2') format('woff2')}
 
-@font-face{font-family:'Aref Ruqaa';font-style:normal;font-weight:400;font-display:swap;src:url('../fonts/aref-ruqaa-400.woff2') format('woff2')}
-@font-face{font-family:'Aref Ruqaa';font-style:normal;font-weight:700;font-display:swap;src:url('../fonts/aref-ruqaa-700.woff2') format('woff2')}
+@font-face{font-family:'Amiri';font-style:normal;font-weight:400;font-display:swap;src:url('https://pub-67b746453495438199c20622c45722a3.r2.dev/fonts/amiri-400.woff2') format('woff2')}
+@font-face{font-family:'Amiri';font-style:normal;font-weight:700;font-display:swap;src:url('https://pub-67b746453495438199c20622c45722a3.r2.dev/fonts/amiri-700.woff2') format('woff2')}
+
+@font-face{font-family:'Aref Ruqaa';font-style:normal;font-weight:400;font-display:swap;src:url('https://pub-67b746453495438199c20622c45722a3.r2.dev/fonts/aref-ruqaa-400.woff2') format('woff2')}
+@font-face{font-family:'Aref Ruqaa';font-style:normal;font-weight:700;font-display:swap;src:url('https://pub-67b746453495438199c20622c45722a3.r2.dev/fonts/aref-ruqaa-700.woff2') format('woff2')}
