@@ -146,13 +146,13 @@ class PWAManager {
           <p>استمتع بتجربة أفضل وأسرع مع تطبيق دعوة فرح على جهازك</p>
         </div>
         <div class="banner-actions">
-          <button id="pwa-install-btn" class="btn-install">
+          <button id="pwa-install-btn" class="btn-install" aria-label="تثبيت التطبيق">
             <span>تثبيت</span>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
               <path d="M5 12h14M12 5l7 7m-7-7l-7 7"/>
             </svg>
           </button>
-          <button id="pwa-dismiss-btn" class="btn-dismiss">
+          <button id="pwa-dismiss-btn" class="btn-dismiss" aria-label="إغلاق إشعار التثبيت">
             <svg viewBox="0 0 24 24" fill="currentColor">
               <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/>
             </svg>

@@ -640,7 +640,7 @@ input, textarea {
     opacity: 0.8;
 }
 
-.mini-couple-names h3 {
+.mini-couple-names-text {
     font-family: var(--font-aref);
     font-size: 1.8rem;
     color: var(--primary-gold);
@@ -781,7 +781,8 @@ input, textarea {
     border-radius: var(--radius-xl, 30px);
     font-size: 0.95rem;
     font-weight: 700;
-    color: var(--primary-gold, #D4AF37);
+    /* Darkened from #D4AF37 to meet WCAG AA 4.5:1 contrast on white backgrounds */
+    color: var(--primary-gold-accessible, #8B6508);
     cursor: pointer;
     transition: all var(--transition-normal, .2s);
 }
@@ -789,7 +790,8 @@ input, textarea {
 .event-filter-btn:hover,
 .event-filter-btn.active {
     background: var(--primary-gold, #D4AF37);
-    color: #fff;
+    /* Dark text on gold background also meets AA contrast */
+    color: #2b2200;
 }
 
 .templates-empty-state {

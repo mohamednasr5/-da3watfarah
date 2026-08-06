@@ -191,6 +191,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
 
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://ipapi.co" crossorigin>
+    <link rel="dns-prefetch" href="https://ipapi.co">
 
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=Amiri:wght@400;700&family=Aref+Ruqaa:wght@400;700&display=swap">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=Amiri:wght@400;700&family=Aref+Ruqaa:wght@400;700&display=swap" media="print" onload="this.media='all'">
@@ -597,7 +599,7 @@
                     <button class="lang-btn" data-lang="en" onclick="switchLang('en')">English</button>
                 </div>
 
-                <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="فتح القائمة" aria-expanded="false">
 
                 <i class="fas fa-bars"></i>
 
@@ -775,7 +777,7 @@
 
                                 <div class="mini-couple-names">
 
-                                    <h3 data-i18n="mini_names">أحمد & سارة</h3>
+                                    <p class="mini-couple-names-text" data-i18n="mini_names">أحمد &amp; سارة</p>
 
                                 </div>
 
@@ -2386,11 +2388,11 @@
 
                         <button class="df-icon-btn df-icon-copy" onclick="copyInvitationLink()" title="نسخ الرابط" data-i18n-title="footer_copy_title"><i class="fas fa-copy"></i></button>
 
-                        <a class="df-icon-btn df-icon-telegram" href="javascript:void(0)" onclick="shareOnTelegram()" title="تيليجرام" data-i18n-title="footer_telegram_title"><i class="fab fa-telegram-plane"></i></a>
+                        <a class="df-icon-btn df-icon-telegram" href="https://telegram.org/" onclick="shareOnTelegram(); return false;" title="تيليجرام" data-i18n-title="footer_telegram_title"><i class="fab fa-telegram-plane"></i></a>
 
-                        <a class="df-icon-btn df-icon-twitter" href="javascript:void(0)" onclick="shareOnTwitter()" title="تويتر" data-i18n-title="footer_twitter_title"><i class="fab fa-twitter"></i></a>
+                        <a class="df-icon-btn df-icon-twitter" href="https://twitter.com/" onclick="shareOnTwitter(); return false;" title="تويتر" data-i18n-title="footer_twitter_title"><i class="fab fa-twitter"></i></a>
 
-                        <a class="df-icon-btn df-icon-whatsapp" href="javascript:void(0)" onclick="shareOnWhatsApp()" title="واتساب" data-i18n-title="footer_whatsapp_title"><i class="fab fa-whatsapp"></i></a>
+                        <a class="df-icon-btn df-icon-whatsapp" href="https://wa.me/" onclick="shareOnWhatsApp(); return false;" title="واتساب" data-i18n-title="footer_whatsapp_title"><i class="fab fa-whatsapp"></i></a>
 
                     </div>
 

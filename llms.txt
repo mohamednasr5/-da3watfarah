@@ -5,7 +5,7 @@
 ## Basic Information
 
 - **Name**: Da3wat Farah (دعوة فرح)
-- **URL**: https://da3watfarah.com
+- **URL**: [https://da3watfarah.com](https://da3watfarah.com)
 - **Type**: SaaS Platform - Electronic Wedding Invitations
 - **Languages**: Arabic (default, RTL), English
 - **Target Markets**: Egypt, Saudi Arabia, UAE, Kuwait, Qatar, Bahrain, Oman, and the wider Arab world
@@ -24,36 +24,32 @@ Da3wat Farah enables couples to create professional, digital wedding invitations
 
 ## Key Pages
 
-| Page | URL | Description |
-|------|-----|-------------|
-| Homepage | https://da3watfarah.com/ | Main landing page with features, templates, pricing |
-| Gallery | https://da3watfarah.com/gallery.html | Real invitations showcase |
-| Create Invitation | https://da3watfarah.com/create-invitation.html | Invitation creation wizard |
-| Login | https://da3watfarah.com/login.html | User authentication |
-| Privacy Policy | https://da3watfarah.com/legal/privacy.html | Privacy policy |
-| Terms of Use | https://da3watfarah.com/legal/terms.html | Terms and conditions |
-| Refund Policy | https://da3watfarah.com/legal/refund.html | Refund policy |
+- [Homepage](https://da3watfarah.com/) - Main landing page with features, templates, pricing
+- [Gallery](https://da3watfarah.com/gallery.html) - Real invitations showcase
+- [Create Invitation](https://da3watfarah.com/create-invitation.html) - Invitation creation wizard
+- [Login](https://da3watfarah.com/login.html) - User authentication
+- [Privacy Policy](https://da3watfarah.com/legal/privacy.html) - Privacy policy
+- [Terms of Use](https://da3watfarah.com/legal/terms.html) - Terms and conditions
+- [Refund Policy](https://da3watfarah.com/legal/refund.html) - Refund policy
 
 ## Template Preview Pages
 
-| Template | URL | Category |
-|----------|-----|----------|
-| Classic Golden | https://da3watfarah.com/preview-classic.html | Classic |
-| Modern Elegant | https://da3watfarah.com/preview-modern.html | Modern |
-| Romantic Soft | https://da3watfarah.com/preview-romantic.html | Romantic |
-| Islamic Luxury | https://da3watfarah.com/preview-islamic.html | Islamic |
-| Bohemian Free | https://da3watfarah.com/preview-bohemian.html | Bohemian |
-| Royal Luxury | https://da3watfarah.com/preview-royal.html | Classic |
-| Artistic Love | https://da3watfarah.com/templates-new/preview-artistic.html | Artistic |
-| Elite Wedding | https://da3watfarah.com/templates-new/preview-elite.html | Modern |
-| Floral Dream | https://da3watfarah.com/templates-new/preview-floral.html | Romantic |
-| Minimal Chic | https://da3watfarah.com/templates-new/preview-minimal.html | Modern |
-| Nature Love | https://da3watfarah.com/templates-new/preview-nature.html | Nature |
-| Starry Night | https://da3watfarah.com/templates-new/preview-starry.html | Romantic |
+- [Classic Golden](https://da3watfarah.com/preview-classic.html) - Classic
+- [Modern Elegant](https://da3watfarah.com/preview-modern.html) - Modern
+- [Romantic Soft](https://da3watfarah.com/preview-romantic.html) - Romantic
+- [Islamic Luxury](https://da3watfarah.com/preview-islamic.html) - Islamic
+- [Bohemian Free](https://da3watfarah.com/preview-bohemian.html) - Bohemian
+- [Royal Luxury](https://da3watfarah.com/preview-royal.html) - Classic
+- [Artistic Love](https://da3watfarah.com/templates-new/preview-artistic.html) - Artistic
+- [Elite Wedding](https://da3watfarah.com/templates-new/preview-elite.html) - Modern
+- [Floral Dream](https://da3watfarah.com/templates-new/preview-floral.html) - Romantic
+- [Minimal Chic](https://da3watfarah.com/templates-new/preview-minimal.html) - Modern
+- [Nature Love](https://da3watfarah.com/templates-new/preview-nature.html) - Nature
+- [Starry Night](https://da3watfarah.com/templates-new/preview-starry.html) - Romantic
 
 ## VIP Exclusive Templates (17+ Designs)
 
-Da3wat Farah offers a dedicated VIP tier at https://da3watfarah.com/vip/ with premium, video-enhanced invitation templates not available in the standard plans. Categories: Wedding (فرح), Engagement (خطوبة), Henna Night (حناء), Ramadan/Eid greetings, Birthday (عيد ميلاد), Newborn announcements (مولود جديد), and Graduation (تخرج). Each VIP template features a cinematic opening video, luxury animations, and interactive countdown/RSVP sections. VIP is a lifetime one-time subscription (400 EGP / 500 SAR / $25) that unlocks all 17+ exclusive designs plus everything in the Premium plan.
+Da3wat Farah offers a dedicated VIP tier at [https://da3watfarah.com/vip/](https://da3watfarah.com/vip/) with premium, video-enhanced invitation templates not available in the standard plans. Categories: Wedding (فرح), Engagement (خطوبة), Henna Night (حناء), Ramadan/Eid greetings, Birthday (عيد ميلاد), Newborn announcements (مولود جديد), and Graduation (تخرج). Each VIP template features a cinematic opening video, luxury animations, and interactive countdown/RSVP sections. VIP is a lifetime one-time subscription (400 EGP / 500 SAR / $25) that unlocks all 17+ exclusive designs plus everything in the Premium plan.
 
 ## Pricing Plans (Lifetime, One-time Payment)
 
@@ -98,14 +94,14 @@ English: Wedding Invitation Egypt, Online Wedding Invitation, Arabic Wedding Inv
 
 ## Social Media
 
-- Instagram: https://instagram.com/da3watfarah
-- TikTok: https://tiktok.com/@da3watfarah
-- X/Twitter: https://twitter.com/da3watfarah
-- Snapchat: https://snapchat.com/add/da3watfarah
-- Facebook Messenger: https://m.me/844143088781265
-- WhatsApp: https://wa.me/201279934735
+- Instagram: [https://instagram.com/da3watfarah](https://instagram.com/da3watfarah)
+- TikTok: [https://tiktok.com/@da3watfarah](https://tiktok.com/@da3watfarah)
+- X/Twitter: [https://twitter.com/da3watfarah](https://twitter.com/da3watfarah)
+- Snapchat: [https://snapchat.com/add/da3watfarah](https://snapchat.com/add/da3watfarah)
+- Facebook Messenger: [https://m.me/844143088781265](https://m.me/844143088781265)
+- WhatsApp: [https://wa.me/201279934735](https://wa.me/201279934735)
 
 ## Support
 
-- Messenger: https://m.me/844143088781265
-- WhatsApp: https://wa.me/201279934735
+- Messenger: [https://m.me/844143088781265](https://m.me/844143088781265)
+- WhatsApp: [https://wa.me/201279934735](https://wa.me/201279934735)
