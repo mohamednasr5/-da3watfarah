@@ -206,7 +206,9 @@
     <!-- Font Awesome Icons (non render-blocking) -->
     <link rel="preload" as="font" type="font/woff2" href="fonts/fa-solid-900-subset.woff2" crossorigin>
     <link rel="preload" as="font" type="font/woff2" href="fonts/fa-brands-400-subset.woff2" crossorigin>
-    <link rel="stylesheet" href="css/fa-subset.css">
+    <link rel="preload" as="style" href="css/fa-subset.css">
+    <link rel="stylesheet" href="css/fa-subset.css" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="css/fa-subset.css"></noscript>
 
     <!-- AOS Animation Library (non render-blocking) -->
 
@@ -2871,7 +2873,14 @@
 
         addCurrencySelector();
 
-        detectCountryAndUpdatePrices();
+        // Deferred: this fetch isn't needed for first paint/LCP, so pushing it
+        // past the current task avoids competing for network priority with
+        // the hero image/text during the critical rendering window.
+        if ('requestIdleCallback' in window) {
+            requestIdleCallback(() => detectCountryAndUpdatePrices(), { timeout: 2000 });
+        } else {
+            setTimeout(() => detectCountryAndUpdatePrices(), 300);
+        }
 
     });
 
