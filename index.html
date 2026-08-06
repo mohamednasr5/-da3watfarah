@@ -43,11 +43,13 @@
 
     <meta property="og:description" content="صمّم دعوة فرح إلكترونية باسم العروسين في دقائق، مع تأكيد حضور وخريطة وموسيقى، وشاركها بسهولة على واتساب والسوشيال ميديا.">
 
-    <meta property="og:image" content="https://da3watfarah.com/10.png">
+    <meta property="og:image" content="https://da3watfarah.com/10-optimized.jpg">
 
     <meta property="og:image:width" content="1200">
 
     <meta property="og:image:height" content="630">
+
+    <meta property="og:image:type" content="image/jpeg">
 
 
 
@@ -59,7 +61,7 @@
 
     <meta name="twitter:description" content="صمّم دعوة فرح إلكترونية باسم العروسين في دقائق وشاركها فورًا على واتساب والسوشيال ميديا.">
 
-    <meta name="twitter:image" content="https://da3watfarah.com/10.png">
+    <meta name="twitter:image" content="https://da3watfarah.com/10-optimized.jpg">
 
 
 
@@ -137,37 +139,86 @@
 
     </script>
 
+    <script type="application/ld+json">
+
+    {
+
+      "@context": "https://schema.org",
+
+      "@type": "Product",
+
+      "name": "دعوة فرح - دعوة زفاف إلكترونية",
+
+      "description": "إنشاء دعوة زفاف وعرس إلكترونية احترافية باسم العروسين، مع تأكيد حضور RSVP وخريطة وعداد تنازلي وموسيقى ورمز QR.",
+
+      "brand": { "@type": "Brand", "name": "دعوة فرح" },
+
+      "offers": [
+        {
+          "@type": "Offer",
+          "name": "الباقة المجانية",
+          "price": "0",
+          "priceCurrency": "USD",
+          "availability": "https://schema.org/InStock",
+          "url": "https://da3watfarah.com/#pricing"
+        },
+        {
+          "@type": "Offer",
+          "name": "الباقة المميزة (مدى الحياة)",
+          "price": "10",
+          "priceCurrency": "USD",
+          "availability": "https://schema.org/InStock",
+          "url": "https://da3watfarah.com/#pricing"
+        },
+        {
+          "@type": "Offer",
+          "name": "باقة VIP (مدى الحياة)",
+          "price": "25",
+          "priceCurrency": "USD",
+          "availability": "https://schema.org/InStock",
+          "url": "https://da3watfarah.com/#pricing"
+        }
+      ]
+
+    }
+
+    </script>
 
 
-    <!-- Google Fonts - Arabic -->
+
+    <!-- Google Fonts - Arabic (preload + async swap, non render-blocking) -->
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
 
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=Amiri:wght@400;700&family=Aref+Ruqaa:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=Amiri:wght@400;700&family=Aref+Ruqaa:wght@400;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=Amiri:wght@400;700&family=Aref+Ruqaa:wght@400;700&display=swap" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=Amiri:wght@400;700&family=Aref+Ruqaa:wght@400;700&display=swap"></noscript>
 
-    
+    <!-- Font Awesome Icons (non render-blocking) -->
 
-    <!-- Font Awesome Icons -->
+    <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"></noscript>
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- AOS Animation Library (non render-blocking) -->
 
-    
+    <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css"></noscript>
 
-    <!-- AOS Animation Library -->
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
-
-    
-
-    <!-- Custom CSS -->
+    <!-- Custom CSS: style.css blocks (needed for above-the-fold layout), the rest loads async -->
 
     <link rel="stylesheet" href="css/style.css">
 
-    <link rel="stylesheet" href="css/landing.css">
+    <link rel="preload" as="style" href="css/landing.css">
+    <link rel="stylesheet" href="css/landing.css" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="css/landing.css"></noscript>
 
-    <link rel="stylesheet" href="css/df-footer.css">
+    <link rel="preload" as="style" href="css/df-footer.css">
+    <link rel="stylesheet" href="css/df-footer.css" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="css/df-footer.css"></noscript>
 
     <!-- PWA Meta Tags and Icons -->
     <link rel="manifest" href="/manifest.json">
@@ -175,9 +226,11 @@
     <link rel="icon" type="image/png" sizes="16x16" href="/assets/icons/favicon-16x16.png">
     <link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
     <link rel="mask-icon" href="/assets/icons/icon-512x512.png" color="#d4a574">
-    
-    <!-- PWA Styles -->
-    <link rel="stylesheet" href="css/pwa-style.css">
+
+    <!-- PWA Styles (non render-blocking) -->
+    <link rel="preload" as="style" href="css/pwa-style.css">
+    <link rel="stylesheet" href="css/pwa-style.css" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="css/pwa-style.css"></noscript>
 
     <!-- Templates Grid Layout (3-column matching design spec) -->
     <style>
@@ -600,7 +653,7 @@
 
         <div class="container hero-container">
 
-            <div class="hero-content" data-aos="fade-right">
+            <div class="hero-content">
 
                 <span class="badge" data-i18n="hero_badge">✨ المنصة الأولى لدعوات الزفاف في العالم العربي</span>
 
@@ -1934,6 +1987,9 @@
 
             </div>
 
+            <!-- Reserved space to prevent CLS: filled in by addCurrencySelector() in JS below -->
+            <div class="currency-selector" id="currencySelectorPlaceholder" style="min-height:56px;"></div>
+
             
 
             <div class="pricing-grid pricing-lifetime">
@@ -2420,23 +2476,58 @@
 
     <!-- Scripts -->
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js" defer></script>
 
+    <script src="js/main.js" defer></script>
 
+    <!-- Firebase SDK (Realtime Database, showcase only): loaded lazily,
+         only when the "real invitations" section actually scrolls into
+         view, so it never blocks first paint / adds unused JS on load. -->
+    <script>
+    (function () {
+        var grid = document.getElementById('realInvitationsGrid');
+        if (!grid) return;
 
-    <!-- Firebase SDK (Realtime Database, public read-only for the showcase) -->
+        var firebaseLoaded = false;
+        function loadFirebaseShowcase() {
+            if (firebaseLoaded) return;
+            firebaseLoaded = true;
 
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+            function loadScript(src) {
+                return new Promise(function (resolve, reject) {
+                    var s = document.createElement('script');
+                    s.src = src;
+                    s.onload = resolve;
+                    s.onerror = reject;
+                    document.body.appendChild(s);
+                });
+            }
 
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+            loadScript('https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js')
+                .then(function () { return loadScript('https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js'); })
+                .then(function () { return loadScript('js/firebase-config.js'); })
+                .then(function () { return loadScript('js/real-invitations.js'); })
+                .catch(function (err) { console.warn('⚠️ Could not load invitations showcase:', err); });
+        }
 
-    <script src="js/firebase-config.js"></script>
-
-    <script src="js/real-invitations.js"></script>
-
-
-
-    <script src="js/main.js"></script>
+        if ('IntersectionObserver' in window) {
+            var observer = new IntersectionObserver(function (entries) {
+                entries.forEach(function (entry) {
+                    if (entry.isIntersecting) {
+                        loadFirebaseShowcase();
+                        observer.disconnect();
+                    }
+                });
+            }, { rootMargin: '300px' });
+            observer.observe(grid);
+        } else {
+            // Fallback: load after the page has settled
+            window.addEventListener('load', function () {
+                setTimeout(loadFirebaseShowcase, 1500);
+            });
+        }
+    })();
+    </script>
 
     <!-- VIP video-preview cards: lazy-load + play on hover, pause on leave -->
     <script>
@@ -2626,9 +2717,12 @@
 
         
 
-        const selector = document.createElement('div');
+        // Reuse the pre-reserved placeholder to avoid a layout shift; fall
+        // back to creating a fresh element if the placeholder isn't present.
+        const selector = document.getElementById('currencySelectorPlaceholder') || document.createElement('div');
 
         selector.className = 'currency-selector';
+        selector.style.minHeight = '';
 
         selector.innerHTML = `
 
@@ -2652,14 +2746,16 @@
 
         
 
-        if (lifetimeBadge) {
+        if (!selector.isConnected) {
+            if (lifetimeBadge) {
 
-            lifetimeBadge.after(selector);
+                lifetimeBadge.after(selector);
 
-        } else {
+            } else {
 
-            pricingSection.insertBefore(selector, pricingSection.querySelector('.pricing-grid'));
+                pricingSection.insertBefore(selector, pricingSection.querySelector('.pricing-grid'));
 
+            }
         }
 
         
@@ -2732,7 +2828,7 @@
 
     </script>
 
-    <script src="js/df-footer.js"></script>
+    <script src="js/df-footer.js" defer></script>
 
     <!-- PWA Manager Scripts -->
     <script src="/js/pwa-manager.js" defer></script>
