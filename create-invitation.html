@@ -1995,7 +1995,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.0.379/pdf.min.js"></script>
     <!-- Puter.js: free AI vision used only for the optional "scan paper invitation" auto-fill feature below.
          Does not touch/replace the existing NVIDIA-based AI features elsewhere in the app. -->
-    <script src="https://js.puter.com/v2/"></script>
+    <!-- Puter.js is intentionally NOT loaded here. It patches window.fetch/XHR globally,
+         which was breaking Firebase Auth's own requests and force-logging users out.
+         It now runs fully isolated inside a sandboxed iframe — see aiScanIframe below. -->
     
     <!-- App Scripts -->
     <script src="js/firebase-config.js"></script>
@@ -4093,9 +4095,102 @@ ${venueName ? `- المكان: ${venueName}` : ''}
         // AI Scan: Paper Wedding Invitation Auto-fill (optional feature)
         // Uses Puter.js (free, keyless AI vision) — see:
         // https://developer.puter.com/tutorials/free-unlimited-openai-api/
+        //
+        // IMPORTANT: Puter.js is run inside a sandboxed, isolated <iframe>
+        // (not the main page) because it globally patches window.fetch/XHR,
+        // which was breaking Firebase Auth's token-refresh requests and
+        // force-logging users out. The iframe has its own separate JS
+        // realm, so Puter can never touch this page's fetch/storage/auth.
         // This is completely separate from the existing NVIDIA-based AI
         // features used elsewhere in the app; nothing else was touched.
         // ===================================
+        let aiScanIframe = null;
+        let aiScanIframeReady = null;
+        const aiScanPendingRequests = {};
+
+        function ensureAIScanIframe() {
+            if (aiScanIframeReady) return aiScanIframeReady;
+
+            aiScanIframeReady = new Promise((resolve) => {
+                const iframe = document.createElement('iframe');
+                iframe.id = 'aiScanIframe';
+                iframe.title = 'ai-scan-sandbox';
+                iframe.sandbox = 'allow-scripts allow-popups allow-forms';
+                iframe.style.display = 'none';
+                iframe.srcdoc = `<!DOCTYPE html><html><head></head><body>
+<script src="https://js.puter.com/v2/"><\/script>
+<script>
+window.addEventListener('message', async function(e) {
+    var data = e.data || {};
+    if (data.type !== 'ai-scan-analyze') return;
+    try {
+        if (typeof puter === 'undefined' || !puter.ai || !puter.ai.chat) {
+            throw new Error('puter-not-loaded');
+        }
+        var response = await puter.ai.chat(data.prompt, data.dataUrl, { model: 'gpt-4o' });
+        parent.postMessage({
+            type: 'ai-scan-result',
+            requestId: data.requestId,
+            success: true,
+            response: (typeof response === 'string') ? response : (response && response.message && response.message.content) || (response && response.text) || String(response || '')
+        }, '*');
+    } catch (err) {
+        parent.postMessage({
+            type: 'ai-scan-result',
+            requestId: data.requestId,
+            success: false,
+            error: (err && err.message) ? err.message : String(err)
+        }, '*');
+    }
+});
+window.addEventListener('load', function() {
+    parent.postMessage({ type: 'ai-scan-iframe-ready' }, '*');
+});
+<\/script>
+</body></html>`;
+
+                const onMessage = (e) => {
+                    if (e?.data?.type === 'ai-scan-iframe-ready') {
+                        window.removeEventListener('message', onMessage);
+                        resolve(iframe);
+                    }
+                };
+                window.addEventListener('message', onMessage);
+                document.body.appendChild(iframe);
+                aiScanIframe = iframe;
+            });
+
+            return aiScanIframeReady;
+        }
+
+        window.addEventListener('message', (e) => {
+            const data = e?.data;
+            if (!data || data.type !== 'ai-scan-result') return;
+            const pending = aiScanPendingRequests[data.requestId];
+            if (!pending) return;
+            delete aiScanPendingRequests[data.requestId];
+            if (data.success) pending.resolve(data.response);
+            else pending.reject(new Error(data.error || 'ai-scan-failed'));
+        });
+
+        async function analyzeInvitationInSandbox(prompt, dataUrl) {
+            const iframe = await ensureAIScanIframe();
+            const requestId = 'req_' + Date.now() + '_' + Math.random().toString(36).slice(2);
+
+            return new Promise((resolve, reject) => {
+                aiScanPendingRequests[requestId] = { resolve, reject };
+                iframe.contentWindow.postMessage({ type: 'ai-scan-analyze', requestId, prompt, dataUrl }, '*');
+
+                // Safety timeout so the UI never hangs forever
+                setTimeout(() => {
+                    if (aiScanPendingRequests[requestId]) {
+                        delete aiScanPendingRequests[requestId];
+                        reject(new Error('ai-scan-timeout'));
+                    }
+                }, 60000);
+            });
+        }
+
         function fileToDataURL(file) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
@@ -4195,10 +4290,6 @@ ${venueName ? `- المكان: ${venueName}` : ''}
             statusEl.innerHTML = `<i class="fas fa-spinner fa-spin" style="color: var(--primary-gold);"></i> ${L('ai_scan_analyzing')}`;
 
             try {
-                if (typeof puter === 'undefined' || !puter.ai || !puter.ai.chat) {
-                    throw new Error('puter-not-loaded');
-                }
-
                 const dataUrl = isPdf ? await pdfFileToImageDataURL(file) : await fileToDataURL(file);
 
                 const prompt = `أنت مساعد متخصص في قراءة دعوات الأفراح والمناسبات العربية الورقية (سواء كانت صورة أو مستند). حلل الملف المرفق واستخرج المعلومات التالية بصيغة JSON فقط، بدون أي نص إضافي أو شرح أو علامات markdown، وبدون أي مقدمات:
@@ -4214,10 +4305,7 @@ ${venueName ? `- المكان: ${venueName}` : ''}
 }
 إذا لم تجد معلومة معينة اتركها نص فارغ "" ولا تخترع بيانات غير موجودة في الملف. أعد فقط كائن JSON صالح.`;
 
-                const response = await puter.ai.chat(prompt, dataUrl, { model: 'gpt-4o' });
-                const rawText = (typeof response === 'string')
-                    ? response
-                    : (response?.message?.content ?? response?.text ?? String(response ?? ''));
+                const rawText = await analyzeInvitationInSandbox(prompt, dataUrl) || '';
 
                 const jsonMatch = rawText.match(/\{[\s\S]*\}/);
                 if (!jsonMatch) throw new Error('ai-no-json');
