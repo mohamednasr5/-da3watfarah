@@ -33,10 +33,13 @@
         if (!document.querySelector('link[href*="vip.css"]')) {
             var link = document.createElement('link');
             link.rel = 'stylesheet';
-            // Assumes this script and vip.css live in the same folder.
-            var thisScript = document.currentScript;
-            var base = thisScript ? thisScript.src.replace(/vip-widget\.js.*$/, '') : '';
-            link.href = base + 'vip.css';
+            // NOTE: document.currentScript is null by the time this runs
+            // (it's only valid synchronously while the script executes,
+            // not inside the deferred DOMContentLoaded callback below),
+            // so it can no longer be used to derive the script's folder.
+            // This script always lives at /vip/assets/vip-widget.js, so
+            // the stylesheet path is hardcoded to match.
+            link.href = '/vip/assets/vip.css';
             document.head.appendChild(link);
         }
     }
@@ -50,7 +53,7 @@
     function buildRibbon() {
         var ribbon = document.createElement('div');
         ribbon.className = 'vip-exclusive-ribbon';
-        ribbon.innerHTML = '<i class="fas fa-crown" aria-hidden="true">👑</i><span>تصميم حصري VIP</span>';
+        ribbon.innerHTML = '<span class="vip-ribbon-icon" aria-hidden="true">👑</span><span>تصميم حصري VIP</span>';
         document.body.appendChild(ribbon);
     }
 
