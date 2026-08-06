@@ -1,4 +1,4 @@
-/* Self-hosted fonts — replaces Google Fonts external request.
+/* Self-hosted fonts — replaces Google Fonts external request. 
    Eliminates DNS lookup + connect + redirect to fonts.googleapis.com
    and fonts.gstatic.com, which were part of the critical LCP chain.
 
