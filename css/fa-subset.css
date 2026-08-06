@@ -3,14 +3,14 @@
   font-family: 'Font Awesome 6 Free';
   font-style: normal;
   font-weight: 900;
-  font-display: block;
+  font-display: optional;
   src: url('../fonts/fa-solid-900-subset.woff2') format('woff2');
 }
 @font-face {
   font-family: 'Font Awesome 6 Brands';
   font-style: normal;
   font-weight: 400;
-  font-display: block;
+  font-display: optional;
   src: url('../fonts/fa-brands-400-subset.woff2') format('woff2');
 }
 
@@ -28,6 +28,10 @@
   font-variant: normal;
   text-rendering: auto;
   line-height: 1;
+  /* Reserve fixed glyph box so the icon never changes size and never
+     shifts surrounding content, whether or not the font has loaded yet. */
+  width: 1em;
+  text-align: center;
 }
 
 .fa-arrow-left::before { content: "\f060"; }
