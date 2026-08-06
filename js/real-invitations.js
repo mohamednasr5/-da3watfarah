@@ -118,6 +118,24 @@
             </div>`;
     }
 
+    function renderLoadError(grid) {
+        grid.innerHTML = `
+            <div class="real-invitations-empty">
+                <i class="fas fa-wifi" style="color:#c0392b"></i>
+                <p>تعذّر تحميل الدعوات الحقيقية حاليًا (قد يكون السبب اتصال الإنترنت أو برنامج حماية يمنع الاتصال).</p>
+                <button type="button" class="real-invitations-retry-btn" style="margin-top:10px;padding:8px 20px;border-radius:20px;border:2px solid var(--primary-gold,#D4AF37);background:transparent;color:var(--primary-gold-accessible,#8B6508);font-weight:700;cursor:pointer">
+                    إعادة المحاولة
+                </button>
+            </div>`;
+        const retryBtn = grid.querySelector('.real-invitations-retry-btn');
+        if (retryBtn) {
+            retryBtn.addEventListener('click', () => {
+                renderSkeleton(grid);
+                loadRealInvitations();
+            });
+        }
+    }
+
     async function loadRealInvitations() {
         const grid = document.getElementById(GRID_ID);
         if (!grid) return;
@@ -127,11 +145,22 @@
                 throw new Error('Firebase Realtime Database not available');
             }
 
-            const snapshot = await firebase.database()
+            // Guard against the request hanging forever (e.g. a browser
+            // extension, antivirus software, or firewall silently
+            // blocking/intercepting the Firebase websocket connection
+            // without throwing a JS error) — without this, the section
+            // stays stuck on the skeleton placeholder indefinitely.
+            const TIMEOUT_MS = 8000;
+            const queryPromise = firebase.database()
                 .ref('invitations')
                 .orderByChild('status')
                 .equalTo('active')
                 .once('value');
+            const timeoutPromise = new Promise((_, reject) =>
+                setTimeout(() => reject(new Error('Timed out loading real invitations (network/Firebase unreachable)')), TIMEOUT_MS)
+            );
+
+            const snapshot = await Promise.race([queryPromise, timeoutPromise]);
 
             if (!snapshot.exists()) {
                 renderEmpty(grid);
@@ -158,7 +187,7 @@
 
         } catch (error) {
             console.warn('⚠️ Could not load real invitations:', error);
-            renderEmpty(grid);
+            renderLoadError(grid);
         }
     }
 
@@ -179,7 +208,7 @@
         if (typeof AOS !== 'undefined') AOS.refresh();
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
+    function init() {
         const grid = document.getElementById(GRID_ID);
         if (grid) renderSkeleton(grid);
         loadRealInvitations();
@@ -196,7 +225,20 @@
                 if (g) renderFiltered(g);
             });
         }
-    });
+    }
+
+    // IMPORTANT: this script is injected dynamically (lazy-loaded only
+    // once the "real invitations" section scrolls into view), which
+    // happens LONG after the page's own DOMContentLoaded event already
+    // fired. Listening for DOMContentLoaded here means it would never
+    // fire again and the grid would stay stuck on its skeleton/loading
+    // placeholder forever. The DOM is already ready by the time this
+    // script runs, so just call init() directly.
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
 })();
 
 console.log('✅ Real invitations showcase module loaded');
