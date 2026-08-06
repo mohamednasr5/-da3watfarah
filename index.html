@@ -195,8 +195,8 @@
          /fonts/ folder pushed to it, so relative font paths 404'd on the
          live site). Preconnect here so the LCP font request below doesn't
          pay a fresh DNS+TLS round trip. -->
-    <link rel="preconnect" href="https://pub-67b746453495438199c20622c45722a3.r2.dev" crossorigin>
-    <link rel="dns-prefetch" href="https://pub-67b746453495438199c20622c45722a3.r2.dev">
+    <link rel="preconnect" href="https://assets.da3watfarah.com" crossorigin>
+    <link rel="dns-prefetch" href="https://assets.da3watfarah.com">
 
     <!-- Self-hosted fonts (was fonts.googleapis.com -> fonts.gstatic.com).
          Serving from our own origin removes two external DNS/TLS round trips
@@ -205,7 +205,7 @@
          so that specific weight is preloaded directly as a font — the biggest
          single win for LCP, since it skips waiting on the stylesheet parse
          to even discover the font URL. -->
-    <link rel="preload" as="font" type="font/woff2" href="https://pub-67b746453495438199c20622c45722a3.r2.dev/fonts/aref-ruqaa-400.woff2" crossorigin>
+    <link rel="preload" as="font" type="font/woff2" href="https://assets.da3watfarah.com/fonts/aref-ruqaa-400.woff2" crossorigin>
     <link rel="preload" as="style" href="css/fonts-local.css">
     <link rel="stylesheet" href="css/fonts-local.css" media="print" onload="this.media='all'">
     <noscript><link rel="stylesheet" href="css/fonts-local.css"></noscript>

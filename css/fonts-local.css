@@ -2,20 +2,22 @@
    Eliminates DNS lookup + connect + redirect to fonts.googleapis.com
    and fonts.gstatic.com, which were part of the critical LCP chain.
 
-   Served from Cloudflare R2 (pub-*.r2.dev) instead of a relative "../fonts/"
-   path: GitHub Pages (the static host in front of this repo) never had a
-   /fonts/ folder pushed to it, so relative font URLs 404'd on the live
-   site. R2 already has every file below at these exact filenames. */
+   Served from Cloudflare R2 via the assets.da3watfarah.com custom domain
+   (NOT the pub-*.r2.dev URL — that dev endpoint isn't edge-cached and is
+   rate-limited, which is exactly what pushed LCP up when it was used
+   briefly). GitHub Pages (the static host in front of this repo) never
+   had a /fonts/ folder pushed to it, so a relative font path would 404 on
+   the live site — the custom R2 domain avoids that and gets real caching. */
 
-@font-face{font-family:'Tajawal';font-style:normal;font-weight:300;font-display:swap;src:url('https://pub-67b746453495438199c20622c45722a3.r2.dev/fonts/tajawal-300.woff2') format('woff2')}
-@font-face{font-family:'Tajawal';font-style:normal;font-weight:400;font-display:swap;src:url('https://pub-67b746453495438199c20622c45722a3.r2.dev/fonts/tajawal-400.woff2') format('woff2')}
-@font-face{font-family:'Tajawal';font-style:normal;font-weight:500;font-display:swap;src:url('https://pub-67b746453495438199c20622c45722a3.r2.dev/fonts/tajawal-500.woff2') format('woff2')}
-@font-face{font-family:'Tajawal';font-style:normal;font-weight:700;font-display:swap;src:url('https://pub-67b746453495438199c20622c45722a3.r2.dev/fonts/tajawal-700.woff2') format('woff2')}
-@font-face{font-family:'Tajawal';font-style:normal;font-weight:800;font-display:swap;src:url('https://pub-67b746453495438199c20622c45722a3.r2.dev/fonts/tajawal-800.woff2') format('woff2')}
-@font-face{font-family:'Tajawal';font-style:normal;font-weight:900;font-display:swap;src:url('https://pub-67b746453495438199c20622c45722a3.r2.dev/fonts/tajawal-900.woff2') format('woff2')}
+@font-face{font-family:'Tajawal';font-style:normal;font-weight:300;font-display:swap;src:url('https://assets.da3watfarah.com/fonts/tajawal-300.woff2') format('woff2')}
+@font-face{font-family:'Tajawal';font-style:normal;font-weight:400;font-display:swap;src:url('https://assets.da3watfarah.com/fonts/tajawal-400.woff2') format('woff2')}
+@font-face{font-family:'Tajawal';font-style:normal;font-weight:500;font-display:swap;src:url('https://assets.da3watfarah.com/fonts/tajawal-500.woff2') format('woff2')}
+@font-face{font-family:'Tajawal';font-style:normal;font-weight:700;font-display:swap;src:url('https://assets.da3watfarah.com/fonts/tajawal-700.woff2') format('woff2')}
+@font-face{font-family:'Tajawal';font-style:normal;font-weight:800;font-display:swap;src:url('https://assets.da3watfarah.com/fonts/tajawal-800.woff2') format('woff2')}
+@font-face{font-family:'Tajawal';font-style:normal;font-weight:900;font-display:swap;src:url('https://assets.da3watfarah.com/fonts/tajawal-900.woff2') format('woff2')}
 
-@font-face{font-family:'Amiri';font-style:normal;font-weight:400;font-display:swap;src:url('https://pub-67b746453495438199c20622c45722a3.r2.dev/fonts/amiri-400.woff2') format('woff2')}
-@font-face{font-family:'Amiri';font-style:normal;font-weight:700;font-display:swap;src:url('https://pub-67b746453495438199c20622c45722a3.r2.dev/fonts/amiri-700.woff2') format('woff2')}
+@font-face{font-family:'Amiri';font-style:normal;font-weight:400;font-display:swap;src:url('https://assets.da3watfarah.com/fonts/amiri-400.woff2') format('woff2')}
+@font-face{font-family:'Amiri';font-style:normal;font-weight:700;font-display:swap;src:url('https://assets.da3watfarah.com/fonts/amiri-700.woff2') format('woff2')}
 
-@font-face{font-family:'Aref Ruqaa';font-style:normal;font-weight:400;font-display:swap;src:url('https://pub-67b746453495438199c20622c45722a3.r2.dev/fonts/aref-ruqaa-400.woff2') format('woff2')}
-@font-face{font-family:'Aref Ruqaa';font-style:normal;font-weight:700;font-display:swap;src:url('https://pub-67b746453495438199c20622c45722a3.r2.dev/fonts/aref-ruqaa-700.woff2') format('woff2')}
+@font-face{font-family:'Aref Ruqaa';font-style:normal;font-weight:400;font-display:swap;src:url('https://assets.da3watfarah.com/fonts/aref-ruqaa-400.woff2') format('woff2')}
+@font-face{font-family:'Aref Ruqaa';font-style:normal;font-weight:700;font-display:swap;src:url('https://assets.da3watfarah.com/fonts/aref-ruqaa-700.woff2') format('woff2')}
