@@ -1,8 +1,8 @@
 // دعوة فرح - Service Worker محسّن للـ PWA
 // يوفر: التخزين المؤقت، العمل دون اتصال، المزامنة الخلفية
 
-const CACHE_NAME = 'da3watfarah-v1.0.0';
-const RUNTIME_CACHE = 'da3watfarah-runtime-v1';
+const CACHE_NAME = 'da3watfarah-v1.0.1';
+const RUNTIME_CACHE = 'da3watfarah-runtime-v2';
 const IMAGE_CACHE = 'da3watfarah-images-v1';
 const API_CACHE = 'da3watfarah-api-v1';
 
