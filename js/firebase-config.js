@@ -1,6 +1,6 @@
 const firebaseConfig = {
     apiKey: "AIzaSyAIyJ_oZdA1VGDMfKwCUfQwdO5ZOoQy2DQ",
-    authDomain: "da3watfarah.firebaseapp.com",
+    authDomain: "auth.da3watfarah.com",
     databaseURL: "https://da3watfarah-default-rtdb.firebaseio.com",
     projectId: "da3watfarah",
     storageBucket: "da3watfarah.firebasestorage.app",
