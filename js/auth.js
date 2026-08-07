@@ -1,1 +1,548 @@
-let currentUser=null;function checkAuthState(){window.firebaseAuth?window.firebaseAuth.onAuthStateChanged(e=>{if(currentUser=e,e){console.log("✅ User is signed in:",e.email);const t=window.location.pathname.split("/").pop()||"";("login.html"===t||"register.html"===t||""===t||window.location.pathname.includes("/auth/")||"index.html"===t&&window.location.search.includes("redirect"))&&(console.log("🔄 Redirecting to dashboard..."),showNotification("تم تسجيل الدخول بنجاح! جاري التحويل...","success"),setTimeout(()=>{window.location.href="overview.html"},500))}else console.log("👤 User is signed out")}):console.warn("Firebase Auth not initialized")}function initLoginForm(){const e=document.getElementById("loginForm");if(!e)return;const t=document.getElementById("togglePassword"),o=document.getElementById("password");t&&o&&t.addEventListener("click",()=>{const e="password"===o.type?"text":"password";o.type=e;const r=t.querySelector("i");r.classList.toggle("fa-eye"),r.classList.toggle("fa-eye-slash")}),e.addEventListener("submit",async e=>{e.preventDefault();const t=document.getElementById("email").value.trim(),o=document.getElementById("password").value;if(validateLoginForm(t,o)){setButtonLoading("loginBtn",!0),hideError("loginError");try{const e=(await window.firebaseAuth.signInWithEmailAndPassword(t,o)).user;console.log("✅ Login successful:",e.email),showNotification("تم تسجيل الدخول بنجاح! جاري التحويل...","success"),setTimeout(()=>{window.location.href="overview.html"},1500)}catch(e){console.error("❌ Login error:",e.code,e.message),showError("loginError",getAuthErrorMessage(e.code))}finally{setButtonLoading("loginBtn",!1)}}})}function initRegisterForm(){const e=document.getElementById("registerForm");if(!e)return;setupTogglePassword("togglePassword","password"),setupTogglePassword("toggleConfirmPassword","confirmPassword");const t=document.getElementById("password");t&&t.addEventListener("input",()=>{updatePasswordStrength(t.value)}),e.addEventListener("submit",async e=>{e.preventDefault();const t=document.getElementById("groomName").value.trim(),o=document.getElementById("brideName").value.trim(),r=document.getElementById("email").value.trim(),s=document.getElementById("phone").value.trim(),n=document.getElementById("password").value;if(validateRegisterForm(t,o,r,s,n,document.getElementById("confirmPassword").value,document.getElementById("terms").checked)){setButtonLoading("registerBtn",!0),hideError("registerError");try{const e=(await window.firebaseAuth.createUserWithEmailAndPassword(r,n)).user;console.log("✅ Registration successful:",e.email),await saveUserData(e.uid,{groomName:t,brideName:o,email:r,phone:s,createdAt:(new Date).toISOString()}),showSuccessModal()}catch(e){console.error("❌ Registration error:",e.code,e.message),showError("registerError",getAuthErrorMessage(e.code))}finally{setButtonLoading("registerBtn",!1)}}})}function initForgotPasswordForm(){const e=document.getElementById("forgotForm");e&&e.addEventListener("submit",async e=>{e.preventDefault();const t=document.getElementById("resetEmail").value.trim();if(isValidEmail(t))try{await window.firebaseAuth.sendPasswordResetEmail(t),showNotification("تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني","success"),closeForgotPassword()}catch(e){console.error("❌ Password reset error:",e),showNotification(getAuthErrorMessage(e.code),"error")}else showNotification("يرجى إدخال بريد إلكتروني صحيح","error")})}function initSocialLogin(){[document.getElementById("googleLoginBtn"),document.getElementById("googleRegisterBtn")].forEach(e=>{e&&e.addEventListener("click",handleGoogleSignIn)}),[document.getElementById("appleLoginBtn"),document.getElementById("appleRegisterBtn")].forEach(e=>{e&&e.addEventListener("click",()=>{showNotification("تسجيل الدخول بحساب Apple قريباً!","info")})})}async function handleGoogleSignIn(){try{if(!window.firebaseAuth)return void showNotification("Firebase لم يتم تهيئته بشكل صحيح","error");showNotification("جارٍ الاتصال بـ Google...","info");const e=new firebase.auth.GoogleAuthProvider;e.addScope("profile"),e.addScope("email"),e.setCustomParameters({prompt:"select_account",access_type:"offline"});const t=await window.firebaseAuth.signInWithPopup(e),o=t.user;console.log("✅ Google sign-in successful:",{displayName:o.displayName,email:o.email,uid:o.uid,isNewUser:t.additionalUserInfo.isNewUser}),t.additionalUserInfo&&t.additionalUserInfo.isNewUser?(await saveUserData(o.uid,{displayName:o.displayName||"",email:o.email||"",photoURL:o.photoURL||"",provider:"google",createdAt:(new Date).toISOString(),lastLogin:(new Date).toISOString()}),showNotification("تم إنشاء الحساب بنجاح! مرحباً بك 🎉","success")):(await updateUserLastLogin(o.uid),showNotification("مرحباً بعودتك! ✨","success")),setTimeout(()=>{window.location.href="overview.html"},1500)}catch(e){console.error("❌ Google sign-in error:",e.code,e.message);let t="حدث خطأ في تسجيل الدخول بحساب Google";switch(e.code){case"auth/popup-closed-by-user":t="تم إلغاء تسجيل الدخول";break;case"auth/popup-blocked":t="تم حظر النافذة المنبثقة، يرجى السماح بها";break;case"auth/cancelled-popup-request":t="يوجد نافذة مفتوحة بالفعل، يرجى إغلاقها والمحاولة مرة أخرى";break;case"auth/user-disabled":t="هذا الحساب معطل، يرجى التواصل مع الدعم";break;case"auth/invalid-api-key":t="مفتاح API غير صالح، يرجى التحقق من الإعدادات";break;default:t=`خطأ: ${e.message||"حدث خطأ غير متوقع"}`}showNotification(t,"error")}}function validateLoginForm(e,t){let o=!0;return e?isValidEmail(e)?hideErrorField("emailError"):(showErrorField("emailError","يرجى إدخال بريد إلكتروني صحيح"),o=!1):(showErrorField("emailError","يرجى إدخال البريد الإلكتروني"),o=!1),t?t.length<6?(showErrorField("passwordError","كلمة المرور يجب أن تكون 6 أحرف على الأقل"),o=!1):hideErrorField("passwordError"):(showErrorField("passwordError","يرجى إدخال كلمة المرور"),o=!1),o}function validateRegisterForm(e,t,o,r,s,n,a){let i=!0;return e?e.length<2?(showErrorField("groomNameError","اسم العريس يجب أن يكون حرفين على الأقل"),i=!1):hideErrorField("groomNameError"):(showErrorField("groomNameError","يرجى إدخال اسم العريس"),i=!1),t?t.length<2?(showErrorField("brideNameError","اسم العروسة يجب أن يكون حرفين على الأقل"),i=!1):hideErrorField("brideNameError"):(showErrorField("brideNameError","يرجى إدخال اسم العروسة"),i=!1),o?isValidEmail(o)?hideErrorField("emailError"):(showErrorField("emailError","يرجى إدخال بريد إلكتروني صحيح"),i=!1):(showErrorField("emailError","يرجى إدخال البريد الإلكتروني"),i=!1),r&&!isValidPhone(r)&&(showErrorField("phoneError","يرجى إدخال رقم جوال صحيح"),i=!1),s?s.length<8?(showErrorField("passwordError","كلمة المرور يجب أن تكون 8 أحرف على الأقل"),i=!1):hideErrorField("passwordError"):(showErrorField("passwordError","يرجى إدخال كلمة المرور"),i=!1),s!==n?(showErrorField("confirmPasswordError","كلمات المرور غير متطابقة"),i=!1):hideErrorField("confirmPasswordError"),a?hideErrorField("termsError"):(showErrorField("termsError","يجب الموافقة على الشروط والأحكام"),i=!1),i}function updatePasswordStrength(e){const t=document.getElementById("passwordStrength"),o=t?.querySelector(".strength-bar"),r=t?.querySelector(".strength-text");if(!t||!e)return void(t&&t.classList.remove("visible"));t.classList.add("visible");let s=0,n="",a="";e.length>=8&&s++,e.length>=12&&s++,/[a-z]/.test(e)&&/[A-Z]/.test(e)&&s++,/\d/.test(e)&&s++,/[^a-zA-Z\d]/.test(e)&&s++,s<=2?(n="ضعيفة - أضف المزيد من الأحرف والرموز",a="weak"):s<=3?(n="متوسطة - جيد، يمكن تحسينها",a="medium"):(n="قوية - ممتاز!",a="strong"),o.className=`strength-bar ${a}`,r.textContent=n}function isValidEmail(e){return/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)}function isValidPhone(e){return/^05[0-9]{8}$/.test(e.replace(/\s/g,""))}function getAuthErrorMessage(e){return{"auth/user-not-found":"لا يوجد حساب مرتبط بهذا البريد الإلكتروني","auth/wrong-password":"كلمة المرور غير صحيحة","auth/email-already-in-use":"هذا البريد الإلكتروني مستخدم بالفعل","auth/weak-password":"كلمة المرور ضعيفة جداً","auth/invalid-email":"صيغة البريد الإلكتروني غير صحيحة","auth/too-many-requests":"محاولات كثيرة جداً، يرجى المحاولة لاحقاً","auth/network-request-failed":"مشكلة في الاتصال بالإنترنت","auth/popup-closed-by-user":"تم إلغاء تسجيل الدخول","auth/cancelled-popup-request":"تم فتح نافذة أخرى مسبقاً"}[e]||"حدث خطأ غير متوقع، يرجى المحاولة مرة أخرى"}function setupTogglePassword(e,t){const o=document.getElementById(e),r=document.getElementById(t);o&&r&&o.addEventListener("click",()=>{const e="password"===r.type?"text":"password";r.type=e;const t=o.querySelector("i");t.classList.toggle("fa-eye"),t.classList.toggle("fa-eye-slash")})}function setButtonLoading(e,t){const o=document.getElementById(e);if(!o)return;const r=o.querySelector(".btn-text"),s=o.querySelector(".btn-loader");t?(o.disabled=!0,r&&(r.style.display="none"),s&&(s.style.display="inline-flex")):(o.disabled=!1,r&&(r.style.display="inline"),s&&(s.style.display="none"))}function showError(e,t){const o=document.getElementById(e);if(!o)return;const r=o.querySelector("span");r&&(r.textContent=t),o.style.display="flex"}function hideError(e){const t=document.getElementById(e);t&&(t.style.display="none")}function showErrorField(e,t){const o=document.getElementById(e);o&&(o.textContent=t)}function hideErrorField(e){const t=document.getElementById(e);t&&(t.textContent="")}function showNotification(e,t="info"){const o=document.querySelector(".notification");o&&o.remove();const r=document.createElement("div");r.className=`notification notification-${t}`,r.innerHTML=`\n        <span>${e}</span>\n        <button onclick="this.parentElement.remove()">\n            <i class="fas fa-times"></i>\n        </button>\n    `,Object.assign(r.style,{position:"fixed",top:"20px",left:"50%",transform:"translateX(-50%)",padding:"15px 25px",borderRadius:"12px",background:"success"===t?"#10B981":"error"===t?"#EF4444":"#3B82F6",color:"white",display:"flex",alignItems:"center",gap:"15px",boxShadow:"0 10px 40px rgba(0,0,0,0.2)",zIndex:"99999",animation:"slideDown 0.3s ease forwards",maxWidth:"90%",width:"auto"}),document.body.appendChild(r),setTimeout(()=>{r.style.animation="slideDown 0.3s ease reverse forwards",setTimeout(()=>r.remove(),300)},4e3)}function showSuccessModal(){const e=document.getElementById("successModal");e&&(e.style.display="flex")}function showForgotPassword(){const e=document.getElementById("forgotModal");e&&(e.style.display="flex")}function closeForgotPassword(){const e=document.getElementById("forgotModal");e&&(e.style.display="none")}async function saveUserData(e,t){console.log("💾 Saving user data:",{uid:e,...t});try{if(window.firebaseDb&&"function"==typeof window.firebaseDb.ref)return await window.firebaseDb.ref("users/"+e).set({...t,uid:e,createdAt:firebase.database.ServerValue.TIMESTAMP,updatedAt:firebase.database.ServerValue.TIMESTAMP}),console.log("✅ User data saved to Realtime Database"),!0}catch(e){console.warn("⚠️ Realtime Database not available, using localStorage:",e.message)}try{const o=JSON.parse(localStorage.getItem("da3watfarah_users")||"{}");return o[e]={...t,uid:e,createdAt:(new Date).toISOString(),updatedAt:(new Date).toISOString()},localStorage.setItem("da3watfarah_users",JSON.stringify(o)),console.log("✅ User data saved to localStorage"),!0}catch(e){return console.error("❌ Failed to save user data:",e),!1}}async function updateUserLastLogin(e){try{window.firebaseDb&&"function"==typeof window.firebaseDb.ref&&(await window.firebaseDb.ref("users/"+e+"/lastLogin").set(firebase.database.ServerValue.TIMESTAMP),await window.firebaseDb.ref("users/"+e+"/updatedAt").set(firebase.database.ServerValue.TIMESTAMP),console.log("✅ Last login updated in Realtime Database"));const t=JSON.parse(localStorage.getItem("da3watfarah_users")||"{}");t[e]&&(t[e].lastLogin=(new Date).toISOString(),t[e].updatedAt=(new Date).toISOString(),localStorage.setItem("da3watfarah_users",JSON.stringify(t)))}catch(e){console.warn("⚠️ Could not update last login time:",e.message)}}async function logout(){try{await window.firebaseAuth.signOut(),console.log("👤 User signed out"),window.location.href="index.html"}catch(e){console.error("❌ Logout error:",e),showNotification("حدث خطأ في تسجيل الخروج","error")}}document.addEventListener("DOMContentLoaded",function(){"undefined"!=typeof AOS&&AOS.init({duration:800,easing:"ease-out-cubic",once:!0}),checkAuthState(),initLoginForm(),initRegisterForm(),initForgotPasswordForm(),initSocialLogin()}),document.addEventListener("click",e=>{e.target.classList.contains("modal-overlay")&&(e.target.style.display="none")}),window.logout=logout;const styleSheet=document.createElement("style");styleSheet.textContent="\n    @keyframes slideDown {\n        from { opacity: 0; transform: translateX(-50%) translateY(-20px); }\n        to { opacity: 1; transform: translateX(-50%) translateY(0); }\n    }\n",document.head.appendChild(styleSheet),console.log("✅ Auth module loaded successfully");
+// ============================================================
+// js/auth.js — Login / Register / Google Sign-in
+//
+// FIX (Aug 2026): Google sign-in was using signInWithPopup(), which
+// depends on a hidden iframe talking to the authDomain
+// (da3watfarah.firebaseapp.com) to hand the session back to the main
+// tab. In any browser that blocks third-party cookies/storage (Chrome
+// Incognito, Brave, Safari, and now increasingly normal Chrome), the
+// Google OAuth popup finishes "successfully" but the session never
+// actually gets persisted for the site's tab — so the very next auth
+// check (on overview.html, or even back on login.html) sees no user
+// and bounces back to login.html. Repeat forever = the loop reported.
+//
+// signInWithRedirect() + getRedirectResult() fixes this: it navigates
+// the whole page to Google and back instead of relying on a popup +
+// iframe, so it isn't affected by third-party storage partitioning.
+// ============================================================
+
+let currentUser = null;
+
+function checkAuthState() {
+    if (!window.firebaseAuth) {
+        console.warn('Firebase Auth not initialized');
+        return;
+    }
+
+    // Handle the return trip from signInWithRedirect (Google button).
+    // This must run once per page load, before/independently of
+    // onAuthStateChanged, so we can show the right message and only
+    // redirect to overview.html once the redirect result is settled.
+    handleGoogleRedirectResult();
+
+    window.firebaseAuth.onAuthStateChanged((user) => {
+        currentUser = user;
+        if (!user) {
+            console.log('👤 User is signed out');
+            return;
+        }
+
+        console.log('✅ User is signed in:', user.email);
+        const page = window.location.pathname.split('/').pop() || '';
+        const shouldRedirect =
+            page === 'login.html' ||
+            page === 'register.html' ||
+            page === '' ||
+            window.location.pathname.includes('/auth/') ||
+            (page === 'index.html' && window.location.search.includes('redirect'));
+
+        if (shouldRedirect) {
+            console.log('🔄 Redirecting to dashboard...');
+            showNotification('تم تسجيل الدخول بنجاح! جاري التحويل...', 'success');
+            setTimeout(() => {
+                window.location.href = 'overview.html';
+            }, 500);
+        }
+    });
+}
+
+// Called on every page load that includes auth.js. If the user just
+// came back from Google's redirect-based sign-in, this resolves that
+// result, saves/updates their profile, and sends them to the
+// dashboard. If there's no pending redirect result, it resolves to
+// null immediately and does nothing.
+async function handleGoogleRedirectResult() {
+    try {
+        const result = await window.firebaseAuth.getRedirectResult();
+        if (!result || !result.user) return; // no pending redirect sign-in
+
+        const user = result.user;
+        const isNewUser = !!(result.additionalUserInfo && result.additionalUserInfo.isNewUser);
+
+        console.log('✅ Google sign-in successful:', {
+            displayName: user.displayName,
+            email: user.email,
+            uid: user.uid,
+            isNewUser
+        });
+
+        if (isNewUser) {
+            await saveUserData(user.uid, {
+                displayName: user.displayName || '',
+                email: user.email || '',
+                photoURL: user.photoURL || '',
+                provider: 'google',
+                createdAt: new Date().toISOString(),
+                lastLogin: new Date().toISOString()
+            });
+            showNotification('تم إنشاء الحساب بنجاح! مرحباً بك 🎉', 'success');
+        } else {
+            await updateUserLastLogin(user.uid);
+            showNotification('مرحباً بعودتك! ✨', 'success');
+        }
+
+        setTimeout(() => {
+            window.location.href = 'overview.html';
+        }, 1000);
+    } catch (error) {
+        // No pending redirect result throws no error; real failures do.
+        if (!error || !error.code) return;
+        console.error('❌ Google sign-in error:', error.code, error.message);
+        showNotification(getAuthErrorMessage(error.code), 'error');
+    }
+}
+
+function initLoginForm() {
+    const form = document.getElementById('loginForm');
+    if (!form) return;
+
+    const toggleBtn = document.getElementById('togglePassword');
+    const passwordInput = document.getElementById('password');
+    if (toggleBtn && passwordInput) {
+        toggleBtn.addEventListener('click', () => {
+            passwordInput.type = passwordInput.type === 'password' ? 'text' : 'password';
+            const icon = toggleBtn.querySelector('i');
+            icon.classList.toggle('fa-eye');
+            icon.classList.toggle('fa-eye-slash');
+        });
+    }
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value;
+
+        if (!validateLoginForm(email, password)) return;
+
+        setButtonLoading('loginBtn', true);
+        hideError('loginError');
+        try {
+            const { user } = await window.firebaseAuth.signInWithEmailAndPassword(email, password);
+            console.log('✅ Login successful:', user.email);
+            showNotification('تم تسجيل الدخول بنجاح! جاري التحويل...', 'success');
+            setTimeout(() => { window.location.href = 'overview.html'; }, 1500);
+        } catch (error) {
+            console.error('❌ Login error:', error.code, error.message);
+            showError('loginError', getAuthErrorMessage(error.code));
+        } finally {
+            setButtonLoading('loginBtn', false);
+        }
+    });
+}
+
+function initRegisterForm() {
+    const form = document.getElementById('registerForm');
+    if (!form) return;
+
+    setupTogglePassword('togglePassword', 'password');
+    setupTogglePassword('toggleConfirmPassword', 'confirmPassword');
+
+    const passwordInput = document.getElementById('password');
+    if (passwordInput) {
+        passwordInput.addEventListener('input', () => updatePasswordStrength(passwordInput.value));
+    }
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const groomName = document.getElementById('groomName').value.trim();
+        const brideName = document.getElementById('brideName').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const phone = document.getElementById('phone').value.trim();
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+        const terms = document.getElementById('terms').checked;
+
+        if (!validateRegisterForm(groomName, brideName, email, phone, password, confirmPassword, terms)) return;
+
+        setButtonLoading('registerBtn', true);
+        hideError('registerError');
+        try {
+            const { user } = await window.firebaseAuth.createUserWithEmailAndPassword(email, password);
+            console.log('✅ Registration successful:', user.email);
+            await saveUserData(user.uid, {
+                groomName, brideName, email, phone,
+                createdAt: new Date().toISOString()
+            });
+            showSuccessModal();
+        } catch (error) {
+            console.error('❌ Registration error:', error.code, error.message);
+            showError('registerError', getAuthErrorMessage(error.code));
+        } finally {
+            setButtonLoading('registerBtn', false);
+        }
+    });
+}
+
+function initForgotPasswordForm() {
+    const form = document.getElementById('forgotForm');
+    if (!form) return;
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('resetEmail').value.trim();
+        if (!isValidEmail(email)) {
+            showNotification('يرجى إدخال بريد إلكتروني صحيح', 'error');
+            return;
+        }
+        try {
+            await window.firebaseAuth.sendPasswordResetEmail(email);
+            showNotification('تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني', 'success');
+            closeForgotPassword();
+        } catch (error) {
+            console.error('❌ Password reset error:', error);
+            showNotification(getAuthErrorMessage(error.code), 'error');
+        }
+    });
+}
+
+function initSocialLogin() {
+    [document.getElementById('googleLoginBtn'), document.getElementById('googleRegisterBtn')]
+        .forEach((btn) => btn && btn.addEventListener('click', handleGoogleSignIn));
+
+    [document.getElementById('appleLoginBtn'), document.getElementById('appleRegisterBtn')]
+        .forEach((btn) => btn && btn.addEventListener('click', () => {
+            showNotification('تسجيل الدخول بحساب Apple قريباً!', 'info');
+        }));
+}
+
+// Kicks off the redirect-based Google sign-in. The actual result is
+// handled by handleGoogleRedirectResult() above, on the page load that
+// happens *after* Google sends the browser back to login.html.
+async function handleGoogleSignIn() {
+    try {
+        if (!window.firebaseAuth) {
+            showNotification('Firebase لم يتم تهيئته بشكل صحيح', 'error');
+            return;
+        }
+        showNotification('جارٍ الاتصال بـ Google...', 'info');
+
+        const provider = new firebase.auth.GoogleAuthProvider();
+        provider.addScope('profile');
+        provider.addScope('email');
+        provider.setCustomParameters({ prompt: 'select_account' });
+
+        await window.firebaseAuth.signInWithRedirect(provider);
+        // Browser navigates away here; nothing below this line runs
+        // until Google redirects back to this page.
+    } catch (error) {
+        console.error('❌ Google sign-in error:', error.code, error.message);
+        showNotification(getAuthErrorMessage(error.code), 'error');
+    }
+}
+
+function validateLoginForm(email, password) {
+    let valid = true;
+    if (!email) {
+        showErrorField('emailError', 'يرجى إدخال البريد الإلكتروني');
+        valid = false;
+    } else if (!isValidEmail(email)) {
+        showErrorField('emailError', 'يرجى إدخال بريد إلكتروني صحيح');
+        valid = false;
+    } else {
+        hideErrorField('emailError');
+    }
+
+    if (!password) {
+        showErrorField('passwordError', 'يرجى إدخال كلمة المرور');
+        valid = false;
+    } else if (password.length < 6) {
+        showErrorField('passwordError', 'كلمة المرور يجب أن تكون 6 أحرف على الأقل');
+        valid = false;
+    } else {
+        hideErrorField('passwordError');
+    }
+    return valid;
+}
+
+function validateRegisterForm(groomName, brideName, email, phone, password, confirmPassword, terms) {
+    let valid = true;
+
+    if (!groomName) {
+        showErrorField('groomNameError', 'يرجى إدخال اسم العريس');
+        valid = false;
+    } else if (groomName.length < 2) {
+        showErrorField('groomNameError', 'اسم العريس يجب أن يكون حرفين على الأقل');
+        valid = false;
+    } else {
+        hideErrorField('groomNameError');
+    }
+
+    if (!brideName) {
+        showErrorField('brideNameError', 'يرجى إدخال اسم العروسة');
+        valid = false;
+    } else if (brideName.length < 2) {
+        showErrorField('brideNameError', 'اسم العروسة يجب أن يكون حرفين على الأقل');
+        valid = false;
+    } else {
+        hideErrorField('brideNameError');
+    }
+
+    if (!email) {
+        showErrorField('emailError', 'يرجى إدخال البريد الإلكتروني');
+        valid = false;
+    } else if (!isValidEmail(email)) {
+        showErrorField('emailError', 'يرجى إدخال بريد إلكتروني صحيح');
+        valid = false;
+    } else {
+        hideErrorField('emailError');
+    }
+
+    if (phone && !isValidPhone(phone)) {
+        showErrorField('phoneError', 'يرجى إدخال رقم جوال صحيح');
+        valid = false;
+    }
+
+    if (!password) {
+        showErrorField('passwordError', 'يرجى إدخال كلمة المرور');
+        valid = false;
+    } else if (password.length < 8) {
+        showErrorField('passwordError', 'كلمة المرور يجب أن تكون 8 أحرف على الأقل');
+        valid = false;
+    } else {
+        hideErrorField('passwordError');
+    }
+
+    if (password !== confirmPassword) {
+        showErrorField('confirmPasswordError', 'كلمات المرور غير متطابقة');
+        valid = false;
+    } else {
+        hideErrorField('confirmPasswordError');
+    }
+
+    if (!terms) {
+        showErrorField('termsError', 'يجب الموافقة على الشروط والأحكام');
+        valid = false;
+    } else {
+        hideErrorField('termsError');
+    }
+
+    return valid;
+}
+
+function updatePasswordStrength(password) {
+    const container = document.getElementById('passwordStrength');
+    const bar = container?.querySelector('.strength-bar');
+    const text = container?.querySelector('.strength-text');
+    if (!container || !password) {
+        container && container.classList.remove('visible');
+        return;
+    }
+    container.classList.add('visible');
+
+    let score = 0;
+    if (password.length >= 8) score++;
+    if (password.length >= 12) score++;
+    if (/[a-z]/.test(password) && /[A-Z]/.test(password)) score++;
+    if (/\d/.test(password)) score++;
+    if (/[^a-zA-Z\d]/.test(password)) score++;
+
+    let label, level;
+    if (score <= 2) { label = 'ضعيفة - أضف المزيد من الأحرف والرموز'; level = 'weak'; }
+    else if (score <= 3) { label = 'متوسطة - جيد، يمكن تحسينها'; level = 'medium'; }
+    else { label = 'قوية - ممتاز!'; level = 'strong'; }
+
+    bar.className = `strength-bar ${level}`;
+    text.textContent = label;
+}
+
+function isValidEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function isValidPhone(phone) {
+    return /^05[0-9]{8}$/.test(phone.replace(/\s/g, ''));
+}
+
+function getAuthErrorMessage(code) {
+    const messages = {
+        'auth/user-not-found': 'لا يوجد حساب مرتبط بهذا البريد الإلكتروني',
+        'auth/wrong-password': 'كلمة المرور غير صحيحة',
+        'auth/email-already-in-use': 'هذا البريد الإلكتروني مستخدم بالفعل',
+        'auth/weak-password': 'كلمة المرور ضعيفة جداً',
+        'auth/invalid-email': 'صيغة البريد الإلكتروني غير صحيحة',
+        'auth/too-many-requests': 'محاولات كثيرة جداً، يرجى المحاولة لاحقاً',
+        'auth/network-request-failed': 'مشكلة في الاتصال بالإنترنت',
+        'auth/popup-closed-by-user': 'تم إلغاء تسجيل الدخول',
+        'auth/cancelled-popup-request': 'تم فتح نافذة أخرى مسبقاً',
+        'auth/unauthorized-domain': 'هذا الدومين غير مصرح له بتسجيل الدخول عبر Google (راجع Firebase Console > Authentication > Settings > Authorized domains)'
+    };
+    return messages[code] || 'حدث خطأ غير متوقع، يرجى المحاولة مرة أخرى';
+}
+
+function setupTogglePassword(toggleId, inputId) {
+    const toggle = document.getElementById(toggleId);
+    const input = document.getElementById(inputId);
+    if (!toggle || !input) return;
+    toggle.addEventListener('click', () => {
+        input.type = input.type === 'password' ? 'text' : 'password';
+        const icon = toggle.querySelector('i');
+        icon.classList.toggle('fa-eye');
+        icon.classList.toggle('fa-eye-slash');
+    });
+}
+
+function setButtonLoading(buttonId, loading) {
+    const btn = document.getElementById(buttonId);
+    if (!btn) return;
+    const text = btn.querySelector('.btn-text');
+    const loader = btn.querySelector('.btn-loader');
+    btn.disabled = loading;
+    if (text) text.style.display = loading ? 'none' : 'inline';
+    if (loader) loader.style.display = loading ? 'inline-flex' : 'none';
+}
+
+function showError(containerId, message) {
+    const el = document.getElementById(containerId);
+    if (!el) return;
+    const span = el.querySelector('span');
+    if (span) span.textContent = message;
+    el.style.display = 'flex';
+}
+
+function hideError(containerId) {
+    const el = document.getElementById(containerId);
+    if (el) el.style.display = 'none';
+}
+
+function showErrorField(fieldId, message) {
+    const el = document.getElementById(fieldId);
+    if (el) el.textContent = message;
+}
+
+function hideErrorField(fieldId) {
+    const el = document.getElementById(fieldId);
+    if (el) el.textContent = '';
+}
+
+function showNotification(message, type = 'info') {
+    document.querySelector('.notification')?.remove();
+    const el = document.createElement('div');
+    el.className = `notification notification-${type}`;
+    el.innerHTML = `
+        <span>${message}</span>
+        <button onclick="this.parentElement.remove()">
+            <i class="fas fa-times"></i>
+        </button>
+    `;
+    Object.assign(el.style, {
+        position: 'fixed', top: '20px', left: '50%', transform: 'translateX(-50%)',
+        padding: '15px 25px', borderRadius: '12px',
+        background: type === 'success' ? '#10B981' : type === 'error' ? '#EF4444' : '#3B82F6',
+        color: 'white', display: 'flex', alignItems: 'center', gap: '15px',
+        boxShadow: '0 10px 40px rgba(0,0,0,0.2)', zIndex: '99999',
+        animation: 'slideDown 0.3s ease forwards', maxWidth: '90%', width: 'auto'
+    });
+    document.body.appendChild(el);
+    setTimeout(() => {
+        el.style.animation = 'slideDown 0.3s ease reverse forwards';
+        setTimeout(() => el.remove(), 300);
+    }, 4000);
+}
+
+function showSuccessModal() {
+    const modal = document.getElementById('successModal');
+    if (modal) modal.style.display = 'flex';
+}
+
+function showForgotPassword() {
+    const modal = document.getElementById('forgotModal');
+    if (modal) modal.style.display = 'flex';
+}
+
+function closeForgotPassword() {
+    const modal = document.getElementById('forgotModal');
+    if (modal) modal.style.display = 'none';
+}
+
+async function saveUserData(uid, data) {
+    console.log('💾 Saving user data:', { uid, ...data });
+    try {
+        if (window.firebaseDb && typeof window.firebaseDb.ref === 'function') {
+            await window.firebaseDb.ref('users/' + uid).set({
+                ...data,
+                uid,
+                createdAt: firebase.database.ServerValue.TIMESTAMP,
+                updatedAt: firebase.database.ServerValue.TIMESTAMP
+            });
+            console.log('✅ User data saved to Realtime Database');
+            return true;
+        }
+    } catch (e) {
+        console.warn('⚠️ Realtime Database not available, using localStorage:', e.message);
+    }
+    try {
+        const users = JSON.parse(localStorage.getItem('da3watfarah_users') || '{}');
+        users[uid] = { ...data, uid, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() };
+        localStorage.setItem('da3watfarah_users', JSON.stringify(users));
+        console.log('✅ User data saved to localStorage');
+        return true;
+    } catch (e) {
+        console.error('❌ Failed to save user data:', e);
+        return false;
+    }
+}
+
+async function updateUserLastLogin(uid) {
+    try {
+        if (window.firebaseDb && typeof window.firebaseDb.ref === 'function') {
+            await window.firebaseDb.ref('users/' + uid + '/lastLogin').set(firebase.database.ServerValue.TIMESTAMP);
+            await window.firebaseDb.ref('users/' + uid + '/updatedAt').set(firebase.database.ServerValue.TIMESTAMP);
+            console.log('✅ Last login updated in Realtime Database');
+        }
+        const users = JSON.parse(localStorage.getItem('da3watfarah_users') || '{}');
+        if (users[uid]) {
+            users[uid].lastLogin = new Date().toISOString();
+            users[uid].updatedAt = new Date().toISOString();
+            localStorage.setItem('da3watfarah_users', JSON.stringify(users));
+        }
+    } catch (e) {
+        console.warn('⚠️ Could not update last login time:', e.message);
+    }
+}
+
+async function logout() {
+    try {
+        await window.firebaseAuth.signOut();
+        console.log('👤 User signed out');
+        window.location.href = 'index.html';
+    } catch (e) {
+        console.error('❌ Logout error:', e);
+        showNotification('حدث خطأ في تسجيل الخروج', 'error');
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    if (typeof AOS !== 'undefined') AOS.init({ duration: 800, easing: 'ease-out-cubic', once: true });
+    checkAuthState();
+    initLoginForm();
+    initRegisterForm();
+    initForgotPasswordForm();
+    initSocialLogin();
+});
+
+document.addEventListener('click', (e) => {
+    if (e.target.classList.contains('modal-overlay')) e.target.style.display = 'none';
+});
+
+window.logout = logout;
+
+const styleSheet = document.createElement('style');
+styleSheet.textContent = `
+    @keyframes slideDown {
+        from { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+        to { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+`;
+document.head.appendChild(styleSheet);
+
+console.log('✅ Auth module loaded successfully');
