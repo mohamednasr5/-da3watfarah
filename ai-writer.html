@@ -1437,6 +1437,10 @@
         // ===================================
         async function generateText(params) {
             isGenerating = true;
+            // Tell the global auth-watcher (js/db.js) not to log the user out
+            // while a request to the AI is in flight — a slow response could
+            // otherwise outlast the auth grace period and trigger a redirect.
+            window.__daAIRequestInProgress = true;
             showLoadingState();
             
             try {
@@ -1469,6 +1473,10 @@
                 enableOutputButtons(true);
                 
                 window.db.showNotification('استخدمنا القالب الجاهز بسبب خطأ في الاتصال', 'info');
+            } finally {
+                // Always clear the flag, even if something above throws,
+                // so the auth-watcher resumes normal behavior afterward.
+                window.__daAIRequestInProgress = false;
             }
             
             isGenerating = false;

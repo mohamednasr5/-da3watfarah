@@ -3860,6 +3860,9 @@
             btn.disabled = true;
             btn.querySelector('i').className = 'fas fa-spinner';
             btnText.textContent = L('ai_generating');
+            // Prevent the global auth-watcher (js/db.js) from logging the
+            // user out mid-request if the AI call takes a while.
+            window.__daAIRequestInProgress = true;
 
             try {
                 let text = '';
@@ -3902,6 +3905,7 @@ ${venueName ? `- المكان: ${venueName}` : ''}
                 console.error('AI generation error:', error);
                 db.showNotification(L('ai_error'), 'error');
             } finally {
+                window.__daAIRequestInProgress = false;
                 btn.disabled = false;
                 btn.querySelector('i').className = 'fas fa-wand-magic-sparkles';
                 btnText.textContent = originalText;
