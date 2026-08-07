@@ -234,7 +234,46 @@
         descent-override:22%;
         line-gap-override:0%;
     }
-    </style>
+    
+
+:root{--primary-gold:#D4AF37;--primary-gold-light:#F4E4BC;--primary-gold-dark:#B8960C;--bg-primary:#FEFEFE;--bg-secondary:#FFF9F5;--bg-card:#FFFFFF;--text-primary:#211F2E;--text-secondary:#665F73;--text-light:#999999;--gradient-romantic:linear-gradient(135deg,#E8B4B8 0%,#F8E8EA 50%,#E8B4B8 100%);--shadow-sm:0 2px 10px rgba(20,18,31,.06);--shadow-md:0 8px 30px rgba(20,18,31,.1);--shadow-lg:0 20px 60px rgba(20,18,31,.16);--radius-lg:22px;--radius-xl:30px;--radius-full:50%;}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Tajawal',sans-serif;background:var(--bg-primary);direction:rtl;color:var(--text-primary);overflow-x:hidden}
+.container{max-width:1280px;margin:0 auto;padding:0 20px}
+.section-header{text-align:center;max-width:700px;margin:0 auto 50px}
+.section-badge{display:inline-block;padding:8px 20px;background:var(--bg-secondary);color:var(--primary-gold-dark);border-radius:var(--radius-xl);font-size:.9rem;font-weight:600;margin-bottom:20px;border:1px solid var(--primary-gold-light)}
+.section-header h2{font-size:2.5rem;font-weight:800;margin-bottom:16px}
+.section-header p{font-size:1.05rem;color:var(--text-secondary)}
+.gold{color:var(--primary-gold)}
+.testimonials{padding:80px 0;background:var(--bg-primary);overflow:hidden}
+.testimonial-card{background:var(--bg-card);padding:35px;border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);transition:all .35s cubic-bezier(.4,0,.2,1);position:relative;overflow:hidden}
+.testimonial-card::before{content:'"';position:absolute;top:20px;right:25px;font-size:5rem;font-family:Georgia,serif;color:var(--primary-gold-light);line-height:1;opacity:.5}
+.testimonial-stars{font-size:1.05rem;letter-spacing:3px;color:#ffb800;margin-bottom:18px}
+.testimonial-text{font-size:1.02rem;line-height:1.8;color:var(--text-secondary);margin-bottom:22px;font-style:italic;position:relative;z-index:1}
+.testimonial-author{display:flex;align-items:center;gap:15px}
+.author-avatar{width:50px;height:50px;background:var(--gradient-romantic);border-radius:var(--radius-full);display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:1rem;flex-shrink:0}
+.author-info h4{font-size:1rem;font-weight:700;color:var(--text-primary)}
+.author-info span{font-size:.82rem;color:var(--text-light)}
+.testimonials-marquee{display:flex;flex-direction:column;gap:26px;margin-top:10px;width:100vw;position:relative;left:50%;right:50%;margin-left:-50vw;margin-right:-50vw;opacity:1!important;visibility:visible!important}
+.testimonials-marquee .marquee-row{opacity:1!important;visibility:visible!important;display:block!important}
+.marquee-row{overflow:hidden;position:relative;width:100%}
+.marquee-track{display:flex;gap:24px;width:max-content}
+.marquee-row-left .marquee-track{animation:df-marquee-left 55s linear infinite}
+.marquee-row-right .marquee-track{animation:df-marquee-right 60s linear infinite}
+.marquee-row:hover .marquee-track{animation-play-state:paused}
+.marquee-track .testimonial-card{flex:0 0 360px;width:360px;margin:6px 0;border:1px solid transparent}
+.marquee-track .testimonial-card:hover{transform:translateY(-6px) scale(1.015);box-shadow:var(--shadow-lg);border-color:var(--primary-gold-light)}
+@keyframes df-marquee-left{from{transform:translateX(0)}to{transform:translateX(-33.3333%)}}
+@keyframes df-marquee-right{from{transform:translateX(-33.3333%)}to{transform:translateX(0)}}
+.author-avatar.a1{background:linear-gradient(135deg,#E8B4B8,#C48B91)}
+.author-avatar.a2{background:linear-gradient(135deg,#D4AF37,#B8960C)}
+.author-avatar.a3{background:linear-gradient(135deg,#6C5CE7,#8b7cf0)}
+.author-avatar.a4{background:linear-gradient(135deg,#0f766e,#14b8a6)}
+.author-avatar.a5{background:linear-gradient(135deg,#e8536b,#f08a9a)}
+.author-avatar.a6{background:linear-gradient(135deg,#b76e79,#e8b4b8)}
+@media(max-width:768px){.marquee-track .testimonial-card{flex:0 0 280px;width:280px;padding:24px}.marquee-track{gap:16px}}
+
+</style>
     <link rel="preload" as="style" href="css/fonts-local.css">
     <link rel="stylesheet" href="css/fonts-local.css" media="print" onload="this.media='all'">
     <noscript><link rel="stylesheet" href="css/fonts-local.css"></noscript>
@@ -2261,141 +2300,680 @@
 
             </div>
 
-            
-
-            <div class="testimonials-slider" id="testimonialsSlider">
-
-                <div class="testimonial-card" data-aos="fade-up">
-
-                    <div class="testimonial-stars">
-
-                        <i class="fas-star"></i>
-
-                        <i class="fas-star"></i>
-
-                        <i class="fas-star"></i>
-
-                        <i class="fas-star"></i>
-
-                        <i class="fas-star"></i>
-
-                    </div>
-
-                    <p class="testimonial-text" data-i18n="testi1_text">
-
-                        "أفضل منصة لدعوات الزفاف! التصميم كان رائعاً والجميع أعجب بدعوتنا. 
-
-                        شكراً دعوة فرح على هذه التجربة الرائعة 💕"
-
-                    </p>
-
+            <div class="testimonials-marquee">
+                <div class="marquee-row marquee-row-left">
+                    <div class="marquee-track">
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"أفضل منصة لدعوات الزفاف! التصميم كان رائعاً والجميع أعجب بدعوتنا. شكراً دعوة فرح على هذه التجربة الرائعة 💕"</p>
                     <div class="testimonial-author">
-
-                        <div class="author-avatar" data-i18n="testi1_avatar">ن&م</div>
-
+                        <div class="author-avatar a1">ن&م</div>
                         <div class="author-info">
-
-                            <h4 data-i18n="testi1_author">نورة ومحمد</h4>
-
-                            <span data-i18n="testi1_loc">الرياض، السعودية</span>
-
+                            <h4>نورة ومحمد</h4>
+                            <span>الرياض، السعودية</span>
                         </div>
-
                     </div>
-
                 </div>
-
-                
-
-                <div class="testimonial-card" data-aos="fade-up" data-aos-delay="100">
-
-                    <div class="testimonial-stars">
-
-                        <i class="fas-star"></i>
-
-                        <i class="fas-star"></i>
-
-                        <i class="fas-star"></i>
-
-                        <i class="fas-star"></i>
-
-                        <i class="fas-star"></i>
-
-                    </div>
-
-                    <p class="testimonial-text" data-i18n="testi2_text">
-
-                        "سهلة الاستخدام جداً! أنشأت دعوتي في 10 دقائق فقط. 
-
-                        ميزة الذكاء الاصطناعي لكتابة النص كانت مذهلة 🌟"
-
-                    </p>
-
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"سهلة الاستخدام جداً! أنشأت دعوتي في 10 دقائق فقط. ميزة الذكاء الاصطناعي لكتابة النص كانت مذهلة 🌟"</p>
                     <div class="testimonial-author">
-
-                        <div class="author-avatar" data-i18n="testi2_avatar">س&أ</div>
-
+                        <div class="author-avatar a2">س&أ</div>
                         <div class="author-info">
-
-                            <h4 data-i18n="testi2_author">سارة وأحمد</h4>
-
-                            <span data-i18n="testi2_loc">جدة، السعودية</span>
-
+                            <h4>سارة وأحمد</h4>
+                            <span>جدة، السعودية</span>
                         </div>
-
                     </div>
-
                 </div>
-
-                
-
-                <div class="testimonial-card" data-aos="fade-up" data-aos-delay="200">
-
-                    <div class="testimonial-stars">
-
-                        <i class="fas-star"></i>
-
-                        <i class="fas-star"></i>
-
-                        <i class="fas-star"></i>
-
-                        <i class="fas-star"></i>
-
-                        <i class="fas-star"></i>
-
-                    </div>
-
-                    <p class="testimonial-text" data-i18n="testi3_text">
-
-                        "القوالب جميلة جداً والألوان فاخرة. الضيوف كانوا مندهشين 
-
-                        من جمال الدعوة والتأثيرات الرائعة 👏"
-
-                    </p>
-
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"القوالب جميلة جداً والألوان فاخرة. الضيوف كانوا مندهشين من جمال الدعوة والتأثيرات الرائعة 👏"</p>
                     <div class="testimonial-author">
-
-                        <div class="author-avatar" data-i18n="testi3_avatar">ل&خ</div>
-
+                        <div class="author-avatar a3">ل&خ</div>
                         <div class="author-info">
-
-                            <h4 data-i18n="testi3_author">ليلى وخالد</h4>
-
-                            <span data-i18n="testi3_loc">الإمارات</span>
-
+                            <h4>ليلى وخالد</h4>
+                            <span>دبي، الإمارات</span>
                         </div>
-
                     </div>
-
                 </div>
-
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"دعوة تخرج ابني طلعت احترافية جداً، كل الأهل سألوني عملتها إزاي 🎓"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar a4">م</div>
+                        <div class="author-info">
+                            <h4>محمد الشريف</h4>
+                            <span>القاهرة، مصر</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"صممت دعوة الحناء ديالي بدقائق معدودة والكل عجبو بالديزاين 💃"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar a5">ف</div>
+                        <div class="author-info">
+                            <h4>فاطمة الزهراء</h4>
+                            <span>الدار البيضاء، المغرب</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"التطبيق سهل واحترافي، سويت دعوة عرسي بربع ساعة بس، ما توقعت تكون بهالسهولة 👌"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar a6">ع</div>
+                        <div class="author-info">
+                            <h4>عمر التميمي</h4>
+                            <span>الكويت</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"دعوة استقبال المولود كانت حلوة كتير، شكراً دعوة فرح ما قصرتوا معانا ❤️"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar a1">ه</div>
+                        <div class="author-info">
+                            <h4>هدى منصور</h4>
+                            <span>عمّان، الأردن</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"استخدمت الذكاء الاصطناعي بكتابة نص الدعوة ووفرلي وقت كثير، النتيجة كانت احترافية 🤖"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar a2">ي</div>
+                        <div class="author-info">
+                            <h4>يوسف العبدالله</h4>
+                            <span>الدوحة، قطر</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"التصاميم مرتبة وأنيقة جداً، ضيوفنا انبهروا بجمال الدعوة من أول ما فتحوا الرابط 🌹"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar a3">ر</div>
+                        <div class="author-info">
+                            <h4>رنا حداد</h4>
+                            <span>بيروت، لبنان</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"أفضل استثمار لدعوة عرسي، الـ QR Code سهّل توزيع الدعوة على كل الضيوف بثواني 📲"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar a4">ع</div>
+                        <div class="author-info">
+                            <h4>عبدالرحمن المري</h4>
+                            <span>المنامة، البحرين</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"أفضل منصة لدعوات الزفاف! التصميم كان رائعاً والجميع أعجب بدعوتنا. شكراً دعوة فرح على هذه التجربة الرائعة 💕"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar a1">ن&م</div>
+                        <div class="author-info">
+                            <h4>نورة ومحمد</h4>
+                            <span>الرياض، السعودية</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"سهلة الاستخدام جداً! أنشأت دعوتي في 10 دقائق فقط. ميزة الذكاء الاصطناعي لكتابة النص كانت مذهلة 🌟"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar a2">س&أ</div>
+                        <div class="author-info">
+                            <h4>سارة وأحمد</h4>
+                            <span>جدة، السعودية</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"القوالب جميلة جداً والألوان فاخرة. الضيوف كانوا مندهشين من جمال الدعوة والتأثيرات الرائعة 👏"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar a3">ل&خ</div>
+                        <div class="author-info">
+                            <h4>ليلى وخالد</h4>
+                            <span>دبي، الإمارات</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"دعوة تخرج ابني طلعت احترافية جداً، كل الأهل سألوني عملتها إزاي 🎓"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar a4">م</div>
+                        <div class="author-info">
+                            <h4>محمد الشريف</h4>
+                            <span>القاهرة، مصر</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"صممت دعوة الحناء ديالي بدقائق معدودة والكل عجبو بالديزاين 💃"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar a5">ف</div>
+                        <div class="author-info">
+                            <h4>فاطمة الزهراء</h4>
+                            <span>الدار البيضاء، المغرب</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"التطبيق سهل واحترافي، سويت دعوة عرسي بربع ساعة بس، ما توقعت تكون بهالسهولة 👌"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar a6">ع</div>
+                        <div class="author-info">
+                            <h4>عمر التميمي</h4>
+                            <span>الكويت</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"دعوة استقبال المولود كانت حلوة كتير، شكراً دعوة فرح ما قصرتوا معانا ❤️"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar a1">ه</div>
+                        <div class="author-info">
+                            <h4>هدى منصور</h4>
+                            <span>عمّان، الأردن</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"استخدمت الذكاء الاصطناعي بكتابة نص الدعوة ووفرلي وقت كثير، النتيجة كانت احترافية 🤖"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar a2">ي</div>
+                        <div class="author-info">
+                            <h4>يوسف العبدالله</h4>
+                            <span>الدوحة، قطر</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"التصاميم مرتبة وأنيقة جداً، ضيوفنا انبهروا بجمال الدعوة من أول ما فتحوا الرابط 🌹"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar a3">ر</div>
+                        <div class="author-info">
+                            <h4>رنا حداد</h4>
+                            <span>بيروت، لبنان</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"أفضل استثمار لدعوة عرسي، الـ QR Code سهّل توزيع الدعوة على كل الضيوف بثواني 📲"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar a4">ع</div>
+                        <div class="author-info">
+                            <h4>عبدالرحمن المري</h4>
+                            <span>المنامة، البحرين</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"أفضل منصة لدعوات الزفاف! التصميم كان رائعاً والجميع أعجب بدعوتنا. شكراً دعوة فرح على هذه التجربة الرائعة 💕"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar a1">ن&م</div>
+                        <div class="author-info">
+                            <h4>نورة ومحمد</h4>
+                            <span>الرياض، السعودية</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"سهلة الاستخدام جداً! أنشأت دعوتي في 10 دقائق فقط. ميزة الذكاء الاصطناعي لكتابة النص كانت مذهلة 🌟"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar a2">س&أ</div>
+                        <div class="author-info">
+                            <h4>سارة وأحمد</h4>
+                            <span>جدة، السعودية</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"القوالب جميلة جداً والألوان فاخرة. الضيوف كانوا مندهشين من جمال الدعوة والتأثيرات الرائعة 👏"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar a3">ل&خ</div>
+                        <div class="author-info">
+                            <h4>ليلى وخالد</h4>
+                            <span>دبي، الإمارات</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"دعوة تخرج ابني طلعت احترافية جداً، كل الأهل سألوني عملتها إزاي 🎓"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar a4">م</div>
+                        <div class="author-info">
+                            <h4>محمد الشريف</h4>
+                            <span>القاهرة، مصر</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"صممت دعوة الحناء ديالي بدقائق معدودة والكل عجبو بالديزاين 💃"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar a5">ف</div>
+                        <div class="author-info">
+                            <h4>فاطمة الزهراء</h4>
+                            <span>الدار البيضاء، المغرب</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"التطبيق سهل واحترافي، سويت دعوة عرسي بربع ساعة بس، ما توقعت تكون بهالسهولة 👌"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar a6">ع</div>
+                        <div class="author-info">
+                            <h4>عمر التميمي</h4>
+                            <span>الكويت</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"دعوة استقبال المولود كانت حلوة كتير، شكراً دعوة فرح ما قصرتوا معانا ❤️"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar a1">ه</div>
+                        <div class="author-info">
+                            <h4>هدى منصور</h4>
+                            <span>عمّان، الأردن</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"استخدمت الذكاء الاصطناعي بكتابة نص الدعوة ووفرلي وقت كثير، النتيجة كانت احترافية 🤖"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar a2">ي</div>
+                        <div class="author-info">
+                            <h4>يوسف العبدالله</h4>
+                            <span>الدوحة، قطر</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"التصاميم مرتبة وأنيقة جداً، ضيوفنا انبهروا بجمال الدعوة من أول ما فتحوا الرابط 🌹"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar a3">ر</div>
+                        <div class="author-info">
+                            <h4>رنا حداد</h4>
+                            <span>بيروت، لبنان</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"أفضل استثمار لدعوة عرسي، الـ QR Code سهّل توزيع الدعوة على كل الضيوف بثواني 📲"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar a4">ع</div>
+                        <div class="author-info">
+                            <h4>عبدالرحمن المري</h4>
+                            <span>المنامة، البحرين</span>
+                        </div>
+                    </div>
+                </div>
+                    </div>
+                </div>
+                <div class="marquee-row marquee-row-right">
+                    <div class="marquee-track">
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"دعوة عيد ميلاد بنتي طلعت رهيبة، الألوان مبهجة والتفاصيل كلها كانت مضبوطة 🎂"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar a5">س</div>
+                        <div class="author-info">
+                            <h4>سلمى إبراهيم</h4>
+                            <span>الإسكندرية، مصر</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"خدمة عملاء ممتازة وردوا علي بسرعة لما احتجت تعديل بسيط بالدعوة، تقدير لهذا الاهتمام 🙏"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar a6">خ</div>
+                        <div class="author-info">
+                            <h4>خالد الفهد</h4>
+                            <span>الظهران، السعودية</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"سهلة جداً، ما احتجت خبرة تصميم ولا شي، كل شي جاهز وبس تختارين وتعدلين 💍"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar a1">م</div>
+                        <div class="author-info">
+                            <h4>مريم الكندري</h4>
+                            <span>الكويت</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"الخريطة التفاعلية سهّلت وصول الضيوف للقاعة بدون ما يتوهوا، فكرة عملية جداً 🗺️"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar a2">أ</div>
+                        <div class="author-info">
+                            <h4>أحمد زيدان</h4>
+                            <span>عمّان، الأردن</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"دعوة كتب الكتاب كانت ناعمة وأنيقة بالظبط زي ما كنا حابين، شكراً لكم 💕"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar a3">ن</div>
+                        <div class="author-info">
+                            <h4>نور الهدى</h4>
+                            <span>تونس</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"العداد التنازلي زوّد حماس الضيوف قبل يوم الفرح فعلاً، كانوا يتابعوه كل يوم 🎉"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar a4">س</div>
+                        <div class="author-info">
+                            <h4>سعيد المطيري</h4>
+                            <span>الرياض، السعودية</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"رفعنا صور كثيرة والمعرض التفاعلي عرضها بشكل احترافي جداً، الضيوف تفاعلوا معاها كثير 📸"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar a5">ج</div>
+                        <div class="author-info">
+                            <h4>جميلة العلوي</h4>
+                            <span>مسقط، عُمان</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"أسعار مناسبة جداً مقارنة بالمنصات التانية، وخدمة ممتازة من أول خطوة لآخر خطوة 👌"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar a6">ط</div>
+                        <div class="author-info">
+                            <h4>طارق منصور</h4>
+                            <span>القاهرة، مصر</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"الموسيقى المخصصة أضافت جو حلو جداً على الدعوة، لمسة بسيطة بس فرقت كثير 🎵"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar a1">ي</div>
+                        <div class="author-info">
+                            <h4>ياسمين قاسم</h4>
+                            <span>دمشق، سوريا</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"نظام الـ RSVP ساعدني أتابع تأكيدات الضيوف بسهولة كبيرة، وفر علي مجهود كبير 👍"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar a2">ب</div>
+                        <div class="author-info">
+                            <h4>بندر السبيعي</h4>
+                            <span>جدة، السعودية</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"دعوة عيد ميلاد بنتي طلعت رهيبة، الألوان مبهجة والتفاصيل كلها كانت مضبوطة 🎂"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar a5">س</div>
+                        <div class="author-info">
+                            <h4>سلمى إبراهيم</h4>
+                            <span>الإسكندرية، مصر</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"خدمة عملاء ممتازة وردوا علي بسرعة لما احتجت تعديل بسيط بالدعوة، تقدير لهذا الاهتمام 🙏"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar a6">خ</div>
+                        <div class="author-info">
+                            <h4>خالد الفهد</h4>
+                            <span>الظهران، السعودية</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"سهلة جداً، ما احتجت خبرة تصميم ولا شي، كل شي جاهز وبس تختارين وتعدلين 💍"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar a1">م</div>
+                        <div class="author-info">
+                            <h4>مريم الكندري</h4>
+                            <span>الكويت</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"الخريطة التفاعلية سهّلت وصول الضيوف للقاعة بدون ما يتوهوا، فكرة عملية جداً 🗺️"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar a2">أ</div>
+                        <div class="author-info">
+                            <h4>أحمد زيدان</h4>
+                            <span>عمّان، الأردن</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"دعوة كتب الكتاب كانت ناعمة وأنيقة بالظبط زي ما كنا حابين، شكراً لكم 💕"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar a3">ن</div>
+                        <div class="author-info">
+                            <h4>نور الهدى</h4>
+                            <span>تونس</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"العداد التنازلي زوّد حماس الضيوف قبل يوم الفرح فعلاً، كانوا يتابعوه كل يوم 🎉"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar a4">س</div>
+                        <div class="author-info">
+                            <h4>سعيد المطيري</h4>
+                            <span>الرياض، السعودية</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"رفعنا صور كثيرة والمعرض التفاعلي عرضها بشكل احترافي جداً، الضيوف تفاعلوا معاها كثير 📸"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar a5">ج</div>
+                        <div class="author-info">
+                            <h4>جميلة العلوي</h4>
+                            <span>مسقط، عُمان</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"أسعار مناسبة جداً مقارنة بالمنصات التانية، وخدمة ممتازة من أول خطوة لآخر خطوة 👌"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar a6">ط</div>
+                        <div class="author-info">
+                            <h4>طارق منصور</h4>
+                            <span>القاهرة، مصر</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"الموسيقى المخصصة أضافت جو حلو جداً على الدعوة، لمسة بسيطة بس فرقت كثير 🎵"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar a1">ي</div>
+                        <div class="author-info">
+                            <h4>ياسمين قاسم</h4>
+                            <span>دمشق، سوريا</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"نظام الـ RSVP ساعدني أتابع تأكيدات الضيوف بسهولة كبيرة، وفر علي مجهود كبير 👍"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar a2">ب</div>
+                        <div class="author-info">
+                            <h4>بندر السبيعي</h4>
+                            <span>جدة، السعودية</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"دعوة عيد ميلاد بنتي طلعت رهيبة، الألوان مبهجة والتفاصيل كلها كانت مضبوطة 🎂"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar a5">س</div>
+                        <div class="author-info">
+                            <h4>سلمى إبراهيم</h4>
+                            <span>الإسكندرية، مصر</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"خدمة عملاء ممتازة وردوا علي بسرعة لما احتجت تعديل بسيط بالدعوة، تقدير لهذا الاهتمام 🙏"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar a6">خ</div>
+                        <div class="author-info">
+                            <h4>خالد الفهد</h4>
+                            <span>الظهران، السعودية</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"سهلة جداً، ما احتجت خبرة تصميم ولا شي، كل شي جاهز وبس تختارين وتعدلين 💍"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar a1">م</div>
+                        <div class="author-info">
+                            <h4>مريم الكندري</h4>
+                            <span>الكويت</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"الخريطة التفاعلية سهّلت وصول الضيوف للقاعة بدون ما يتوهوا، فكرة عملية جداً 🗺️"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar a2">أ</div>
+                        <div class="author-info">
+                            <h4>أحمد زيدان</h4>
+                            <span>عمّان، الأردن</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"دعوة كتب الكتاب كانت ناعمة وأنيقة بالظبط زي ما كنا حابين، شكراً لكم 💕"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar a3">ن</div>
+                        <div class="author-info">
+                            <h4>نور الهدى</h4>
+                            <span>تونس</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"العداد التنازلي زوّد حماس الضيوف قبل يوم الفرح فعلاً، كانوا يتابعوه كل يوم 🎉"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar a4">س</div>
+                        <div class="author-info">
+                            <h4>سعيد المطيري</h4>
+                            <span>الرياض، السعودية</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"رفعنا صور كثيرة والمعرض التفاعلي عرضها بشكل احترافي جداً، الضيوف تفاعلوا معاها كثير 📸"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar a5">ج</div>
+                        <div class="author-info">
+                            <h4>جميلة العلوي</h4>
+                            <span>مسقط، عُمان</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"أسعار مناسبة جداً مقارنة بالمنصات التانية، وخدمة ممتازة من أول خطوة لآخر خطوة 👌"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar a6">ط</div>
+                        <div class="author-info">
+                            <h4>طارق منصور</h4>
+                            <span>القاهرة، مصر</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"الموسيقى المخصصة أضافت جو حلو جداً على الدعوة، لمسة بسيطة بس فرقت كثير 🎵"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar a1">ي</div>
+                        <div class="author-info">
+                            <h4>ياسمين قاسم</h4>
+                            <span>دمشق، سوريا</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"نظام الـ RSVP ساعدني أتابع تأكيدات الضيوف بسهولة كبيرة، وفر علي مجهود كبير 👍"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar a2">ب</div>
+                        <div class="author-info">
+                            <h4>بندر السبيعي</h4>
+                            <span>جدة، السعودية</span>
+                        </div>
+                    </div>
+                </div>
+                    </div>
+                </div>
             </div>
 
         </div>
 
     </section>
-
-
 
     <!-- CTA Section -->
 
