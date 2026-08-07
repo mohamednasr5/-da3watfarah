@@ -1,481 +1,182 @@
-/* ===================================================
-   دعوة فرح - VIP Section Shared Styles
-   Used by: vip/index.html (hub) + injected into every
-   vip/<category>/<slug>/*.html demo page via vip-widget.js
-   =================================================== */
+const firebaseConfig = {
+    apiKey: "AIzaSyAIyJ_oZdA1VGDMfKwCUfQwdO5ZOoQy2DQ",
+    authDomain: "auth.da3watfarah.com",
+    databaseURL: "https://da3watfarah-default-rtdb.firebaseio.com",
+    projectId: "da3watfarah",
+    storageBucket: "da3watfarah.firebasestorage.app",
+    messagingSenderId: "818147201311",
+    appId: "1:818147201311:web:cb83942913bc2d6a86e02a",
+    measurementId: "G-J9D7R961V7"
+};
 
-/* This stylesheet is injected into demo pages that were never built to
-   load Tajawal (they only load their own template fonts, e.g. Cormorant/
-   Outfit/Marhey). Since every rule below assumes Tajawal, import it here
-   so the widget always renders in the right typeface instead of silently
-   falling back to the OS default (which is what produced the tofu-box
-   "×" on the close button — some fallback fonts lack that glyph). */
-@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap');
+let firebaseApp, auth, rtdb, storage;
 
-:root {
-    --vip-gold: #D4AF37;
-    --vip-gold-light: #F4E4BC;
-    --vip-ink: #1A1A2E;
-    --vip-ink-2: #2D2D44;
-}
+// Some pages (e.g. the homepage's real-invitations showcase) intentionally
+// only load the Database SDK and skip Auth/Firestore/Storage on purpose.
+// window.__daFirebaseLiteMode is set by that loader before this script runs,
+// so we can stay quiet about SDKs that were never meant to be loaded there,
+// while still warning normally on pages (dashboard, editor, AI writer, etc.)
+// that do expect the full SDK set.
+const __daLiteMode = window.__daFirebaseLiteMode === true;
 
-/* ---------- Exclusive ribbon (shown on demo pages) ---------- */
-.vip-exclusive-ribbon {
-    position: fixed;
-    top: 16px;
-    inset-inline-start: 16px;
-    z-index: 99998;
-    background: linear-gradient(135deg, var(--vip-ink), var(--vip-ink-2));
-    color: var(--vip-gold-light);
-    border: 1px solid var(--vip-gold);
-    border-radius: 999px;
-    padding: 8px 16px;
-    font-family: 'Tajawal', 'IBM Plex Sans Arabic', sans-serif;
-    font-size: 0.8rem;
-    font-weight: 700;
-    box-shadow: 0 6px 20px rgba(0,0,0,.25);
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    direction: rtl;
-}
-
-/* ---------- Floating "did you like this invitation" CTA ---------- */
-.vip-cta-widget {
-    position: fixed;
-    bottom: 18px;
-    inset-inline-end: 18px;
-    z-index: 99998;
-    width: 280px;
-    max-width: calc(100vw - 36px);
-    background: #fff;
-    border-radius: 18px;
-    box-shadow: 0 20px 50px rgba(0,0,0,.25);
-    padding: 18px 18px 16px;
-    font-family: 'Tajawal', 'IBM Plex Sans Arabic', sans-serif;
-    direction: rtl;
-    text-align: right;
-    animation: vipCtaIn .5s ease .6s both;
-}
-
-.vip-cta-widget.vip-cta-hidden { display: none; }
-
-@keyframes vipCtaIn {
-    from { opacity: 0; transform: translateY(24px) scale(.96); }
-    to   { opacity: 1; transform: translateY(0) scale(1); }
-}
-
-.vip-cta-close {
-    position: absolute;
-    top: 10px;
-    inset-inline-start: 10px;
-    background: #F3F1EC;
-    border: none;
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    color: #8a8a8a;
-    font-size: 1rem;
-    line-height: 1;
-    cursor: pointer;
-}
-
-.vip-cta-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    background: linear-gradient(135deg, var(--vip-ink), var(--vip-ink-2));
-    color: var(--vip-gold-light);
-    border: 1px solid var(--vip-gold);
-    font-size: .68rem;
-    font-weight: 700;
-    padding: 4px 10px;
-    border-radius: 999px;
-    margin-bottom: 10px;
-}
-
-.vip-cta-widget h4 {
-    margin: 0 0 8px;
-    font-size: 1rem;
-    font-weight: 800;
-    color: #1f1f1f;
-}
-
-.vip-cta-price {
-    display: flex;
-    align-items: baseline;
-    gap: 6px;
-    margin-bottom: 10px;
-}
-
-.vip-cta-price .num {
-    font-size: 1.5rem;
-    font-weight: 800;
-    color: var(--vip-gold);
-}
-
-.vip-cta-price .cur {
-    font-size: .78rem;
-    color: #777;
-    font-weight: 600;
-}
-
-.vip-cta-list {
-    list-style: none;
-    margin: 0 0 14px;
-    padding: 0;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 4px 10px;
-}
-
-.vip-cta-list li {
-    font-size: .72rem;
-    color: #555;
-    position: relative;
-    padding-inline-start: 12px;
-}
-
-.vip-cta-list li::before {
-    content: '•';
-    position: absolute;
-    inset-inline-start: 0;
-    color: var(--vip-gold);
-}
-
-.vip-cta-buy {
-    width: 100%;
-    border: none;
-    border-radius: 12px;
-    padding: 12px 14px;
-    background: linear-gradient(135deg, var(--vip-gold), #E8C766);
-    color: var(--vip-ink);
-    font-family: inherit;
-    font-weight: 800;
-    font-size: .88rem;
-    cursor: pointer;
-    transition: transform .2s ease, box-shadow .2s ease;
-}
-
-.vip-cta-buy:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(212,175,55,.35);
-}
-
-.vip-cta-wa {
-    display: block;
-    text-align: center;
-    margin-top: 10px;
-    font-size: .74rem;
-    color: #4a9d5f;
-    text-decoration: none;
-    font-weight: 600;
-}
-
-.vip-cta-wa:hover { text-decoration: underline; }
-
-@media (max-width: 480px) {
-    .vip-cta-widget {
-        inset-inline-end: 10px;
-        bottom: 10px;
-        width: calc(100vw - 20px);
+try {
+    if (typeof firebase === "undefined") {
+        throw new Error("Firebase SDK not loaded. Make sure firebase-app-compat.js is included.");
     }
-    .vip-exclusive-ribbon { font-size: .72rem; padding: 6px 12px; }
+
+    firebaseApp = firebase.apps.length ? firebase.app() : firebase.initializeApp(firebaseConfig);
+
+    if (typeof firebase.auth === "function") {
+        auth = firebase.auth();
+        console.log("✅ Firebase Auth initialized");
+    } else if (!__daLiteMode) {
+        console.warn("⚠️ Firebase Auth SDK not loaded");
+    }
+
+    if (typeof firebase.database === "function") {
+        rtdb = firebase.database();
+        console.log("✅ Firebase Realtime Database initialized");
+    } else {
+        console.warn("⚠️ Firebase Realtime Database SDK not loaded - using localStorage fallback");
+        rtdb = null;
+    }
+
+    if (typeof firebase.firestore === "function") {
+        window.firebaseFirestore = firebase.firestore();
+        console.log("✅ Firebase Firestore initialized (backup)");
+    } else {
+        window.firebaseFirestore = null;
+        if (!__daLiteMode) {
+            console.warn("⚠️ Firebase Firestore SDK not loaded");
+        }
+    }
+
+    if (typeof firebase.storage === "function") {
+        storage = firebase.storage();
+        console.log("✅ Firebase Storage initialized");
+    } else {
+        storage = null;
+        if (!__daLiteMode) {
+            console.warn("⚠️ Firebase Storage SDK not loaded - using R2 fallback");
+        }
+    }
+
+    if (typeof firebase.analytics === "function") {
+        try {
+            firebase.analytics();
+            console.log("✅ Firebase Analytics initialized");
+        } catch (e) {
+            console.warn("⚠️ Analytics initialization failed:", e.message);
+        }
+    }
+
+    console.log("✅ Firebase initialized successfully");
+} catch (e) {
+    console.error("❌ Firebase initialization error:", e.message);
+    firebaseApp = null;
+    auth = null;
+    rtdb = null;
+    storage = null;
 }
 
-/* ===================================================
-   VIP Hub page (vip/index.html) specific styles
-   =================================================== */
-.vip-hub-body {
-    background: var(--bg-secondary, #FFF9F5);
-    font-family: 'Tajawal', sans-serif;
-}
+window.firebaseAuth = auth;
+window.firebaseDb = rtdb;
+window.firebaseStorage = storage;
+window.firebaseApp = firebaseApp;
 
-.vip-hero {
-    background: linear-gradient(160deg, var(--vip-ink) 0%, var(--vip-ink-2) 100%);
-    padding: 60px 20px 90px;
-    text-align: center;
-    color: #fff;
-    position: relative;
-    overflow: hidden;
-}
+const r2Config = {
+    bucketName: "farah",
+    s3Endpoint: "https://43544e748a23cd826c1b0339bc4c3409.r2.cloudflarestorage.com",
+    publicUrl: "https://assets.da3watfarah.com",
+    workerUrl: "https://da3watfarah.nonm1724.workers.dev",
+    uploadEndpoint: "/api/upload",
+    deleteEndpoint: "/api/delete"
+};
+window.r2Config = r2Config;
 
-.vip-hero::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(circle at 30% 20%, rgba(212,175,55,.18), transparent 55%),
-                radial-gradient(circle at 80% 80%, rgba(212,175,55,.12), transparent 55%);
-    pointer-events: none;
-}
+const nvidiaConfig = {
+    apiKey: "",
+    baseUrl: "https://ai.api.nvidia.com/v1",
+    model: "meta/llama3-70b-instruct"
+};
+window.nvidiaConfig = nvidiaConfig;
 
-.vip-hero-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: rgba(212,175,55,.12);
-    border: 1px solid var(--vip-gold);
-    color: var(--vip-gold-light);
-    padding: 8px 20px;
-    border-radius: 999px;
-    font-weight: 700;
-    font-size: .85rem;
-    margin-bottom: 22px;
-    position: relative;
-}
+const appConfig = {
+    appName: "دعوة فرح",
+    appUrl: window.location.origin,
+    supportEmail: "support@da3watfarah.com"
+};
+window.appConfig = appConfig;
 
-.vip-hero h1 {
-    font-size: clamp(1.8rem, 4vw, 2.6rem);
-    font-weight: 800;
-    margin-bottom: 14px;
-    position: relative;
-}
+window.isFirebaseReady = function () {
+    return {
+        app: !!firebaseApp,
+        auth: !!auth,
+        database: !!rtdb,
+        firestore: !!window.firebaseFirestore,
+        storage: !!storage
+    };
+};
 
-.vip-hero h1 span { color: var(--vip-gold); }
+window.getDbRef = function (path) {
+    return rtdb ? rtdb.ref(path) : (console.error("❌ Realtime Database not initialized"), null);
+};
 
-.vip-hero p {
-    color: #cfcfe0;
-    max-width: 560px;
-    margin: 0 auto 34px;
-    line-height: 1.8;
-    position: relative;
-}
+window.rtdbOnce = async function (path) {
+    try {
+        const snap = await rtdb.ref(path).once("value");
+        return snap.exists() ? snap.val() : null;
+    } catch (e) {
+        console.error("❌ RTDB Read Error:", e);
+        throw e;
+    }
+};
 
-/* VIP subscription card (matches the "VIP" pricing card design) */
-.vip-plan-card {
-    position: relative;
-    max-width: 360px;
-    margin: 0 auto;
-    background: linear-gradient(160deg, #10101c, var(--vip-ink-2));
-    border: 1px solid rgba(212,175,55,.4);
-    border-radius: 22px;
-    padding: 34px 28px;
-    box-shadow: 0 30px 70px rgba(0,0,0,.4);
-}
+window.rtdbSet = async function (path, value) {
+    try {
+        await rtdb.ref(path).set(value);
+        return true;
+    } catch (e) {
+        console.error("❌ RTDB Set Error:", e);
+        throw e;
+    }
+};
 
-.vip-plan-tag {
-    position: absolute;
-    top: -14px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: linear-gradient(135deg, var(--vip-gold), #E8C766);
-    color: var(--vip-ink);
-    font-weight: 800;
-    font-size: .8rem;
-    padding: 7px 20px;
-    border-radius: 999px;
-    white-space: nowrap;
-    box-shadow: 0 8px 20px rgba(212,175,55,.35);
-}
+window.rtdbUpdate = async function (path, value) {
+    try {
+        await rtdb.ref(path).update(value);
+        return true;
+    } catch (e) {
+        console.error("❌ RTDB Update Error:", e);
+        throw e;
+    }
+};
 
-.vip-plan-icon {
-    width: 64px;
-    height: 64px;
-    margin: 10px auto 18px;
-    border-radius: 50%;
-    border: 1px solid rgba(212,175,55,.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.5rem;
-    color: var(--vip-gold);
-}
+window.rtdbPush = async function (path, value) {
+    try {
+        const ref = rtdb.ref(path).push();
+        await ref.set(value);
+        return ref.key;
+    } catch (e) {
+        console.error("❌ RTDB Push Error:", e);
+        throw e;
+    }
+};
 
-.vip-plan-card h3 {
-    color: #fff;
-    font-size: 1.3rem;
-    margin-bottom: 14px;
-}
+window.rtdbRemove = async function (path) {
+    try {
+        await rtdb.ref(path).remove();
+        return true;
+    } catch (e) {
+        console.error("❌ RTDB Remove Error:", e);
+        throw e;
+    }
+};
 
-.vip-plan-price {
-    font-size: 2.2rem;
-    font-weight: 800;
-    color: #fff;
-    margin-bottom: 4px;
-}
-
-.vip-plan-price span {
-    font-size: 1rem;
-    color: var(--vip-gold-light);
-    font-weight: 600;
-}
-
-.vip-plan-note {
-    font-size: .85rem;
-    color: #a9a9c0;
-    margin-bottom: 22px;
-}
-
-.vip-plan-cta {
-    display: block;
-    width: 100%;
-    text-align: center;
-    background: linear-gradient(135deg, var(--vip-gold), #E8C766);
-    color: var(--vip-ink);
-    font-weight: 800;
-    padding: 14px;
-    border-radius: 12px;
-    text-decoration: none;
-    transition: transform .2s ease;
-}
-
-.vip-plan-cta:hover { transform: translateY(-2px); }
-
-/* Category tabs */
-.vip-tabs {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 10px;
-    margin: -46px auto 40px;
-    max-width: 900px;
-    position: relative;
-    z-index: 2;
-    padding: 0 16px;
-}
-
-.vip-tab {
-    background: #fff;
-    border: 1px solid #E5DFD3;
-    color: #444;
-    padding: 10px 22px;
-    border-radius: 999px;
-    font-weight: 700;
-    font-size: .88rem;
-    cursor: pointer;
-    box-shadow: 0 6px 18px rgba(0,0,0,.06);
-    transition: all .2s ease;
-}
-
-.vip-tab.active,
-.vip-tab:hover {
-    background: linear-gradient(135deg, var(--vip-gold), #E8C766);
-    border-color: var(--vip-gold);
-    color: var(--vip-ink);
-}
-
-/* Template grid + card */
-.vip-grid {
-    max-width: 1180px;
-    margin: 0 auto;
-    padding: 0 20px 80px;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 26px;
-}
-
-.vip-card {
-    background: #fff;
-    border-radius: 18px;
-    overflow: hidden;
-    box-shadow: 0 10px 30px rgba(0,0,0,.07);
-    transition: transform .25s ease, box-shadow .25s ease;
-    display: flex;
-    flex-direction: column;
-}
-
-.vip-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 20px 44px rgba(0,0,0,.12);
-}
-
-.vip-card-media {
-    position: relative;
-    aspect-ratio: 4 / 5;
-    background: linear-gradient(160deg, var(--vip-ink), var(--vip-ink-2));
-    overflow: hidden;
-}
-
-.vip-card-media video,
-.vip-card-media .vip-card-fallback {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-}
-
-.vip-card-fallback {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--vip-gold);
-    font-size: 2.4rem;
-}
-
-.vip-card-ribbon {
-    position: absolute;
-    top: 12px;
-    inset-inline-start: 12px;
-    background: rgba(26,26,46,.85);
-    color: var(--vip-gold-light);
-    border: 1px solid var(--vip-gold);
-    font-size: .68rem;
-    font-weight: 700;
-    padding: 5px 12px;
-    border-radius: 999px;
-    display: flex;
-    align-items: center;
-    pointer-events: none;
-    gap: 5px;
-}
-
-.vip-card-body {
-    padding: 16px 18px 18px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    flex: 1;
-}
-
-.vip-card-body h4 {
-    font-size: 1.02rem;
-    color: #1f1f1f;
-    font-weight: 800;
-}
-
-.vip-card-body .vip-card-cat {
-    font-size: .76rem;
-    color: var(--vip-gold);
-    font-weight: 700;
-}
-
-.vip-card-actions {
-    margin-top: auto;
-    display: flex;
-    gap: 8px;
-}
-
-.vip-card-actions a,
-.vip-card-actions button {
-    flex: 1;
-    text-align: center;
-    padding: 10px 8px;
-    border-radius: 10px;
-    font-size: .82rem;
-    font-weight: 700;
-    cursor: pointer;
-    text-decoration: none;
-    border: none;
-    font-family: inherit;
-}
-
-.vip-btn-preview {
-    background: #F3F1EC;
-    color: #333;
-}
-
-.vip-btn-use {
-    background: linear-gradient(135deg, var(--vip-gold), #E8C766);
-    color: var(--vip-ink);
-}
-
-.vip-empty {
-    text-align: center;
-    color: #999;
-    padding: 60px 20px;
-    grid-column: 1 / -1;
-}
-
-@media (max-width: 640px) {
-    .vip-tabs { margin-top: -30px; }
-}
+window.rtdbOn = function (path, eventType, callback) {
+    const handler = (snap) => {
+        callback(snap.exists() ? snap.val() : null, snap.key);
+    };
+    rtdb.ref(path).on(eventType, handler);
+    return () => rtdb.ref(path).off(eventType, handler);
+};
