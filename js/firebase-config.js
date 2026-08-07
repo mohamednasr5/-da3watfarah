@@ -1,1 +1,182 @@
-const firebaseConfig={apiKey:"AIzaSyAIyJ_oZdA1VGDMfKwCUfQwdO5ZOoQy2DQ",authDomain:"da3watfarah.firebaseapp.com",databaseURL:"https://da3watfarah-default-rtdb.firebaseio.com",projectId:"da3watfarah",storageBucket:"da3watfarah.firebasestorage.app",messagingSenderId:"818147201311",appId:"1:818147201311:web:cb83942913bc2d6a86e02a",measurementId:"G-J9D7R961V7"};let firebaseApp,auth,rtdb,storage;try{if("undefined"==typeof firebase)throw new Error("Firebase SDK not loaded. Make sure firebase-app-compat.js is included.");if(firebaseApp=firebase.apps.length?firebase.app():firebase.initializeApp(firebaseConfig),"function"==typeof firebase.auth?(auth=firebase.auth(),console.log("✅ Firebase Auth initialized")):console.warn("⚠️ Firebase Auth SDK not loaded"),"function"==typeof firebase.database?(rtdb=firebase.database(),console.log("✅ Firebase Realtime Database initialized")):(console.warn("⚠️ Firebase Realtime Database SDK not loaded - using localStorage fallback"),rtdb=null),"function"==typeof firebase.firestore?(window.firebaseFirestore=firebase.firestore(),console.log("✅ Firebase Firestore initialized (backup)")):(window.firebaseFirestore=null,console.warn("⚠️ Firebase Firestore SDK not loaded")),"function"==typeof firebase.storage?(storage=firebase.storage(),console.log("✅ Firebase Storage initialized")):(console.warn("⚠️ Firebase Storage SDK not loaded - using R2 fallback"),storage=null),"function"==typeof firebase.analytics)try{firebase.analytics();console.log("✅ Firebase Analytics initialized")}catch(e){console.warn("⚠️ Analytics initialization failed:",e.message)}console.log("✅ Firebase initialized successfully")}catch(e){console.error("❌ Firebase initialization error:",e.message),firebaseApp=null,auth=null,rtdb=null,storage=null}window.firebaseAuth=auth,window.firebaseDb=rtdb,window.firebaseStorage=storage,window.firebaseApp=firebaseApp;const r2Config={bucketName:"farah",s3Endpoint:"https://43544e748a23cd826c1b0339bc4c3409.r2.cloudflarestorage.com",publicUrl:"https://assets.da3watfarah.com",workerUrl:"https://da3watfarah.nonm1724.workers.dev",uploadEndpoint:"/api/upload",deleteEndpoint:"/api/delete"};window.r2Config=r2Config;const nvidiaConfig={apiKey:"",baseUrl:"https://ai.api.nvidia.com/v1",model:"meta/llama3-70b-instruct"};window.nvidiaConfig=nvidiaConfig;const appConfig={appName:"دعوة فرح",appUrl:window.location.origin,supportEmail:"support@da3watfarah.com"};window.appConfig=appConfig,window.isFirebaseReady=function(){return{app:!!firebaseApp,auth:!!auth,database:!!rtdb,firestore:!!window.firebaseFirestore,storage:!!storage}},window.getDbRef=function(e){return rtdb?rtdb.ref(e):(console.error("❌ Realtime Database not initialized"),null)},window.rtdbOnce=async function(e){try{const a=await rtdb.ref(e).once("value");return a.exists()?a.val():null}catch(e){throw console.error("❌ RTDB Read Error:",e),e}},window.rtdbSet=async function(e,a){try{return await rtdb.ref(e).set(a),!0}catch(e){throw console.error("❌ RTDB Set Error:",e),e}},window.rtdbUpdate=async function(e,a){try{return await rtdb.ref(e).update(a),!0}catch(e){throw console.error("❌ RTDB Update Error:",e),e}},window.rtdbPush=async function(e,a){try{const r=rtdb.ref(e).push();return await r.set(a),r.key}catch(e){throw console.error("❌ RTDB Push Error:",e),e}},window.rtdbRemove=async function(e){try{return await rtdb.ref(e).remove(),!0}catch(e){throw console.error("❌ RTDB Remove Error:",e),e}},window.rtdbOn=function(e,a,r){const t=e=>{r(e.exists()?e.val():null,e.key)};return rtdb.ref(e).on(a,t),()=>rtdb.ref(e).off(a,t)};
+const firebaseConfig = {
+    apiKey: "AIzaSyAIyJ_oZdA1VGDMfKwCUfQwdO5ZOoQy2DQ",
+    authDomain: "da3watfarah.firebaseapp.com",
+    databaseURL: "https://da3watfarah-default-rtdb.firebaseio.com",
+    projectId: "da3watfarah",
+    storageBucket: "da3watfarah.firebasestorage.app",
+    messagingSenderId: "818147201311",
+    appId: "1:818147201311:web:cb83942913bc2d6a86e02a",
+    measurementId: "G-J9D7R961V7"
+};
+
+let firebaseApp, auth, rtdb, storage;
+
+// Some pages (e.g. the homepage's real-invitations showcase) intentionally
+// only load the Database SDK and skip Auth/Firestore/Storage on purpose.
+// window.__daFirebaseLiteMode is set by that loader before this script runs,
+// so we can stay quiet about SDKs that were never meant to be loaded there,
+// while still warning normally on pages (dashboard, editor, AI writer, etc.)
+// that do expect the full SDK set.
+const __daLiteMode = window.__daFirebaseLiteMode === true;
+
+try {
+    if (typeof firebase === "undefined") {
+        throw new Error("Firebase SDK not loaded. Make sure firebase-app-compat.js is included.");
+    }
+
+    firebaseApp = firebase.apps.length ? firebase.app() : firebase.initializeApp(firebaseConfig);
+
+    if (typeof firebase.auth === "function") {
+        auth = firebase.auth();
+        console.log("✅ Firebase Auth initialized");
+    } else if (!__daLiteMode) {
+        console.warn("⚠️ Firebase Auth SDK not loaded");
+    }
+
+    if (typeof firebase.database === "function") {
+        rtdb = firebase.database();
+        console.log("✅ Firebase Realtime Database initialized");
+    } else {
+        console.warn("⚠️ Firebase Realtime Database SDK not loaded - using localStorage fallback");
+        rtdb = null;
+    }
+
+    if (typeof firebase.firestore === "function") {
+        window.firebaseFirestore = firebase.firestore();
+        console.log("✅ Firebase Firestore initialized (backup)");
+    } else {
+        window.firebaseFirestore = null;
+        if (!__daLiteMode) {
+            console.warn("⚠️ Firebase Firestore SDK not loaded");
+        }
+    }
+
+    if (typeof firebase.storage === "function") {
+        storage = firebase.storage();
+        console.log("✅ Firebase Storage initialized");
+    } else {
+        storage = null;
+        if (!__daLiteMode) {
+            console.warn("⚠️ Firebase Storage SDK not loaded - using R2 fallback");
+        }
+    }
+
+    if (typeof firebase.analytics === "function") {
+        try {
+            firebase.analytics();
+            console.log("✅ Firebase Analytics initialized");
+        } catch (e) {
+            console.warn("⚠️ Analytics initialization failed:", e.message);
+        }
+    }
+
+    console.log("✅ Firebase initialized successfully");
+} catch (e) {
+    console.error("❌ Firebase initialization error:", e.message);
+    firebaseApp = null;
+    auth = null;
+    rtdb = null;
+    storage = null;
+}
+
+window.firebaseAuth = auth;
+window.firebaseDb = rtdb;
+window.firebaseStorage = storage;
+window.firebaseApp = firebaseApp;
+
+const r2Config = {
+    bucketName: "farah",
+    s3Endpoint: "https://43544e748a23cd826c1b0339bc4c3409.r2.cloudflarestorage.com",
+    publicUrl: "https://assets.da3watfarah.com",
+    workerUrl: "https://da3watfarah.nonm1724.workers.dev",
+    uploadEndpoint: "/api/upload",
+    deleteEndpoint: "/api/delete"
+};
+window.r2Config = r2Config;
+
+const nvidiaConfig = {
+    apiKey: "",
+    baseUrl: "https://ai.api.nvidia.com/v1",
+    model: "meta/llama3-70b-instruct"
+};
+window.nvidiaConfig = nvidiaConfig;
+
+const appConfig = {
+    appName: "دعوة فرح",
+    appUrl: window.location.origin,
+    supportEmail: "support@da3watfarah.com"
+};
+window.appConfig = appConfig;
+
+window.isFirebaseReady = function () {
+    return {
+        app: !!firebaseApp,
+        auth: !!auth,
+        database: !!rtdb,
+        firestore: !!window.firebaseFirestore,
+        storage: !!storage
+    };
+};
+
+window.getDbRef = function (path) {
+    return rtdb ? rtdb.ref(path) : (console.error("❌ Realtime Database not initialized"), null);
+};
+
+window.rtdbOnce = async function (path) {
+    try {
+        const snap = await rtdb.ref(path).once("value");
+        return snap.exists() ? snap.val() : null;
+    } catch (e) {
+        console.error("❌ RTDB Read Error:", e);
+        throw e;
+    }
+};
+
+window.rtdbSet = async function (path, value) {
+    try {
+        await rtdb.ref(path).set(value);
+        return true;
+    } catch (e) {
+        console.error("❌ RTDB Set Error:", e);
+        throw e;
+    }
+};
+
+window.rtdbUpdate = async function (path, value) {
+    try {
+        await rtdb.ref(path).update(value);
+        return true;
+    } catch (e) {
+        console.error("❌ RTDB Update Error:", e);
+        throw e;
+    }
+};
+
+window.rtdbPush = async function (path, value) {
+    try {
+        const ref = rtdb.ref(path).push();
+        await ref.set(value);
+        return ref.key;
+    } catch (e) {
+        console.error("❌ RTDB Push Error:", e);
+        throw e;
+    }
+};
+
+window.rtdbRemove = async function (path) {
+    try {
+        await rtdb.ref(path).remove();
+        return true;
+    } catch (e) {
+        console.error("❌ RTDB Remove Error:", e);
+        throw e;
+    }
+};
+
+window.rtdbOn = function (path, eventType, callback) {
+    const handler = (snap) => {
+        callback(snap.exists() ? snap.val() : null, snap.key);
+    };
+    rtdb.ref(path).on(eventType, handler);
+    return () => rtdb.ref(path).off(eventType, handler);
+};

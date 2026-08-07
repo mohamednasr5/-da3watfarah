@@ -2579,7 +2579,15 @@
                 loadScript('https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js'),
                 loadScript('https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js')
             ])
-                .then(function () { return loadScript('js/firebase-config.js'); })
+                .then(function () {
+                    // This page only ever loads the Database SDK (for the
+                    // real-invitations showcase) — Auth/Firestore/Storage are
+                    // intentionally not included here. Flag this so
+                    // firebase-config.js doesn't warn about SDKs it was never
+                    // asked to load.
+                    window.__daFirebaseLiteMode = true;
+                    return loadScript('js/firebase-config.js');
+                })
                 .then(function () { return loadScript('js/real-invitations.js'); })
                 .catch(function (err) {
                     console.warn('⚠️ Could not load invitations showcase:', err);
