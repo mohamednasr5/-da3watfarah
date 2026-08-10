@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>معاينة قالب النجوم | دعوة فرح</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=Amiri:wght@400;700&family=Aref+Ruqaa:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --primary: #0c1445;
+            --secondary: #a78bfa;
+            --accent: #7c3aed;
+            --star-gold: #fbbf24;
+            --nebula: #1e1b4b;
+        }
+        
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: linear-gradient(180deg, #030712 0%, #0c1445 40%, #1e1b4b 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            color: #fff;
+        }
+        
+        /* Starry Sky Background */
+        .starry-sky {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            overflow: hidden;
+        }
+        
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle var(--duration) ease-in-out infinite;
+            animation-delay: var(--delay);
+        }
+        
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.2); box-shadow: 0 0 10px var(--star-gold); }
+        }
+        
+        /* Shooting Stars */
+        .shooting-star {
+            position: absolute;
+            width: 100px;
+            height: 2px;
+            background: linear-gradient(90deg, white, transparent);
+            border-radius: 50%;
+            animation: shoot 3s ease-in-out infinite;
+            opacity: 0;
+        }
+        
+        @keyframes shoot {
+            0% { transform: translateX(0) translateY(0); opacity: 0; }
+            10% { opacity: 1; }
+            100% { transform: translateX(-500px) translateY(300px); opacity: 0; }
+        }
+        
+        /* Nebula Effect */
+        .nebula {
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(124, 58, 237, 0.15) 0%, transparent 70%);
+            filter: blur(60px);
+            animation: nebulaFloat 20s ease-in-out infinite;
+        }
+        
+        @keyframes nebulaFloat {
+            0%, 100% { transform: translate(0, 0); }
+            33% { transform: translate(50px, -30px); }
+            66% { transform: translate(-30px, 50px); }
+        }
+        
+        /* Main Container */
+        .invitation-container {
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Starry Card */
+        .starry-card {
+            background: rgba(12, 20, 69, 0.6);
+            border-radius: 35px;
+            padding: 50px 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(167, 139, 250, 0.2);
+            box-shadow: 
+                0 25px 80px rgba(0, 0, 0, 0.5),
+                inset 0 0 80px rgba(167, 139, 250, 0.05);
+        }
+        
+        /* Glowing Border Animation */
+        .starry-card::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: conic-gradient(from 0deg, transparent, var(--secondary), transparent, var(--accent), transparent);
+            border-radius: 37px;
+            z-index: -1;
+            animation: glowRotate 8s linear infinite;
+            opacity: 0.5;
+        }
+        
+        @keyframes glowRotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Moon Icon */
+        .moon-icon {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            opacity: 0;
+            animation: moonRise 1.2s ease forwards;
+            animation-delay: 0.3s;
+            filter: drop-shadow(0 0 20px rgba(251, 191, 36, 0.6));
+        }
+        
+        @keyframes moonRise {
+            from { opacity: 0; transform: translateY(-40px) scale(0.5); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        
+        /* Bismillah */
+        .bismillah {
+            font-family: 'Aref Ruqaa', serif;
+            font-size: 1.4rem;
+            color: var(--secondary);
+            margin-bottom: 20px;
+            opacity: 0;
+            animation: starFadeIn 1s ease forwards;
+            animation-delay: 0.5s;
+            text-shadow: 0 0 20px rgba(167, 139, 250, 0.5);
+        }
+        
+        @keyframes starFadeIn {
+            from { opacity: 0; transform: scale(0.8); filter: blur(5px); }
+            to { opacity: 1; transform: scale(1); filter: blur(0); }
+        }
+        
+        /* Couple Names */
+        .couple-names {
+            margin: 25px 0;
+            opacity: 0;
+            animation: cosmicReveal 1.3s ease forwards;
+            animation-delay: 0.8s;
+        }
+        
+        @keyframes cosmicReveal {
+            from { 
+                opacity: 0; 
+                transform: perspective(600px) rotateX(20deg) translateZ(-50px);
+                text-shadow: 0 0 80px var(--secondary);
+            }
+            to { 
+                opacity: 1; 
+                transform: perspective(600px) rotateX(0) translateZ(0);
+                text-shadow: 0 0 20px rgba(167, 139, 250, 0.3);
+            }
+        }
+        
+        .couple-names h1 {
+            font-family: 'Aref Ruqaa', serif;
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #fff 0%, var(--secondary) 50%, var(--star-gold) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.7;
+        }
+        
+        .star-divider {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin: 18px 0;
+            opacity: 0;
+            animation: sparkle 1s ease forwards;
+            animation-delay: 1.2s;
+        }
+        
+        @keyframes sparkle {
+            0% { opacity: 0; transform: scale(0) rotate(180deg); }
+            50% { transform: scale(1.2) rotate(-10deg); }
+            100% { opacity: 1; transform: scale(1) rotate(0deg); }
+        }
+        
+        .mini-star {
+            width: 8px;
+            height: 8px;
+            background: var(--star-gold);
+            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+            animation: starPulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes starPulse {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.3); opacity: 1; box-shadow: 0 0 15px var(--star-gold); }
+        }
+        
+        .divider-line {
+            height: 1px;
+            width: 60px;
+            background: linear-gradient(90deg, transparent, var(--secondary));
+        }
+        
+        .divider-line:last-child {
+            background: linear-gradient(90deg, var(--secondary), transparent);
+        }
+        
+        /* Wedding Title */
+        .wedding-title {
+            font-size: 1.15rem;
+            color: rgba(255, 255, 255, 0.85);
+            font-weight: 300;
+            letter-spacing: 2px;
+            margin: 22px 0;
+            opacity: 0;
+            animation: fadeInUp 1s ease forwards;
+            animation-delay: 1.5s;
+        }
+        
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(25px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Date Section */
+        .date-section {
+            background: linear-gradient(135deg, rgba(124, 58, 237, 0.2), rgba(167, 139, 250, 0.1));
+            border: 1px solid rgba(167, 139, 250, 0.3);
+            border-radius: 22px;
+            padding: 23px;
+            margin: 22px 0;
+            opacity: 0;
+            animation: slideFromLeft 1s ease forwards;
+            animation-delay: 1.7s;
+        }
+        
+        @keyframes slideFromLeft {
+            from { opacity: 0; transform: translateX(-40px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        .date-label {
+            font-size: 0.88rem;
+            color: var(--secondary);
+            margin-bottom: 8px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .date-value {
+            font-family: 'Aref Ruqaa', serif;
+            font-size: 1.75rem;
+            color: #fff;
+            font-weight: 700;
+        }
+        
+        /* Location Section */
+        .location-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            padding: 19px;
+            background: rgba(251, 191, 36, 0.08);
+            border: 1px solid rgba(251, 191, 36, 0.2);
+            border-radius: 18px;
+            margin: 18px 0;
+            opacity: 0;
+            animation: slideFromRight 1s ease forwards;
+            animation-delay: 1.9s;
+        }
+        
+        @keyframes slideFromRight {
+            from { opacity: 0; transform: translateX(40px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        .location-icon {
+            width: 46px;
+            height: 46px;
+            background: linear-gradient(135deg, var(--star-gold), #f59e0b);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            color: var(--primary);
+            box-shadow: 0 5px 20px rgba(251, 191, 36, 0.3);
+        }
+        
+        .location-text h4 {
+            font-size: 1.05rem;
+            color: #fff;
+            margin-bottom: 3px;
+        }
+        
+        .location-text p {
+            font-size: 0.84rem;
+            color: rgba(255, 255, 255, 0.65);
+        }
+        
+        /* RSVP Button */
+        .rsvp-btn {
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--accent) 100%);
+            color: white;
+            border: none;
+            padding: 17px 48px;
+            border-radius: 50px;
+            font-size: 1.08rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 24px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 10px 35px rgba(124, 58, 237, 0.4);
+            opacity: 0;
+            animation: cosmicBtn 0.8s ease forwards;
+            animation-delay: 2.1s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        @keyframes cosmicBtn {
+            from { opacity: 0; transform: translateY(25px) scale(0.9); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        
+        .rsvp-btn::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 60%);
+            transform: rotate(45deg);
+            transition: all 0.5s ease;
+            opacity: 0;
+        }
+        
+        .rsvp-btn:hover::after {
+            opacity: 1;
+            animation: btnShine 0.8s ease;
+        }
+        
+        @keyframes btnShine {
+            from { transform: rotate(45deg) translateX(-100%); }
+            to { transform: rotate(45deg) translateX(100%); }
+        }
+        
+        .rsvp-btn:hover {
+            transform: translateY(-4px) scale(1.04);
+            box-shadow: 0 18px 45px rgba(124, 58, 237, 0.5);
+        }
+        
+        /* Footer */
+        .footer-text {
+            margin-top: 26px;
+            font-size: 0.84rem;
+            color: rgba(255, 255, 255, 0.5);
+            opacity: 0;
+            animation: fadeInUp 1s ease forwards;
+            animation-delay: 2.4s;
+        }
+        
+        /* Responsive */
+        @media (max-width: 520px) {
+            .starry-card { padding: 38px 26px; border-radius: 28px; }
+            .couple-names h1 { font-size: 2.3rem; }
+            .moon-icon { font-size: 2.8rem; }
+            .bismillah { font-size: 1.2rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Starry Background -->
+    <div class="starry-sky" id="starrySky"></div>
+    
+    <!-- Nebula -->
+    <div class="nebula" style="top: -200px; right: -200px;"></div>
+    <div class="nebula" style="bottom: -200px; left: -200px; animation-delay: -10s;"></div>
+    
+    <div class="invitation-container">
+        <div class="starry-card">
+            <!-- Moon -->
+            <div class="moon-icon">🌙</div>
+            
+            <!-- Bismillah -->
+            <p class="bismillah">بِسْمِ اللهِ الرَّحْمَنِ الرَّحِيمِ</p>
+            
+            <!-- Couple Names -->
+            <div class="couple-names">
+                <h1>ياسر & هند</h1>
+            </div>
+            
+            <!-- Star Divider -->
+            <div class="star-divider">
+                <span class="divider-line"></span>
+                <span class="mini-star"></span>
+                <span class="divider-line"></span>
+            </div>
+            
+            <!-- Title -->
+            <p class="wedding-title">تحت ضوء النجوم نتزوج ✨</p>
+            
+            <!-- Date -->
+            <div class="date-section">
+                <p class="date-label"><i class="fas fa-star"></i> ليلة الفرح</p>
+                <p class="date-value">٢٥ ديسمبر ٢٠٢٦</p>
+            </div>
+            
+            <!-- Location -->
+            <div class="location-section">
+                <div class="location-icon"><i class="fas fa-map-marker-alt"></i></div>
+                <div class="location-text">
+                    <h4>قاعة السماء الفضية</h4>
+                    <p>الدمام، المملكة العربية السعودية</p>
+                </div>
+            </div>
+            
+            <!-- RSVP Button -->
+            <button class="rsvp-btn"><i class="fas fa-sparkles"></i> نراكم هناك</button>
+            
+            <!-- Footer -->
+            <p class="footer-text">في انتظاركم تحت النجوم 🌟</p>
+        </div>
+    </div>
+    
+    <script>
+        const starrySky = document.getElementById('starrySky');
+        
+        // Create stars
+        for (let i = 0; i < 150; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            const size = Math.random() * 3 + 1;
+            star.style.width = size + 'px';
+            star.style.height = size + 'px';
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 100 + '%';
+            star.style.setProperty('--duration', (Math.random() * 3 + 2) + 's');
+            star.style.setProperty('--delay', Math.random() * 5 + 's');
+            starrySky.appendChild(star);
+        }
+        
+        // Create shooting stars
+        for (let i = 0; i < 3; i++) {
+            const shootingStar = document.createElement('div');
+            shootingStar.className = 'shooting-star';
+            shootingStar.style.top = Math.random() * 50 + '%';
+            shootingStar.style.right = '-100px';
+            shootingStar.style.animationDelay = (Math.random() * 10 + i * 5) + 's';
+            shootingStar.style.animationDuration = (Math.random() * 2 + 2) + 's';
+            starrySky.appendChild(shootingStar);
+        }
+    </script>
+</body>
+</html>

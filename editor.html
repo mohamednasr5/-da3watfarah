@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title id="pageTitle" data-i18n="page_title">لوحة التحكم | دعوة فرح</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+<style>
+  :root{--bg:#0B0F0E;--panel:#152420;--panel2:#0F1B17;--gold:#C9A227;--gold-light:#E8C766;--text:#F5F1E8;--text-dim:#A9B3AC;--line:rgba(201,162,39,.22)}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:'Cairo',sans-serif;min-height:100vh}
+  a{color:inherit}
+  header{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:16px 5%;border-bottom:1px solid var(--line);position:sticky;top:0;background:rgba(11,15,14,.85);backdrop-filter:blur(12px);z-index:20;
+  }
+  .logo{font-family:'Amiri',serif;font-size:20px;color:var(--gold-light)}
+  .top-actions{display:flex;gap:10px;align-items:center}
+  .btn{padding:10px 20px;border-radius:999px;border:1px solid var(--line);background:none;color:var(--text);font-family:'Cairo';font-weight:700;font-size:13.5px;cursor:pointer;transition:.2s}
+  .btn:hover{border-color:var(--gold)}
+  .btn-gold{background:linear-gradient(135deg,var(--gold-light),var(--gold));color:#12210F;border:none}
+  .btn-gold:hover{filter:brightness(1.08)}
+  .btn-sm{padding:7px 14px;font-size:12.5px}
+  .wrap{display:grid;grid-template-columns:230px 1fr;max-width:1280px;margin:0 auto;gap:0}
+  aside{padding:26px 18px;border-left:1px solid var(--line)}
+  .side-link{display:block;padding:11px 14px;border-radius:10px;color:var(--text-dim);font-size:14px;margin-bottom:4px;cursor:pointer}
+  .side-link.active{background:var(--panel);color:var(--gold-light);font-weight:700}
+  main{padding:30px 5%}
+  .panel{display:none}
+  .panel.active{display:block}
+  h2{font-family:'Amiri',serif;font-size:24px;margin-bottom:20px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:760px){.grid2{grid-template-columns:1fr}.wrap{grid-template-columns:1fr}aside{display:flex;overflow-x:auto;border-left:none;border-bottom:1px solid var(--line)}}
+  label{display:block;font-size:13px;color:var(--text-dim);margin:14px 0 6px}
+  input,select,textarea{
+    width:100%;padding:12px 14px;border-radius:10px;border:1px solid var(--line);
+    background:var(--panel2);color:var(--text);font-family:'Cairo';font-size:14px;outline:none;
+  }
+  input:focus,select:focus,textarea:focus{border-color:var(--gold)}
+  textarea{min-height:110px;resize:vertical}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:24px;margin-bottom:20px}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .theme-picker{display:flex;gap:12px;margin-top:10px}
+  .theme-opt{flex:1;border:2px solid var(--line);border-radius:12px;padding:16px;text-align:center;cursor:pointer;font-size:13px}
+  .theme-opt.royal{background:linear-gradient(160deg,#12211C,#0B0F0E);color:#E8C766}
+  .theme-opt.blossom{background:linear-gradient(160deg,#FBF3EC,#F3E1DC);color:#8B4A55}
+  .theme-opt.modern{background:linear-gradient(160deg,#111111,#1c1c1c);color:#8FAF9B}
+  .theme-opt.selected{border-color:var(--gold)}
+  .ai-tones{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+  .upload-box{border:1px dashed var(--line);border-radius:12px;padding:18px;text-align:center;cursor:pointer;font-size:13px;color:var(--text-dim)}
+  .upload-box:hover{border-color:var(--gold)}
+  .preview{margin-top:10px;max-height:150px;border-radius:10px;overflow:hidden}
+  .preview img{width:100%;object-fit:cover;max-height:150px}
+  .link-box{background:var(--panel2);border:1px dashed var(--line);border-radius:12px;padding:16px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;direction:ltr}
+  .qr-wrap{text-align:center;margin-top:16px}
+  #qrCanvas{border-radius:10px;background:#fff;padding:10px}
+  .msg{font-size:13px;margin-top:10px;min-height:16px}
+  .msg.ok{color:#8CE0A0}.msg.error{color:#E88}
+  table{width:100%;border-collapse:collapse;font-size:13.5px}
+  th,td{padding:12px 10px;border-bottom:1px solid var(--line);text-align:right}
+  th{color:var(--gold-light)}
+  .empty{color:var(--text-dim);font-size:14px;padding:30px 0;text-align:center}
+  .gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px}
+  .g-item{position:relative;border-radius:10px;overflow:hidden;border:1px solid var(--line)}
+  .g-item img{width:100%;height:130px;object-fit:cover}
+  .g-item .g-actions{position:absolute;bottom:0;right:0;left:0;display:flex;gap:4px;padding:6px;background:linear-gradient(0deg,rgba(0,0,0,.7),transparent)}
+  .g-item button{flex:1;font-size:11px;padding:5px;border-radius:6px;border:none;cursor:pointer}
+  .tag{display:inline-block;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:700}
+  .tag.yes{background:rgba(140,224,160,.15);color:#8CE0A0}
+  .tag.no{background:rgba(232,136,136,.15);color:#E88}
+  .inv-stats-bar{display:flex;gap:14px;flex-wrap:wrap;padding:14px 5%;border-bottom:1px solid var(--line);background:rgba(21,36,32,.4)}
+  .inv-stat{display:flex;align-items:center;gap:10px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 16px;min-width:150px}
+  .inv-stat i{color:var(--gold-light);font-size:18px}
+  .inv-stat b{display:block;font-size:18px;color:var(--text)}
+  .inv-stat span{display:block;font-size:12px;color:var(--text-dim)}
+</style>
+    <!-- PWA Meta Tags and Icons -->
+    <link rel="manifest" href="/manifest.json">
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/icons/favicon-16x16.png">
+    <link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+    <meta name="theme-color" content="#d4a574">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="دعوة فرح">
+    <meta name="application-name" content="دعوة فرح">
+    <meta name="msapplication-TileImage" content="/assets/icons/icon-192x192.png">
+    <meta name="msapplication-TileColor" content="#d4a574">
+    <link rel="stylesheet" href="/css/pwa-style.css">
+</head>
+<body>
+
+<header>
+  <div class="logo">دعوة فرح</div>
+  <div class="df-lang-toggle" style="display:flex;gap:4px;">
+    <button type="button" class="df-lang-btn active" data-lang="ar" onclick="switchLang('ar')" style="border:1px solid var(--line);background:var(--gold);color:#12210F;font-size:11px;font-weight:700;padding:4px 10px;border-radius:14px;cursor:pointer;">AR</button>
+    <button type="button" class="df-lang-btn" data-lang="en" onclick="switchLang('en')" style="border:1px solid var(--line);background:none;color:var(--text);font-size:11px;font-weight:700;padding:4px 10px;border-radius:14px;cursor:pointer;">EN</button>
+  </div>
+  <div class="top-actions">
+    <span id="slugTop" style="font-size:13px;color:var(--text-dim);direction:ltr"></span>
+    <button class="btn" id="logoutBtn" data-i18n="logout_btn">تسجيل الخروج</button>
+  </div>
+</header>
+
+<div class="inv-stats-bar" id="invStatsBar"></div>
+
+<div class="wrap">
+  <aside>
+    <div class="side-link active" data-panel="details" data-i18n="nav_details">تفاصيل الدعوة</div>
+    <div class="side-link" data-panel="media" data-i18n="nav_media">الصور والأغنية</div>
+    <div class="side-link" data-panel="ai" data-i18n="nav_ai">كاتب الدعوة الذكي</div>
+    <div class="side-link" data-panel="share" data-i18n="nav_share">الرابط ونشر الدعوة</div>
+    <div class="side-link" data-panel="rsvp" data-i18n="nav_rsvp">تأكيدات الحضور</div>
+    <div class="side-link" data-panel="wishes" data-i18n="nav_wishes">تهاني الضيوف</div>
+    <div class="side-link" data-panel="gallery" data-i18n="nav_gallery">ألبوم صور الضيوف</div>
+  </aside>
+
+  <main>
+    <!-- تفاصيل -->
+    <div class="panel active" id="panel-details">
+      <h2 data-i18n="details_h2">تفاصيل الدعوة</h2>
+      <div class="card">
+        <div class="grid2">
+          <div><label data-i18n="groom_name_label">اسم العريس</label><input id="groomName"></div>
+          <div><label data-i18n="bride_name_label">اسم العروسة</label><input id="brideName"></div>
+        </div>
+        <div class="grid2">
+          <label style="grid-column:1/-1" data-i18n="occasion_label">نوع المناسبة</label>
+          <select id="eventType" style="grid-column:1/-1">
+            <option value="wedding" data-i18n="occasion_wedding">حفل زفاف</option>
+            <option value="engagement" data-i18n="occasion_engagement">خطوبة</option>
+            <option value="katb_ketab" data-i18n="occasion_katb">كتب كتاب</option>
+          </select>
+        </div>
+        <div class="grid2">
+          <div><label data-i18n="event_date_label">تاريخ ووقت المناسبة</label><input type="datetime-local" id="eventDate"></div>
+          <div><label data-i18n="venue_label">اسم المكان / القاعة</label><input id="venueName"></div>
+        </div>
+        <label data-i18n="map_link_label">رابط الموقع على الخريطة (اختياري)</label>
+        <input id="venueMapUrl" placeholder="https://maps.google.com/...">
+        <label data-i18n="story_label">قصتكم / كلمة للضيوف</label>
+        <textarea id="story" placeholder="اكتبوا كلمة قصيرة لضيوفكم..." data-i18n-placeholder="story_ph"></textarea>
+
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+          <input type="checkbox" id="verseToggle" style="width:auto;margin:0">
+          <span data-i18n="verse_toggle_label">تفعيل الآية الدينية في أعلى الدعوة</span>
+        </label>
+        <div id="verseTypeWrap" style="display:none;margin-top:10px">
+          <label data-i18n="verse_type_label">نوع الآية</label>
+          <select id="verseType">
+            <option value="quran" data-i18n="verse_quran">آية قرآنية</option>
+            <option value="bible" data-i18n="verse_bible">آية من الكتاب المقدس</option>
+          </select>
+          <div id="verseAyahPreview" style="margin-top:10px;padding:14px;border:1px dashed var(--line);border-radius:10px;font-size:13.5px;color:var(--text-dim);line-height:1.9"></div>
+        </div>
+
+        <label data-i18n="theme_label">التصميم</label>
+        <div class="theme-picker">
+          <div class="theme-opt royal" data-theme="royal" data-i18n="theme_royal">الملكي</div>
+          <div class="theme-opt blossom" data-theme="blossom" data-i18n="theme_blossom">الزهري</div>
+          <div class="theme-opt modern" data-theme="modern" data-i18n="theme_modern">العصري</div>
+        </div>
+
+        <div class="row" style="margin-top:22px">
+          <button class="btn btn-gold" id="saveDetails" data-i18n="save_details_btn">حفظ التفاصيل</button>
+          <span class="msg" id="detailsMsg"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ميديا -->
+    <div class="panel" id="panel-media">
+      <h2 data-i18n="media_h2">الصور والأغنية</h2>
+      <div class="card">
+        <label data-i18n="cover_label">صورة الغلاف</label>
+        <div class="upload-box" id="coverBox" data-i18n="cover_upload_box">اضغط لرفع صورة الغلاف (JPG / PNG)</div>
+        <input type="file" id="coverInput" accept="image/*" style="display:none">
+        <div class="preview" id="coverPreview"></div>
+
+        <label style="margin-top:26px" data-i18n="song_label">أغنية الدعوة</label>
+        <div class="upload-box" id="songBox" data-i18n="song_upload_box">اضغط لرفع ملف صوتي (MP3)</div>
+        <input type="file" id="songInput" accept="audio/*" style="display:none">
+        <audio id="songPreview" controls style="width:100%;margin-top:10px;display:none"></audio>
+
+        <div class="msg" id="mediaMsg"></div>
+      </div>
+    </div>
+
+    <!-- AI -->
+    <div class="panel" id="panel-ai">
+      <h2 data-i18n="ai_h2">كاتب الدعوة الذكي</h2>
+      <div class="card">
+        <p style="color:var(--text-dim);font-size:14px;margin-bottom:6px" data-i18n="ai_desc">اختاروا أسلوب النص وخلوا الذكاء الاصطناعي يكتب دعوتكم:</p>
+        <div class="ai-tones">
+          <button class="btn btn-sm" data-tone="رسمي" data-i18n="tone_formal">أسلوب رسمي</button>
+          <button class="btn btn-sm" data-tone="رومانسي" data-i18n="tone_romantic">أسلوب رومانسي</button>
+          <button class="btn btn-sm" data-tone="بهيج" data-i18n="tone_joyful">أسلوب بهيج</button>
+        </div>
+        <textarea id="aiText" style="margin-top:16px" placeholder="سيظهر نص الدعوة هنا بعد التوليد، وتقدر تعدله يدويًا..." data-i18n-placeholder="ai_text_ph"></textarea>
+        <div class="row" style="margin-top:14px">
+          <button class="btn btn-gold" id="saveAiText" data-i18n="use_ai_text_btn">استخدام هذا النص في الدعوة</button>
+          <span class="msg" id="aiMsg"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- مشاركة -->
+    <div class="panel" id="panel-share">
+      <h2 data-i18n="share_h2">الرابط ونشر الدعوة</h2>
+      <div class="card">
+        <label class="row" style="align-items:center">
+          <input type="checkbox" id="publishToggle" style="width:auto">
+          &nbsp;<span data-i18n="publish_toggle_label">نشر الدعوة (تظهر للضيوف)</span>
+        </label>
+        <div class="link-box" style="margin-top:18px">
+          <span id="fullLink">da3watfarah.com/...</span>
+          <div class="row">
+            <button class="btn btn-sm" id="copyLinkBtn" data-i18n="copy_link_btn">نسخ الرابط</button>
+            <a class="btn btn-sm" id="openLinkBtn" target="_blank" data-i18n="open_invite_btn">فتح الدعوة</a>
+          </div>
+        </div>
+        <div class="qr-wrap">
+          <canvas id="qrCanvas"></canvas><br>
+          <button class="btn btn-sm" id="downloadQrBtn" style="margin-top:10px" data-i18n="download_qr_btn">تحميل كود QR</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- RSVP -->
+    <div class="panel" id="panel-rsvp">
+      <h2 data-i18n="rsvp_h2">تأكيدات الحضور</h2>
+      <div class="card">
+        <table>
+          <thead><tr><th data-i18n="col_name">الاسم</th><th data-i18n="col_status">الحالة</th><th data-i18n="col_count">عدد الأفراد</th><th data-i18n="col_date">التاريخ</th></tr></thead>
+          <tbody id="rsvpTable"></tbody>
+        </table>
+        <div class="empty" id="rsvpEmpty" style="display:none" data-i18n="rsvp_empty">لسه معندكوش تأكيدات حضور</div>
+      </div>
+    </div>
+
+    <!-- Wishes -->
+    <div class="panel" id="panel-wishes">
+      <h2 data-i18n="wishes_h2">تهاني الضيوف</h2>
+      <div class="card">
+        <table>
+          <thead><tr><th data-i18n="col_name">الاسم</th><th data-i18n="col_message">الرسالة</th><th data-i18n="col_date">التاريخ</th></tr></thead>
+          <tbody id="wishesTable"></tbody>
+        </table>
+        <div class="empty" id="wishesEmpty" style="display:none" data-i18n="wishes_empty">لسه معندكوش تهاني</div>
+      </div>
+    </div>
+
+    <!-- Gallery -->
+    <div class="panel" id="panel-gallery">
+      <h2 data-i18n="gallery_h2">ألبوم صور الضيوف</h2>
+      <div class="card">
+        <div class="gallery-grid" id="galleryGrid"></div>
+        <div class="empty" id="galleryEmpty" style="display:none" data-i18n="gallery_empty">لسه معندكوش صور من الضيوف</div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getDatabase, ref, get, update, onValue, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+  // ===== إعدادات فايربيز — استبدل بالقيم الخاصة بمشروعك =====
+  const firebaseConfig = {
+    apiKey: "AIzaSyAIyJ_oZdA1VGDMfKwCUfQwdO5ZOoQy2DQ",
+    authDomain: "da3watfarah.firebaseapp.com",
+    databaseURL: "https://da3watfarah-default-rtdb.firebaseio.com",
+    projectId: "da3watfarah",
+    storageBucket: "da3watfarah.firebasestorage.app",
+    messagingSenderId: "818147201311",
+    appId: "1:818147201311:web:cb83942913bc2d6a86e02a",
+    measurementId: "G-J9D7R961V7"
+  };
+  // رابط الـ Worker الخاص بالرفع والذكاء الاصطناعي
+  const WORKER_URL = "https://da3watfarah.nonm1724.workers.dev";
+  const SITE_URL = "https://da3watfarah.com";
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getDatabase(app);
+
+  let currentUid = null, invitationId = null, slug = null, invData = {};
+
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) { window.location.href = 'login.html'; return; }
+    currentUid = user.uid;
+
+    // The invitation to edit is identified by ?id=... in the URL (this is how
+    // overview.html / my-invitations.html link here). Without it we have no
+    // way of knowing which invitation to load.
+    invitationId = new URLSearchParams(window.location.search).get('id');
+    if (!invitationId) {
+      alert(t('alert_no_invite_selected'));
+      window.location.href = 'my-invitations.html';
+      return;
+    }
+
+    const invSnap = await get(ref(db, 'invitations/' + invitationId));
+    if (!invSnap.exists()) {
+      alert(t('alert_invite_not_found'));
+      window.location.href = 'my-invitations.html';
+      return;
+    }
+    invData = invSnap.val();
+
+    // Make sure the logged-in user actually owns this invitation.
+    if (invData.userId && invData.userId !== currentUid) {
+      alert(t('alert_no_permission'));
+      window.location.href = 'my-invitations.html';
+      return;
+    }
+
+    slug = invData.slug || '';
+    document.getElementById('slugTop').textContent = slug ? (SITE_URL.replace('https://','') + '/' + slug) : '';
+    populateForm();
+    listenRsvps();
+    listenWishes();
+    listenGallery();
+    listenViews();
+  });
+
+  // ===== المشاهدات الفعلية (تتحدث لحظيًا مع كل زيارة للدعوة) =====
+  function listenViews(){
+    onValue(ref(db, 'invitations/' + invitationId + '/viewsCount'), (snap) => {
+      invData.viewsCount = snap.val() || 0;
+      renderInvitationStats();
+    });
+  }
+
+  document.getElementById('logoutBtn').addEventListener('click', () => signOut(auth));
+
+  // ===== تنقل بين اللوحات =====
+  document.querySelectorAll('.side-link').forEach(link => {
+    link.addEventListener('click', () => {
+      document.querySelectorAll('.side-link').forEach(l => l.classList.remove('active'));
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      link.classList.add('active');
+      document.getElementById('panel-' + link.dataset.panel).classList.add('active');
+    });
+  });
+
+  // ===== ملء النموذج ببيانات الدعوة الحالية (لا نبدأ من فراغ عند التعديل) =====
+  function populateForm(){
+    const couple = invData.couple || {};
+    const event = invData.event || {};
+    const design = invData.design || {};
+    const content = invData.content || {};
+
+    document.getElementById('groomName').value = couple.groomName || '';
+    document.getElementById('brideName').value = couple.brideName || '';
+    document.getElementById('eventType').value = invData.eventType || event.type || 'wedding';
+
+    // event.date is stored as a timestamp (ms) + event.time as "HH:MM" separately;
+    // combine them into the single datetime-local input the form uses.
+    document.getElementById('eventDate').value = combineDateTime(event.date, event.time);
+
+    document.getElementById('venueName').value = event.venue || '';
+    document.getElementById('venueMapUrl').value = event.googleMapsUrl || '';
+    document.getElementById('story').value = content.loveStory || content.welcomeText || '';
+    document.getElementById('aiText').value = content.invitationText || '';
+    selectTheme(themeIdToKey(design.templateId));
+    document.getElementById('publishToggle').checked = invData.isPublished !== false;
+
+    const verseEnabled = content.religiousVerseEnabled !== undefined ? !!content.religiousVerseEnabled : true;
+    document.getElementById('verseToggle').checked = verseEnabled;
+    document.getElementById('verseType').value = content.religiousVerseType || 'quran';
+    document.getElementById('verseTypeWrap').style.display = verseEnabled ? 'block' : 'none';
+    updateVersePreview();
+
+    if (design.coverImage) {
+      document.getElementById('coverPreview').innerHTML = `<img src="${design.coverImage}">`;
+    }
+    if (design.musicUrl) {
+      const audio = document.getElementById('songPreview');
+      audio.src = design.musicUrl; audio.style.display = 'block';
+    }
+    updateShareBox();
+    renderInvitationStats();
+  }
+
+  // "royal" / "romantic" / "modern" (and other template ids) -> the 3 theme
+  // buttons offered in this editor. Falls back to "royal" for unknown ids.
+  function themeIdToKey(templateId){
+    if (templateId === 'romantic' || templateId === 'blossom') return 'blossom';
+    if (templateId === 'modern') return 'modern';
+    return 'royal';
+  }
+  const THEME_TO_TEMPLATE = {
+    royal: { templateId: 'royal', templateFile: 'preview-royal' },
+    blossom: { templateId: 'romantic', templateFile: 'preview-romantic' },
+    modern: { templateId: 'modern', templateFile: 'preview-modern' }
+  };
+
+  function combineDateTime(dateMs, timeStr){
+    if (!dateMs) return '';
+    const d = new Date(dateMs);
+    if (isNaN(d.getTime())) return '';
+    const pad = n => String(n).padStart(2, '0');
+    const datePart = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+    const timePart = timeStr || `${pad(d.getHours())}:${pad(d.getMinutes())}`;
+    return `${datePart}T${timePart}`;
+  }
+
+  // ===== الإحصائيات الحقيقية: مشاهدات / تهاني / تأكيدات حضور =====
+  function renderInvitationStats(){
+    const bar = document.getElementById('invStatsBar');
+    if (!bar) return;
+    const views = invData.viewsCount || 0;
+    const attending = invData.attendingCount ?? invData.rsvpsCount ?? 0;
+    const wishes = invData.wishesCount || 0;
+    bar.innerHTML = `
+      <div class="inv-stat"><i class="fas fa-eye"></i><div><b>${views.toLocaleString(getLang()==='ar'?'ar-EG':'en-US')}</b><span>${t('stat_views')}</span></div></div>
+      <div class="inv-stat"><i class="fas fa-user-check"></i><div><b>${attending.toLocaleString(getLang()==='ar'?'ar-EG':'en-US')}</b><span>${t('stat_attending')}</span></div></div>
+      <div class="inv-stat"><i class="fas fa-heart"></i><div><b>${wishes.toLocaleString(getLang()==='ar'?'ar-EG':'en-US')}</b><span>${t('stat_wishes')}</span></div></div>
+    `;
+  }
+
+  function selectTheme(theme){
+    document.querySelectorAll('.theme-opt').forEach(el => {
+      el.classList.toggle('selected', el.dataset.theme === theme);
+    });
+  }
+  document.querySelectorAll('.theme-opt').forEach(el => {
+    el.addEventListener('click', () => selectTheme(el.dataset.theme));
+  });
+
+  // ===== الآية الدينية (قرآنية / مسيحية) =====
+  const QURAN_VERSE_PREVIEW = 'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ\n"وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُم مِّنْ أَنفُسِكُمْ أَزْوَاجًا لِّتَسْكُنُوا إِلَيْهَا وَجَعَلَ بَيْنَكُم مَّوَدَّةً وَرَحْمَةً"\nصدق الله العظيم';
+  const BIBLE_VERSE_PREVIEW = '"المحبة تتأنى وترفق... المحبة لا تسقط أبداً" (١ كورنثوس ١٣: ٤، ٨)\n"الذي جمعه الله لا يفرقه إنسان" (متى ١٩: ٦)';
+
+  function updateVersePreview(){
+    const box = document.getElementById('verseAyahPreview');
+    const type = document.getElementById('verseType').value;
+    box.textContent = type === 'bible' ? BIBLE_VERSE_PREVIEW : QURAN_VERSE_PREVIEW;
+  }
+
+  document.getElementById('verseToggle').addEventListener('change', (e) => {
+    document.getElementById('verseTypeWrap').style.display = e.target.checked ? 'block' : 'none';
+  });
+  document.getElementById('verseType').addEventListener('change', updateVersePreview);
+
+  // ===== حفظ التفاصيل =====
+  document.getElementById('saveDetails').addEventListener('click', async () => {
+    const themeKey = document.querySelector('.theme-opt.selected')?.dataset.theme || 'royal';
+    const themeInfo = THEME_TO_TEMPLATE[themeKey] || THEME_TO_TEMPLATE.royal;
+
+    const dtVal = document.getElementById('eventDate').value; // "YYYY-MM-DDTHH:MM"
+    let eventDateMs = invData.event?.date || null;
+    let eventTime = invData.event?.time || '';
+    if (dtVal) {
+      const d = new Date(dtVal);
+      if (!isNaN(d.getTime())) {
+        eventDateMs = d.getTime();
+        eventTime = dtVal.split('T')[1] || '';
+      }
+    }
+
+    const payload = {
+      'couple/groomName': document.getElementById('groomName').value.trim(),
+      'couple/brideName': document.getElementById('brideName').value.trim(),
+      'eventType': document.getElementById('eventType').value,
+      'event/date': eventDateMs,
+      'event/time': eventTime,
+      'event/venue': document.getElementById('venueName').value.trim(),
+      'event/googleMapsUrl': document.getElementById('venueMapUrl').value.trim(),
+      'content/loveStory': document.getElementById('story').value.trim(),
+      'content/religiousVerseEnabled': document.getElementById('verseToggle').checked,
+      'content/religiousVerseType': document.getElementById('verseType').value,
+      'design/templateId': themeInfo.templateId,
+      'design/templateFile': themeInfo.templateFile,
+      'weddingDate': eventDateMs,
+      'updatedAt': Date.now()
+    };
+    await update(ref(db, 'invitations/' + invitationId), payload);
+
+    // Keep the in-memory copy in sync with what we just saved.
+    invData.couple = { ...(invData.couple||{}), groomName: payload['couple/groomName'], brideName: payload['couple/brideName'] };
+    invData.event = { ...(invData.event||{}), date: eventDateMs, time: eventTime, venue: payload['event/venue'], googleMapsUrl: payload['event/googleMapsUrl'] };
+    invData.content = { ...(invData.content||{}), loveStory: payload['content/loveStory'], religiousVerseEnabled: payload['content/religiousVerseEnabled'], religiousVerseType: payload['content/religiousVerseType'] };
+    invData.design = { ...(invData.design||{}), templateId: themeInfo.templateId, templateFile: themeInfo.templateFile };
+    invData.eventType = payload.eventType;
+
+    const m = document.getElementById('detailsMsg');
+    m.textContent = t('msg_saved'); m.className = 'msg ok';
+    setTimeout(() => m.textContent = '', 3000);
+  });
+
+  // ===== رفع الصور / الأغنية عبر الـ Worker إلى R2 =====
+  async function uploadFile(file, type){
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('type', type);
+    formData.append('slug', slug);
+    const res = await fetch(WORKER_URL + '/api/upload', { method: 'POST', body: formData });
+    if (!res.ok) throw new Error('upload failed');
+    const data = await res.json();
+    return data.url;
+  }
+
+  document.getElementById('coverBox').addEventListener('click', () => document.getElementById('coverInput').click());
+  document.getElementById('coverInput').addEventListener('change', async (e) => {
+    const file = e.target.files[0]; if (!file) return;
+    const m = document.getElementById('mediaMsg');
+    m.textContent = t('msg_uploading_image'); m.className = 'msg';
+    try {
+      const url = await uploadFile(file, 'cover');
+      await update(ref(db, 'invitations/' + invitationId), { 'design/coverImage': url });
+      invData.design = { ...(invData.design||{}), coverImage: url };
+      document.getElementById('coverPreview').innerHTML = `<img src="${url}">`;
+      m.textContent = t('msg_cover_uploaded'); m.className = 'msg ok';
+    } catch { m.textContent = t('msg_image_upload_failed'); m.className = 'msg error'; }
+  });
+
+  document.getElementById('songBox').addEventListener('click', () => document.getElementById('songInput').click());
+  document.getElementById('songInput').addEventListener('change', async (e) => {
+    const file = e.target.files[0]; if (!file) return;
+    const m = document.getElementById('mediaMsg');
+    m.textContent = t('msg_uploading_song'); m.className = 'msg';
+    try {
+      const url = await uploadFile(file, 'song');
+      await update(ref(db, 'invitations/' + invitationId), { 'design/musicUrl': url });
+      invData.design = { ...(invData.design||{}), musicUrl: url };
+      const audio = document.getElementById('songPreview');
+      audio.src = url; audio.style.display = 'block';
+      m.textContent = t('msg_song_uploaded'); m.className = 'msg ok';
+    } catch { m.textContent = t('msg_song_upload_failed'); m.className = 'msg error'; }
+  });
+
+  // ===== كاتب الدعوة الذكي (NVIDIA AI عبر الـ Worker) =====
+  document.querySelectorAll('.ai-tones button').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const m = document.getElementById('aiMsg');
+      m.textContent = t('msg_generating_text'); m.className = 'msg';
+      // Prevent the global auth-watcher (js/db.js) from logging the
+      // user out mid-request if the AI call takes a while.
+      window.__daAIRequestInProgress = true;
+      try {
+        const res = await fetch(WORKER_URL + '/api/ai/generate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            groomName: document.getElementById('groomName').value,
+            brideName: document.getElementById('brideName').value,
+            eventType: document.getElementById('eventType').value,
+            venueName: document.getElementById('venueName').value,
+            tone: btn.dataset.tone
+          })
+        });
+        const data = await res.json();
+        document.getElementById('aiText').value = data.text || '';
+        m.textContent = t('msg_text_generated'); m.className = 'msg ok';
+      } catch { m.textContent = t('msg_text_gen_failed'); m.className = 'msg error'; }
+      finally { window.__daAIRequestInProgress = false; }
+    });
+  });
+
+  document.getElementById('saveAiText').addEventListener('click', async () => {
+    const text = document.getElementById('aiText').value;
+    await update(ref(db, 'invitations/' + invitationId), { 'content/invitationText': text });
+    invData.content = { ...(invData.content||{}), invitationText: text };
+    const m = document.getElementById('aiMsg');
+    m.textContent = t('msg_ai_text_saved'); m.className = 'msg ok';
+  });
+
+  // ===== المشاركة والنشر =====
+  function invitationLiveUrl(){
+    // This is the URL that actually works today (reads live data from RTDB).
+    return slug
+      ? `${location.origin}${location.pathname.replace(/editor\.html.*/, '')}invite.html?slug=${encodeURIComponent(slug)}&id=${invitationId}`
+      : `${location.origin}${location.pathname.replace(/editor\.html.*/, '')}invite.html?id=${invitationId}`;
+  }
+  function updateShareBox(){
+    document.getElementById('fullLink').textContent = slug ? (SITE_URL.replace('https://','') + '/' + slug) : SITE_URL;
+    const url = invitationLiveUrl();
+    document.getElementById('openLinkBtn').href = url;
+    QRCode.toCanvas(document.getElementById('qrCanvas'), url, { width: 220, margin: 2 });
+  }
+  document.getElementById('publishToggle').addEventListener('change', async (e) => {
+    await update(ref(db, 'invitations/' + invitationId), { isPublished: e.target.checked, status: e.target.checked ? 'active' : 'draft' });
+    invData.isPublished = e.target.checked;
+  });
+  document.getElementById('copyLinkBtn').addEventListener('click', () => {
+    navigator.clipboard.writeText(invitationLiveUrl());
+  });
+  document.getElementById('downloadQrBtn').addEventListener('click', () => {
+    const link = document.createElement('a');
+    link.download = (slug || invitationId) + '-qr.png';
+    link.href = document.getElementById('qrCanvas').toDataURL();
+    link.click();
+  });
+
+  // ===== تأكيدات الحضور (مين جاي فعلاً) =====
+  function listenRsvps(){
+    onValue(ref(db, 'invitations/' + invitationId + '/rsvps'), (snap) => {
+      const tbody = document.getElementById('rsvpTable');
+      const empty = document.getElementById('rsvpEmpty');
+      tbody.innerHTML = '';
+      const data = snap.val() || {};
+      const keys = Object.keys(data);
+      empty.style.display = keys.length ? 'none' : 'block';
+      keys.sort((a,b) => (data[b].createdAt||0) - (data[a].createdAt||0)).forEach(k => {
+        const r = data[k];
+        const tag = r.attending ? '<span class="tag yes">' + t('tag_attending') + '</span>' : '<span class="tag no">' + t('tag_apology') + '</span>';
+        tbody.innerHTML += `<tr><td>${r.guestName||''}</td><td>${tag}</td><td>${r.guestsCount||1}</td><td>${new Date(r.createdAt||0).toLocaleDateString('ar-EG')}</td></tr>`;
+      });
+      // Keep the top stats bar's "attending" number in sync with the real list.
+      invData.attendingCount = keys.reduce((sum,k) => sum + (data[k].attending ? (1 + (parseInt(data[k].guestsCount,10) || 0)) : 0), 0);
+      renderInvitationStats();
+    });
+  }
+
+  // ===== تهاني الضيوف =====
+  function listenWishes(){
+    onValue(ref(db, 'invitations/' + invitationId + '/wishes'), (snap) => {
+      const tbody = document.getElementById('wishesTable');
+      const empty = document.getElementById('wishesEmpty');
+      tbody.innerHTML = '';
+      const data = snap.val() || {};
+      const keys = Object.keys(data);
+      empty.style.display = keys.length ? 'none' : 'block';
+      keys.sort((a,b) => (data[b].createdAt||0) - (data[a].createdAt||0)).forEach(k => {
+        const w = data[k];
+        tbody.innerHTML += `<tr><td>${w.name||''}</td><td>${w.message||''}</td><td>${new Date(w.createdAt||0).toLocaleDateString('ar-EG')}</td></tr>`;
+      });
+      invData.wishesCount = keys.length;
+      renderInvitationStats();
+    });
+  }
+
+  // ===== ألبوم الصور =====
+  function listenGallery(){
+    onValue(ref(db, 'invitations/' + invitationId + '/gallery'), (snap) => {
+      const grid = document.getElementById('galleryGrid');
+      const empty = document.getElementById('galleryEmpty');
+      grid.innerHTML = '';
+      const data = snap.val() || {};
+      const keys = Object.keys(data);
+      empty.style.display = keys.length ? 'none' : 'block';
+      keys.forEach(k => {
+        const g = data[k];
+        const div = document.createElement('div');
+        div.className = 'g-item';
+        div.innerHTML = `<img src="${g.url}">
+          <div class="g-actions">
+            <button style="background:#8CE0A0" data-approve="${k}">${t('btn_approve')}</button>
+            <button style="background:#E88" data-delete="${k}">${t('btn_delete')}</button>
+          </div>`;
+        grid.appendChild(div);
+      });
+      grid.querySelectorAll('[data-approve]').forEach(b => b.addEventListener('click', () =>
+        update(ref(db, `invitations/${invitationId}/gallery/${b.dataset.approve}`), { approved: true })));
+      grid.querySelectorAll('[data-delete]').forEach(b => b.addEventListener('click', () =>
+        remove(ref(db, `invitations/${invitationId}/gallery/${b.dataset.delete}`))));
+    });
+  }
+</script>
+
+<script>
+(function(){
+  var DF_I18N = {
+    ar: {
+      page_title: "لوحة التحكم | دعوة فرح",
+      logout_btn: "تسجيل الخروج",
+      nav_details: "تفاصيل الدعوة", nav_media: "الصور والأغنية", nav_ai: "كاتب الدعوة الذكي",
+      nav_share: "الرابط ونشر الدعوة", nav_rsvp: "تأكيدات الحضور", nav_wishes: "تهاني الضيوف", nav_gallery: "ألبوم صور الضيوف",
+      details_h2: "تفاصيل الدعوة",
+      groom_name_label: "اسم العريس", bride_name_label: "اسم العروسة",
+      occasion_label: "نوع المناسبة",
+      occasion_wedding: "حفل زفاف", occasion_engagement: "خطوبة", occasion_katb: "كتب كتاب",
+      event_date_label: "تاريخ ووقت المناسبة", venue_label: "اسم المكان / القاعة",
+      map_link_label: "رابط الموقع على الخريطة (اختياري)",
+      story_label: "قصتكم / كلمة للضيوف", story_ph: "اكتبوا كلمة قصيرة لضيوفكم...",
+      verse_toggle_label: "تفعيل الآية الدينية في أعلى الدعوة",
+      verse_type_label: "نوع الآية", verse_quran: "آية قرآنية", verse_bible: "آية من الكتاب المقدس",
+      theme_label: "التصميم", theme_royal: "الملكي", theme_blossom: "الزهري", theme_modern: "العصري",
+      save_details_btn: "حفظ التفاصيل",
+      media_h2: "الصور والأغنية", cover_label: "صورة الغلاف",
+      cover_upload_box: "اضغط لرفع صورة الغلاف (JPG / PNG)",
+      song_label: "أغنية الدعوة", song_upload_box: "اضغط لرفع ملف صوتي (MP3)",
+      ai_h2: "كاتب الدعوة الذكي",
+      ai_desc: "اختاروا أسلوب النص وخلوا الذكاء الاصطناعي يكتب دعوتكم:",
+      tone_formal: "أسلوب رسمي", tone_romantic: "أسلوب رومانسي", tone_joyful: "أسلوب بهيج",
+      ai_text_ph: "سيظهر نص الدعوة هنا بعد التوليد، وتقدر تعدله يدويًا...",
+      use_ai_text_btn: "استخدام هذا النص في الدعوة",
+      share_h2: "الرابط ونشر الدعوة", copy_link_btn: "نسخ الرابط", open_invite_btn: "فتح الدعوة", publish_toggle_label: "نشر الدعوة (تظهر للضيوف)",
+      download_qr_btn: "تحميل كود QR",
+      rsvp_h2: "تأكيدات الحضور", col_name: "الاسم", col_status: "الحالة", col_count: "عدد الأفراد", col_date: "التاريخ",
+      rsvp_empty: "لسه معندكوش تأكيدات حضور",
+      wishes_h2: "تهاني الضيوف", col_message: "الرسالة", wishes_empty: "لسه معندكوش تهاني",
+      gallery_h2: "ألبوم صور الضيوف", gallery_empty: "لسه معندكوش صور من الضيوف",
+      stat_views: "مشاهدة فعلية", stat_attending: "تأكيد حضور", stat_wishes: "تهنئة",
+      tag_attending: "حاضر", tag_apology: "معتذر",
+      btn_approve: "اعتماد", btn_delete: "حذف",
+      alert_no_invite_selected: "لم يتم تحديد الدعوة المطلوب تعديلها",
+      alert_invite_not_found: "هذه الدعوة غير موجودة",
+      alert_no_permission: "ليس لديك صلاحية لتعديل هذه الدعوة",
+      msg_saved: "تم الحفظ بنجاح",
+      msg_uploading_image: "جاري رفع الصورة...",
+      msg_cover_uploaded: "تم رفع صورة الغلاف",
+      msg_image_upload_failed: "فشل رفع الصورة، حاول مرة أخرى",
+      msg_uploading_song: "جاري رفع الأغنية...",
+      msg_song_uploaded: "تم رفع الأغنية",
+      msg_song_upload_failed: "فشل رفع الأغنية، حاول مرة أخرى",
+      msg_generating_text: "جاري توليد النص...",
+      msg_text_generated: "تم توليد النص، عدّله إن أحببت",
+      msg_text_gen_failed: "تعذر توليد النص الآن",
+      msg_ai_text_saved: "تم حفظ نص الدعوة"
+    },
+    en: {
+      page_title: "Dashboard | Da3wat Farah",
+      logout_btn: "Log out",
+      nav_details: "Invitation Details", nav_media: "Photos & Song", nav_ai: "AI Invitation Writer",
+      nav_share: "Link & Publish", nav_rsvp: "RSVP Confirmations", nav_wishes: "Guest Wishes", nav_gallery: "Guest Photo Album",
+      details_h2: "Invitation Details",
+      groom_name_label: "Groom's Name", bride_name_label: "Bride's Name",
+      occasion_label: "Occasion Type",
+      occasion_wedding: "Wedding", occasion_engagement: "Engagement", occasion_katb: "Katb Ketab",
+      event_date_label: "Event Date & Time", venue_label: "Venue Name / Hall",
+      map_link_label: "Map location link (optional)",
+      story_label: "Your Story / Message for Guests", story_ph: "Write a short message for your guests...",
+      verse_toggle_label: "Show a religious verse at the top of the invitation",
+      verse_type_label: "Verse Type", verse_quran: "Quranic Verse", verse_bible: "Bible Verse",
+      theme_label: "Design", theme_royal: "Royal", theme_blossom: "Blossom", theme_modern: "Modern",
+      save_details_btn: "Save Details",
+      media_h2: "Photos & Song", cover_label: "Cover Photo",
+      cover_upload_box: "Click to upload cover photo (JPG / PNG)",
+      song_label: "Invitation Song", song_upload_box: "Click to upload an audio file (MP3)",
+      ai_h2: "AI Invitation Writer",
+      ai_desc: "Choose a writing style and let AI write your invitation:",
+      tone_formal: "Formal style", tone_romantic: "Romantic style", tone_joyful: "Joyful style",
+      ai_text_ph: "The invitation text will appear here after generating, and you can edit it manually...",
+      use_ai_text_btn: "Use this text for the invitation",
+      share_h2: "Link & Publish", copy_link_btn: "Copy Link", open_invite_btn: "Open Invitation", publish_toggle_label: "Publish invitation (visible to guests)",
+      download_qr_btn: "Download QR Code",
+      rsvp_h2: "RSVP Confirmations", col_name: "Name", col_status: "Status", col_count: "Guests", col_date: "Date",
+      rsvp_empty: "No RSVP confirmations yet",
+      wishes_h2: "Guest Wishes", col_message: "Message", wishes_empty: "No wishes yet",
+      gallery_h2: "Guest Photo Album", gallery_empty: "No guest photos yet",
+      stat_views: "Actual Views", stat_attending: "Attending", stat_wishes: "Wishes",
+      tag_attending: "Attending", tag_apology: "Not attending",
+      btn_approve: "Approve", btn_delete: "Delete",
+      alert_no_invite_selected: "No invitation was selected for editing",
+      alert_invite_not_found: "This invitation doesn't exist",
+      alert_no_permission: "You don't have permission to edit this invitation",
+      msg_saved: "Saved successfully",
+      msg_uploading_image: "Uploading image...",
+      msg_cover_uploaded: "Cover photo uploaded",
+      msg_image_upload_failed: "Failed to upload photo, try again",
+      msg_uploading_song: "Uploading song...",
+      msg_song_uploaded: "Song uploaded",
+      msg_song_upload_failed: "Failed to upload song, try again",
+      msg_generating_text: "Generating text...",
+      msg_text_generated: "Text generated, feel free to edit it",
+      msg_text_gen_failed: "Couldn't generate text right now",
+      msg_ai_text_saved: "Invitation text saved"
+    }
+  };
+  window.DF_I18N = DF_I18N;
+  window.getLang = function(){ return document.documentElement.lang || 'ar'; };
+  window.t = function(key){
+    var dict = DF_I18N[getLang()] || DF_I18N.ar;
+    return (dict[key] !== undefined) ? dict[key] : (DF_I18N.ar[key] || key);
+  };
+  function applyTranslations(lang){
+    var dict = DF_I18N[lang] || DF_I18N.ar;
+    document.querySelectorAll('[data-i18n]').forEach(function(el){
+      var key = el.getAttribute('data-i18n');
+      if (dict[key] !== undefined) el.textContent = dict[key];
+    });
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(function(el){
+      var key = el.getAttribute('data-i18n-placeholder');
+      if (dict[key] !== undefined) el.setAttribute('placeholder', dict[key]);
+    });
+    if (dict.page_title) document.title = dict.page_title;
+    if (typeof renderInvitationStats === 'function') { try { renderInvitationStats(); } catch(e){} }
+  }
+  window.switchLang = function(lang){
+    document.documentElement.lang = lang;
+    document.documentElement.dir = (lang === 'ar') ? 'rtl' : 'ltr';
+    document.querySelectorAll('.df-lang-btn').forEach(function(b){
+      var active = b.getAttribute('data-lang') === lang;
+      b.classList.toggle('active', active);
+      b.style.background = active ? 'var(--gold)' : 'none';
+      b.style.color = active ? '#12210F' : 'var(--text)';
+    });
+    applyTranslations(lang);
+    try { localStorage.setItem('df_lang', lang); } catch(e){}
+  };
+  document.addEventListener('DOMContentLoaded', function(){
+    try {
+      var saved = localStorage.getItem('df_lang');
+      if (saved && (saved === 'ar' || saved === 'en')) window.switchLang(saved);
+    } catch(e){}
+  });
+})();
+</script>
+    <script src="/js/pwa-manager.js" defer></script>
+</body>
+</html>

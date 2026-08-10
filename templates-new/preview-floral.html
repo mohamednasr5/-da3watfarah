@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>معاينة قالب الورود | دعوة فرح</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=Amiri:wght@400;700&family=Aref+Ruqaa:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --primary: #8b5a6f;
+            --secondary: #e8b4bc;
+            --accent: #d4a5a5;
+            --rose-dark: #6d4552;
+            --rose-light: #fce4ec;
+        }
+        
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: linear-gradient(180deg, #fdf2f8 0%, #fce7f3 50%, #fbcfe8 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            color: #444;
+        }
+        
+        /* Floating Flowers Animation */
+        .flowers-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+        
+        .floating-flower {
+            position: absolute;
+            font-size: 1.5rem;
+            opacity: 0.15;
+            animation: flowerFloat 15s infinite ease-in-out;
+        }
+        
+        @keyframes flowerFloat {
+            0%, 100% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.15; }
+            90% { opacity: 0.15; }
+            100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
+        }
+        
+        /* Main Container */
+        .invitation-container {
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Floral Card */
+        .floral-card {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 40px;
+            padding: 50px 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 
+                0 25px 80px rgba(139, 90, 111, 0.15),
+                inset 0 0 60px rgba(232, 180, 188, 0.1);
+            backdrop-filter: blur(20px);
+        }
+        
+        /* Floral Border */
+        .floral-card::before {
+            content: '🌸 🌺 🌷 🌹 🌸 🌺 🌷 🌹';
+            position: absolute;
+            top: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.9rem;
+            letter-spacing: 8px;
+            opacity: 0.6;
+            animation: flowersShimmer 4s ease-in-out infinite;
+        }
+        
+        @keyframes flowersShimmer {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 0.8; }
+        }
+        
+        .floral-card::after {
+            content: '💐 ✨ 💕 ✨ 💐';
+            position: absolute;
+            bottom: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.85rem;
+            letter-spacing: 10px;
+            opacity: 0.5;
+        }
+        
+        /* Flower Frame */
+        .flower-frame {
+            position: absolute;
+            top: -30px;
+            left: -30px;
+            right: -30px;
+            bottom: -30px;
+            border: 3px solid transparent;
+            border-radius: 50px;
+            background: linear-gradient(135deg, var(--secondary), var(--accent), var(--rose-light)) border-box;
+            -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+            mask-composite: exclude;
+            opacity: 0.3;
+            animation: framePulse 3s ease-in-out infinite;
+        }
+        
+        @keyframes framePulse {
+            0%, 100% { opacity: 0.2; transform: scale(1); }
+            50% { opacity: 0.35; transform: scale(1.01); }
+        }
+        
+        /* Bismillah */
+        .bismillah {
+            font-family: 'Aref Ruqaa', serif;
+            font-size: 1.5rem;
+            color: var(--rose-dark);
+            margin-bottom: 20px;
+            opacity: 0;
+            animation: gentleFadeIn 1s ease forwards;
+            animation-delay: 0.3s;
+        }
+        
+        @keyframes gentleFadeIn {
+            from { opacity: 0; transform: translateY(-15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Rose Icon */
+        .rose-icon {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            opacity: 0;
+            animation: roseSpin 1.2s ease forwards;
+            animation-delay: 0.5s;
+            filter: drop-shadow(0 5px 15px rgba(212, 165, 165, 0.4));
+        }
+        
+        @keyframes roseSpin {
+            0% { opacity: 0; transform: rotate(-180deg) scale(0); }
+            70% { transform: rotate(15deg) scale(1.1); }
+            100% { opacity: 1; transform: rotate(0deg) scale(1); }
+        }
+        
+        /* Couple Names */
+        .couple-names {
+            margin: 25px 0;
+            opacity: 0;
+            animation: bloomReveal 1.3s ease forwards;
+            animation-delay: 0.8s;
+        }
+        
+        @keyframes bloomReveal {
+            from { 
+                opacity: 0; 
+                transform: scale(0.8);
+                filter: blur(8px);
+            }
+            to { 
+                opacity: 1; 
+                transform: scale(1);
+                filter: blur(0);
+            }
+        }
+        
+        .couple-names h1 {
+            font-family: 'Aref Ruqaa', serif;
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--rose-dark);
+            line-height: 1.7;
+        }
+        
+        .couple-names .groom-name {
+            display: block;
+            color: var(--primary);
+        }
+        
+        .heart-divider {
+            font-size: 2rem;
+            color: var(--accent);
+            margin: 15px 0;
+            opacity: 0;
+            animation: heartbeat 1s ease-in-out infinite;
+            animation-delay: 1.3s;
+        }
+        
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); opacity: 0; }
+            50% { transform: scale(1.2); opacity: 1; }
+        }
+        
+        /* Wedding Title */
+        .wedding-title {
+            font-size: 1.2rem;
+            color: var(--primary);
+            font-weight: 400;
+            margin: 20px 0;
+            opacity: 0;
+            animation: gentleFadeIn 1s ease forwards;
+            animation-delay: 1.5s;
+        }
+        
+        /* Decorative Vine */
+        .vine-decoration {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin: 25px 0;
+            opacity: 0;
+            animation: vineGrow 1s ease forwards;
+            animation-delay: 1.7s;
+        }
+        
+        @keyframes vineGrow {
+            from { 
+                opacity: 0; 
+                max-width: 0;
+                overflow: hidden;
+            }
+            to { 
+                opacity: 1; 
+                max-width: 200px;
+            }
+        }
+        
+        .vine-left, .vine-right {
+            height: 2px;
+            width: 70px;
+            background: linear-gradient(90deg, transparent, var(--secondary));
+            border-radius: 2px;
+        }
+        
+        .vine-right {
+            background: linear-gradient(90deg, var(--secondary), transparent);
+        }
+        
+        .vine-center {
+            font-size: 1.2rem;
+        }
+        
+        /* Date Card */
+        .date-card {
+            background: linear-gradient(135deg, var(--rose-light), white);
+            border-radius: 25px;
+            padding: 25px;
+            margin: 20px 0;
+            border: 2px dashed var(--secondary);
+            opacity: 0;
+            animation: petalFloat 1s ease forwards;
+            animation-delay: 1.9s;
+        }
+        
+        @keyframes petalFloat {
+            from { 
+                opacity: 0; 
+                transform: translateY(20px) rotate(-5deg);
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0) rotate(0deg);
+            }
+        }
+        
+        .date-label {
+            font-size: 0.9rem;
+            color: var(--primary);
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        .date-value {
+            font-family: 'Aref Ruqaa', serif;
+            font-size: 1.7rem;
+            color: var(--rose-dark);
+            font-weight: 700;
+        }
+        
+        /* Location Section */
+        .location-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            padding: 18px;
+            background: linear-gradient(135deg, rgba(232, 180, 188, 0.2), rgba(252, 228, 236, 0.3));
+            border-radius: 20px;
+            margin: 18px 0;
+            opacity: 0;
+            animation: gentleFadeIn 1s ease forwards;
+            animation-delay: 2.1s;
+        }
+        
+        .location-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: white;
+            box-shadow: 0 5px 15px rgba(139, 90, 111, 0.2);
+        }
+        
+        .location-text h4 {
+            font-size: 1.05rem;
+            color: var(--rose-dark);
+            margin-bottom: 3px;
+        }
+        
+        .location-text p {
+            font-size: 0.85rem;
+            color: var(--primary);
+            opacity: 0.8;
+        }
+        
+        /* RSVP Button */
+        .rsvp-btn {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--rose-dark) 100%);
+            color: white;
+            border: none;
+            padding: 16px 45px;
+            border-radius: 50px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 22px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 10px 30px rgba(139, 90, 111, 0.25);
+            opacity: 0;
+            animation: btnBloom 0.8s ease forwards;
+            animation-delay: 2.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        @keyframes btnBloom {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        
+        .rsvp-btn:hover {
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 0 15px 40px rgba(139, 90, 111, 0.35);
+        }
+        
+        /* Footer */
+        .footer-text {
+            margin-top: 25px;
+            font-size: 0.85rem;
+            color: var(--primary);
+            opacity: 0.6;
+            opacity: 0;
+            animation: gentleFadeIn 1s ease forwards;
+            animation-delay: 2.5s;
+        }
+        
+        /* Responsive */
+        @media (max-width: 520px) {
+            .floral-card { padding: 40px 28px; border-radius: 30px; }
+            .couple-names h1 { font-size: 2.3rem; }
+            .rose-icon { font-size: 2.8rem; }
+            .bismillah { font-size: 1.25rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Flowers -->
+    <div class="flowers-bg" id="flowersBg"></div>
+    
+    <div class="invitation-container">
+        <div class="floral-card">
+            <div class="flower-frame"></div>
+            
+            <p class="bismillah">بِسْمِ اللهِ الرَّحْمَنِ الرَّحِيمِ</p>
+            
+            <div class="rose-icon">🌹</div>
+            
+            <div class="couple-names">
+                <h1>
+                    <span class="bride-name">ريم</span>
+                    <span class="heart-divider">💕</span>
+                    <span class="groom-name">عمر</span>
+                </h1>
+            </div>
+            
+            <p class="wedding-title">يسرنا دعوتكم لحفل زفافنا</p>
+            
+            <div class="vine-decoration">
+                <span class="vine-left"></span>
+                <span class="vine-center">🌿</span>
+                <span class="vine-right"></span>
+            </div>
+            
+            <div class="date-card">
+                <p class="date-label">📅 موعد الفرح</p>
+                <p class="date-value">١٥ أكتوبر ٢٠٢٦</p>
+            </div>
+            
+            <div class="location-section">
+                <div class="location-icon"><i class="fas fa-map-marker-alt"></i></div>
+                <div class="location-text">
+                    <h4>قاعة الأزهار الكبرى</h4>
+                    <p>جدة، المملكة العربية السعودية</p>
+                </div>
+            </div>
+            
+            <button class="rsvp-btn"><i class="fas fa-heart"></i> سنتشرف بحضوركم</button>
+            <p class="footer-text">مع أطيب التمنيات بالسعادة 🌸</p>
+        </div>
+    </div>
+    
+    <script>
+        const flowersBg = document.getElementById('flowersBg');
+        const flowerEmojis = ['🌸', '🌺', '🌷', '🌹', '💮', '🏵️'];
+        
+        for (let i = 0; i < 20; i++) {
+            const flower = document.createElement('div');
+            flower.className = 'floating-flower';
+            flower.textContent = flowerEmojis[Math.floor(Math.random() * flowerEmojis.length)];
+            flower.style.left = Math.random() * 100 + '%';
+            flower.style.animationDelay = Math.random() * 15 + 's';
+            flower.style.animationDuration = (Math.random() * 8 + 12) + 's';
+            flowersBg.appendChild(flower);
+        }
+    </script>
+</body>
+</html>

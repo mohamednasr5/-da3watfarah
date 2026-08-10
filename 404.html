@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>دعوتك غير متاحة | دعوة فرح</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Tajawal', sans-serif; }
+
+  .error-container {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 40px 20px;
+    background: radial-gradient(ellipse at 50% 20%, #241716 0%, #140d0c 45%, #0a0605 100%);
+    color: white;
+    overflow: hidden;
+  }
+
+  .error-container::before {
+    content: '';
+    position: absolute;
+    top: 38%; left: 50%;
+    width: 480px; height: 480px;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(circle, rgba(255,120,40,.28) 0%, rgba(255,120,40,0) 70%);
+    filter: blur(10px);
+    animation: glowPulse 2.6s ease-in-out infinite;
+    pointer-events: none;
+  }
+  @keyframes glowPulse {
+    0%, 100% { opacity: .55; transform: translate(-50%, -50%) scale(1); }
+    50%      { opacity: .95; transform: translate(-50%, -50%) scale(1.12); }
+  }
+
+  .confetti-field { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+  .confetti-piece {
+    position: absolute; top: -40px; width: 10px; height: 14px;
+    background: linear-gradient(135deg, #D4AF37, #8a6a1c);
+    opacity: .85; border-radius: 1px;
+    animation-name: confettiFall; animation-timing-function: linear; animation-iteration-count: infinite;
+  }
+  .confetti-piece.torn { clip-path: polygon(0 0, 100% 10%, 85% 100%, 0% 85%); }
+  @keyframes confettiFall {
+    0%   { transform: translateY(-10vh) translateX(0) rotate(0deg); opacity: .95; }
+    100% { transform: translateY(115vh) translateX(var(--drift, 40px)) rotate(540deg); opacity: 0; }
+  }
+
+  .ember {
+    position: absolute; bottom: 46%; left: 50%; width: 5px; height: 5px; border-radius: 50%;
+    background: radial-gradient(circle, #FFD37A 0%, #FF7A3C 60%, transparent 100%);
+    animation-name: emberRise; animation-timing-function: ease-out; animation-iteration-count: infinite;
+  }
+  @keyframes emberRise {
+    0%   { transform: translate(0, 0) scale(1); opacity: .95; }
+    100% { transform: translate(var(--ex, 20px), -220px) scale(.2); opacity: 0; }
+  }
+
+  .envelope-scene { position: relative; width: 150px; height: 110px; margin: 0 auto 22px; }
+  .envelope-body {
+    position: absolute; inset: 0;
+    background: linear-gradient(160deg, #F5EFE0 0%, #E7DBB8 55%, #cbb27f 100%);
+    border-radius: 6px; box-shadow: 0 10px 26px rgba(0,0,0,.5); overflow: hidden;
+  }
+  .envelope-body::after {
+    content: ''; position: absolute; left: -6px; right: -6px; bottom: -6px; height: 55%;
+    background: linear-gradient(0deg, #0a0605 0%, #2b1408 35%, rgba(90,40,10,.7) 65%, transparent 100%);
+    animation: charRise 2.4s ease-in-out infinite;
+  }
+  @keyframes charRise { 0%, 100% { height: 45%; } 50% { height: 62%; } }
+  .envelope-flap {
+    position: absolute; top: 0; left: 0; right: 0; height: 60px;
+    background: linear-gradient(160deg, #EDE3C8, #cbb27f);
+    clip-path: polygon(0 0, 50% 62%, 100% 0);
+    box-shadow: 0 2px 6px rgba(0,0,0,.25) inset;
+  }
+  .envelope-seal {
+    position: absolute; top: 40%; left: 50%; width: 26px; height: 26px;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(circle at 35% 30%, #E8B766, #A6791C 70%);
+    border-radius: 50%; box-shadow: 0 2px 6px rgba(0,0,0,.4);
+  }
+  .flame {
+    position: absolute; bottom: 62%; left: 50%; width: 30px; height: 46px;
+    transform: translateX(-50%);
+    background: radial-gradient(ellipse at 50% 100%, #FFF3C4 0%, #FFC24B 30%, #FF7A2E 60%, rgba(255,60,0,0) 100%);
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    filter: blur(.3px);
+    animation: flameFlicker 1s ease-in-out infinite alternate;
+    mix-blend-mode: screen;
+  }
+  .flame.f2 { width: 18px; height: 30px; left: 38%; animation-duration: .7s; animation-delay: .15s; opacity: .85; }
+  .flame.f3 { width: 16px; height: 26px; left: 62%; animation-duration: .85s; animation-delay: .3s; opacity: .8; }
+  @keyframes flameFlicker {
+    0%   { transform: translateX(-50%) scaleY(1) skewX(-2deg); }
+    50%  { transform: translateX(-50%) scaleY(1.15) skewX(3deg); }
+    100% { transform: translateX(-50%) scaleY(.92) skewX(-4deg); }
+  }
+
+  .error-title { font-size: 2.1rem; margin-bottom: 10px; font-family: 'Amiri', serif; color: #F1C97A; text-shadow: 0 2px 14px rgba(255,120,40,.35); }
+  .error-subtitle { font-size: 1.05rem; color: #E8C9A0; margin-bottom: 6px; }
+  .error-message { font-size: 1rem; opacity: .75; max-width: 420px; margin-bottom: 22px; }
+  .error-countdown { font-size: .92rem; color: #C9A227; margin-bottom: 26px; }
+  .error-countdown b { display: inline-block; min-width: 20px; color: #F1C97A; font-weight: 900; }
+  .error-btn {
+    padding: 14px 35px; background: linear-gradient(135deg, #D4AF37, #B8960C); color: #1A1A2E;
+    border: none; border-radius: 50px; font-family: 'Tajawal', sans-serif; font-weight: 700; font-size: 1rem;
+    cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; text-decoration: none; display: inline-block;
+  }
+  .error-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(212, 175, 55, 0.4); }
+</style>
+    <!-- PWA Meta Tags and Icons -->
+    <link rel="manifest" href="/manifest.json">
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/icons/favicon-16x16.png">
+    <link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+    <meta name="theme-color" content="#d4a574">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="دعوة فرح">
+    <meta name="application-name" content="دعوة فرح">
+    <meta name="msapplication-TileImage" content="/assets/icons/icon-192x192.png">
+    <meta name="msapplication-TileColor" content="#d4a574">
+    <link rel="stylesheet" href="/css/pwa-style.css">
+</head>
+<body>
+
+<div class="error-container" id="errorContainer">
+  <div class="confetti-field" id="confettiField" aria-hidden="true"></div>
+
+  <div class="envelope-scene" aria-hidden="true">
+    <div class="flame f2"></div>
+    <div class="flame"></div>
+    <div class="flame f3"></div>
+    <div class="envelope-body">
+      <div class="envelope-seal"></div>
+    </div>
+    <div class="envelope-flap"></div>
+  </div>
+
+  <h2 class="error-title">دعوتك غير متاحة</h2>
+  <p class="error-subtitle">يرجى التواصل مع الإدارة</p>
+  <p class="error-message">الرابط اللي فتحته غير صحيح أو لم يعد متاحًا.</p>
+  <p class="error-countdown">سيتم تحويلك تلقائيًا إلى الصفحة الرئيسية خلال <b id="errorCountdown">8</b> ثوانٍ...</p>
+  <a href="https://da3watfarah.com/" class="error-btn">العودة للرئيسية الآن</a>
+</div>
+
+<script>
+  // GitHub Pages بيعرض 404.html لأي رابط مش موجود فعليًا زي /mohamed-mona
+  // لو الرابط شكله سلاج دعوة حقيقي، نحوّل فورًا لصفحة الدعوة (بدون عرض هذه الصفحة)
+  // عشان ميتأثرش تحميل الدعوات الحقيقية بأي تأخير.
+  (function () {
+    // window.location.pathname بيرجع القيمة وهي بالفعل percent-encoded لو
+    // فيها حروف عربية (المتصفح بيعملها تلقائيًا)، فلو عملنا عليها
+    // encodeURIComponent تاني هيحصل ترميز مزدوج (%25D9%2585...) والسلاج
+    // مش هيتفك صح في invite.html -> عشان كده لازم نفك الترميز الأول قبل
+    // ما نعيد ترميزه مرة واحدة بس.
+    var rawPath = window.location.pathname.replace(/^\/+/, '').replace(/\/+$/, '');
+    var path = '';
+    try { path = decodeURIComponent(rawPath); } catch (e) { path = rawPath; }
+    var reserved = ['', 'index.html', 'login.html', 'editor.html', 'admin.html', 'invite.html', '404.html'];
+    if (path && reserved.indexOf(path) === -1) {
+      window.location.replace('/invite.html?slug=' + encodeURIComponent(path) + window.location.search.replace(/^\?/, '&'));
+      return; // لا تكمل تنفيذ باقي هذا السكريبت، الصفحة هتتحول فورًا
+    }
+    // مفيش سلاج / رابط فاضي أو غير معروف تمامًا -> اعرض صفحة "الدعوة غير متاحة"
+    initErrorAnimation();
+  })();
+
+  function initErrorAnimation() {
+    var field = document.getElementById('confettiField');
+
+    for (var i = 0; i < 26; i++) {
+      var piece = document.createElement('div');
+      piece.className = 'confetti-piece' + (i % 2 === 0 ? ' torn' : '');
+      var left = Math.random() * 100;
+      var duration = 4 + Math.random() * 3.5;
+      var delay = Math.random() * 5;
+      var drift = (Math.random() * 160 - 80) + 'px';
+      var hue = i % 3 === 0 ? '#C9A227' : (i % 3 === 1 ? '#8a3a1c' : '#E8C766');
+      piece.style.left = left + '%';
+      piece.style.setProperty('--drift', drift);
+      piece.style.animationDuration = duration + 's';
+      piece.style.animationDelay = delay + 's';
+      piece.style.background = hue;
+      piece.style.width = (6 + Math.random() * 6) + 'px';
+      piece.style.height = (10 + Math.random() * 8) + 'px';
+      field.appendChild(piece);
+    }
+
+    for (var j = 0; j < 18; j++) {
+      var ember = document.createElement('div');
+      ember.className = 'ember';
+      var eleft = 47 + (Math.random() * 10 - 5);
+      var eduration = 1.4 + Math.random() * 1.4;
+      var edelay = Math.random() * 2.2;
+      var ex = (Math.random() * 60 - 30) + 'px';
+      ember.style.left = eleft + '%';
+      ember.style.setProperty('--ex', ex);
+      ember.style.animationDuration = eduration + 's';
+      ember.style.animationDelay = edelay + 's';
+      field.appendChild(ember);
+    }
+
+    var secondsLeft = 8;
+    var countdownEl = document.getElementById('errorCountdown');
+    var interval = setInterval(function () {
+      secondsLeft -= 1;
+      if (countdownEl) countdownEl.textContent = Math.max(secondsLeft, 0);
+      if (secondsLeft <= 0) clearInterval(interval);
+    }, 1000);
+    setTimeout(function () {
+      window.location.href = 'https://da3watfarah.com/';
+    }, 8000);
+  }
+</script>
+    <script src="/js/pwa-manager.js" defer></script>
+</body>
+</html>
