@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>لوحة المالك | دعوة فرح</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#0B0F0E;--panel:#152420;--panel2:#0F1B17;--gold:#C9A227;--gold-light:#E8C766;--text:#F5F1E8;--text-dim:#A9B3AC;--line:rgba(201,162,39,.22);--green:#8CE0A0;--red:#E88;--orange:#E8B766}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:'Cairo',sans-serif;min-height:100vh}
+  header{display:flex;align-items:center;justify-content:space-between;padding:18px 5%;border-bottom:1px solid var(--line)}
+  .logo{font-family:'Amiri',serif;font-size:22px;color:var(--gold-light)}
+  .btn{padding:9px 18px;border-radius:999px;border:1px solid var(--line);background:none;color:var(--text);font-family:'Cairo';font-weight:700;font-size:13px;cursor:pointer}
+  .btn:hover{border-color:var(--gold)}
+  main{padding:30px 5%;max-width:1300px;margin:0 auto}
+  .stats{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-bottom:24px}
+  .stat{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px;text-align:center}
+  .stat b{display:block;font-family:'Amiri',serif;font-size:26px;color:var(--gold-light)}
+  .stat span{font-size:12px;color:var(--text-dim)}
+  @media(max-width:900px){.stats{grid-template-columns:1fr 1fr 1fr}}
+  @media(max-width:560px){.stats{grid-template-columns:1fr 1fr}}
+  .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:18px;justify-content:space-between}
+  input#search{flex:1;min-width:220px;max-width:320px;padding:11px 14px;border-radius:10px;border:1px solid var(--line);background:var(--panel2);color:var(--text);font-family:'Cairo'}
+  .tabs{display:flex;gap:8px;flex-wrap:wrap}
+  .tab{padding:8px 14px;border-radius:999px;border:1px solid var(--line);background:var(--panel2);color:var(--text-dim);font-size:12.5px;font-weight:700;cursor:pointer;font-family:'Cairo'}
+  .tab.active{background:var(--gold);color:#0B0F0E;border-color:var(--gold)}
+  .table-wrap{overflow-x:auto;border-radius:14px;border:1px solid var(--line)}
+  table{width:100%;border-collapse:collapse;font-size:13px;background:var(--panel)}
+  th,td{padding:13px 10px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
+  th{color:var(--gold-light);background:var(--panel2);position:sticky;top:0}
+  tr:last-child td{border-bottom:none}
+  .tag{padding:3px 10px;border-radius:999px;font-size:11px;font-weight:700;display:inline-block}
+  .tag.pub{background:rgba(140,224,160,.15);color:var(--green)}
+  .tag.pending{background:rgba(232,183,102,.18);color:var(--orange)}
+  .tag.rejected{background:rgba(232,136,136,.18);color:var(--red)}
+  .tag.draft{background:rgba(169,179,172,.15);color:var(--text-dim)}
+  .tag.type-wedding{background:rgba(201,162,39,.18);color:var(--gold-light)}
+  .tag.type-engagement{background:rgba(183,110,121,.2);color:#E8B4B8}
+  .tag.type-katb_ketab{background:rgba(15,118,110,.2);color:#5EEAD4}
+  .tag.plan-vip{background:rgba(232,183,102,.2);color:var(--gold-light)}
+  .tag.plan-premium{background:rgba(94,234,212,.18);color:#5EEAD4}
+  .tag.plan-free{background:rgba(169,179,172,.15);color:var(--text-dim)}
+  select.plan-select{padding:6px 10px;border-radius:8px;border:1px solid var(--line);background:var(--panel2);color:var(--text);font-family:'Cairo';font-size:12px}
+  .row-actions{display:flex;gap:6px;flex-wrap:wrap}
+  .row-actions button, .row-actions a{font-size:11px;padding:6px 10px;border-radius:8px;border:none;cursor:pointer;text-decoration:none;color:#0B0F0E;font-weight:700;font-family:'Cairo'}
+  .gate{display:flex;align-items:center;justify-content:center;min-height:100vh;flex-direction:column;gap:14px}
+  .gate p{color:var(--text-dim);font-size:14px}
+  .empty{padding:40px;text-align:center;color:var(--text-dim)}
+  #adminLoginForm{display:flex;flex-direction:column;gap:12px;align-items:center}
+  #adminPassword{padding:12px 16px;border-radius:10px;border:1px solid var(--line);background:var(--panel2);color:var(--text);font-family:'Cairo';font-size:15px;text-align:center;min-width:240px;letter-spacing:2px}
+  #adminPassword:focus{outline:none;border-color:var(--gold)}
+  .gate .btn{background:var(--gold);color:#0B0F0E;border-color:var(--gold)}
+  .gate .btn:disabled{opacity:.6;cursor:not-allowed}
+  #adminLoginError{color:var(--red);font-size:13px;min-height:16px}
+
+  /* ===== Detail / control modal ===== */
+  .modal-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:500;align-items:center;justify-content:center;padding:20px}
+  .modal-backdrop.open{display:flex}
+  .modal-box{background:var(--panel);border:1px solid var(--line);border-radius:16px;max-width:900px;width:100%;max-height:88vh;overflow-y:auto;padding:0}
+  .modal-header{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--panel);z-index:2}
+  .modal-header h3{font-family:'Amiri',serif;color:var(--gold-light);font-size:18px}
+  .modal-close{background:none;border:none;color:var(--text-dim);font-size:20px;cursor:pointer}
+  .modal-body{padding:20px 22px}
+  .m-section{margin-bottom:26px}
+  .m-section h4{color:var(--gold-light);font-size:13px;margin-bottom:10px;border-bottom:1px solid var(--line);padding-bottom:6px}
+  .m-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media(max-width:600px){.m-grid{grid-template-columns:1fr}}
+  .m-field label{display:block;font-size:11px;color:var(--text-dim);margin-bottom:5px}
+  .m-field input,.m-field select,.m-field textarea{width:100%;padding:9px 12px;border-radius:8px;border:1px solid var(--line);background:var(--panel2);color:var(--text);font-family:'Cairo';font-size:13px}
+  .m-field textarea{resize:vertical;min-height:70px;font-family:'Cairo'}
+  .m-field.full{grid-column:1/-1}
+  .m-color-field{display:flex;align-items:center;gap:8px}
+  .m-color-field input[type=color]{width:38px;height:36px;padding:2px;flex-shrink:0;cursor:pointer}
+  .m-color-field input[type=text]{flex:1}
+  .m-save-btn{margin-top:14px;background:var(--gold);color:#0B0F0E;border:none;padding:9px 20px;border-radius:8px;font-weight:700;cursor:pointer;font-family:'Cairo'}
+  .m-save-btn.secondary{background:none;border:1px solid var(--line);color:var(--text)}
+  .m-list-table{width:100%;border-collapse:collapse;font-size:12.5px}
+  .m-list-table th,.m-list-table td{padding:8px;border-bottom:1px solid var(--line);text-align:right}
+  .m-empty{color:var(--text-dim);font-size:12.5px;padding:10px 0}
+  .m-gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px}
+  .m-g-item{position:relative;border-radius:10px;overflow:hidden;aspect-ratio:1}
+  .m-g-item img{width:100%;height:100%;object-fit:cover}
+  .m-g-actions{position:absolute;inset:auto 0 0 0;display:flex;gap:4px;padding:5px;background:rgba(0,0,0,.55)}
+  .m-g-actions button{flex:1;font-size:10px;padding:5px 4px;border-radius:6px;border:none;cursor:pointer;font-weight:700;font-family:'Cairo'}
+  .m-g-badge{position:absolute;top:5px;right:5px;font-size:9px;padding:2px 6px;border-radius:999px;font-weight:700}
+  .m-wish-row button{font-size:10px;padding:5px 9px;border-radius:6px;border:none;cursor:pointer;font-weight:700;font-family:'Cairo';margin-inline-start:4px}
+</style>
+    <!-- PWA Meta Tags and Icons -->
+    <link rel="manifest" href="/manifest.json">
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/icons/favicon-16x16.png">
+    <link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+    <meta name="theme-color" content="#d4a574">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="دعوة فرح">
+    <meta name="application-name" content="دعوة فرح">
+    <meta name="msapplication-TileImage" content="/assets/icons/icon-192x192.png">
+    <meta name="msapplication-TileColor" content="#d4a574">
+    <link rel="stylesheet" href="/css/pwa-style.css">
+</head>
+<body>
+
+<div class="gate" id="gate">
+  <div class="logo">لوحة المالك</div>
+  <p>سجّل الدخول بحساب جوجل المصرّح له</p>
+  <button type="button" class="btn" id="googleLoginBtn" style="display:flex;align-items:center;justify-content:center;gap:10px;">
+    <svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg"><path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.92c1.7-1.57 2.68-3.88 2.68-6.62z"/><path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.92-2.26c-.8.54-1.84.86-3.04.86-2.34 0-4.32-1.58-5.03-3.7H.96v2.33A9 9 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.97 10.72A5.4 5.4 0 0 1 3.68 9c0-.6.1-1.18.29-1.72V4.95H.96A9 9 0 0 0 0 9c0 1.45.35 2.83.96 4.05l3.01-2.33z"/><path fill="#EA4335" d="M9 3.58c1.32 0 2.51.45 3.44 1.35l2.59-2.59C13.46.89 11.43 0 9 0A9 9 0 0 0 .96 4.95l3.01 2.33C4.68 5.16 6.66 3.58 9 3.58z"/></svg>
+    <span>تسجيل الدخول بحساب جوجل</span>
+  </button>
+  <p id="adminLoginError"></p>
+</div>
+
+<div id="dashboard" style="display:none">
+  <header>
+    <div class="logo">لوحة المالك — دعوة فرح</div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <div class="tabs" id="mainViewTabs">
+        <button class="tab active" data-view="invitations"><i class="fas fa-envelope-open-text"></i> الدعوات</button>
+        <button class="tab" data-view="users"><i class="fas fa-users"></i> المستخدمون</button>
+      </div>
+      <button class="btn" id="logoutBtn">تسجيل الخروج</button>
+    </div>
+  </header>
+  <main>
+    <section id="viewInvitations">
+    <div class="stats">
+      <div class="stat"><b id="statTotal">0</b><span>إجمالي الدعوات</span></div>
+      <div class="stat"><b id="statPending">0</b><span>بانتظار المراجعة</span></div>
+      <div class="stat"><b id="statPublished">0</b><span>منشورة</span></div>
+      <div class="stat"><b id="statViews">0</b><span>إجمالي المشاهدات</span></div>
+      <div class="stat"><b id="statRsvp">0</b><span>تأكيدات حضور</span></div>
+    </div>
+
+    <div class="stats" style="grid-template-columns:repeat(3,1fr);margin-bottom:24px">
+      <div class="stat"><b id="statWedding">0</b><span>💍 دعوات الفرح</span></div>
+      <div class="stat"><b id="statEngagement">0</b><span>💎 دعوات الخطوبة</span></div>
+      <div class="stat"><b id="statKatbKetab">0</b><span>📖 دعوات كتب الكتاب</span></div>
+    </div>
+
+    <div class="toolbar">
+      <div class="tabs" id="tabs">
+        <button class="tab active" data-filter="all">الكل</button>
+        <button class="tab" data-filter="needs_review">بحاجة لمراجعة الدفع</button>
+        <button class="tab" data-filter="unpaid">بانتظار اختيار/دفع العميل</button>
+        <button class="tab" data-filter="published">منشورة</button>
+        <button class="tab" data-filter="rejected">مرفوضة</button>
+      </div>
+      <input id="search" placeholder="ابحث بالاسم أو الرابط...">
+    </div>
+
+    <div class="toolbar">
+      <div class="tabs" id="typeTabs">
+        <button class="tab active" data-type="all">كل الأقسام</button>
+        <button class="tab" data-type="wedding">💍 الفرح</button>
+        <button class="tab" data-type="engagement">💎 الخطوبة</button>
+        <button class="tab" data-type="katb_ketab">📖 كتب الكتاب</button>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>القسم</th><th>الرابط</th><th>الأسماء</th><th>الباقة</th><th>حالة الدفع</th>
+            <th>الإيصال</th><th>حالة النشر</th><th>المشاهدات</th><th>تاريخ الإنشاء</th><th>إجراءات</th>
+          </tr>
+        </thead>
+        <tbody id="invTable"></tbody>
+      </table>
+      <div class="empty" id="emptyState" style="display:none">لا توجد دعوات مطابقة</div>
+    </div>
+    </section>
+
+    <section id="viewUsers" style="display:none">
+      <div class="stats" style="grid-template-columns:repeat(4,1fr)">
+        <div class="stat"><b id="statUsersTotal">0</b><span>إجمالي المستخدمين</span></div>
+        <div class="stat"><b id="statUsersVip">0</b><span>👑 مشتركو VIP</span></div>
+        <div class="stat"><b id="statUsersPremium">0</b><span>⭐ مشتركو بريميوم</span></div>
+        <div class="stat"><b id="statUsersFree">0</b><span>مجاني</span></div>
+      </div>
+
+      <div class="toolbar">
+        <div class="tabs" id="userPlanTabs">
+          <button class="tab active" data-plan="all">الكل</button>
+          <button class="tab" data-plan="vip">👑 VIP</button>
+          <button class="tab" data-plan="premium">⭐ بريميوم</button>
+          <button class="tab" data-plan="free">مجاني</button>
+        </div>
+        <input id="userSearch" placeholder="ابحث بالاسم أو البريد...">
+      </div>
+
+      <div id="userInvitesFilterBanner" style="display:none;margin-bottom:14px;padding:10px 16px;background:var(--panel2);border:1px solid var(--line);border-radius:10px;font-size:13px;display:flex;align-items:center;justify-content:space-between;gap:10px">
+        <span id="userInvitesFilterText"></span>
+        <button class="btn" id="clearUserInvitesFilterBtn" style="padding:5px 12px">إظهار كل الدعوات</button>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>الاسم</th><th>البريد الإلكتروني</th><th>نوع الحساب</th><th>عدد الدعوات</th>
+              <th>تاريخ التسجيل</th><th>إجراءات</th>
+            </tr>
+          </thead>
+          <tbody id="userTable"></tbody>
+        </table>
+        <div class="empty" id="userEmptyState" style="display:none">لا يوجد مستخدمون مطابقون</div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- Full invitation control modal -->
+<div class="modal-backdrop" id="detailModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3 id="modalTitle">تفاصيل الدعوة</h3>
+      <button class="modal-close" id="modalCloseBtn">&times;</button>
+    </div>
+    <div class="modal-body">
+
+      <div class="m-section">
+        <h4>بيانات أساسية (قابلة للتعديل)</h4>
+        <div class="m-grid">
+          <div class="m-field"><label>القسم / نوع المناسبة</label>
+            <select id="editEventType">
+              <option value="wedding">💍 دعوة فرح</option>
+              <option value="engagement">💎 دعوة خطوبة</option>
+              <option value="katb_ketab">📖 دعوة كتب كتاب</option>
+            </select>
+          </div>
+          <div class="m-field"><label>القالب المستخدم</label>
+            <select id="editTemplate">
+              <option value="preview-classic">كلاسيكي</option>
+              <option value="preview-modern">عصري</option>
+              <option value="preview-romantic">رومانسي</option>
+              <option value="preview-islamic">إسلامي</option>
+              <option value="preview-bohemian">بوهيمي</option>
+              <option value="preview-royal">ملكي</option>
+            </select>
+          </div>
+          <div class="m-field"><label>اسم العريس</label><input id="editGroomName"></div>
+          <div class="m-field"><label>اسم العروسة</label><input id="editBrideName"></div>
+          <div class="m-field"><label>الرابط (slug)</label><input id="editSlug" style="direction:ltr"></div>
+          <div class="m-field"><label>اسم المناسبة</label><input id="editEventName"></div>
+          <div class="m-field"><label>تاريخ ووقت المناسبة</label><input id="editEventDate" type="datetime-local"></div>
+          <div class="m-field"><label>مكان المناسبة</label><input id="editVenueName"></div>
+          <div class="m-field"><label>اللون الأساسي</label>
+            <div class="m-color-field"><input type="color" id="editPrimaryColorPicker"><input type="text" id="editPrimaryColor" style="direction:ltr"></div>
+          </div>
+          <div class="m-field"><label>اللون الثانوي</label>
+            <div class="m-color-field"><input type="color" id="editSecondaryColorPicker"><input type="text" id="editSecondaryColor" style="direction:ltr"></div>
+          </div>
+          <div class="m-field full"><label>رابط صورة الغلاف</label><input id="editCoverImage" style="direction:ltr" placeholder="https://..."></div>
+          <div class="m-field full"><label>نص الدعوة</label><textarea id="editInvitationText"></textarea></div>
+        </div>
+        <button class="m-save-btn" id="saveDetailsBtn">حفظ التعديلات</button>
+        <span id="saveStatus" style="margin-inline-start:10px;font-size:12px;color:var(--green)"></span>
+      </div>
+
+      <div class="m-section">
+        <h4>الدفع والباقة (قابلة للتعديل يدويًا)</h4>
+        <div class="m-grid">
+          <div class="m-field"><label>الباقة</label>
+            <select id="editPaymentPlan">
+              <option value="free">مجاني</option>
+              <option value="premium">مميزة</option>
+              <option value="vip">VIP</option>
+            </select>
+          </div>
+          <div class="m-field"><label>حالة الدفع</label>
+            <select id="editPaymentStatus">
+              <option value="unpaid">بانتظار اختيار الباقة</option>
+              <option value="pending_verification">بانتظار مراجعة الإيصال</option>
+              <option value="verified">تم التحقق والدفع</option>
+              <option value="rejected">مرفوض</option>
+              <option value="not_required">باقة مجانية</option>
+            </select>
+          </div>
+          <div class="m-field"><label>المبلغ</label><input id="editPaymentAmount" type="number" style="direction:ltr"></div>
+          <div class="m-field"><label>العملة</label><input id="editPaymentCurrency" style="direction:ltr" placeholder="EGP / SAR / USD"></div>
+        </div>
+        <button class="m-save-btn" id="savePaymentBtn">حفظ بيانات الدفع</button>
+        <span id="savePaymentStatus" style="margin-inline-start:10px;font-size:12px;color:var(--green)"></span>
+      </div>
+
+      <div class="m-section">
+        <h4>ملاحظة داخلية (تظهر للإدارة فقط، غير مرئية للضيوف)</h4>
+        <textarea id="editInternalNote" style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid var(--line);background:var(--panel2);color:var(--text);font-family:'Cairo';font-size:13px;min-height:60px"></textarea>
+        <button class="m-save-btn secondary" id="saveNoteBtn" style="margin-top:10px">حفظ الملاحظة</button>
+        <span id="saveNoteStatus" style="margin-inline-start:10px;font-size:12px;color:var(--green)"></span>
+      </div>
+
+      <div class="m-section">
+        <h4>تأكيدات الحضور (RSVP)</h4>
+        <button class="m-save-btn secondary" id="exportRsvpBtn" style="margin-bottom:12px">تصدير CSV</button>
+        <table class="m-list-table">
+          <thead><tr><th>الاسم</th><th>الحالة</th><th>عدد المرافقين</th><th>التاريخ</th></tr></thead>
+          <tbody id="modalRsvpTable"></tbody>
+        </table>
+        <div class="m-empty" id="modalRsvpEmpty" style="display:none">لا توجد تأكيدات حضور</div>
+      </div>
+
+      <div class="m-section">
+        <h4>جدار التهاني</h4>
+        <table class="m-list-table">
+          <thead><tr><th>الاسم</th><th>الرسالة</th><th>التاريخ</th><th>إجراء</th></tr></thead>
+          <tbody id="modalWishesTable"></tbody>
+        </table>
+        <div class="m-empty" id="modalWishesEmpty" style="display:none">لا توجد تهانٍ بعد</div>
+      </div>
+
+      <div class="m-section">
+        <h4>ذكريات وصور الضيوف</h4>
+        <div class="m-gallery-grid" id="modalGalleryGrid"></div>
+        <div class="m-empty" id="modalGalleryEmpty" style="display:none">لا توجد صور مرفوعة من الضيوف</div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signOut, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getDatabase, ref, get, remove, update, onValue, off } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+  // Only these Google accounts are allowed into the admin panel. This is a
+  // client-side convenience check for a fast, friendly error message — the
+  // REAL enforcement is in database.rules.json, which checks auth.token.email
+  // against this same list before allowing any write (update/delete) on
+  // /invitations. Keep both lists in sync if you add/remove an admin.
+  const ALLOWED_ADMIN_EMAILS = [
+    'elfannanm@gmail.com',
+    'mohamednasrofficial@gmail.com'
+  ];
+
+  // ===== إعدادات فايربيز — استبدل بالقيم الخاصة بمشروعك =====
+  const firebaseConfig = {
+    apiKey: "AIzaSyAIyJ_oZdA1VGDMfKwCUfQwdO5ZOoQy2DQ",
+    authDomain: "da3watfarah.firebaseapp.com",
+    databaseURL: "https://da3watfarah-default-rtdb.firebaseio.com",
+    projectId: "da3watfarah",
+    storageBucket: "da3watfarah.firebasestorage.app",
+    messagingSenderId: "818147201311",
+    appId: "1:818147201311:web:cb83942913bc2d6a86e02a",
+    measurementId: "G-J9D7R961V7"
+  };
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getDatabase(app);
+
+  // One-time setup needed on Firebase Console:
+  // Authentication → Sign-in method → enable "Google".
+  // That's it — no hidden password account needed anymore.
+
+  let allInvitations = {}; // keyed by invitationId (push key from db.js)
+  let currentFilter = 'all';
+  let currentTypeFilter = 'all';
+  let currentSearch = '';
+  let currentUserIdFilter = null; // set when jumping from a user's row to "their invitations"
+
+  let allUsers = {}; // keyed by uid
+  let currentUserPlanFilter = 'all';
+  let currentUserSearch = '';
+
+  const EVENT_TYPE_TAGS = {
+    wedding: { text: '💍 فرح', cls: 'type-wedding' },
+    engagement: { text: '💎 خطوبة', cls: 'type-engagement' },
+    katb_ketab: { text: '📖 كتب كتاب', cls: 'type-katb_ketab' }
+  };
+  function getEventType(inv){ return inv.event?.eventType || inv.eventType || 'wedding'; }
+
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) return;
+    const errorEl = document.getElementById('adminLoginError');
+    const email = (user.email || '').toLowerCase();
+    if (!ALLOWED_ADMIN_EMAILS.map(e => e.toLowerCase()).includes(email)) {
+      if (errorEl) errorEl.textContent = `هذا الحساب (${user.email}) غير مصرّح له بدخول لوحة الأدمن.`;
+      await signOut(auth);
+      return; // مش من الإيميلات المصرّح لها، يفضل على شاشة الدخول
+    }
+    document.getElementById('gate').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'block';
+    loadInvitations();
+    loadUsers();
+  });
+
+  // ===== Main view switcher (الدعوات / المستخدمون) =====
+  document.getElementById('mainViewTabs').addEventListener('click', (e) => {
+    const btn = e.target.closest('.tab');
+    if (!btn) return;
+    document.querySelectorAll('#mainViewTabs .tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    const view = btn.dataset.view;
+    document.getElementById('viewInvitations').style.display = view === 'invitations' ? 'block' : 'none';
+    document.getElementById('viewUsers').style.display = view === 'users' ? 'block' : 'none';
+  });
+
+  document.getElementById('logoutBtn').addEventListener('click', () => signOut(auth).then(() => location.reload()));
+
+  document.getElementById('googleLoginBtn').addEventListener('click', async () => {
+    const btn = document.getElementById('googleLoginBtn');
+    const errorEl = document.getElementById('adminLoginError');
+    errorEl.textContent = '';
+    btn.disabled = true;
+    try {
+      const provider = new GoogleAuthProvider();
+      await signInWithPopup(auth, provider);
+      // onAuthStateChanged above takes it from here (checks the email
+      // allowlist then shows the dashboard).
+    } catch (err) {
+      console.error('Admin login error:', err);
+      if (err?.code === 'auth/popup-closed-by-user') {
+        errorEl.textContent = '';
+      } else {
+        errorEl.textContent = 'تعذر تسجيل الدخول بحساب جوجل، حاول مرة أخرى.';
+      }
+    } finally {
+      btn.disabled = false;
+    }
+  });
+
+  const paymentStatusLabels = {
+    unpaid: { text: 'بانتظار اختيار الباقة', cls: 'draft' },
+    pending_verification: { text: 'بانتظار مراجعة الإيصال', cls: 'pending' },
+    verified: { text: 'تم التحقق والدفع', cls: 'pub' },
+    rejected: { text: 'مرفوض', cls: 'rejected' },
+    not_required: { text: 'باقة مجانية', cls: 'pub' }
+  };
+
+  async function loadInvitations(){
+    const snap = await get(ref(db, 'invitations'));
+    allInvitations = snap.exists() ? snap.val() : {};
+    renderStats();
+    applyFiltersAndRender();
+  }
+
+  // ===================================
+  // Users management (account type / VIP control)
+  // ===================================
+  const planLabels = { free: 'مجاني', premium: 'بريميوم', vip: 'VIP' };
+
+  async function loadUsers(){
+    const snap = await get(ref(db, 'users'));
+    allUsers = snap.exists() ? snap.val() : {};
+    renderUserStats();
+    applyUserFiltersAndRender();
+  }
+
+  function renderUserStats(){
+    const entries = Object.entries(allUsers);
+    document.getElementById('statUsersTotal').textContent = entries.length;
+    document.getElementById('statUsersVip').textContent = entries.filter(([,v]) => v.plan === 'vip').length;
+    document.getElementById('statUsersPremium').textContent = entries.filter(([,v]) => v.plan === 'premium').length;
+    document.getElementById('statUsersFree').textContent = entries.filter(([,v]) => !v.plan || v.plan === 'free').length;
+  }
+
+  function matchesUserPlanFilter(u){
+    if (currentUserPlanFilter === 'all') return true;
+    if (currentUserPlanFilter === 'free') return !u.plan || u.plan === 'free';
+    return u.plan === currentUserPlanFilter;
+  }
+
+  function matchesUserSearch(u){
+    if (!currentUserSearch) return true;
+    const q = currentUserSearch;
+    return (u.email||'').toLowerCase().includes(q) || (u.displayName||'').toLowerCase().includes(q);
+  }
+
+  function applyUserFiltersAndRender(){
+    const uids = Object.keys(allUsers).filter(uid => matchesUserPlanFilter(allUsers[uid]) && matchesUserSearch(allUsers[uid]));
+    renderUserTable(uids);
+  }
+
+  function countUserInvitations(uid){
+    return Object.values(allInvitations).filter(inv => inv.userId === uid).length;
+  }
+
+  function renderUserTable(uids){
+    const tbody = document.getElementById('userTable');
+    const emptyState = document.getElementById('userEmptyState');
+    tbody.innerHTML = '';
+
+    if (uids.length === 0){
+      emptyState.style.display = 'block';
+      return;
+    }
+    emptyState.style.display = 'none';
+
+    uids.sort((a,b) => (allUsers[b].createdAt||0) - (allUsers[a].createdAt||0)).forEach(uid => {
+      const u = allUsers[uid];
+      const plan = u.plan || 'free';
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${u.displayName || '—'}</td>
+        <td style="direction:ltr">${u.email||''}</td>
+        <td>
+          <select class="plan-select" data-plan-select="${uid}">
+            <option value="free" ${plan==='free'?'selected':''}>مجاني</option>
+            <option value="premium" ${plan==='premium'?'selected':''}>بريميوم</option>
+            <option value="vip" ${plan==='vip'?'selected':''}>👑 VIP</option>
+          </select>
+        </td>
+        <td>${countUserInvitations(uid)}</td>
+        <td>${u.createdAt ? new Date(u.createdAt).toLocaleDateString('ar-EG') : '-'}</td>
+        <td class="row-actions">
+          <button style="background:var(--gold-light)" data-save-plan="${uid}">حفظ</button>
+          <button style="background:var(--gold-light)" data-view-invites="${uid}">دعواته</button>
+        </td>`;
+      tbody.appendChild(tr);
+    });
+
+    tbody.querySelectorAll('[data-save-plan]').forEach(b => b.addEventListener('click', async () => {
+      const uid = b.dataset.savePlan;
+      const select = tbody.querySelector(`[data-plan-select="${uid}"]`);
+      const newPlan = select.value;
+      const original = b.textContent;
+      b.disabled = true;
+      b.textContent = '...جارٍ الحفظ';
+      try {
+        await update(ref(db, `users/${uid}`), { plan: newPlan, updatedAt: Date.now() });
+        allUsers[uid].plan = newPlan;
+        b.textContent = 'تم ✓';
+        renderUserStats();
+      } catch (err) {
+        console.error('Error updating user plan:', err);
+        b.textContent = 'فشل الحفظ';
+      } finally {
+        setTimeout(() => { b.disabled = false; b.textContent = original; }, 1400);
+      }
+    }));
+
+    tbody.querySelectorAll('[data-view-invites]').forEach(b => b.addEventListener('click', () => {
+      const uid = b.dataset.viewInvites;
+      currentUserIdFilter = uid;
+      document.getElementById('userInvitesFilterBanner').style.display = 'flex';
+      document.getElementById('userInvitesFilterText').textContent =
+        `عرض دعوات: ${allUsers[uid].displayName || allUsers[uid].email || uid}`;
+      applyFiltersAndRender();
+      // Switch to the invitations view so the filtered table is visible
+      document.querySelector('#mainViewTabs [data-view="invitations"]').click();
+    }));
+  }
+
+  document.getElementById('clearUserInvitesFilterBtn').addEventListener('click', () => {
+    currentUserIdFilter = null;
+    document.getElementById('userInvitesFilterBanner').style.display = 'none';
+    applyFiltersAndRender();
+  });
+
+  document.getElementById('userPlanTabs').addEventListener('click', (e) => {
+    const btn = e.target.closest('.tab');
+    if (!btn) return;
+    document.querySelectorAll('#userPlanTabs .tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    currentUserPlanFilter = btn.dataset.plan;
+    applyUserFiltersAndRender();
+  });
+
+  document.getElementById('userSearch').addEventListener('input', (e) => {
+    currentUserSearch = e.target.value.trim().toLowerCase();
+    applyUserFiltersAndRender();
+  });
+
+  function renderStats(){
+    const entries = Object.entries(allInvitations);
+    document.getElementById('statTotal').textContent = entries.length;
+    document.getElementById('statPending').textContent = entries.filter(([,v]) => v.status === 'pending_review').length;
+    document.getElementById('statPublished').textContent = entries.filter(([,v]) => v.isPublished).length;
+    document.getElementById('statViews').textContent = entries.reduce((s,[,v]) => s + (v.viewsCount||0), 0);
+    document.getElementById('statRsvp').textContent = entries.reduce((s,[,v]) => s + (v.rsvpsCount||0), 0);
+    document.getElementById('statWedding').textContent = entries.filter(([,v]) => getEventType(v) === 'wedding').length;
+    document.getElementById('statEngagement').textContent = entries.filter(([,v]) => getEventType(v) === 'engagement').length;
+    document.getElementById('statKatbKetab').textContent = entries.filter(([,v]) => getEventType(v) === 'katb_ketab').length;
+  }
+
+  function matchesFilter(inv){
+    const payStatus = inv.payment?.status || 'unpaid';
+    switch(currentFilter){
+      case 'needs_review': return payStatus === 'pending_verification';
+      case 'unpaid': return payStatus === 'unpaid' && !inv.isPublished;
+      case 'published': return !!inv.isPublished;
+      case 'rejected': return inv.status === 'rejected' || payStatus === 'rejected';
+      default: return true;
+    }
+  }
+
+  function matchesType(inv){
+    if (currentTypeFilter === 'all') return true;
+    return getEventType(inv) === currentTypeFilter;
+  }
+
+  function matchesSearch(inv){
+    if (!currentSearch) return true;
+    const q = currentSearch;
+    return (inv.slug||'').toLowerCase().includes(q) ||
+      (inv.couple?.groomName||'').toLowerCase().includes(q) ||
+      (inv.couple?.brideName||'').toLowerCase().includes(q);
+  }
+
+  function applyFiltersAndRender(){
+    const ids = Object.keys(allInvitations).filter(id =>
+      matchesFilter(allInvitations[id]) && matchesType(allInvitations[id]) && matchesSearch(allInvitations[id]) &&
+      (!currentUserIdFilter || allInvitations[id].userId === currentUserIdFilter));
+    renderTable(ids);
+  }
+
+  function renderTable(ids){
+    const tbody = document.getElementById('invTable');
+    const emptyState = document.getElementById('emptyState');
+    tbody.innerHTML = '';
+
+    if (ids.length === 0){
+      emptyState.style.display = 'block';
+      return;
+    }
+    emptyState.style.display = 'none';
+
+    ids.sort((a,b) => (allInvitations[b].createdAt||0) - (allInvitations[a].createdAt||0)).forEach(id => {
+      const inv = allInvitations[id];
+      const payment = inv.payment || {};
+      const payInfo = paymentStatusLabels[payment.status || 'unpaid'];
+      const publishTag = inv.isPublished
+        ? '<span class="tag pub">منشورة</span>'
+        : (inv.status === 'rejected' ? '<span class="tag rejected">مرفوضة</span>' : '<span class="tag draft">غير منشورة</span>');
+
+      const planText = payment.planLabel
+        ? `${payment.planLabel}${payment.amount ? ` (${payment.amount} ${payment.currency||''})` : ''}`
+        : '—';
+
+      const receiptCell = payment.receiptUrl
+        ? `<a href="${payment.receiptUrl}" target="_blank" style="background:var(--gold-light)">عرض الإيصال</a>`
+        : '—';
+
+      const typeInfo = EVENT_TYPE_TAGS[getEventType(inv)] || EVENT_TYPE_TAGS.wedding;
+
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td><span class="tag ${typeInfo.cls}">${typeInfo.text}</span></td>
+        <td style="direction:ltr">${inv.slug||''}</td>
+        <td>${inv.couple?.groomName||''} &amp; ${inv.couple?.brideName||''}</td>
+        <td>${planText}</td>
+        <td><span class="tag ${payInfo.cls}">${payInfo.text}</span></td>
+        <td>${receiptCell}</td>
+        <td>${publishTag}</td>
+        <td>${inv.viewsCount||0}</td>
+        <td>${inv.createdAt ? new Date(inv.createdAt).toLocaleDateString('ar-EG') : '-'}</td>
+        <td class="row-actions">
+          <a href="/${inv.slug}" target="_blank" style="background:var(--gold-light)">فتح</a>
+          <button style="background:var(--gold-light)" data-copy="${inv.slug}">نسخ الرابط</button>
+          <button style="background:var(--gold-light)" data-details="${id}">التفاصيل</button>
+          ${!inv.isPublished ? `<button style="background:var(--green)" data-approve="${id}">موافقة ونشر</button>` : `<button style="background:var(--text-dim)" data-unpublish="${id}">إلغاء النشر</button>`}
+          ${inv.status !== 'rejected' ? `<button style="background:var(--red)" data-reject="${id}">رفض</button>` : ''}
+          <button style="background:var(--red)" data-del="${id}">حذف</button>
+        </td>`;
+      tbody.appendChild(tr);
+    });
+
+    tbody.querySelectorAll('[data-copy]').forEach(b => b.addEventListener('click', async () => {
+      const link = `https://da3watfarah.com/${b.dataset.copy}`;
+      try {
+        await navigator.clipboard.writeText(link);
+        const original = b.textContent;
+        b.textContent = 'تم النسخ ✓';
+        setTimeout(() => { b.textContent = original; }, 1500);
+      } catch (e) {
+        prompt('انسخ الرابط يدويًا:', link);
+      }
+    }));
+
+    tbody.querySelectorAll('[data-details]').forEach(b => b.addEventListener('click', () => openDetailModal(b.dataset.details)));
+
+    tbody.querySelectorAll('[data-approve]').forEach(b => b.addEventListener('click', async () => {
+      const id = b.dataset.approve;
+      await update(ref(db, 'invitations/' + id), {
+        isPublished: true,
+        status: 'active',
+        'payment/status': allInvitations[id].payment?.plan === 'free' ? 'not_required' : 'verified',
+        'payment/verifiedAt': Date.now()
+      });
+      Object.assign(allInvitations[id], { isPublished: true, status: 'active' });
+      renderStats();
+      applyFiltersAndRender();
+    }));
+
+    tbody.querySelectorAll('[data-unpublish]').forEach(b => b.addEventListener('click', async () => {
+      const id = b.dataset.unpublish;
+      await update(ref(db, 'invitations/' + id), { isPublished: false, status: 'draft' });
+      Object.assign(allInvitations[id], { isPublished: false, status: 'draft' });
+      renderStats();
+      applyFiltersAndRender();
+    }));
+
+    tbody.querySelectorAll('[data-reject]').forEach(b => b.addEventListener('click', async () => {
+      const id = b.dataset.reject;
+      const reason = prompt('سبب الرفض (سيظهر للعميل لاحقًا، اختياري):') || '';
+      await update(ref(db, 'invitations/' + id), {
+        isPublished: false,
+        status: 'rejected',
+        'payment/status': 'rejected',
+        'payment/rejectionReason': reason
+      });
+      Object.assign(allInvitations[id], { isPublished: false, status: 'rejected' });
+      renderStats();
+      applyFiltersAndRender();
+    }));
+
+    tbody.querySelectorAll('[data-del]').forEach(b => b.addEventListener('click', async () => {
+      if (!confirm('متأكد إنك عايز تحذف الدعوة دي نهائيًا؟')) return;
+      await remove(ref(db, 'invitations/' + b.dataset.del));
+      delete allInvitations[b.dataset.del];
+      renderStats();
+      applyFiltersAndRender();
+    }));
+  }
+
+  document.getElementById('search').addEventListener('input', (e) => {
+    currentSearch = e.target.value.trim().toLowerCase();
+    applyFiltersAndRender();
+  });
+
+  document.getElementById('tabs').addEventListener('click', (e) => {
+    const btn = e.target.closest('.tab');
+    if (!btn) return;
+    document.querySelectorAll('#tabs .tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    currentFilter = btn.dataset.filter;
+    applyFiltersAndRender();
+  });
+
+  document.getElementById('typeTabs').addEventListener('click', (e) => {
+    const btn = e.target.closest('.tab');
+    if (!btn) return;
+    document.querySelectorAll('#typeTabs .tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    currentTypeFilter = btn.dataset.type;
+    applyFiltersAndRender();
+  });
+
+  // ===== Full invitation detail / control modal =====
+  let currentDetailId = null;
+  let detailListenerRefs = [];
+
+  function stopDetailListeners(){
+    detailListenerRefs.forEach(({r, cb}) => off(r, 'value', cb));
+    detailListenerRefs = [];
+  }
+
+  function toLocalDatetimeValue(ts){
+    if (!ts) return '';
+    const d = new Date(ts);
+    if (isNaN(d.getTime())) return '';
+    const pad = n => String(n).padStart(2, '0');
+    return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  }
+
+  function openDetailModal(id){
+    currentDetailId = id;
+    const inv = allInvitations[id];
+    if (!inv) return;
+
+    const typeInfo = EVENT_TYPE_TAGS[getEventType(inv)] || EVENT_TYPE_TAGS.wedding;
+    document.getElementById('modalTitle').textContent = `تفاصيل: ${inv.couple?.groomName||''} و ${inv.couple?.brideName||''} — ${typeInfo.text}`;
+    document.getElementById('editEventType').value = getEventType(inv);
+    document.getElementById('editGroomName').value = inv.couple?.groomName || '';
+    document.getElementById('editBrideName').value = inv.couple?.brideName || '';
+    document.getElementById('editSlug').value = inv.slug || '';
+    document.getElementById('editEventName').value = inv.event?.eventName || '';
+    document.getElementById('editEventDate').value = toLocalDatetimeValue(inv.event?.date);
+    document.getElementById('editVenueName').value = inv.event?.venueName || inv.event?.venue || '';
+    document.getElementById('saveStatus').textContent = '';
+
+    document.getElementById('detailModal').classList.add('open');
+    stopDetailListeners();
+
+    // RSVPs (one-time load — list rarely needs live updates while reviewing)
+    get(ref(db, `invitations/${id}/rsvps`)).then(snap => {
+      const tbody = document.getElementById('modalRsvpTable');
+      const empty = document.getElementById('modalRsvpEmpty');
+      tbody.innerHTML = '';
+      const data = snap.exists() ? snap.val() : {};
+      const keys = Object.keys(data);
+      empty.style.display = keys.length ? 'none' : 'block';
+      keys.sort((a,b) => (data[b].createdAt||0) - (data[a].createdAt||0)).forEach(k => {
+        const r = data[k];
+        const tag = r.attending ? '<span class="tag pub">حاضر</span>' : '<span class="tag rejected">معتذر</span>';
+        tbody.innerHTML += `<tr><td>${r.guestName||''}</td><td>${tag}</td><td>${r.guestsCount||0}</td><td>${r.createdAt ? new Date(r.createdAt).toLocaleDateString('ar-EG') : '-'}</td></tr>`;
+      });
+    });
+
+    // Wishes (realtime, with hide/delete)
+    const wishesRef = ref(db, `invitations/${id}/wishes`);
+    const wishesCb = onValue(wishesRef, (snap) => {
+      const tbody = document.getElementById('modalWishesTable');
+      const empty = document.getElementById('modalWishesEmpty');
+      tbody.innerHTML = '';
+      const data = snap.exists() ? snap.val() : {};
+      const keys = Object.keys(data);
+      empty.style.display = keys.length ? 'none' : 'block';
+      keys.sort((a,b) => (data[b].createdAt||0) - (data[a].createdAt||0)).forEach(k => {
+        const w = data[k];
+        const tr = document.createElement('tr');
+        tr.className = 'm-wish-row';
+        tr.innerHTML = `<td>${w.name||''}</td><td>${w.message||''}</td><td>${w.createdAt ? new Date(w.createdAt).toLocaleDateString('ar-EG') : '-'}</td>
+          <td>
+            <button style="background:var(--orange)" data-wish-hide="${k}">${w.isVisible===false?'إظهار':'إخفاء'}</button>
+            <button style="background:var(--red)" data-wish-del="${k}">حذف</button>
+          </td>`;
+        tbody.appendChild(tr);
+      });
+      tbody.querySelectorAll('[data-wish-hide]').forEach(b => b.addEventListener('click', () => {
+        const k = b.dataset.wishHide;
+        const isHidden = data[k].isVisible === false;
+        update(ref(db, `invitations/${id}/wishes/${k}`), { isVisible: isHidden ? true : false });
+      }));
+      tbody.querySelectorAll('[data-wish-del]').forEach(b => b.addEventListener('click', () => {
+        if (!confirm('حذف هذه التهنئة؟')) return;
+        remove(ref(db, `invitations/${id}/wishes/${b.dataset.wishDel}`));
+      }));
+    });
+    detailListenerRefs.push({ r: wishesRef, cb: wishesCb });
+
+    // Guest gallery photos (realtime, approve/reject/delete)
+    const galleryRef = ref(db, `invitations/${id}/gallery`);
+    const galleryCb = onValue(galleryRef, (snap) => {
+      const grid = document.getElementById('modalGalleryGrid');
+      const empty = document.getElementById('modalGalleryEmpty');
+      grid.innerHTML = '';
+      const data = snap.exists() ? snap.val() : {};
+      const keys = Object.keys(data);
+      empty.style.display = keys.length ? 'none' : 'block';
+      keys.forEach(k => {
+        const g = data[k];
+        const badge = g.approved ? '<span class="m-g-badge" style="background:var(--green);color:#0B0F0E">منشورة</span>' : '<span class="m-g-badge" style="background:var(--orange);color:#0B0F0E">بانتظار الموافقة</span>';
+        const div = document.createElement('div');
+        div.className = 'm-g-item';
+        div.innerHTML = `${badge}<img src="${g.url}" loading="lazy">
+          <div class="m-g-actions">
+            ${!g.approved ? `<button style="background:var(--green)" data-g-approve="${k}">اعتماد</button>` : `<button style="background:var(--text-dim)" data-g-unapprove="${k}">إخفاء</button>`}
+            <button style="background:var(--red)" data-g-delete="${k}">حذف</button>
+          </div>`;
+        grid.appendChild(div);
+      });
+      grid.querySelectorAll('[data-g-approve]').forEach(b => b.addEventListener('click', () =>
+        update(ref(db, `invitations/${id}/gallery/${b.dataset.gApprove}`), { approved: true })));
+      grid.querySelectorAll('[data-g-unapprove]').forEach(b => b.addEventListener('click', () =>
+        update(ref(db, `invitations/${id}/gallery/${b.dataset.gUnapprove}`), { approved: false })));
+      grid.querySelectorAll('[data-g-delete]').forEach(b => b.addEventListener('click', () => {
+        if (!confirm('حذف هذه الصورة نهائيًا؟')) return;
+        remove(ref(db, `invitations/${id}/gallery/${b.dataset.gDelete}`));
+      }));
+    });
+    detailListenerRefs.push({ r: galleryRef, cb: galleryCb });
+  }
+
+  function closeDetailModal(){
+    document.getElementById('detailModal').classList.remove('open');
+    stopDetailListeners();
+    currentDetailId = null;
+  }
+
+  document.getElementById('modalCloseBtn').addEventListener('click', closeDetailModal);
+  document.getElementById('detailModal').addEventListener('click', (e) => {
+    if (e.target.id === 'detailModal') closeDetailModal();
+  });
+
+  document.getElementById('saveDetailsBtn').addEventListener('click', async () => {
+    if (!currentDetailId) return;
+    const statusEl = document.getElementById('saveStatus');
+    const newSlug = document.getElementById('editSlug').value.trim();
+    const dateVal = document.getElementById('editEventDate').value;
+    const updates = {
+      'couple/groomName': document.getElementById('editGroomName').value.trim(),
+      'couple/brideName': document.getElementById('editBrideName').value.trim(),
+      'slug': newSlug,
+      'event/eventName': document.getElementById('editEventName').value.trim(),
+      'event/venueName': document.getElementById('editVenueName').value.trim(),
+      'event/eventType': document.getElementById('editEventType').value
+    };
+    if (dateVal) updates['event/date'] = new Date(dateVal).toISOString();
+
+    try {
+      statusEl.style.color = 'var(--gold-light)';
+      statusEl.textContent = 'جارٍ الحفظ...';
+      await update(ref(db, `invitations/${currentDetailId}`), updates);
+      allInvitations[currentDetailId].couple = allInvitations[currentDetailId].couple || {};
+      Object.assign(allInvitations[currentDetailId].couple, { groomName: updates['couple/groomName'], brideName: updates['couple/brideName'] });
+      allInvitations[currentDetailId].slug = newSlug;
+      allInvitations[currentDetailId].event = allInvitations[currentDetailId].event || {};
+      allInvitations[currentDetailId].event.eventType = updates['event/eventType'];
+      statusEl.style.color = 'var(--green)';
+      statusEl.textContent = 'تم الحفظ بنجاح ✓';
+      renderStats();
+      applyFiltersAndRender();
+    } catch (err) {
+      console.error('Save details error:', err);
+      statusEl.style.color = 'var(--red)';
+      statusEl.textContent = 'حدث خطأ أثناء الحفظ';
+    }
+  });
+</script>
+
+    <script src="/js/pwa-manager.js" defer></script>
+</body>
+</html>
