@@ -16,6 +16,22 @@ PUBLIC_URL = "https://pub-67b746453495438199c20622c45722a3.r2.dev"
 # NOTE: the /api/og/*.png route requires the "workers-og" npm package.
 # Before deploying, run:  npm install workers-og
 
+# NOTE: bind a Worker Route on the Cloudflare dashboard for
+# da3watfarah.com/* -> this worker, or the pretty invitation links and
+# their Open Graph previews will keep falling back to GitHub Pages' static
+# 404.html (which is what caused the "دعوتك غير متاحة" broken previews).
+
+# ---------------------------------------------------------------------------
+# Telegram admin bot - set these as SECRETS (not plain vars), via:
+#   npx wrangler secret put TELEGRAM_BOT_TOKEN
+#   npx wrangler secret put TELEGRAM_CHAT_ID
+#   npx wrangler secret put TELEGRAM_WEBHOOK_SECRET
+#   npx wrangler secret put FIREBASE_DB_SECRET
+# (FIREBASE_DB_SECRET = a Firebase Realtime Database "Secret"/legacy token
+#  from Firebase Console > Project Settings > Service Accounts > Database
+#  secrets, so the Worker can read/write invitations without Firebase Auth.)
+# ---------------------------------------------------------------------------
+
 # Development
 [env.development]
 name = "da3watfarah-dev"
