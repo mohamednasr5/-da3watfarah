@@ -4422,6 +4422,18 @@ ${venueName ? `- المكان: ${venueName}` : ''}
                     birthdayGender: document.getElementById('birthdayGender')?.value || 'male',
                     birthdayAge: document.getElementById('birthdayAge')?.value || ''
                 },
+                // Same fields publishInvitation() saves (see below) — the VIP
+                // renderer's live preview needs these too (intro toggle,
+                // schedule/FAQ sections), and without them here the preview
+                // never matched what actually got published.
+                isVip: selectedTemplate?.isVip || false,
+                vip: {
+                    introEnabled: selectedTemplate?.isVip
+                        ? document.getElementById('vipIntroToggle')?.checked !== false
+                        : false
+                },
+                eventSchedule: collectEventSchedule(),
+                faq: collectFaq(),
                 isPublished: true
             };
         }
