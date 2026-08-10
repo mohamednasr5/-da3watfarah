@@ -109,9 +109,14 @@ async function cacheFirstStrategy(request) {
 
   try {
     const response = await fetch(request);
-    if (response.ok) {
+    // FIX: Only cache successful responses (status 200-299)
+    // Status 206 (Partial Content) cannot be stored in Cache API
+    if (response.ok && response.status !== 206) {
       const cache = await caches.open(RUNTIME_CACHE);
-      cache.put(request, response.clone());
+      const responseToCache = response.clone();
+      cache.put(request, responseToCache).catch(err => {
+        console.warn('SW: Failed to cache:', err.message);
+      });
     }
     return response;
   } catch (error) {
@@ -129,9 +134,13 @@ async function cacheImages(request) {
 
   try {
     const response = await fetch(request);
-    if (response.ok) {
+    // FIX: Only cache successful responses, skip 206 Partial Content
+    if (response.ok && response.status !== 206) {
       const cache = await caches.open(IMAGE_CACHE);
-      cache.put(request, response.clone());
+      const responseToCache = response.clone();
+      cache.put(request, responseToCache).catch(err => {
+        console.warn('SW: Failed to cache image:', err.message);
+      });
     }
     return response;
   } catch (error) {
@@ -145,9 +154,13 @@ async function cacheImages(request) {
 async function cacheApi(request) {
   try {
     const response = await fetch(request);
-    if (response.ok) {
+    // FIX: Only cache successful responses, skip 206 Partial Content
+    if (response.ok && response.status !== 206) {
       const cache = await caches.open(API_CACHE);
-      cache.put(request, response.clone());
+      const responseToCache = response.clone();
+      cache.put(request, responseToCache).catch(err => {
+        console.warn('SW: Failed to cache API response:', err.message);
+      });
     }
     return response;
   } catch (error) {
