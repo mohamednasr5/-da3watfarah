@@ -2478,6 +2478,10 @@
         let uploadedMusic = null;
         let modalTemplateId = null;
         let selectedCategory = 'all'; // New: Selected category for filtering
+        
+        // FIX: Store selected template PER CATEGORY so switching categories 
+        // doesn't lose the previously selected template
+        let selectedTemplatesPerCategory = {};
 
         // Event Schedule & FAQ — unified builder state (same for every
         // invitation type, Normal or VIP). Both are fully optional;
@@ -2573,17 +2577,28 @@
                     radio.checked = true;
                     applyEventTypeFieldLabels();
                 }
-                // A template selected under a different category is no
-                // longer valid — clear it so Step 3/4 and publish can't
-                // silently carry over a mismatched template.
-                if (selectedTemplate && !templateMatchesCategory(selectedTemplate, categoryId)
+                // FIX: Restore the previously selected template for this category
+                // (if exists) instead of just clearing it
+                const savedTemplate = selectedTemplatesPerCategory[categoryId];
+                if (savedTemplate) {
+                    selectedTemplate = savedTemplate;
+                } else if (selectedTemplate && !templateMatchesCategory(selectedTemplate, categoryId)
                     && !(selectedTemplate.eventCategories && selectedTemplate.eventCategories.includes(categoryId))) {
+                    // Only clear if no saved template and current doesn't match
                     selectedTemplate = null;
                 }
             }
             
             // Filter templates
             filterTemplatesByCategory(categoryId);
+            
+            // FIX: If we restored a saved template, update the UI to reflect it
+            if (selectedTemplate) {
+                applyTemplateFieldVisibility(selectedTemplate);
+                updateVipIntroToggleVisibility(selectedTemplate);
+                showLivePreview(selectedTemplate);
+            }
+            
             scheduleLivePreviewRefresh();
         }
         
@@ -3708,6 +3723,13 @@
             
             // Set selected template
             selectedTemplate = template;
+            
+            // FIX: Save selected template for the CURRENT category so it persists
+            // when switching between categories and coming back
+            if (selectedCategory && selectedCategory !== 'all') {
+                selectedTemplatesPerCategory[selectedCategory] = template;
+            }
+            
             applyTemplateFieldVisibility(template);
             updateVipIntroToggleVisibility(template);
             
