@@ -2558,9 +2558,33 @@
                     vipLink.querySelector('a').href = `/vip/index.html#filter=${categoryId}`;
                 }
             }
+
+            // Keep Step 1's "event type" radio in sync with the category
+            // chosen here in Step 2. Previously these were two independent
+            // filters: this tab only changed which templates were *shown*,
+            // while the event type actually *saved and published* stayed
+            // whatever Step 1 defaulted to (wedding). That mismatch is what
+            // caused a birthday selection to still publish wedding content
+            // (Quran verse, wedding program wording, etc). A category here
+            // maps 1:1 to one event type, so drive the radio from it.
+            if (categoryId !== 'all') {
+                const radio = document.querySelector(`input[name="eventTypeRadio"][value="${categoryId}"]`);
+                if (radio && !radio.checked) {
+                    radio.checked = true;
+                    applyEventTypeFieldLabels();
+                }
+                // A template selected under a different category is no
+                // longer valid — clear it so Step 3/4 and publish can't
+                // silently carry over a mismatched template.
+                if (selectedTemplate && !templateMatchesCategory(selectedTemplate, categoryId)
+                    && !(selectedTemplate.eventCategories && selectedTemplate.eventCategories.includes(categoryId))) {
+                    selectedTemplate = null;
+                }
+            }
             
             // Filter templates
             filterTemplatesByCategory(categoryId);
+            scheduleLivePreviewRefresh();
         }
         
         function filterTemplatesByCategory(categoryId) {
@@ -3255,6 +3279,22 @@
             return checked ? checked.value : 'wedding';
         }
 
+        // Only marriage-related occasions get the Quranic/Bible verse by
+        // default. For every other event type (birthday, newborn, henna,
+        // graduation, ramadan) the verse toggle is hidden in Step 3 (see
+        // applyTemplateFieldVisibility / STEP3_OPTIONAL_GROUPS), but the
+        // underlying checkbox still exists in the DOM and defaults to
+        // "checked" — so reading it directly without this guard leaked the
+        // wedding verse into every other occasion. Compute the effective
+        // state from the event type whenever the field is hidden/inapplicable.
+        const RELIGIOUS_VERSE_EVENT_TYPES = ['wedding', 'engagement', 'katb_ketab'];
+        function currentReligiousVerseEnabled() {
+            const et = currentEventType();
+            if (RELIGIOUS_VERSE_EVENT_TYPES.indexOf(et) === -1) return false;
+            const toggle = document.getElementById('religiousVerseToggle');
+            return toggle ? toggle.checked : true;
+        }
+
         // Step 3 ("المحتوى والتصميم") holds a few fields that only make sense
         // for regular (non-VIP) templates, which render through invite.html's
         // single shared skeleton (welcome text / love story / religious verse
@@ -3395,8 +3435,24 @@
             document.querySelectorAll('input[name="eventTypeRadio"]').forEach(radio => {
                 radio.addEventListener('change', function() {
                     applyEventTypeFieldLabels();
+                    // Keep Step 2's category tabs in sync with the type
+                    // picked here, and drop any previously selected
+                    // template that belonged to a different category.
+                    selectedCategory = this.value;
+                    if (selectedTemplate && !templateMatchesCategory(selectedTemplate, this.value)
+                        && !(selectedTemplate.eventCategories && selectedTemplate.eventCategories.includes(this.value))) {
+                        selectedTemplate = null;
+                    }
+                    if (typeof renderCategoryTabs === 'function') renderCategoryTabs();
+                    const vipLink = document.getElementById('vipTemplatesLink');
+                    if (vipLink) {
+                        vipLink.style.display = 'block';
+                        const link = vipLink.querySelector('a');
+                        if (link) link.href = `/vip/index.html#filter=${this.value}`;
+                    }
                     // Re-filter templates when event type changes
                     loadTemplates();
+                    scheduleLivePreviewRefresh();
                 });
             });
 
@@ -4315,7 +4371,7 @@ ${venueName ? `- المكان: ${venueName}` : ''}
                     welcomeText: val('welcomeText'),
                     invitationText: val('invitationText'),
                     loveStory: val('loveStory'),
-                    religiousVerseEnabled: document.getElementById('religiousVerseToggle')?.checked ?? true,
+                    religiousVerseEnabled: currentReligiousVerseEnabled(),
                     religiousVerseType: document.getElementById('religiousVerseType')?.value || 'quran',
                     newbornGender: document.getElementById('newbornGender')?.value || 'male',
                     birthdayGender: document.getElementById('birthdayGender')?.value || 'male',
@@ -4716,7 +4772,7 @@ ${venueName ? `- المكان: ${venueName}` : ''}
                         welcomeText: document.getElementById('welcomeText').value.trim(),
                         invitationText: document.getElementById('invitationText').value.trim(),
                         loveStory: document.getElementById('loveStory').value.trim(),
-                        religiousVerseEnabled: document.getElementById('religiousVerseToggle').checked,
+                        religiousVerseEnabled: currentReligiousVerseEnabled(),
                         religiousVerseType: document.getElementById('religiousVerseType').value,
                         newbornGender: document.getElementById('newbornGender')?.value || 'male',
                         birthdayGender: document.getElementById('birthdayGender')?.value || 'male',
