@@ -1,1 +1,143 @@
-!function(){"use strict";function e(){return"i"+Date.now().toString(36)+Math.random().toString(36).slice(2,8)}function l(l){return Array.isArray(l)?l.filter(function(e){return e&&(e.title||e.time)}).map(function(l,n){return{id:l.id||e(),title:l.title||"",time:l.time||"",order:"number"==typeof l.order?l.order:n}}).sort(function(e,l){return e.order-l.order}):[]}function n(l){return Array.isArray(l)?l.filter(function(e){return e&&(e.question||e.answer)}).map(function(l,n){return{id:l.id||e(),question:l.question||"",answer:l.answer||"",order:"number"==typeof l.order?l.order:n}}).sort(function(e,l){return e.order-l.order}):[]}window.UnifiedInvitationSchema={createEmptySchema:function(){return{type:null,templateId:null,isVip:!1,slug:null,groom:{name:null,family:null},bride:{name:null,family:null},personName:null,ageSentence:null,parents:{groomFather:null,groomMother:null,brideFather:null,brideMother:null},date:null,time:null,venue:null,address:null,googleMaps:null,verse:null,welcomeText:null,invitationText:null,loveStory:null,coverImage:null,gallery:[],eventSchedule:[],faq:[],rsvp:{enabled:!0,action:null},guestbook:{enabled:!0,entries:[]},countdown:{enabled:!0},music:null,theme:{colors:null,fontFamily:null},vip:{introAnimation:!1,introVideoUrl:null},settings:{}}},migrateInvitation:function(e){var t={type:null,templateId:null,isVip:!1,slug:null,groom:{name:null,family:null},bride:{name:null,family:null},personName:null,ageSentence:null,parents:{groomFather:null,groomMother:null,brideFather:null,brideMother:null},date:null,time:null,venue:null,address:null,googleMaps:null,verse:null,welcomeText:null,invitationText:null,loveStory:null,coverImage:null,gallery:[],eventSchedule:[],faq:[],rsvp:{enabled:!0,action:null},guestbook:{enabled:!0,entries:[]},countdown:{enabled:!0},music:null,theme:{colors:null,fontFamily:null},vip:{introAnimation:!1,introVideoUrl:null},settings:{}};return e&&"object"==typeof e?(t.type=e.type||e.eventCategory||e.eventType||null,t.templateId=e.templateId||e.id||null,t.isVip=!!(e.isVip||e.isVipTemplate||t.templateId&&0===String(t.templateId).indexOf("vip-")),t.slug=e.slug||e.invitationId||null,t.parents=Object.assign(t.parents,e.parents||{}),function(e,l){l.groom.name=l.groom.name||e.groomName||e.groom&&e.groom.name||null,l.bride.name=l.bride.name||e.brideName||e.bride&&e.bride.name||null,l.groom.family=l.groom.family||e.groomFamily||e.groom&&e.groom.family||null,l.bride.family=l.bride.family||e.brideFamily||e.bride&&e.bride.family||null,l.date=l.date||e.eventDate||e.date||null,l.time=l.time||e.eventTime||e.time||null,l.venue=l.venue||e.venueName||e.venue||null,l.address=l.address||e.venueAddress||e.address||null,l.googleMaps=l.googleMaps||e.googleMapsUrl||e.googleMaps||null,l.verse=l.verse||e.religiousVerse||e.verse||null,l.welcomeText=l.welcomeText||e.welcomeText||null,l.invitationText=l.invitationText||e.invitationText||null,l.loveStory=l.loveStory||e.loveStory||null,l.coverImage=l.coverImage||e.coverImage||null,l.gallery=l.gallery.length?l.gallery:e.gallery||e.galleryImages||[],l.music=l.music||e.music||e.musicUrl||null,l.theme.colors=l.theme.colors||e.colors||e.theme&&e.theme.colors||null,l.theme.fontFamily=l.theme.fontFamily||e.fontFamily||e.theme&&e.theme.fontFamily||null,l.rsvp=Object.assign({enabled:!0,action:null},e.rsvp||{}),l.guestbook=Object.assign({enabled:!0,entries:[]},e.guestbook||{}),l.countdown=Object.assign({enabled:!0},e.countdown||{})}(e,t),function(e,l){if(e.coupleNames){var n=String(e.coupleNames).split(/&|و/).map(function(e){return e.trim()});l.groom.name=l.groom.name||n[0]||null,l.bride.name=l.bride.name||n[1]||null}l.groom.family=l.groom.family||e.groomFamily||null,l.bride.family=l.bride.family||e.brideFamily||null,l.bride.name=l.bride.name||e.brideName||null,l.personName=l.personName||e.personName||null,l.ageSentence=l.ageSentence||e.ageSentence||null,l.date=l.date||e.eventDateDisplay||null,l.time=l.time||null,!l.date&&e.eventDateTime&&(l.date=e.eventDateTime),l.venue=l.venue||e.venueName||null,l.address=l.address||e.venueAddress||null,l.googleMaps=l.googleMaps||e.googleMapsUrl||null,l.invitationText=l.invitationText||e.invitationText||null,l.welcomeText=l.welcomeText||e.welcomeText||null,l.loveStory=l.loveStory||e.loveStory||null,l.verse=l.verse||e.religiousVerse||null;var t=e.design||{};l.coverImage=l.coverImage||t.coverImage||e.coverImage||null,l.gallery=l.gallery.length?l.gallery:t.galleryImages||e.galleryImages||[],l.music=l.music||t.musicUrl||e.musicUrl||null,l.rsvp.action=l.rsvp.action||e.rsvpAction||null}(e,t),t.eventSchedule=l(e.eventSchedule||e.schedule||e.timeline),t.faq=n(e.faq||e.faqs||e.faqItems),t.vip.introAnimation=!(!e.vip||!e.vip.introAnimation)||!!e.introAnimation,t.vip.introVideoUrl=e.vip&&e.vip.introVideoUrl||e.introVideoUrl||null,t.settings=Object.assign({},e.settings||{}),t):t},normalizeScheduleItems:l,normalizeFaqItems:n,hasEventSchedule:function(e){return!!(e&&Array.isArray(e.eventSchedule)&&e.eventSchedule.length>0)},hasFaq:function(e){return!!(e&&Array.isArray(e.faq)&&e.faq.length>0)}}}();
+/**
+ * unified-invitation-schema.js
+ * ------------------------------------------------------------
+ * يحوّل كائن الدعوة كما هو مخزّن فى Firebase (couple/event/design/content)
+ * إلى الشكل المسطّح الذي يفهمه محرك عرض قوالب VIP (vip/assets/vip-render.js
+ * وسكربت "VIP Template Data Bridge" المضمّن داخل كل ملف ديمو).
+ *
+ * لا حاجة لتعديل أي من ملفات الديمو الـ 17 أو vip-render.js — هذا الملف
+ * فقط يبني جسر البيانات، ويستخدمه js/vip-template-renderer.js.
+ * ------------------------------------------------------------
+ */
+(function (global) {
+    'use strict';
+
+    function s(val) {
+        if (val === undefined || val === null) return '';
+        return String(val).trim();
+    }
+
+    function toDateParts(dateValue) {
+        if (!dateValue) return { date: '', time: '' };
+        var d = (dateValue instanceof Date) ? dateValue : new Date(dateValue);
+        if (isNaN(d.getTime())) return { date: '', time: '' };
+        var pad = function (n) { return String(n).padStart(2, '0'); };
+        var date = d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+        var time = pad(d.getHours()) + ':' + pad(d.getMinutes());
+        return { date: date, time: time };
+    }
+
+    var EVENT_LABELS = {
+        wedding: 'حفل زفاف',
+        engagement: 'خطوبة',
+        katb_ketab: 'كتب كتاب',
+        henna: 'ليلة حناء',
+        birthday: 'عيد ميلاد',
+        newborn: 'مولود جديد',
+        graduation: 'حفل تخرج',
+        ramadan: 'دعوة إفطار'
+    };
+
+    /**
+     * يحوّل كائن الدعوة (raw) — بنفس الشكل الذي يحفظه create-invitation.html
+     * أو يقرأه invite.html من Firebase — إلى كائن مسطّح جاهز لحقنه كـ
+     * window.invitationData داخل قالب VIP.
+     */
+    function normalize(raw) {
+        raw = raw || {};
+        var couple = raw.couple || {};
+        var event = raw.event || {};
+        var design = raw.design || {};
+        var content = raw.content || {};
+
+        var groomName = s(couple.groomName);
+        var brideName = s(couple.brideName);
+        var groomFatherName = s(couple.groomFatherName);
+        var brideFatherName = s(couple.brideFatherName);
+
+        var dt = toDateParts(event.date);
+        var eventType = raw.eventType || event.eventType || raw.type || 'wedding';
+
+        // الاسم الشخصي المستخدم فى قوالب المولود/التخرج/عيد الميلاد التي
+        // لا تحتوي على "عريس وعروسة" — نبني أفضل قيمة متاحة.
+        var personName = groomName || brideName || s(raw.personName);
+
+        var ageSentence = '';
+        if (eventType === 'birthday' && content.birthdayAge) {
+            ageSentence = 'بعمر ' + s(content.birthdayAge) + ' سنة';
+        }
+
+        var invitationText = s(content.invitationText) || s(content.welcomeText);
+        var loveStory = s(content.loveStory);
+
+        var invitationId = raw.id || raw.key || '';
+        var slug = s(raw.slug);
+
+        var coupleNames = [groomName, brideName].filter(Boolean).join(' و ') || personName;
+
+        var eventLabel = EVENT_LABELS[eventType] || EVENT_LABELS.wedding;
+        var pageTitle = coupleNames ? (eventLabel + ' ' + coupleNames) : eventLabel;
+        var ogDescription = invitationText || pageTitle;
+        var ogUrl = slug ? ('https://da3watfarah.com/' + slug) : '';
+        var ogImage = s(design.coverImage) || 'https://da3watfarah.com/10.jpg';
+
+        var data = {
+            // أسماء وعائلات
+            groomName: groomName,
+            brideName: brideName,
+            groomFatherName: groomFatherName,
+            brideFatherName: brideFatherName,
+            groomFamily: s(couple.groomFamily),
+            brideFamily: s(couple.brideFamily),
+            coupleNames: coupleNames,
+            personName: personName,
+            ageSentence: ageSentence,
+
+            // الموعد والمكان
+            weddingDate: dt.date,
+            weddingTime: dt.time,
+            venueName: s(event.venue),
+            venueAddress: s(event.address),
+            googleMapsUrl: s(event.googleMapsUrl),
+
+            // النصوص
+            invitationText: invitationText,
+            loveStory: loveStory,
+
+            // ميتاداتا الصفحة (تُستخدم لعنوان التاب ومعاينات المشاركة)
+            pageTitle: pageTitle,
+            ogDescription: ogDescription,
+            ogUrl: ogUrl,
+            ogImage: ogImage,
+
+            // معرّفات
+            invitationId: invitationId,
+            slug: slug,
+            eventType: eventType,
+
+            // الوسائط (يستخدمها جسر بيانات القالب لضبط صورة الغلاف والموسيقى)
+            design: {
+                coverImage: s(design.coverImage),
+                galleryImages: Array.isArray(design.galleryImages) ? design.galleryImages : [],
+                musicUrl: s(design.musicUrl)
+            }
+        };
+
+        return data;
+    }
+
+    /**
+     * هل هذا القالب من قوالب VIP (تصميمات كاملة تحت vip/) وليس مجرد
+     * ثيم لوني من TEMPLATES_CONFIG العادية؟
+     */
+    function isVipTemplate(templateFile, design) {
+        if (design && design.isVipTemplate) return true;
+        var f = String(templateFile || '');
+        return f.indexOf('vip/') === 0 || f.indexOf('/vip/') !== -1;
+    }
+
+    global.UnifiedInvitationSchema = {
+        normalize: normalize,
+        isVipTemplate: isVipTemplate
+    };
+})(window);
