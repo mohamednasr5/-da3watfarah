@@ -1905,7 +1905,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
     <!-- pdf.js: used only to render the first page of an uploaded PDF paper-invitation
          into an image before sending it to the AI scan (vision models require an image, not a raw PDF). -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.0.379/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <!-- The "scan paper invitation" auto-fill feature below sends the photo to
          our own Worker (/api/ai/scan-invitation), which calls an NVIDIA vision
          model — the same NVIDIA_API_KEY/NIM API used by the other AI features
@@ -1984,6 +1984,8 @@
                 fill_required_star: 'يرجى ملء جميع الحقول المطلوبة (*)',
                 choose_template_first: 'يرجى اختيار قالب للدعوة',
                 write_invitation_text: 'يرجى كتابة نص الدعوة',
+                auth_required_msg: 'يرجى تسجيل الدخول أولاً قبل نشر الدعوة',
+                auth_redirect_confirm: 'هل تريد الانتقال إلى صفحة تسجيل الدخول الآن؟',
                 ai_generating: 'جاري التوليد...',
                 ai_need_names: 'يرجى إدخال اسم العريس والعروس أولاً (الخطوة 1)',
                 ai_success: 'تم توليد النص بنجاح',
@@ -2176,6 +2178,8 @@
                 fill_required_star: 'Please fill in all required fields (*)',
                 choose_template_first: 'Please choose a template for your invitation',
                 write_invitation_text: 'Please write the invitation text',
+                auth_required_msg: 'Please sign in before publishing your invitation',
+                auth_redirect_confirm: 'Do you want to go to the login page now?',
                 ai_generating: 'Generating...',
                 ai_need_names: "Please enter the groom's and bride's names first (Step 1)",
                 ai_success: 'Text generated successfully',
@@ -2465,7 +2469,79 @@
                 try { localStorage.removeItem('da3wa_selected_plan'); } catch (e) {}
             }
             refreshVipBannerIfPresent();
+            
+            // FIX: Update UI to show authentication status
+            updateAuthStatusUI();
         });
+        
+        // Also check auth status on DOMContentLoaded (in case auth is already ready)
+        document.addEventListener('DOMContentLoaded', function() {
+            // Delay slightly to allow Firebase Auth to initialize
+            setTimeout(() => {
+                if (window.firebaseAuth?.currentUser || window.currentUserId) {
+                    updateAuthStatusUI();
+                } else {
+                    // User not authenticated - show warning
+                    showNotAuthenticatedWarning();
+                }
+            }, 1000);
+        });
+        
+        // FIX: Function to update UI based on auth status
+        function updateAuthStatusUI() {
+            const user = window.firebaseAuth?.currentUser;
+            const userNameEl = document.getElementById('userName');
+            const userAvatarEl = document.querySelector('.user-avatar-small');
+            
+            if (user && userNameEl) {
+                userNameEl.textContent = user.displayName || user.email?.split('@')[0] || 'مستخدم';
+                if (userAvatarEl && user.photoURL) {
+                    userAvatarEl.innerHTML = `<img src="${user.photoURL}" alt="User" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+                }
+                
+                // Hide any auth warning
+                hideAuthWarning();
+            }
+        }
+        
+        // FIX: Show warning when user is not authenticated
+        function showNotAuthenticatedWarning() {
+            // Only show if not already showing
+            if (document.getElementById('authWarningBar')) return;
+            
+            const header = document.querySelector('.top-header');
+            if (!header) return;
+            
+            const warningDiv = document.createElement('div');
+            warningDiv.id = 'authWarningBar';
+            warningDiv.style.cssText = `
+                background: linear-gradient(90deg, #FEF3C7, #FDE68A);
+                border-bottom: 1px solid #F59E0B;
+                padding: 10px 20px;
+                text-align: center;
+                font-size: 14px;
+                color: #92400E;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 15px;
+                flex-wrap: wrap;
+            `;
+            warningDiv.innerHTML = `
+                <span><i class="fas fa-exclamation-triangle"></i> <strong>لم تسجل الدخول!</strong> يرجى تسجيل الدخول لحفظ ونشر دعوتك</span>
+                <a href="login.html?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}" 
+                   style="background:#D97706;color:white;padding:6px 16px;border-radius:8px;text-decoration:none;font-weight:bold;font-size:13px;">
+                   تسجيل الدخول الآن
+                </a>
+                <button onclick="this.parentElement.remove()" style="background:none;border:none;cursor:pointer;color:#92400E;padding:4px;"><i class="fas fa-times"></i></button>
+            `;
+            header.parentNode.insertBefore(warningDiv, header.nextSibling);
+        }
+        
+        function hideAuthWarning() {
+            const warning = document.getElementById('authWarningBar');
+            if (warning) warning.remove();
+        }
 
         // ===================================
         // Global State
@@ -3724,11 +3800,40 @@
             // Set selected template
             selectedTemplate = template;
             
-            // FIX: Save selected template for the CURRENT category so it persists
-            // when switching between categories and coming back
+            // FIX: Save selected template in MULTIPLE ways to ensure it persists:
+            // 1. By the current category tab (selectedCategory)
+            // 2. By the template's own eventCategory/eventCategories
+            // 3. By the current event type from the form
+            // This ensures we can find it later regardless of how the user navigates
+            
+            // Method 1: Save by selected category tab
             if (selectedCategory && selectedCategory !== 'all') {
                 selectedTemplatesPerCategory[selectedCategory] = template;
+                console.log(`💾 Saved template "${template.nameAr}" for category: ${selectedCategory}`);
             }
+            
+            // Method 2: Save by template's event category (for VIP templates)
+            if (template.eventCategory) {
+                selectedTemplatesPerCategory[template.eventCategory] = template;
+                console.log(`💾 Saved template "${template.nameAr}" for eventCategory: ${template.eventCategory}`);
+            }
+            
+            // Method 3: Save by all applicable event categories
+            if (template.eventCategories && Array.isArray(template.eventCategories)) {
+                template.eventCategories.forEach(cat => {
+                    selectedTemplatesPerCategory[cat] = template;
+                });
+                console.log(`💾 Saved template "${template.nameAr}" for eventCategories:`, template.eventCategories);
+            }
+            
+            // Method 4: Save by current event type (from radio buttons)
+            try {
+                const currentEventTypeVal = currentEventType();
+                if (currentEventTypeVal) {
+                    selectedTemplatesPerCategory[currentEventTypeVal] = template;
+                    console.log(`💾 Saved template "${template.nameAr}" for eventType: ${currentEventTypeVal}`);
+                }
+            } catch(e) {}
             
             applyTemplateFieldVisibility(template);
             updateVipIntroToggleVisibility(template);
@@ -4780,6 +4885,22 @@ ${venueName ? `- المكان: ${venueName}` : ''}
             const originalContent = publishBtn.innerHTML;
 
             try {
+                // FIX: Check authentication FIRST before doing anything else
+                // This prevents the confusing "Not authenticated" error message
+                const currentUser = window.firebaseAuth?.currentUser;
+                if (!currentUser && !window.currentUserId) {
+                    db.showNotification(L('auth_required_msg') || 'يرجى تسجيل الدخول أولاً قبل نشر الدعوة', 'error');
+                    
+                    // Show a more helpful modal/dialog
+                    setTimeout(() => {
+                        if (confirm(L('auth_redirect_confirm') || 'هل تريد الانتقال إلى صفحة تسجيل الدخول الآن؟')) {
+                            window.location.href = 'login.html?redirect=' + encodeURIComponent(window.location.pathname + window.location.search);
+                        }
+                    }, 500);
+                    
+                    return;
+                }
+
                 // Validate all steps
                 for (let i = 1; i <= 3; i++) {
                     if (!validateStep(i)) {
@@ -4818,6 +4939,40 @@ ${venueName ? `- المكان: ${venueName}` : ''}
                 }
 
                 // Prepare invitation data with template info
+                // FIX: Ensure selectedTemplate is preserved - check per-category 
+                // storage first in case the global was cleared during category switch
+                let finalTemplate = selectedTemplate;
+                
+                // If no template selected globally, try to restore from category storage
+                if (!finalTemplate && selectedCategory && selectedCategory !== 'all') {
+                    finalTemplate = selectedTemplatesPerCategory[selectedCategory];
+                }
+                
+                // Last resort: try current event type as category key
+                if (!finalTemplate) {
+                    const eventType = currentEventType();
+                    finalTemplate = selectedTemplatesPerCategory[eventType];
+                }
+                
+                // DEBUG: Log the template being published
+                console.log('📝 Publishing with template:', {
+                    id: finalTemplate?.id,
+                    name: finalTemplate?.nameAr,
+                    isVip: finalTemplate?.isVip,
+                    previewFile: finalTemplate?.previewFile,
+                    selectedCategory: selectedCategory,
+                    eventType: currentEventType()
+                });
+                
+                // If still no template, show error (shouldn't happen if validation passed)
+                if (!finalTemplate) {
+                    db.showNotification(L('choose_template_first'), 'error');
+                    publishBtn.disabled = false;
+                    publishBtn.innerHTML = originalContent;
+                    goToStep(2);
+                    return;
+                }
+                
                 const invitationData = {
                     couple: {
                         groomName: document.getElementById('groomName').value.trim(),
@@ -4836,13 +4991,13 @@ ${venueName ? `- المكان: ${venueName}` : ''}
                     },
                     eventType: currentEventType(),
                     design: {
-                        templateId: selectedTemplate?.id || 'classic',
-                        templateName: selectedTemplate?.nameAr || 'كلاسيكي',
-                        templateFile: (selectedTemplate?.previewFile || 'preview-classic.html').replace(/\.html$/i, ''),
-                        isVipTemplate: selectedTemplate?.isVip || false,
+                        templateId: finalTemplate?.id || 'classic',
+                        templateName: finalTemplate?.nameAr || 'كلاسيكي',
+                        templateFile: (finalTemplate?.previewFile || 'preview-classic.html').replace(/\.html$/i, ''),
+                        isVipTemplate: finalTemplate?.isVip || false,
                         primaryColor: selectedColors.primary,
                         secondaryColor: selectedColors.secondary,
-                        fontFamily: selectedTemplate?.fontFamily || "'Tajawal', sans-serif",
+                        fontFamily: finalTemplate?.fontFamily || "'Tajawal', sans-serif",
                         coverImage: uploadedCover,
                         galleryImages: uploadedGallery,
                         musicUrl: uploadedMusic
@@ -4861,11 +5016,11 @@ ${venueName ? `- المكان: ${venueName}` : ''}
                     // js/unified-invitation-schema.js). Both arrays are
                     // optional: an empty array hides the section on
                     // every template automatically.
-                    isVip: selectedTemplate?.isVip || false,
+                    isVip: finalTemplate?.isVip || false,
                     // VIP-only difference: intro/opening animation toggle.
                     // Meaningless (and ignored) for Normal templates.
                     vip: {
-                        introEnabled: selectedTemplate?.isVip
+                        introEnabled: finalTemplate?.isVip
                             ? document.getElementById('vipIntroToggle')?.checked !== false
                             : false
                     },
