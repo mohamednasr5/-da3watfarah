@@ -142,6 +142,21 @@
             } catch (e) { /* ignore cross-origin edge cases */ }
         }
 
+        // Once the intro video/envelope finishes and the page unlocks, the
+        // guest should land right at the top of the actual invitation —
+        // not be left scrolled down wherever the (now-collapsing) full
+        // screen intro used to be, staring at a gap that only slowly
+        // fills in as apply() runs its few resize passes. So the moment
+        // we detect the unlock, we scroll the iframe to the top of the
+        // viewport BEFORE the height changes are applied, so any of that
+        // step-wise growth happens below the fold instead of appearing as
+        // a stray expanding gap.
+        function scrollToTop() {
+            try {
+                iframe.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            } catch (e) { /* ignore */ }
+        }
+
         // Templates without an intro overlay (isLocked() always false) are
         // unaffected by this and get their real height right away. Templates
         // with an intro poll cheaply until it unlocks (guest taps to open,
@@ -157,6 +172,7 @@
                     if (!isLocked(doc)) {
                         clearInterval(pollTimer);
                         pollTimer = null;
+                        scrollToTop();
                         apply();
                         setTimeout(apply, 300);
                         setTimeout(apply, 1000);
@@ -181,6 +197,7 @@
             var doc = iframe.contentDocument;
             if (doc) {
                 doc.addEventListener('einvite:opened', function () {
+                    scrollToTop();
                     setTimeout(apply, 200);
                     setTimeout(apply, 1000);
                 });
@@ -292,7 +309,7 @@
         var iframe = document.createElement('iframe');
         iframe.title = 'VIP Invitation Preview';
         iframe.setAttribute('scrolling', 'no');
-        iframe.style.cssText = 'width:100%;min-height:100vh;border:0;display:block;background:#fff;';
+        iframe.style.cssText = 'width:100%;min-height:100vh;border:0;display:block;background:#fff;transition:height .25s ease;';
         iframe.src = url;
         return iframe;
     }
