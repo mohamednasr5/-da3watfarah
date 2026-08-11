@@ -84,6 +84,28 @@ window.firebaseDb = rtdb;
 window.firebaseStorage = storage;
 window.firebaseApp = firebaseApp;
 
+// FIX: Firebase Auth restores the signed-in user from local storage
+// asynchronously — it takes a moment after the SDK loads before
+// auth.currentUser is populated, even though the user IS still logged
+// in (persistence defaults to LOCAL, i.e. it survives reloads).
+// Any code that checks `firebaseAuth.currentUser` immediately on page
+// load (e.g. right when the user clicks "Publish") can catch this gap
+// and wrongly think the user is signed out.
+//
+// window.authReady resolves (with the user, or null) the FIRST time
+// onAuthStateChanged fires, so callers can `await window.authReady`
+// before trusting `firebaseAuth.currentUser`.
+window.authReady = new Promise((resolve) => {
+    if (auth && typeof auth.onAuthStateChanged === "function") {
+        const unsubscribe = auth.onAuthStateChanged((user) => {
+            unsubscribe();
+            resolve(user);
+        });
+    } else {
+        resolve(null);
+    }
+});
+
 const r2Config = {
     bucketName: "farah",
     s3Endpoint: "https://43544e748a23cd826c1b0339bc4c3409.r2.cloudflarestorage.com",

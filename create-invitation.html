@@ -4909,7 +4909,15 @@ ${venueName ? `- المكان: ${venueName}` : ''}
 
             try {
                 // FIX: Check authentication FIRST before doing anything else
-                // This prevents the confusing "Not authenticated" error message
+                // This prevents the confusing "Not authenticated" error message.
+                // We also wait for window.authReady (see firebase-config.js) so
+                // we don't wrongly treat a still-logged-in user as signed out
+                // just because Firebase hasn't finished restoring the session
+                // from storage yet — that was causing the "go to login page?"
+                // prompt to appear even for users who were already logged in.
+                if (window.authReady) {
+                    await window.authReady;
+                }
                 const currentUser = window.firebaseAuth?.currentUser;
                 if (!currentUser && !window.currentUserId) {
                     db.showNotification(L('auth_required_msg') || 'يرجى تسجيل الدخول أولاً قبل نشر الدعوة', 'error');
