@@ -1,8 +1,8 @@
 // دعوة فرح - Service Worker محسّن للـ PWA
 // يوفر: التخزين المؤقت، العمل دون اتصال، المزامنة الخلفية
 
-const CACHE_NAME = 'da3watfarah-v1.0.1';
-const RUNTIME_CACHE = 'da3watfarah-runtime-v2';
+const CACHE_NAME = 'da3watfarah-v1.0.2';
+const RUNTIME_CACHE = 'da3watfarah-runtime-v3';
 const IMAGE_CACHE = 'da3watfarah-images-v1';
 const API_CACHE = 'da3watfarah-api-v1';
 
@@ -91,14 +91,46 @@ self.addEventListener('fetch', event => {
   }
 
   // استراتيجيات مختلفة حسب نوع الملف
+  const isHtmlPage = request.mode === 'navigate' ||
+    request.destination === 'document' ||
+    url.pathname.endsWith('.html') ||
+    url.pathname === '/';
+
   if (request.destination === 'image') {
     return event.respondWith(cacheImages(request));
   } else if (url.pathname.includes('/api/') || url.pathname.includes('/firebase')) {
     return event.respondWith(cacheApi(request));
+  } else if (isHtmlPage) {
+    // HTML pages (invite.html, /vip/*/*.html demo templates, the wizard,
+    // etc.) always go network-first. Cache-first here was the root cause
+    // of clients getting permanently stuck on an old, buggy build of the
+    // app shell — a fix shipped to the server would never reach a browser
+    // that already had a cached copy, since cache-first never re-checks
+    // the network for an existing entry. Falling back to cache only keeps
+    // the app usable offline.
+    return event.respondWith(networkFirstStrategy(request));
   } else {
     return event.respondWith(cacheFirstStrategy(request));
   }
 });
+
+// استراتيجية: Network First، Fallback to Cache (لصفحات HTML)
+async function networkFirstStrategy(request) {
+  try {
+    const response = await fetch(request);
+    if (response.ok && response.status !== 206) {
+      const cache = await caches.open(RUNTIME_CACHE);
+      const responseToCache = response.clone();
+      cache.put(request, responseToCache).catch(err => {
+        console.warn('SW: Failed to cache:', err.message);
+      });
+    }
+    return response;
+  } catch (error) {
+    const cached = await caches.match(request);
+    return cached || createOfflineResponse();
+  }
+}
 
 // استراتيجية: Cache First، Fallback to Network
 async function cacheFirstStrategy(request) {
