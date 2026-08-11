@@ -1,182 +1,201 @@
-const firebaseConfig = {
-    apiKey: "AIzaSyAIyJ_oZdA1VGDMfKwCUfQwdO5ZOoQy2DQ",
-    authDomain: "auth.da3watfarah.com",
-    databaseURL: "https://da3watfarah-default-rtdb.firebaseio.com",
-    projectId: "da3watfarah",
-    storageBucket: "da3watfarah.firebasestorage.app",
-    messagingSenderId: "818147201311",
-    appId: "1:818147201311:web:cb83942913bc2d6a86e02a",
-    measurementId: "G-J9D7R961V7"
-};
+/* ===================================================
+   دعوة فرح - VIP Demo Page Widget Styles
+   Used on every vip/<category>/<slug>/*.html demo page
+   (injected via vip-widget.js): the "حصري VIP" ribbon
+   badge + the floating "أعجبتك هذه الدعوة؟" buy CTA.
+   =================================================== */
 
-let firebaseApp, auth, rtdb, storage;
-
-// Some pages (e.g. the homepage's real-invitations showcase) intentionally
-// only load the Database SDK and skip Auth/Firestore/Storage on purpose.
-// window.__daFirebaseLiteMode is set by that loader before this script runs,
-// so we can stay quiet about SDKs that were never meant to be loaded there,
-// while still warning normally on pages (dashboard, editor, AI writer, etc.)
-// that do expect the full SDK set.
-const __daLiteMode = window.__daFirebaseLiteMode === true;
-
-try {
-    if (typeof firebase === "undefined") {
-        throw new Error("Firebase SDK not loaded. Make sure firebase-app-compat.js is included.");
-    }
-
-    firebaseApp = firebase.apps.length ? firebase.app() : firebase.initializeApp(firebaseConfig);
-
-    if (typeof firebase.auth === "function") {
-        auth = firebase.auth();
-        console.log("✅ Firebase Auth initialized");
-    } else if (!__daLiteMode) {
-        console.warn("⚠️ Firebase Auth SDK not loaded");
-    }
-
-    if (typeof firebase.database === "function") {
-        rtdb = firebase.database();
-        console.log("✅ Firebase Realtime Database initialized");
-    } else {
-        console.warn("⚠️ Firebase Realtime Database SDK not loaded - using localStorage fallback");
-        rtdb = null;
-    }
-
-    if (typeof firebase.firestore === "function") {
-        window.firebaseFirestore = firebase.firestore();
-        console.log("✅ Firebase Firestore initialized (backup)");
-    } else {
-        window.firebaseFirestore = null;
-        if (!__daLiteMode) {
-            console.warn("⚠️ Firebase Firestore SDK not loaded");
-        }
-    }
-
-    if (typeof firebase.storage === "function") {
-        storage = firebase.storage();
-        console.log("✅ Firebase Storage initialized");
-    } else {
-        storage = null;
-        if (!__daLiteMode) {
-            console.warn("⚠️ Firebase Storage SDK not loaded - using R2 fallback");
-        }
-    }
-
-    if (typeof firebase.analytics === "function") {
-        try {
-            firebase.analytics();
-            console.log("✅ Firebase Analytics initialized");
-        } catch (e) {
-            console.warn("⚠️ Analytics initialization failed:", e.message);
-        }
-    }
-
-    console.log("✅ Firebase initialized successfully");
-} catch (e) {
-    console.error("❌ Firebase initialization error:", e.message);
-    firebaseApp = null;
-    auth = null;
-    rtdb = null;
-    storage = null;
+/* ---------- Exclusive ribbon badge (top of page) ---------- */
+.vip-exclusive-ribbon {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 9998;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: linear-gradient(90deg, #1A1A2E 0%, #2D2D44 50%, #1A1A2E 100%);
+    color: #D4AF37;
+    font-family: 'Tajawal', 'El Messiri', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
+    pointer-events: none;
 }
 
-window.firebaseAuth = auth;
-window.firebaseDb = rtdb;
-window.firebaseStorage = storage;
-window.firebaseApp = firebaseApp;
+.vip-ribbon-icon {
+    font-size: 15px;
+    line-height: 1;
+}
 
-const r2Config = {
-    bucketName: "farah",
-    s3Endpoint: "https://43544e748a23cd826c1b0339bc4c3409.r2.cloudflarestorage.com",
-    publicUrl: "https://assets.da3watfarah.com",
-    workerUrl: "https://da3watfarah.nonm1724.workers.dev",
-    uploadEndpoint: "/api/upload",
-    deleteEndpoint: "/api/delete"
-};
-window.r2Config = r2Config;
+/* ---------- Floating buy CTA widget ---------- */
+.vip-cta-widget {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    z-index: 9999;
+    width: 280px;
+    max-width: calc(100vw - 40px);
+    background: #ffffff;
+    border-radius: 18px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+    padding: 20px 18px 18px;
+    font-family: 'Tajawal', sans-serif;
+    text-align: right;
+    animation: vipCtaIn 0.5s ease 1.2s both;
+}
 
-const nvidiaConfig = {
-    apiKey: "",
-    baseUrl: "https://ai.api.nvidia.com/v1",
-    model: "meta/llama3-70b-instruct"
-};
-window.nvidiaConfig = nvidiaConfig;
+@keyframes vipCtaIn {
+    from { opacity: 0; transform: translateY(24px) scale(0.96); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
 
-const appConfig = {
-    appName: "دعوة فرح",
-    appUrl: window.location.origin,
-    supportEmail: "support@da3watfarah.com"
-};
-window.appConfig = appConfig;
+.vip-cta-widget.vip-cta-hidden {
+    display: none;
+}
 
-window.isFirebaseReady = function () {
-    return {
-        app: !!firebaseApp,
-        auth: !!auth,
-        database: !!rtdb,
-        firestore: !!window.firebaseFirestore,
-        storage: !!storage
-    };
-};
+.vip-cta-close {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 26px;
+    height: 26px;
+    border: none;
+    border-radius: 50%;
+    background: #F3F4F6;
+    color: #6B7280;
+    font-size: 16px;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s, color 0.2s;
+}
 
-window.getDbRef = function (path) {
-    return rtdb ? rtdb.ref(path) : (console.error("❌ Realtime Database not initialized"), null);
-};
+.vip-cta-close:hover {
+    background: #E5E7EB;
+    color: #1F2937;
+}
 
-window.rtdbOnce = async function (path) {
-    try {
-        const snap = await rtdb.ref(path).once("value");
-        return snap.exists() ? snap.val() : null;
-    } catch (e) {
-        console.error("❌ RTDB Read Error:", e);
-        throw e;
+.vip-cta-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, #1A1A2E, #2D2D44);
+    color: #D4AF37;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 5px 12px;
+    border-radius: 999px;
+    margin-bottom: 10px;
+}
+
+.vip-cta-widget h4 {
+    margin: 0 0 10px;
+    font-size: 17px;
+    font-weight: 800;
+    color: #1F2937;
+}
+
+.vip-cta-price {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    margin-bottom: 12px;
+}
+
+.vip-cta-price .num {
+    font-size: 26px;
+    font-weight: 900;
+    color: #D4AF37;
+    line-height: 1;
+}
+
+.vip-cta-price .cur {
+    font-size: 13px;
+    font-weight: 500;
+    color: #6B7280;
+}
+
+.vip-cta-list {
+    list-style: none;
+    margin: 0 0 16px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.vip-cta-list li {
+    position: relative;
+    padding-right: 22px;
+    font-size: 13.5px;
+    color: #374151;
+}
+
+.vip-cta-list li::before {
+    content: '✔';
+    position: absolute;
+    right: 0;
+    top: 0;
+    color: #10B981;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.vip-cta-buy {
+    width: 100%;
+    border: none;
+    border-radius: 12px;
+    padding: 13px 16px;
+    background: linear-gradient(135deg, #D4AF37, #B8942C);
+    color: #1A1A2E;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 6px 16px rgba(212, 175, 55, 0.35);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.vip-cta-buy:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px rgba(212, 175, 55, 0.45);
+}
+
+.vip-cta-buy:active {
+    transform: translateY(0);
+}
+
+.vip-cta-wa {
+    display: block;
+    text-align: center;
+    margin-top: 10px;
+    font-size: 12.5px;
+    color: #059669;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.vip-cta-wa:hover {
+    text-decoration: underline;
+}
+
+/* ---------- Mobile ---------- */
+@media (max-width: 480px) {
+    .vip-cta-widget {
+        left: 12px;
+        right: 12px;
+        bottom: 12px;
+        width: auto;
+        max-width: none;
     }
-};
 
-window.rtdbSet = async function (path, value) {
-    try {
-        await rtdb.ref(path).set(value);
-        return true;
-    } catch (e) {
-        console.error("❌ RTDB Set Error:", e);
-        throw e;
+    .vip-exclusive-ribbon {
+        font-size: 12px;
+        padding: 7px 10px;
     }
-};
-
-window.rtdbUpdate = async function (path, value) {
-    try {
-        await rtdb.ref(path).update(value);
-        return true;
-    } catch (e) {
-        console.error("❌ RTDB Update Error:", e);
-        throw e;
-    }
-};
-
-window.rtdbPush = async function (path, value) {
-    try {
-        const ref = rtdb.ref(path).push();
-        await ref.set(value);
-        return ref.key;
-    } catch (e) {
-        console.error("❌ RTDB Push Error:", e);
-        throw e;
-    }
-};
-
-window.rtdbRemove = async function (path) {
-    try {
-        await rtdb.ref(path).remove();
-        return true;
-    } catch (e) {
-        console.error("❌ RTDB Remove Error:", e);
-        throw e;
-    }
-};
-
-window.rtdbOn = function (path, eventType, callback) {
-    const handler = (snap) => {
-        callback(snap.exists() ? snap.val() : null, snap.key);
-    };
-    rtdb.ref(path).on(eventType, handler);
-    return () => rtdb.ref(path).off(eventType, handler);
-};
+}
