@@ -3800,6 +3800,29 @@
             // Set selected template
             selectedTemplate = template;
             
+            // FIX: Templates like "classic-2".."classic-6" and "romantic-2".."romantic-6"
+            // reuse the SAME base style block as "classic-1"/"romantic-1" and are only
+            // told apart by swapping the --theme-primary/--theme-secondary colors at
+            // render time (see applyColorOverride() in invite.html). But selectedColors
+            // was never synced to the picked template's own `colors`, so unless the user
+            // happened to also click a matching swatch in the color picker, the override
+            // was a no-op and every one of these templates published looking exactly like
+            // the plain default template. Sync it here so the template's own colors are
+            // used automatically, and reflect that in the color-picker UI too.
+            if (template.colors && template.colors.primary && template.colors.secondary) {
+                selectedColors = { primary: template.colors.primary, secondary: template.colors.secondary };
+                document.querySelectorAll('.color-option').forEach(opt => {
+                    try {
+                        const optColors = JSON.parse(opt.dataset.colors);
+                        opt.classList.toggle('selected',
+                            optColors.primary === selectedColors.primary &&
+                            optColors.secondary === selectedColors.secondary);
+                    } catch (e) {
+                        opt.classList.remove('selected');
+                    }
+                });
+            }
+            
             // FIX: Save selected template in MULTIPLE ways to ensure it persists:
             // 1. By the current category tab (selectedCategory)
             // 2. By the template's own eventCategory/eventCategories
