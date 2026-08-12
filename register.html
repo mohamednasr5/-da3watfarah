@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إنشاء حساب | دعوة فرح</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=Amiri:wght@400;700&family=Aref+Ruqaa:wght@400;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=Amiri:wght@400;700&family=Aref+Ruqaa:wght@400;700&display=swap" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=Amiri:wght@400;700&family=Aref+Ruqaa:wght@400;700&display=swap"></noscript>
+    
+    <!-- Font Awesome -->
+    <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"></noscript>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preload" as="style" href="css/auth.css">
+    <link rel="stylesheet" href="css/auth.css" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="css/auth.css"></noscript>
+    <!-- PWA Meta Tags and Icons -->
+    <link rel="manifest" href="/manifest.json">
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/icons/favicon-16x16.png">
+    <link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+    <meta name="theme-color" content="#d4a574">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="دعوة فرح">
+    <meta name="application-name" content="دعوة فرح">
+    <meta name="msapplication-TileImage" content="/assets/icons/icon-192x192.png">
+    <meta name="msapplication-TileColor" content="#d4a574">
+    <link rel="preload" as="style" href="/css/pwa-style.css">
+    <link rel="stylesheet" href="/css/pwa-style.css" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="/css/pwa-style.css"></noscript>
+</head>
+<body>
+    <!-- Auth Container -->
+    <div class="auth-container">
+        <!-- Decorative Elements -->
+        <div class="auth-decoration">
+            <div class="decoration-circle circle-1"></div>
+            <div class="decoration-circle circle-2"></div>
+            <div class="decoration-circle circle-3"></div>
+            <div class="floating-hearts-auth">
+                <span>💕</span>
+                <span>❤️</span>
+                <span>💖</span>
+                <span>💗</span>
+            </div>
+        </div>
+
+        <!-- Auth Card -->
+        <div class="auth-card register-card" data-aos="fade-up">
+            <!-- Logo -->
+            <div class="auth-logo">
+                <a href="index.html">
+                    <span class="logo-icon">💍</span>
+                    <span class="logo-text">دعوة<span class="gold">فرح</span></span>
+                </a>
+            </div>
+
+            <!-- Header -->
+            <div class="auth-header">
+                <h1>أنشئ حسابك المجاني</h1>
+                <p>ابدأ رحلتك في إنشاء دعوة زفاف أحلامك</p>
+            </div>
+
+            <!-- Progress Steps -->
+            <div class="progress-steps">
+                <div class="step active" data-step="1">
+                    <div class="step-number">1</div>
+                    <span>الحساب</span>
+                </div>
+                <div class="step-line"></div>
+                <div class="step" data-step="2">
+                    <div class="step-number">2</div>
+                    <span>العروسين</span>
+                </div>
+                <div class="step-line"></div>
+                <div class="step" data-step="3">
+                    <div class="step-number">3</div>
+                    <span>اكتمال</span>
+                </div>
+            </div>
+
+            <!-- Register Form - Step 1: Account Info -->
+            <form class="auth-form" id="registerForm">
+                <!-- Step 1 Content -->
+                <div class="form-step active" id="step1">
+                    <!-- Groom Name Field -->
+                    <div class="form-group">
+                        <label for="groomName">
+                            <i class="fas fa-user-tie"></i>
+                            اسم العريس
+                        </label>
+                        <input 
+                            type="text" 
+                            id="groomName" 
+                            name="groomName"
+                            placeholder="مثال: أحمد"
+                            required
+                        >
+                        <span class="error-message" id="groomNameError"></span>
+                    </div>
+
+                    <!-- Bride Name Field -->
+                    <div class="form-group">
+                        <label for="brideName">
+                            <i class="fas fa-user"></i>
+                            اسم العروسة
+                        </label>
+                        <input 
+                            type="text" 
+                            id="brideName" 
+                            name="brideName"
+                            placeholder="مثال: سارة"
+                            required
+                        >
+                        <span class="error-message" id="brideNameError"></span>
+                    </div>
+
+                    <!-- Email Field -->
+                    <div class="form-group">
+                        <label for="email">
+                            <i class="fas fa-envelope"></i>
+                            البريد الإلكتروني
+                        </label>
+                        <input 
+                            type="email" 
+                            id="email" 
+                            name="email"
+                            placeholder="example@email.com"
+                            required
+                        >
+                        <span class="error-message" id="emailError"></span>
+                    </div>
+
+                    <!-- Phone Field (Optional) -->
+                    <div class="form-group">
+                        <label for="phone">
+                            <i class="fas fa-phone"></i>
+                            رقم الجوال (اختياري)
+                        </label>
+                        <input 
+                            type="tel" 
+                            id="phone" 
+                            name="phone"
+                            placeholder="05xxxxxxxx"
+                        >
+                    </div>
+
+                    <!-- Password Field -->
+                    <div class="form-group">
+                        <label for="password">
+                            <i class="fas fa-lock"></i>
+                            كلمة المرور
+                        </label>
+                        <div class="password-wrapper">
+                            <input 
+                                type="password" 
+                                id="password" 
+                                name="password"
+                                placeholder="••••••••"
+                                minlength="8"
+                                required
+                            >
+                            <button type="button" class="toggle-password" id="togglePassword">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <div class="password-strength" id="passwordStrength">
+                            <div class="strength-bar"></div>
+                            <span class="strength-text"></span>
+                        </div>
+                        <span class="error-message" id="passwordError"></span>
+                    </div>
+
+                    <!-- Confirm Password Field -->
+                    <div class="form-group">
+                        <label for="confirmPassword">
+                            <i class="fas fa-lock"></i>
+                            تأكيد كلمة المرور
+                        </label>
+                        <div class="password-wrapper">
+                            <input 
+                                type="password" 
+                                id="confirmPassword" 
+                                name="confirmPassword"
+                                placeholder="••••••••"
+                                required
+                            >
+                            <button type="button" class="toggle-password" id="toggleConfirmPassword">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <span class="error-message" id="confirmPasswordError"></span>
+                    </div>
+
+                    <!-- Terms & Conditions -->
+                    <div class="form-group">
+                        <label class="checkbox-wrapper terms-checkbox">
+                            <input type="checkbox" name="terms" id="terms" required>
+                            <span class="checkmark"></span>
+                            أوافق على <a href="#" target="_blank">شروط الاستخدام</a> و<a href="#" target="_blank">سياسة الخصوصية</a>
+                        </label>
+                        <span class="error-message" id="termsError"></span>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="btn btn-primary btn-block btn-lg" id="registerBtn">
+                        <span class="btn-text">إنشاء الحساب</span>
+                        <span class="btn-loader" style="display: none;">
+                            <i class="fas fa-spinner fa-spin"></i>
+                        </span>
+                    </button>
+
+                    <!-- Error Message -->
+                    <div class="alert alert-error" id="registerError" style="display: none;">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <span></span>
+                    </div>
+                </div>
+            </form>
+
+            <!-- Divider -->
+            <div class="auth-divider">
+                <span>أو</span>
+            </div>
+
+            <!-- Social Login -->
+            <div class="social-login">
+                <button class="btn btn-social btn-google" id="googleRegisterBtn">
+                    <svg viewBox="0 0 24 24" width="20" height="20">
+                        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/>
+                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                    </svg>
+                    التسجيل بحساب Google
+                </button>
+                
+                <button class="btn btn-social btn-apple" id="appleRegisterBtn">
+                    <i class="fab fa-apple"></i>
+                    التسجيل بحساب Apple
+                </button>
+            </div>
+
+            <!-- Login Link -->
+            <div class="auth-footer">
+                <p>لديك حساب بالفعل؟ <a href="login.html">تسجيل الدخول</a></p>
+            </div>
+        </div>
+
+        <!-- Side Illustration (Desktop) -->
+        <div class="auth-illustration">
+            <div class="illustration-content">
+                <div class="illustration-image-large">
+                    <div class="wedding-rings-animation">
+                        <div class="ring ring-1">💍</div>
+                        <div class="ring ring-2">💍</div>
+                        <div class="hearts-burst">
+                            <span>❤️</span>
+                            <span>💕</span>
+                            <span>💖</span>
+                            <span>💗</span>
+                            <span>💝</span>
+                        </div>
+                    </div>
+                    
+                    <div class="welcome-text">
+                        <h3>مرحباً بك في عائلة<br><span class="gold">دعوة فرح</span></h3>
+                        <p>انضم إلى +10,000 زوج سعيد الذين اختاروا منصتنا</p>
+                    </div>
+                    
+                    <div class="stats-preview">
+                        <div class="stat-item">
+                            <strong>+10,000</strong>
+                            <span>دعوة تم إنشاؤها</span>
+                        </div>
+                        <div class="stat-item">
+                            <strong>+50,000</strong>
+                            <span>ضيف سعيد</span>
+                        </div>
+                        <div class="stat-item">
+                            <strong>98%</strong>
+                            <span>رضا العملاء</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="modal-overlay" id="successModal" style="display: none;">
+        <div class="modal-content success-modal">
+            <div class="success-animation">
+                <div class="checkmark-circle">
+                    <svg viewBox="0 0 52 52" class="checkmark-svg">
+                        <circle cx="26" cy="26" r="25" fill="none"/>
+                        <path fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+                    </svg>
+                </div>
+            </div>
+            
+            <h3>تم إنشاء الحساب بنجاح! 🎉</h3>
+            <p>مرحباً بك في دعوة فراح! يمكنك الآن البدء في إنشاء دعوتك الخاصة.</p>
+            
+            <a href="overview.html" class="btn btn-primary btn-lg">
+                <i class="fas-magic"></i>
+                ابدأ إنشاء الدعوة
+            </a>
+        </div>
+    </div>
+
+    <!-- Firebase SDK (Realtime Database Version) -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
+    
+    <!-- AOS Animation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    
+    <!-- Auth JavaScript -->
+    <script src="js/firebase-config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="/js/pwa-manager.js" defer></script>
+</body>
+</html>

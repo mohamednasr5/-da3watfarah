@@ -26,21 +26,6 @@
         else document.addEventListener('DOMContentLoaded', fn);
     }
 
-    // js/vip-template-renderer.js appends ?vipEmbed=1 whenever it loads this
-    // page inside the real invitation iframe (live preview during creation,
-    // or the final published invitation a guest opens). In that context the
-    // visitor already owns/is buying this exact design, so the "أعجبتك هذه
-    // الدعوة؟ اشترِ الآن" promo ribbon/CTA is not just unnecessary — it used
-    // to render on the guest-facing invitation itself. Only show it when the
-    // page is visited directly, e.g. from the /vip/ demo catalog.
-    function isEmbeddedInvitation() {
-        try {
-            return new URLSearchParams(window.location.search).get('vipEmbed') === '1';
-        } catch (e) {
-            return false;
-        }
-    }
-
     function injectCss() {
         // vip.css is already linked via a <link> tag placed next to this
         // script in each demo page; nothing to inject here. Kept as a
@@ -107,7 +92,6 @@
     }
 
     ready(function () {
-        if (isEmbeddedInvitation()) return;
         injectCss();
         buildRibbon();
         buildWidget();

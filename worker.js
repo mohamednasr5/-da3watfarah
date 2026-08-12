@@ -400,6 +400,17 @@ async function handleTelegramCallback(env, callbackQuery) {
 // without editing this file.
 const DEFAULT_ADMIN_PASSWORD = '521988';
 
+// Where the actual static site files (HTML/CSS/JS) live. Uses jsDelivr's
+// raw-file CDN pointed at the GitHub repo/branch — NOT github.io — because
+// GitHub Pages 301-redirects github.io requests back to the custom domain
+// (da3watfarah.com) whenever a CNAME file is present, which breaks fetches
+// made from *inside* the Worker that fronts that very same custom domain.
+// Override with the ORIGIN_BASE environment variable if the repo/branch
+// ever changes (Worker > Settings > Variables and secrets).
+function getOriginBase(env) {
+    return env.ORIGIN_BASE || 'https://cdn.jsdelivr.net/gh/mohamednasr5/-da3watfarah@main';
+}
+
 function getBucket(env) {
     for (const name of KNOWN_BUCKET_BINDING_NAMES) {
         if (env[name] && typeof env[name].put === 'function') {
@@ -525,35 +536,13 @@ export default {
             }, corsHeaders);
         }
 
-        // Fallback: any other GET/HEAD request (admin.html, gallery.html,
-        // dashboard.html, and every other static page) is proxied straight
-        // through to GitHub Pages. This only matters when a Cloudflare
-        // Worker Route is bound to da3watfarah.com/* (catching ALL traffic,
-        // not just /api/*, /files/*, /health) — without this fallback those
-        // static pages would otherwise hit the JSON message below instead
-        // of the real site.
+        // Anything else (admin.html, gallery.html, css/js/assets, the root
+        // "/", etc.) is a request for one of the site's own static files.
+        // Proxy it straight through from the origin (see getOriginBase)
+        // instead of returning the API info JSON, which is what made every
+        // page on da3watfarah.com show the raw API message previously.
         if (request.method === 'GET' || request.method === 'HEAD') {
-            const ORIGIN_BASE = env.ORIGIN_BASE || 'https://mohamednasr5.github.io/-da3watfarah';
-            const originUrl = ORIGIN_BASE + url.pathname + url.search;
-            try {
-                const originRes = await fetch(originUrl, {
-                    method: request.method,
-                    headers: request.headers,
-                    cf: { cacheTtl: 60, cacheEverything: false },
-                });
-                const newHeaders = new Headers(originRes.headers);
-                for (const [k, v] of Object.entries(corsHeaders)) {
-                    if (!newHeaders.has(k)) newHeaders.set(k, v);
-                }
-                return new Response(originRes.body, {
-                    status: originRes.status,
-                    statusText: originRes.statusText,
-                    headers: newHeaders,
-                });
-            } catch (e) {
-                console.error('Origin proxy error:', e);
-                return errorResponse('تعذر الوصول لمصدر الموقع (GitHub Pages).', 502, corsHeaders);
-            }
+            return serveStaticFile(request, env, url, corsHeaders);
         }
 
         return jsonResponse({
@@ -575,6 +564,57 @@ export default {
         }, corsHeaders, 200);
     },
 };
+
+// Proxies a request for a static site file (HTML/CSS/JS/image/etc.) from
+// the origin (jsDelivr CDN by default — see getOriginBase) so the whole
+// site can be served through da3watfarah.com via this single Worker,
+// without needing a separate GitHub Pages / Cloudflare Pages custom-domain
+// setup. "/" is mapped to "/index.html" since the CDN has no directory
+// index behaviour of its own.
+async function serveStaticFile(request, env, url, corsHeaders) {
+    const ORIGIN_BASE = getOriginBase(env);
+    let pathname = url.pathname;
+    if (pathname === '/' || pathname === '') pathname = '/index.html';
+
+    try {
+        const originRes = await fetch(`${ORIGIN_BASE}${pathname}${url.search}`, {
+            method: request.method,
+            cf: { cacheTtl: 300, cacheEverything: false },
+        });
+
+        // Unknown file -> let the site's own 404.html render instead of a
+        // bare CDN error page, and use a real 404 status.
+        if (originRes.status === 404 && pathname !== '/404.html') {
+            const notFoundRes = await fetch(`${ORIGIN_BASE}/404.html`, {
+                cf: { cacheTtl: 300, cacheEverything: false },
+            });
+            const headers2 = new Headers(notFoundRes.headers);
+            for (const [k, v] of Object.entries(corsHeaders)) {
+                if (!headers2.has(k)) headers2.set(k, v);
+            }
+            headers2.set('Cache-Control', 'no-store');
+            return new Response(notFoundRes.body, { status: 404, headers: headers2 });
+        }
+
+        const headers = new Headers(originRes.headers);
+        for (const [k, v] of Object.entries(corsHeaders)) {
+            if (!headers.has(k)) headers.set(k, v);
+        }
+        // jsDelivr sets an aggressive shared Cache-Control by default;
+        // keep pages reasonably fresh so content edits show up quickly.
+        if (pathname.endsWith('.html') || pathname === '/index.html') {
+            headers.set('Cache-Control', 'public, max-age=60');
+        }
+        return new Response(originRes.body, {
+            status: originRes.status,
+            statusText: originRes.statusText,
+            headers,
+        });
+    } catch (e) {
+        console.error('Static proxy error:', e);
+        return errorResponse('تعذر تحميل الصفحة المطلوبة من المصدر.', 502, corsHeaders);
+    }
+}
 
 /**
  * Handle file upload to R2 (images + songs)
@@ -1129,10 +1169,16 @@ async function handleOgImage(request, env, url) {
 async function handleInvitePage(request, env, url) {
     const slug = url.searchParams.get('slug') || url.pathname.replace(/^\//, '');
 
-    // NOTE: adjust ORIGIN_BASE if your GitHub Pages repo/user differs.
-    // This fetches the page from GitHub Pages' default domain so the
-    // Worker doesn't loop back into itself when routed on da3watfarah.com.
-    const ORIGIN_BASE = env.ORIGIN_BASE || 'https://mohamednasr5.github.io/-da3watfarah';
+    // NOTE: adjust ORIGIN_BASE if your GitHub repo/user/branch differs.
+    // IMPORTANT: this uses jsDelivr's raw-file CDN (NOT github.io) because
+    // GitHub Pages automatically 301-redirects any request that hits its
+    // own <user>.github.io domain back to the custom domain configured in
+    // the repo's CNAME file (da3watfarah.com) — which, since this Worker
+    // sits in front of da3watfarah.com, caused an infinite loop / wrong
+    // page being served ("الدعوة غير موجودة" showing up for every page).
+    // jsDelivr serves the exact same files straight from the git repo with
+    // no such redirect, so it's safe to fetch from inside the Worker.
+    const ORIGIN_BASE = getOriginBase(env);
     const originRes = await fetch(`${ORIGIN_BASE}/invite.html${url.search || ('?slug=' + encodeURIComponent(slug))}`, {
         cf: { cacheTtl: 60, cacheEverything: false }
     });

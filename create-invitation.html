@@ -1667,7 +1667,7 @@
                             </div>
                             
                             <div class="form-group full-width" id="loveStoryGroup">
-                                <label id="loveStoryFieldLabel" data-i18n="love_story_label"><i class="fas fa-heart"></i> قصة الحب (اختياري)</label>
+                                <label data-i18n="love_story_label"><i class="fas fa-heart"></i> قصة الحب (اختياري)</label>
                                 <textarea class="form-control" id="loveStory" placeholder="اكتب قصة تعارفكما..." data-i18n-placeholder="love_story_ph"></textarea>
                             </div>
                             
@@ -1905,7 +1905,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
     <!-- pdf.js: used only to render the first page of an uploaded PDF paper-invitation
          into an image before sending it to the AI scan (vision models require an image, not a raw PDF). -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.0.379/pdf.min.js"></script>
     <!-- The "scan paper invitation" auto-fill feature below sends the photo to
          our own Worker (/api/ai/scan-invitation), which calls an NVIDIA vision
          model — the same NVIDIA_API_KEY/NIM API used by the other AI features
@@ -1984,8 +1984,6 @@
                 fill_required_star: 'يرجى ملء جميع الحقول المطلوبة (*)',
                 choose_template_first: 'يرجى اختيار قالب للدعوة',
                 write_invitation_text: 'يرجى كتابة نص الدعوة',
-                auth_required_msg: 'يرجى تسجيل الدخول أولاً قبل نشر الدعوة',
-                auth_redirect_confirm: 'هل تريد الانتقال إلى صفحة تسجيل الدخول الآن؟',
                 ai_generating: 'جاري التوليد...',
                 ai_need_names: 'يرجى إدخال اسم العريس والعروس أولاً (الخطوة 1)',
                 ai_success: 'تم توليد النص بنجاح',
@@ -2178,8 +2176,6 @@
                 fill_required_star: 'Please fill in all required fields (*)',
                 choose_template_first: 'Please choose a template for your invitation',
                 write_invitation_text: 'Please write the invitation text',
-                auth_required_msg: 'Please sign in before publishing your invitation',
-                auth_redirect_confirm: 'Do you want to go to the login page now?',
                 ai_generating: 'Generating...',
                 ai_need_names: "Please enter the groom's and bride's names first (Step 1)",
                 ai_success: 'Text generated successfully',
@@ -2469,79 +2465,7 @@
                 try { localStorage.removeItem('da3wa_selected_plan'); } catch (e) {}
             }
             refreshVipBannerIfPresent();
-            
-            // FIX: Update UI to show authentication status
-            updateAuthStatusUI();
         });
-        
-        // Also check auth status on DOMContentLoaded (in case auth is already ready)
-        document.addEventListener('DOMContentLoaded', function() {
-            // Delay slightly to allow Firebase Auth to initialize
-            setTimeout(() => {
-                if (window.firebaseAuth?.currentUser || window.currentUserId) {
-                    updateAuthStatusUI();
-                } else {
-                    // User not authenticated - show warning
-                    showNotAuthenticatedWarning();
-                }
-            }, 1000);
-        });
-        
-        // FIX: Function to update UI based on auth status
-        function updateAuthStatusUI() {
-            const user = window.firebaseAuth?.currentUser;
-            const userNameEl = document.getElementById('userName');
-            const userAvatarEl = document.querySelector('.user-avatar-small');
-            
-            if (user && userNameEl) {
-                userNameEl.textContent = user.displayName || user.email?.split('@')[0] || 'مستخدم';
-                if (userAvatarEl && user.photoURL) {
-                    userAvatarEl.innerHTML = `<img src="${user.photoURL}" alt="User" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
-                }
-                
-                // Hide any auth warning
-                hideAuthWarning();
-            }
-        }
-        
-        // FIX: Show warning when user is not authenticated
-        function showNotAuthenticatedWarning() {
-            // Only show if not already showing
-            if (document.getElementById('authWarningBar')) return;
-            
-            const header = document.querySelector('.top-header');
-            if (!header) return;
-            
-            const warningDiv = document.createElement('div');
-            warningDiv.id = 'authWarningBar';
-            warningDiv.style.cssText = `
-                background: linear-gradient(90deg, #FEF3C7, #FDE68A);
-                border-bottom: 1px solid #F59E0B;
-                padding: 10px 20px;
-                text-align: center;
-                font-size: 14px;
-                color: #92400E;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                gap: 15px;
-                flex-wrap: wrap;
-            `;
-            warningDiv.innerHTML = `
-                <span><i class="fas fa-exclamation-triangle"></i> <strong>لم تسجل الدخول!</strong> يرجى تسجيل الدخول لحفظ ونشر دعوتك</span>
-                <a href="login.html?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}" 
-                   style="background:#D97706;color:white;padding:6px 16px;border-radius:8px;text-decoration:none;font-weight:bold;font-size:13px;">
-                   تسجيل الدخول الآن
-                </a>
-                <button onclick="this.parentElement.remove()" style="background:none;border:none;cursor:pointer;color:#92400E;padding:4px;"><i class="fas fa-times"></i></button>
-            `;
-            header.parentNode.insertBefore(warningDiv, header.nextSibling);
-        }
-        
-        function hideAuthWarning() {
-            const warning = document.getElementById('authWarningBar');
-            if (warning) warning.remove();
-        }
 
         // ===================================
         // Global State
@@ -2554,10 +2478,6 @@
         let uploadedMusic = null;
         let modalTemplateId = null;
         let selectedCategory = 'all'; // New: Selected category for filtering
-        
-        // FIX: Store selected template PER CATEGORY so switching categories 
-        // doesn't lose the previously selected template
-        let selectedTemplatesPerCategory = {};
 
         // Event Schedule & FAQ — unified builder state (same for every
         // invitation type, Normal or VIP). Both are fully optional;
@@ -2638,44 +2558,9 @@
                     vipLink.querySelector('a').href = `/vip/index.html#filter=${categoryId}`;
                 }
             }
-
-            // Keep Step 1's "event type" radio in sync with the category
-            // chosen here in Step 2. Previously these were two independent
-            // filters: this tab only changed which templates were *shown*,
-            // while the event type actually *saved and published* stayed
-            // whatever Step 1 defaulted to (wedding). That mismatch is what
-            // caused a birthday selection to still publish wedding content
-            // (Quran verse, wedding program wording, etc). A category here
-            // maps 1:1 to one event type, so drive the radio from it.
-            if (categoryId !== 'all') {
-                const radio = document.querySelector(`input[name="eventTypeRadio"][value="${categoryId}"]`);
-                if (radio && !radio.checked) {
-                    radio.checked = true;
-                    applyEventTypeFieldLabels();
-                }
-                // FIX: Restore the previously selected template for this category
-                // (if exists) instead of just clearing it
-                const savedTemplate = selectedTemplatesPerCategory[categoryId];
-                if (savedTemplate) {
-                    selectedTemplate = savedTemplate;
-                } else if (selectedTemplate && !templateMatchesCategory(selectedTemplate, categoryId)
-                    && !(selectedTemplate.eventCategories && selectedTemplate.eventCategories.includes(categoryId))) {
-                    // Only clear if no saved template and current doesn't match
-                    selectedTemplate = null;
-                }
-            }
             
             // Filter templates
             filterTemplatesByCategory(categoryId);
-            
-            // FIX: If we restored a saved template, update the UI to reflect it
-            if (selectedTemplate) {
-                applyTemplateFieldVisibility(selectedTemplate);
-                updateVipIntroToggleVisibility(selectedTemplate);
-                showLivePreview(selectedTemplate);
-            }
-            
-            scheduleLivePreviewRefresh();
         }
         
         function filterTemplatesByCategory(categoryId) {
@@ -3370,22 +3255,6 @@
             return checked ? checked.value : 'wedding';
         }
 
-        // Only marriage-related occasions get the Quranic/Bible verse by
-        // default. For every other event type (birthday, newborn, henna,
-        // graduation, ramadan) the verse toggle is hidden in Step 3 (see
-        // applyTemplateFieldVisibility / STEP3_OPTIONAL_GROUPS), but the
-        // underlying checkbox still exists in the DOM and defaults to
-        // "checked" — so reading it directly without this guard leaked the
-        // wedding verse into every other occasion. Compute the effective
-        // state from the event type whenever the field is hidden/inapplicable.
-        const RELIGIOUS_VERSE_EVENT_TYPES = ['wedding', 'engagement', 'katb_ketab'];
-        function currentReligiousVerseEnabled() {
-            const et = currentEventType();
-            if (RELIGIOUS_VERSE_EVENT_TYPES.indexOf(et) === -1) return false;
-            const toggle = document.getElementById('religiousVerseToggle');
-            return toggle ? toggle.checked : true;
-        }
-
         // Step 3 ("المحتوى والتصميم") holds a few fields that only make sense
         // for regular (non-VIP) templates, which render through invite.html's
         // single shared skeleton (welcome text / love story / religious verse
@@ -3449,44 +3318,6 @@
             applyEventTypeFieldLabels();
         }
 
-        // Per-event-type wording for the optional "loveStory" field. Every
-        // occasion frames it differently — a couple's love story, a child's
-        // birthday memories, a graduate's journey — so the label/placeholder
-        // swap with the event type, and {name} is filled with whatever the
-        // person already typed into the (single) name field.
-        const LOVE_STORY_META = {
-            ar: {
-                wedding: { label: '<i class="fas fa-heart"></i> قصة الحب (اختياري)', ph: 'اكتب قصة تعارفكما...' },
-                engagement: { label: '<i class="fas fa-heart"></i> قصة الحب (اختياري)', ph: 'اكتب قصة تعارفكما...' },
-                katb_ketab: { label: '<i class="fas fa-heart"></i> قصة الحب (اختياري)', ph: 'اكتب قصة تعارفكما...' },
-                henna: { label: '<i class="fas fa-heart"></i> ذكرياتكم الخاصة (اختياري)', ph: 'شاركونا لحظاتكم قبل ليلة الحناء...' },
-                birthday: { label: '<i class="fas fa-heart"></i> شارك ذكرياتك في عيد ميلاد {name} (اختياري)', ph: 'شاركونا أجمل ذكرياتكم مع {name}...' },
-                newborn: { label: '<i class="fas fa-heart"></i> شاركونا فرحتكم بقدوم {name} (اختياري)', ph: 'اكتبوا كلمات ترحيب بـ {name}...' },
-                graduation: { label: '<i class="fas fa-heart"></i> شاركونا رحلة {name} (اختياري)', ph: 'اكتبوا عن رحلة {name} الدراسية...' },
-                ramadan: { label: '<i class="fas fa-heart"></i> كلمة ترحيبية (اختياري)', ph: 'اكتبوا كلمة ترحيب بضيوفكم...' }
-            },
-            en: {
-                wedding: { label: '<i class="fas fa-heart"></i> Love Story (optional)', ph: 'Write your story together...' },
-                engagement: { label: '<i class="fas fa-heart"></i> Love Story (optional)', ph: 'Write your story together...' },
-                katb_ketab: { label: '<i class="fas fa-heart"></i> Love Story (optional)', ph: 'Write your story together...' },
-                henna: { label: '<i class="fas fa-heart"></i> Your Memories (optional)', ph: 'Share your favorite moments...' },
-                birthday: { label: '<i class="fas fa-heart"></i> Share memories on {name}\'s birthday (optional)', ph: 'Share your favorite memories with {name}...' },
-                newborn: { label: '<i class="fas fa-heart"></i> Share your joy for {name} (optional)', ph: 'Write a welcome note for {name}...' },
-                graduation: { label: '<i class="fas fa-heart"></i> Share {name}\'s journey (optional)', ph: 'Write about {name}\'s academic journey...' },
-                ramadan: { label: '<i class="fas fa-heart"></i> Welcome note (optional)', ph: 'Write a welcome note for your guests...' }
-            }
-        };
-        function applyLoveStoryFieldWording() {
-            const label = document.getElementById('loveStoryFieldLabel');
-            const textarea = document.getElementById('loveStory');
-            if (!label || !textarea) return;
-            const et = currentEventType();
-            const meta = (LOVE_STORY_META[ciLang()] || LOVE_STORY_META.ar)[et] || (LOVE_STORY_META[ciLang()] || LOVE_STORY_META.ar).wedding;
-            const name = (document.getElementById('groomName')?.value || '').trim() || (ciLang() === 'en' ? 'them' : 'صاحب/ة المناسبة');
-            label.innerHTML = meta.label.replace('{name}', name);
-            textarea.placeholder = meta.ph.replace('{name}', name);
-        }
-
         function applyEventTypeFieldLabels() {
             const meta = (EVENT_TYPE_FIELD_META[ciLang()] || EVENT_TYPE_FIELD_META.ar)[currentEventType()] || (EVENT_TYPE_FIELD_META[ciLang()] || EVENT_TYPE_FIELD_META.ar).wedding;
             document.getElementById('weddingDateFieldLabel').innerHTML = meta.dateLabel;
@@ -3524,8 +3355,6 @@
                 toggle('birthdayGenderGroup', false);
                 toggle('birthdayAgeGroup', false);
             }
-
-            applyLoveStoryFieldWording();
         }
 
         // Prefill the wizard with text generated by the AI writer (ai-writer.html),
@@ -3566,33 +3395,12 @@
             document.querySelectorAll('input[name="eventTypeRadio"]').forEach(radio => {
                 radio.addEventListener('change', function() {
                     applyEventTypeFieldLabels();
-                    // Keep Step 2's category tabs in sync with the type
-                    // picked here, and drop any previously selected
-                    // template that belonged to a different category.
-                    selectedCategory = this.value;
-                    if (selectedTemplate && !templateMatchesCategory(selectedTemplate, this.value)
-                        && !(selectedTemplate.eventCategories && selectedTemplate.eventCategories.includes(this.value))) {
-                        selectedTemplate = null;
-                    }
-                    if (typeof renderCategoryTabs === 'function') renderCategoryTabs();
-                    const vipLink = document.getElementById('vipTemplatesLink');
-                    if (vipLink) {
-                        vipLink.style.display = 'block';
-                        const link = vipLink.querySelector('a');
-                        if (link) link.href = `/vip/index.html#filter=${this.value}`;
-                    }
                     // Re-filter templates when event type changes
                     loadTemplates();
-                    scheduleLivePreviewRefresh();
                 });
             });
 
             prefillFromAIWriter();
-
-            // Live-update the loveStory wording as the person types the
-            // single-person name (birthday child, graduate, newborn, etc.)
-            const groomNameEl = document.getElementById('groomName');
-            if (groomNameEl) groomNameEl.addEventListener('input', applyLoveStoryFieldWording);
         });
         
         // ===================================
@@ -3799,65 +3607,6 @@
             
             // Set selected template
             selectedTemplate = template;
-            
-            // FIX: Templates like "classic-2".."classic-6" and "romantic-2".."romantic-6"
-            // reuse the SAME base style block as "classic-1"/"romantic-1" and are only
-            // told apart by swapping the --theme-primary/--theme-secondary colors at
-            // render time (see applyColorOverride() in invite.html). But selectedColors
-            // was never synced to the picked template's own `colors`, so unless the user
-            // happened to also click a matching swatch in the color picker, the override
-            // was a no-op and every one of these templates published looking exactly like
-            // the plain default template. Sync it here so the template's own colors are
-            // used automatically, and reflect that in the color-picker UI too.
-            if (template.colors && template.colors.primary && template.colors.secondary) {
-                selectedColors = { primary: template.colors.primary, secondary: template.colors.secondary };
-                document.querySelectorAll('.color-option').forEach(opt => {
-                    try {
-                        const optColors = JSON.parse(opt.dataset.colors);
-                        opt.classList.toggle('selected',
-                            optColors.primary === selectedColors.primary &&
-                            optColors.secondary === selectedColors.secondary);
-                    } catch (e) {
-                        opt.classList.remove('selected');
-                    }
-                });
-            }
-            
-            // FIX: Save selected template in MULTIPLE ways to ensure it persists:
-            // 1. By the current category tab (selectedCategory)
-            // 2. By the template's own eventCategory/eventCategories
-            // 3. By the current event type from the form
-            // This ensures we can find it later regardless of how the user navigates
-            
-            // Method 1: Save by selected category tab
-            if (selectedCategory && selectedCategory !== 'all') {
-                selectedTemplatesPerCategory[selectedCategory] = template;
-                console.log(`💾 Saved template "${template.nameAr}" for category: ${selectedCategory}`);
-            }
-            
-            // Method 2: Save by template's event category (for VIP templates)
-            if (template.eventCategory) {
-                selectedTemplatesPerCategory[template.eventCategory] = template;
-                console.log(`💾 Saved template "${template.nameAr}" for eventCategory: ${template.eventCategory}`);
-            }
-            
-            // Method 3: Save by all applicable event categories
-            if (template.eventCategories && Array.isArray(template.eventCategories)) {
-                template.eventCategories.forEach(cat => {
-                    selectedTemplatesPerCategory[cat] = template;
-                });
-                console.log(`💾 Saved template "${template.nameAr}" for eventCategories:`, template.eventCategories);
-            }
-            
-            // Method 4: Save by current event type (from radio buttons)
-            try {
-                const currentEventTypeVal = currentEventType();
-                if (currentEventTypeVal) {
-                    selectedTemplatesPerCategory[currentEventTypeVal] = template;
-                    console.log(`💾 Saved template "${template.nameAr}" for eventType: ${currentEventTypeVal}`);
-                }
-            } catch(e) {}
-            
             applyTemplateFieldVisibility(template);
             updateVipIntroToggleVisibility(template);
             
@@ -4566,24 +4315,12 @@ ${venueName ? `- المكان: ${venueName}` : ''}
                     welcomeText: val('welcomeText'),
                     invitationText: val('invitationText'),
                     loveStory: val('loveStory'),
-                    religiousVerseEnabled: currentReligiousVerseEnabled(),
+                    religiousVerseEnabled: document.getElementById('religiousVerseToggle')?.checked ?? true,
                     religiousVerseType: document.getElementById('religiousVerseType')?.value || 'quran',
                     newbornGender: document.getElementById('newbornGender')?.value || 'male',
                     birthdayGender: document.getElementById('birthdayGender')?.value || 'male',
                     birthdayAge: document.getElementById('birthdayAge')?.value || ''
                 },
-                // Same fields publishInvitation() saves (see below) — the VIP
-                // renderer's live preview needs these too (intro toggle,
-                // schedule/FAQ sections), and without them here the preview
-                // never matched what actually got published.
-                isVip: selectedTemplate?.isVip || false,
-                vip: {
-                    introEnabled: selectedTemplate?.isVip
-                        ? document.getElementById('vipIntroToggle')?.checked !== false
-                        : false
-                },
-                eventSchedule: collectEventSchedule(),
-                faq: collectFaq(),
                 isPublished: true
             };
         }
@@ -4908,30 +4645,6 @@ ${venueName ? `- المكان: ${venueName}` : ''}
             const originalContent = publishBtn.innerHTML;
 
             try {
-                // FIX: Check authentication FIRST before doing anything else
-                // This prevents the confusing "Not authenticated" error message.
-                // We also wait for window.authReady (see firebase-config.js) so
-                // we don't wrongly treat a still-logged-in user as signed out
-                // just because Firebase hasn't finished restoring the session
-                // from storage yet — that was causing the "go to login page?"
-                // prompt to appear even for users who were already logged in.
-                if (window.authReady) {
-                    await window.authReady;
-                }
-                const currentUser = window.firebaseAuth?.currentUser;
-                if (!currentUser && !window.currentUserId) {
-                    db.showNotification(L('auth_required_msg') || 'يرجى تسجيل الدخول أولاً قبل نشر الدعوة', 'error');
-                    
-                    // Show a more helpful modal/dialog
-                    setTimeout(() => {
-                        if (confirm(L('auth_redirect_confirm') || 'هل تريد الانتقال إلى صفحة تسجيل الدخول الآن؟')) {
-                            window.location.href = 'login.html?redirect=' + encodeURIComponent(window.location.pathname + window.location.search);
-                        }
-                    }, 500);
-                    
-                    return;
-                }
-
                 // Validate all steps
                 for (let i = 1; i <= 3; i++) {
                     if (!validateStep(i)) {
@@ -4970,40 +4683,6 @@ ${venueName ? `- المكان: ${venueName}` : ''}
                 }
 
                 // Prepare invitation data with template info
-                // FIX: Ensure selectedTemplate is preserved - check per-category 
-                // storage first in case the global was cleared during category switch
-                let finalTemplate = selectedTemplate;
-                
-                // If no template selected globally, try to restore from category storage
-                if (!finalTemplate && selectedCategory && selectedCategory !== 'all') {
-                    finalTemplate = selectedTemplatesPerCategory[selectedCategory];
-                }
-                
-                // Last resort: try current event type as category key
-                if (!finalTemplate) {
-                    const eventType = currentEventType();
-                    finalTemplate = selectedTemplatesPerCategory[eventType];
-                }
-                
-                // DEBUG: Log the template being published
-                console.log('📝 Publishing with template:', {
-                    id: finalTemplate?.id,
-                    name: finalTemplate?.nameAr,
-                    isVip: finalTemplate?.isVip,
-                    previewFile: finalTemplate?.previewFile,
-                    selectedCategory: selectedCategory,
-                    eventType: currentEventType()
-                });
-                
-                // If still no template, show error (shouldn't happen if validation passed)
-                if (!finalTemplate) {
-                    db.showNotification(L('choose_template_first'), 'error');
-                    publishBtn.disabled = false;
-                    publishBtn.innerHTML = originalContent;
-                    goToStep(2);
-                    return;
-                }
-                
                 const invitationData = {
                     couple: {
                         groomName: document.getElementById('groomName').value.trim(),
@@ -5022,13 +4701,13 @@ ${venueName ? `- المكان: ${venueName}` : ''}
                     },
                     eventType: currentEventType(),
                     design: {
-                        templateId: finalTemplate?.id || 'classic',
-                        templateName: finalTemplate?.nameAr || 'كلاسيكي',
-                        templateFile: (finalTemplate?.previewFile || 'preview-classic.html').replace(/\.html$/i, ''),
-                        isVipTemplate: finalTemplate?.isVip || false,
+                        templateId: selectedTemplate?.id || 'classic',
+                        templateName: selectedTemplate?.nameAr || 'كلاسيكي',
+                        templateFile: (selectedTemplate?.previewFile || 'preview-classic.html').replace(/\.html$/i, ''),
+                        isVipTemplate: selectedTemplate?.isVip || false,
                         primaryColor: selectedColors.primary,
                         secondaryColor: selectedColors.secondary,
-                        fontFamily: finalTemplate?.fontFamily || "'Tajawal', sans-serif",
+                        fontFamily: selectedTemplate?.fontFamily || "'Tajawal', sans-serif",
                         coverImage: uploadedCover,
                         galleryImages: uploadedGallery,
                         musicUrl: uploadedMusic
@@ -5037,7 +4716,7 @@ ${venueName ? `- المكان: ${venueName}` : ''}
                         welcomeText: document.getElementById('welcomeText').value.trim(),
                         invitationText: document.getElementById('invitationText').value.trim(),
                         loveStory: document.getElementById('loveStory').value.trim(),
-                        religiousVerseEnabled: currentReligiousVerseEnabled(),
+                        religiousVerseEnabled: document.getElementById('religiousVerseToggle').checked,
                         religiousVerseType: document.getElementById('religiousVerseType').value,
                         newbornGender: document.getElementById('newbornGender')?.value || 'male',
                         birthdayGender: document.getElementById('birthdayGender')?.value || 'male',
@@ -5047,11 +4726,11 @@ ${venueName ? `- المكان: ${venueName}` : ''}
                     // js/unified-invitation-schema.js). Both arrays are
                     // optional: an empty array hides the section on
                     // every template automatically.
-                    isVip: finalTemplate?.isVip || false,
+                    isVip: selectedTemplate?.isVip || false,
                     // VIP-only difference: intro/opening animation toggle.
                     // Meaningless (and ignored) for Normal templates.
                     vip: {
-                        introEnabled: finalTemplate?.isVip
+                        introEnabled: selectedTemplate?.isVip
                             ? document.getElementById('vipIntroToggle')?.checked !== false
                             : false
                     },

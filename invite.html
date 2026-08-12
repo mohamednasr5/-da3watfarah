@@ -31,23 +31,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" media="print" onload="this.media='all'">
     <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css"></noscript>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
-    <script src="js/unified-invitation-schema.js" onerror="console.error('❌ فشل تحميل js/unified-invitation-schema.js — تأكد إن الملف مرفوع فعليًا على GitHub Pages')"></script>
-    <script src="js/vip-template-renderer.js" onerror="console.error('❌ فشل تحميل js/vip-template-renderer.js — تأكد إن الملف مرفوع فعليًا على GitHub Pages')"></script>
-    <script>
-        // Sanity check: if either VIP script silently failed to define its
-        // global (e.g. loaded but with a JS error inside it), every VIP
-        // invitation would fall back to the default template with no
-        // visible error. Warn loudly instead so this is diagnosable from
-        // the console rather than looking like a template-selection bug.
-        window.addEventListener('load', function () {
-            if (typeof VipTemplateRenderer === 'undefined') {
-                console.error('⚠️ VipTemplateRenderer غير معرّف — كل دعوات VIP ستظهر بالقالب الافتراضي. تحقق من js/vip-template-renderer.js (404 أو خطأ JS داخله).');
-            }
-            if (typeof UnifiedInvitationSchema === 'undefined') {
-                console.error('⚠️ UnifiedInvitationSchema غير معرّف — تحقق من js/unified-invitation-schema.js.');
-            }
-        });
-    </script>
+    <script src="js/unified-invitation-schema.js"></script>
+    <script src="js/vip-template-renderer.js"></script>
     
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/style.css">
@@ -3478,16 +3463,11 @@
                 '<span style="display:block;margin-top:18px;">"الذي جمعه الله لا يفرقه إنسان"</span>' +
                 '<span style="display:block;margin-top:6px;font-size:0.9rem;">(متى ١٩: ٦)</span>';
 
-            // Backward compatible: older wedding/engagement/katb_ketab
-            // invitations without the new field keep showing their verse
-            // (defaults to enabled). For every other occasion (birthday,
-            // newborn, henna, graduation, ramadan) there is no sensible
-            // "religious verse" default, so an unset field defaults to
-            // hidden rather than silently inheriting the wedding verse.
-            const verseApplicableByDefault = ['wedding', 'engagement', 'katb_ketab'].includes(eventType);
+            // Backward compatible: older invitations without the new fields
+            // keep showing their verse (defaults to enabled + Quran).
             const verseEnabled = (data.religiousVerseEnabled !== undefined)
                 ? !!data.religiousVerseEnabled
-                : (content.religiousVerseEnabled !== undefined ? !!content.religiousVerseEnabled : verseApplicableByDefault);
+                : (content.religiousVerseEnabled !== undefined ? !!content.religiousVerseEnabled : true);
             const verseType = content.religiousVerseType || data.religiousVerseType || 'quran';
 
             if (verseEnabled) {
@@ -4293,58 +4273,28 @@
                         VipTemplateRenderer.isVipTemplate(previewTemplateFile, data.design)) {
                         const container = document.getElementById('invitationContainer');
                         VipTemplateRenderer.render(data, previewTemplateFile, container);
-                        document.getElementById('invitationLoader').classList.add('hidden');
-                        container.classList.add('loaded');
-                    } else {
-                        populateInvitationUI(data);
-
-                        const weddingDate = data.event?.date || data.event?.weddingDate;
-                        if (weddingDate) {
-                            initCountdown(new Date(weddingDate));
-                        }
-
-                        document.getElementById('invitationLoader').classList.add('hidden');
-                        document.getElementById('invitationContainer').classList.add('loaded');
-                        if (typeof AOS !== 'undefined') {
-                            AOS.init({ duration: 800, easing: 'ease-out', once: true });
-                        }
+                        return;
                     }
 
-                    // Listen for live updates from the wizard tab without a full reload.
-                    // Re-checks VIP status on every update instead of always falling
-                    // back to the Normal renderer — previously this always called
-                    // populateInvitationUI() here even for a VIP template, so the
-                    // very first live-preview render could be correct (VIP) but every
-                    // keystroke after that silently switched back to the generic
-                    // Normal layout.
+                    populateInvitationUI(data);
+
+                    const weddingDate = data.event?.date || data.event?.weddingDate;
+                    if (weddingDate) {
+                        initCountdown(new Date(weddingDate));
+                    }
+
+                    document.getElementById('invitationLoader').classList.add('hidden');
+                    document.getElementById('invitationContainer').classList.add('loaded');
+                    if (typeof AOS !== 'undefined') {
+                        AOS.init({ duration: 800, easing: 'ease-out', once: true });
+                    }
+
+                    // Listen for live updates from the wizard tab without a full reload
                     window.addEventListener('message', (event) => {
                         if (event.data && event.data.type === 'farah-preview-update') {
-                            const payload = event.data.payload;
-                            invitationData = payload;
-                            const container = document.getElementById('invitationContainer');
-                            const templateFile = (payload.design && payload.design.templateFile) || '';
-                            const isVip = typeof VipTemplateRenderer !== 'undefined' &&
-                                VipTemplateRenderer.isVipTemplate(templateFile, payload.design);
-
-                            if (isVip) {
-                                VipTemplateRenderer.render(payload, templateFile, container);
-                                document.getElementById('invitationLoader').classList.add('hidden');
-                                container.classList.add('loaded');
-                                return;
-                            }
-
-                            // Switched from a VIP template back to a Normal one
-                            // mid-preview: the VIP branch replaced the container's
-                            // markup with a bare iframe, so the shared shell no
-                            // longer exists in the DOM to populate. Reload instead
-                            // of trying to resurrect it in place.
-                            if (container.querySelector('iframe[title="VIP Invitation Preview"]')) {
-                                location.reload();
-                                return;
-                            }
-
-                            populateInvitationUI(payload);
-                            const d = payload.event?.date;
+                            invitationData = event.data.payload;
+                            populateInvitationUI(event.data.payload);
+                            const d = event.data.payload.event?.date;
                             if (d) initCountdown(new Date(d));
                         }
                     });
@@ -4394,8 +4344,6 @@
                     VipTemplateRenderer.isVipTemplate(templateFile, data.design)) {
                     const container = document.getElementById('invitationContainer');
                     VipTemplateRenderer.render(data, templateFile, container);
-                    document.getElementById('invitationLoader').classList.add('hidden');
-                    container.classList.add('loaded');
 
                     // Still increment view count and listen for wishes even for VIP templates
                     const invId = data.key || data.id;

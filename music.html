@@ -1,0 +1,1376 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الموسيقى | دعوة فرح</title>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=Amiri:wght@400;700&family=Aref+Ruqaa:wght@400;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=Amiri:wght@400;700&family=Aref+Ruqaa:wght@400;700&display=swap" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=Amiri:wght@400;700&family=Aref+Ruqaa:wght@400;700&display=swap"></noscript>
+    
+    <!-- Font Awesome -->
+    <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"></noscript>
+    
+    <!-- AOS Animation -->
+    <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css"></noscript>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preload" as="style" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/dashboard.css" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="css/dashboard.css"></noscript>
+    
+    <style>
+        /* ===================================
+           Music Page Specific Styles
+           =================================== */
+        
+        .main-content {
+            flex: 1;
+            margin-right: 280px;
+            padding: 30px;
+            min-height: 100vh;
+            transition: margin var(--transition-normal);
+        }
+        
+        @media (max-width: 1024px) {
+            .main-content {
+                margin-right: 0;
+                padding: 20px;
+            }
+        }
+        
+        /* Page Header */
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .page-header h1 {
+            font-size: 1.75rem;
+            color: var(--text-primary);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .page-header h1 i {
+            color: var(--gold);
+        }
+        
+        /* Music Player Bar */
+        .music-player-bar {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            border-radius: var(--radius-xl);
+            padding: 20px 25px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            position: sticky;
+            top: 20px;
+            z-index: 100;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        
+        .player-album-art {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, var(--gold), #d4a574);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
+            color: white;
+            flex-shrink: 0;
+        }
+        
+        .player-album-art.playing {
+            animation: pulse-glow 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(212, 175, 55, 0.4); }
+            50% { box-shadow: 0 0 40px rgba(212, 175, 55, 0.8); }
+        }
+        
+        .player-info {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .player-title {
+            color: white;
+            font-weight: 600;
+            font-size: 1.05rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-bottom: 5px;
+        }
+        
+        .player-artist {
+            color: rgba(255,255,255,0.6);
+            font-size: 0.9rem;
+        }
+        
+        .player-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .player-btn {
+            width: 45px;
+            height: 45px;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .player-btn:hover {
+            background: rgba(255,255,255,0.2);
+            transform: scale(1.05);
+        }
+        
+        .player-btn.play-btn {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, var(--gold), #d4a574);
+        }
+        
+        .player-btn.play-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 5px 20px rgba(212, 175, 55, 0.4);
+        }
+        
+        .player-progress-container {
+            flex: 1;
+            max-width: 300px;
+        }
+        
+        .progress-bar-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .time-label {
+            color: rgba(255,255,255,0.6);
+            font-size: 0.8rem;
+            min-width: 40px;
+        }
+        
+        .music-progress {
+            flex: 1;
+            height: 6px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 3px;
+            cursor: pointer;
+            overflow: hidden;
+        }
+        
+        .music-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--gold), #d4a574);
+            border-radius: 3px;
+            width: 0%;
+            transition: width 0.1s linear;
+        }
+        
+        /* Volume Control */
+        .volume-control {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .volume-slider {
+            width: 80px;
+            height: 4px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 2px;
+            cursor: pointer;
+        }
+        
+        .volume-slider-fill {
+            height: 100%;
+            background: var(--gold);
+            border-radius: 2px;
+            width: 70%;
+        }
+        
+        /* Section Container */
+        .music-section {
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .section-header h2 {
+            font-size: 1.25rem;
+            color: var(--text-primary);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-header h2 i {
+            color: var(--gold);
+        }
+        
+        /* Search Box */
+        .search-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--bg-light);
+            padding: 10px 18px;
+            border-radius: var(--radius-lg);
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .search-box:focus-within {
+            border-color: var(--gold);
+            background: white;
+        }
+        
+        .search-box i {
+            color: var(--text-secondary);
+        }
+        
+        .search-box input {
+            border: none;
+            background: none;
+            outline: none;
+            flex: 1;
+            font-family: inherit;
+            font-size: 0.95rem;
+            color: var(--text-primary);
+        }
+        
+        /* Music List */
+        .music-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .music-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            border-radius: var(--radius-lg);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 8px;
+        }
+        
+        .music-item:hover {
+            background: var(--bg-light);
+        }
+        
+        .music-item.active {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(212, 175, 55, 0.05));
+            border: 1px solid rgba(212, 175, 55, 0.3);
+        }
+        
+        .music-item.playing .item-index {
+            display: none;
+        }
+        
+        .music-item.playing .playing-indicator {
+            display: flex !important;
+        }
+        
+        .item-index {
+            width: 30px;
+            text-align: center;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+        
+        .playing-indicator {
+            display: none;
+            width: 30px;
+            align-items: flex-end;
+            justify-content: center;
+            gap: 2px;
+            height: 20px;
+        }
+        
+        .playing-bar {
+            width: 3px;
+            background: var(--gold);
+            border-radius: 2px;
+            animation: playing-bars 0.8s ease-in-out infinite;
+        }
+        
+        .playing-bar:nth-child(1) { animation-delay: 0s; height: 60%; }
+        .playing-bar:nth-child(2) { animation-delay: 0.2s; height: 100%; }
+        .playing-bar:nth-child(3) { animation-delay: 0.4s; height: 40%; }
+        .playing-bar:nth-child(4) { animation-delay: 0.6s; height: 80%; }
+        
+        @keyframes playing-bars {
+            0%, 100% { transform: scaleY(0.5); }
+            50% { transform: scaleY(1); }
+        }
+        
+        .item-thumbnail {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+        
+        .item-details {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .item-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-bottom: 3px;
+        }
+        
+        .item-meta {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        
+        .item-duration {
+            font-weight: 500;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        .item-actions {
+            display: flex;
+            gap: 8px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .music-item:hover .item-actions {
+            opacity: 1;
+        }
+        
+        .item-action-btn {
+            width: 35px;
+            height: 35px;
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+        }
+        
+        .item-action-btn:hover {
+            background: var(--gold);
+            border-color: var(--gold);
+            color: white;
+        }
+        
+        .item-action-btn.selected {
+            background: var(--gold);
+            border-color: var(--gold);
+            color: white;
+        }
+        
+        /* Upload Zone */
+        .upload-zone {
+            border: 2px dashed var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            text-align: center;
+            background: var(--bg-light);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .upload-zone:hover {
+            border-color: var(--gold);
+            background: rgba(212, 175, 55, 0.05);
+        }
+        
+        .upload-zone i {
+            font-size: 2rem;
+            color: var(--gold);
+            margin-bottom: 10px;
+        }
+        
+        .upload-zone p {
+            color: var(--text-secondary);
+            margin: 0;
+        }
+        
+        .upload-input {
+            display: none;
+        }
+        
+        /* Category Tabs */
+        .category-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .category-tab {
+            padding: 8px 18px;
+            background: var(--bg-light);
+            border: 2px solid transparent;
+            border-radius: var(--radius-lg);
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+        }
+        
+        .category-tab:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+        
+        .category-tab.active {
+            background: linear-gradient(135deg, var(--gold), #d4a574);
+            color: white;
+            border-color: transparent;
+        }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            color: var(--text-secondary);
+        }
+        
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+        
+        /* Selected Music Count */
+        .selected-count {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), transparent);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: var(--radius-lg);
+            color: var(--gold);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .music-player-bar {
+                flex-wrap: wrap;
+                gap: 15px;
+                padding: 15px;
+            }
+            
+            .player-controls {
+                order: 3;
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .player-progress-container {
+                display: none;
+            }
+            
+            .volume-control {
+                display: none;
+            }
+            
+            .item-actions {
+                opacity: 1 !important;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .search-box {
+                width: 100%;
+            }
+        }
+    </style>
+    <!-- PWA Meta Tags and Icons -->
+    <link rel="manifest" href="/manifest.json">
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/icons/favicon-16x16.png">
+    <link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+    <meta name="theme-color" content="#d4a574">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="دعوة فرح">
+    <meta name="application-name" content="دعوة فرح">
+    <meta name="msapplication-TileImage" content="/assets/icons/icon-192x192.png">
+    <meta name="msapplication-TileColor" content="#d4a574">
+    <link rel="preload" as="style" href="/css/pwa-style.css">
+    <link rel="stylesheet" href="/css/pwa-style.css" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="/css/pwa-style.css"></noscript>
+</head>
+<body class="dashboard-body">
+    <!-- Dashboard Container -->
+    <div class="dashboard-container">
+        <!-- Sidebar (loaded by sidebar.js) -->
+        <aside class="sidebar" id="sidebar"></aside>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Mobile Header -->
+            <button class="mobile-menu-btn" id="mobileSidebarBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1>
+                    <i class="fas fa-music"></i>
+                    الموسيقى
+                </h1>
+                <div class="selected-count" id="selectedCount">
+                    <i class="fas fa-check-circle"></i>
+                    <span>المختارة: <strong>0</strong></span>
+                </div>
+            </div>
+            
+            <!-- Music Player Bar -->
+            <div class="music-player-bar" id="playerBar">
+                <div class="player-album-art" id="playerAlbumArt">
+                    <i class="fas fa-music"></i>
+                </div>
+                <div class="player-info">
+                    <div class="player-title" id="playerTitle">اختر مقطعاً للاستماع</div>
+                    <div class="player-artist" id="playerArtist">-</div>
+                </div>
+                <div class="player-controls">
+                    <button class="player-btn" onclick="playPrevious()" title="السابق">
+                        <i class="fas fa-step-forward"></i>
+                    </button>
+                    <button class="player-btn play-btn" onclick="togglePlay()" id="playBtn" title="تشغيل">
+                        <i class="fas fa-play"></i>
+                    </button>
+                    <button class="player-btn" onclick="playNext()" title="التالي">
+                        <i class="fas fa-step-backward"></i>
+                    </button>
+                </div>
+                <div class="player-progress-container">
+                    <div class="progress-bar-wrapper">
+                        <span class="time-label" id="currentTime">0:00</span>
+                        <div class="music-progress" id="progressBar" onclick="seekTo(event)">
+                            <div class="music-progress-fill" id="progressFill"></div>
+                        </div>
+                        <span class="time-label" id="duration">0:00</span>
+                    </div>
+                </div>
+                <div class="volume-control">
+                    <button class="player-btn" onclick="toggleMute()">
+                        <i class="fas fa-volume-up" id="volumeIcon"></i>
+                    </button>
+                    <div class="volume-slider" onclick="setVolume(event)">
+                        <div class="volume-slider-fill" id="volumeFill"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Hidden Audio Element -->
+            <audio id="audioPlayer" preload="metadata"></audio>
+            
+            <!-- Recommended Music Section -->
+            <div class="music-section" data-aos="fade-up">
+                <div class="section-header">
+                    <h2><i class="fas fa-heart"></i> موسيقى مقترحة للأعراس</h2>
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="بحث في الموسيقى..." id="searchInput" oninput="filterMusicList()">
+                    </div>
+                </div>
+                
+                <!-- Category Tabs -->
+                <div class="category-tabs" id="categoryTabs">
+                    <button class="category-tab active" data-category="all" onclick="filterByCategory('all')">الكل</button>
+                    <button class="category-tab" data-category="romantic" onclick="filterByCategory('romantic')">رومانسي</button>
+                    <button class="category-tab" data-category="traditional" onclick="filterByCategory('traditional')">تراثي</button>
+                    <button class="category-tab" data-category="modern" onclick="filterByCategory('modern')">حديث</button>
+                    <button class="category-tab" data-category="instrumental" onclick="filterByCategory('instrumental')">آلات</button>
+                </div>
+                
+                <!-- Music List -->
+                <ul class="music-list" id="recommendedMusicList">
+                    <!-- Populated by JS -->
+                </ul>
+            </div>
+            
+            <!-- My Uploads Section -->
+            <div class="music-section" data-aos="fade-up">
+                <div class="section-header">
+                    <h2><i class="fas fa-cloud-upload-alt"></i> ملفاتي المرفوعة</h2>
+                    <button class="btn btn-outline btn-sm" onclick="document.getElementById('fileInput').click()">
+                        <i class="fas fa-plus"></i>
+                        رفع ملف صوتي
+                    </button>
+                </div>
+                
+                <!-- Upload Zone -->
+                <div class="upload-zone" onclick="document.getElementById('fileInput').click()">
+                    <i class="fas fa-music"></i>
+                    <p>اضغط هنا أو اسحب ملف MP3 أو WAV لرفعه (حد أقصى 20MB)</p>
+                    <input type="file" id="fileInput" class="upload-input" accept="audio/*" onchange="handleAudioUpload(this.files[0])">
+                </div>
+
+                <!-- Or add a direct link -->
+                <div style="display:flex; align-items:center; gap:10px; margin:16px 0; color:#9CA3AF;">
+                    <div style="flex:1;height:1px;background:rgba(255,255,255,0.1);"></div>
+                    <span>أو أضف رابط أغنية مباشر</span>
+                    <div style="flex:1;height:1px;background:rgba(255,255,255,0.1);"></div>
+                </div>
+                <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                    <input type="url" id="musicUrlInput" placeholder="https://example.com/song.mp3"
+                           style="flex:1; min-width:220px; padding:12px 16px; border-radius:10px; border:1px solid rgba(255,255,255,0.15); background:rgba(255,255,255,0.05); color:#fff;">
+                    <button class="btn btn-outline btn-sm" onclick="handleAudioLink()">
+                        <i class="fas fa-link"></i> إضافة الرابط
+                    </button>
+                </div>
+                
+                <!-- Uploaded Files List -->
+                <ul class="music-list" id="uploadedMusicList">
+                    <!-- Populated by JS -->
+                </ul>
+                
+                <!-- Empty State for uploads -->
+                <div class="empty-state" id="uploadsEmptyState" style="display: none;">
+                    <i class="fas fa-music"></i>
+                    <p>لم تقم برفع أي ملفات بعد</p>
+                </div>
+            </div>
+            
+            <!-- Save Selection Button -->
+            <div style="text-align: center; margin-top: 20px;" data-aos="fade-up">
+                <button class="btn btn-primary btn-lg" onclick="saveMusicSelection()">
+                    <i class="fas fa-save"></i>
+                    حفظ اختيار الموسيقى
+                </button>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="js/firebase-config.js"></script>
+    <script src="js/db.js"></script>
+    <script src="js/telegram-notify-hook.js"></script>
+    <script src="js/sidebar.js"></script>
+    
+    <script>
+        // ===================================
+        // Music Module - Global Variables
+        // ===================================
+        const audioPlayer = document.getElementById('audioPlayer');
+        let currentTrack = null;
+        let isPlaying = false;
+        let currentPlaylist = [];
+        let currentIndex = 0;
+        let selectedTracks = new Set();
+        let uploadedTracks = [];
+        
+        // ===================================
+        // قائمة الأغاني الكاملة من الاستضافة
+        // ===================================
+        const MUSIC_BASE_URL = 'https://assets.da3watfarah.com/music/';
+        
+        const recommendedMusic = [
+            // أغاني الأعراس والمناسبات
+            { id: 's1', title: 'أنكتابلي', artist: 'أغنية عرس', duration: '', category: 'romantic', url: MUSIC_BASE_URL + '02.Enkatable.mp3' },
+            { id: 's2', title: 'وا ملاه', artist: 'أغنية فرح', duration: '', category: 'romantic', url: MUSIC_BASE_URL + '02.We_Maloh.mp3' },
+            { id: 's3', title: 'أجمل قصة حب', artist: 'أغنية رومانسية', duration: '', category: 'romantic', url: MUSIC_BASE_URL + '04.Agmal_Qset_Hob.mp3' },
+            { id: 's4', title: 'قولوا لمزون البلد', artist: 'أغنية شعبية', duration: '', category: 'traditional', url: MUSIC_BASE_URL + '04_-_2olo_Lm2zon_ElBalad.mp3' },
+            { id: 's5', title: 'كتبوا كتابك', artist: 'أغنية زفة', duration: '', category: 'traditional', url: MUSIC_BASE_URL + '05_-_Katabo_Ketabek.mp3' },
+            { id: 's6', title: 'عيشني أكثر', artist: 'أغنية رومانسية', duration: '', category: 'romantic', url: MUSIC_BASE_URL + '06-_Ayeshni_Aktar.mp3' },
+            { id: 's7', title: 'روحي واخداني', artist: 'أغنية فرح', duration: '', category: 'romantic', url: MUSIC_BASE_URL + '08_-_Ro7y_Wakhdany.mp3' },
+            { id: 's8', title: 'بينس بين', artist: 'أغنية شعبية', duration: '', category: 'traditional', url: MUSIC_BASE_URL + '09.Bahess_Been.mp3' },
+            { id: 's9', title: 'بيت كبير', artist: 'أغنية فرح', duration: '', category: 'modern', url: MUSIC_BASE_URL + '09.Beit_Kebeer.mp3' },
+            { id: 's10', title: 'جنبت على طول', artist: 'أغنية رومانسية', duration: '', category: 'romantic', url: MUSIC_BASE_URL + '09.Ganbak_Ala_Toul.mp3' },
+            { id: 's11', title: 'لمستك', artist: 'أغنية حزينة', duration: '', category: 'romantic', url: MUSIC_BASE_URL + '09.Lamstek.mp3' },
+            
+            // أغاني رمضان
+            { id: 's12', title: 'مرحبا شهر الصوم', artist: 'عبدالعزيز محمود', duration: '', category: 'traditional', url: MUSIC_BASE_URL + 'Abdelaziz_Mahmoud_-_Merhb_Shahr_Elsoum.mp3' },
+            { id: 's13', title: 'أهلاً رمضان', artist: 'عبدو الصروغي', duration: '', category: 'traditional', url: MUSIC_BASE_URL + 'Abdo_Elsarogy_-_Ahlan_Ramdan.mp3' },
+            { id: 's14', title: 'رمضان جانا', artist: 'محمد عبدالمطلب', duration: '', category: 'traditional', url: MUSIC_BASE_URL + 'Mohamed_Abdelmtlb_-_Ramdan_Gana.mp3' },
+            { id: 's15', title: 'هاتوا الفوانيس', artist: 'محمد فوزي', duration: '', category: 'traditional', url: MUSIC_BASE_URL + 'Mohamed_Fawzy_-_Hatoo_El_Fawnes.mp3' },
+            { id: 's16', title: 'والله بعودة', artist: 'محمد قنديل', duration: '', category: 'modern', url: MUSIC_BASE_URL + 'Mohamed_Qandel_-_Wallah_be3oda.mp3' },
+            { id: 's17', title: 'يا بركة رمضان', artist: 'محمد رشدي', duration: '', category: 'traditional', url: MUSIC_BASE_URL + 'Mohamed_roshdy_-_Ya_Barket_Ramdan.mp3' },
+            
+            // أغاني ألبوماتي (مجموعة متنوعة)
+            { id: 'a1', title: 'يا بالي حبيبي', artist: 'إليسا', duration: '', category: 'romantic', url: MUSIC_BASE_URL + 'Albumaty.Com.Elissa.Aa_Bali_Habibi.mp3' },
+            { id: 'a2', title: 'فرحة محمود', artist: 'محمود العسيلى', duration: '', category: 'modern', url: MUSIC_BASE_URL + 'Albumaty.Com.Mahmoud.El.Esseily.Farha.mp3' },
+            { id: 'a3', title: 'دنيا سمير عيد الميلاد', artist: 'سمير', duration: '', category: 'modern', url: MUSIC_BASE_URL + 'Albumaty.Com_Donia_Samir_Eid_Milad.mp3' },
+            { id: 'a4', title: 'عيد ميلاد سعيد جروب ألبوماتي', artist: 'ألبوماتي', duration: '', category: 'modern', url: MUSIC_BASE_URL + 'Albumaty.Com_Group_Happy_Birth_Day.mp3' },
+            { id: 'a5', title: 'حمادة هلال عيد الميلاد', artist: 'حمادة هلال', duration: '', category: 'modern', url: MUSIC_BASE_URL + 'Albumaty.Com_Hamada_Helal_Eid_Milad.mp3' },
+            { id: 'a6', title: 'كازم الساهر عيد الميلاد', artist: 'كازم الساهر', duration: '', category: 'modern', url: MUSIC_BASE_URL + 'Albumaty.Com_Kazem_Elsaher_Eid_Milad.mp3' },
+            { id: 'a7', title: 'مجد القصام عيد ميلادو', artist: 'مجد القصام', duration: '', category: 'modern', url: MUSIC_BASE_URL + 'Albumaty.Com_Majd_Elkasem_Eid_Milado.mp3' },
+            { id: 'a8', title: 'نانسي عجرم صنا الحلوة', artist: 'نانسي عجرم', duration: '', category: 'modern', url: MUSIC_BASE_URL + 'Albumaty.Com_Nancy_Ajram_Sana_Helwa.mp3' },
+            { id: 'a9', title: 'تامر حسني كل صنا', artist: 'تامر حسني', duration: '', category: 'modern', url: MUSIC_BASE_URL + 'Albumaty.Com_Tamer_Hosni_Koll_Sana.mp3' },
+            { id: 'a10', title: 'مابروفوك مجهول', artist: 'ألبوماتي', duration: '', category: 'modern', url: MUSIC_BASE_URL + 'Albumaty.Com_Unknown_Mabrouk.mp3' },
+            { id: 'a11', title: 'صنا الحلوة فول مجهول', artist: 'ألبوماتي', duration: '', category: 'modern', url: MUSIC_BASE_URL + 'Albumaty.Com_Unknown_Sana_Helwa_Foull.mp3' },
+            { id: 'a12', title: 'وليد توفيق أنزل يا غمال', artist: 'وليد توفيق', duration: '', category: 'romantic', url: MUSIC_BASE_URL + 'Albumaty.Com_Walid_Tawfik_Enzel_Ya_gamel.mp3' },
+            { id: 'a13', title: 'ابوه دب وكتنة', artist: 'ألبوماتي', duration: '', category: 'modern', url: MUSIC_BASE_URL + 'Albumaty.Com_abw_dh_wktna_.mp3' },
+            { id: 'a14', title: 'أحمد سعد الليمون الحلو ده من فيلم أمهم', artist: 'أحمد سعد', duration: '', category: 'modern', url: MUSIC_BASE_URL + 'Albumaty.Com_ahmd_sad_alywm_alhlw_dh_-_mn_fylm_amhm.mp3' },
+            { id: 'a15', title: 'حمادة هلال ألغاز أهلي', artist: 'حمادة هلال', duration: '', category: 'modern', url: MUSIC_BASE_URL + 'Albumaty.Com_hmadh_hlal_alngah_ahly_hdyt.mp3' },
+            { id: 'a16', title: 'حمودة الخدر من جد وجد', artist: 'حمودة الخدر', duration: '', category: 'modern', url: MUSIC_BASE_URL + 'Albumaty.Com_hmwd_alkhdr_mn_gd_wgd.mp3' },
+            { id: 'a17', title: 'حمودة الخدر يا هلا بالهلالم', artist: 'حمودة الخدر', duration: '', category: 'modern', url: MUSIC_BASE_URL + 'Albumaty.Com_hmwd_alkhdr_ya_hla_balhlm.mp3' },
+            { id: 'a18', title: 'منوعات أصبواء', artist: 'ألبوماتي', duration: '', category: 'modern', url: MUSIC_BASE_URL + 'Albumaty.Com_mnwaat_alsbwa.mp3' },
+            { id: 'a19', title: 'منوعات أم كلثم', artist: 'ألبوماتي', duration: '', category: 'traditional', url: MUSIC_BASE_URL + 'Albumaty.Com_mnwaat_am_klth.mp3' },
+            { id: 'a20', title: 'منوعات أول فرحة', artist: 'ألبوماتي', duration: '', category: 'modern', url: MUSIC_BASE_URL + 'Albumaty.Com_mnwaat_awl_frht.mp3' },
+            { id: 'a21', title: 'منوعات بركولة', artist: 'ألبوماتي', duration: '', category: 'modern', url: MUSIC_BASE_URL + 'Albumaty.Com_mnwaat_barkwlh.mp3' },
+            { id: 'a22', title: 'منوعات بسيلة يا الهوى', artist: 'ألبوماتي', duration: '', category: 'romantic', url: MUSIC_BASE_URL + 'Albumaty.Com_mnwaat_bsylha_ya_hlwh.mp3' },
+            { id: 'a23', title: 'منوعات حلكتك', artist: 'ألبوماتي', duration: '', category: 'modern', url: MUSIC_BASE_URL + 'Albumaty.Com_mnwaat_halktk.mp3' },
+            { id: 'a24', title: 'منوعات حلكتك 2', artist: 'ألبوماتي', duration: '', category: 'modern', url: MUSIC_BASE_URL + 'Albumaty.Com_mnwaat_halktk_2.mp3' },
+            { id: 'a25', title: 'منوعات نوس الألياف', artist: 'ألبوماتي', duration: '', category: 'modern', url: MUSIC_BASE_URL + 'Albumaty.Com_mnwaat_nnws_alaylh.mp3' },
+            { id: 'a26', title: 'منوعات وسلي سلي', artist: 'ألبوماتي', duration: '', category: 'modern', url: MUSIC_BASE_URL + 'Albumaty.Com_mnwaat_wsly_sly.mp3' },
+            { id: 'a27', title: 'منوعات يارب تركت منى', artist: 'ألبوماتي', duration: '', category: 'romantic', url: MUSIC_BASE_URL + 'Albumaty.Com_mnwaat_yarb_bark_lmtna.mp3' },
+            { id: 'a28', title: 'منوعات يارب ياربنا', artist: 'ألبوماتي', duration: '', category: 'modern', url: MUSIC_BASE_URL + 'Albumaty.Com_mnwaat_yarb_ya_rbna.mp3' },
+            { id: 'a29', title: 'نداء مغدي هراوي اللمزة', artist: 'نداء مغدي', duration: '', category: 'modern', url: MUSIC_BASE_URL + 'Albumaty.Com_ndaa_mgdy_hnrwh_llmazwn.mp3' },
+            { id: 'a30', title: 'شرطة الأعراس', artist: 'ألبوماتي', duration: '', category: 'traditional', url: MUSIC_BASE_URL + 'Albumaty.Com_ndaa_shrat_st_alarays.mp3' },
+            { id: 'a31', title: 'شرطة النبات ضد الأعراس', artist: 'ألبوماتي', duration: '', category: 'traditional', url: MUSIC_BASE_URL + 'Albumaty.Com_ndaa_shrat_st_albnat_-_hnt_alarws.mp3' },
+            { id: 'a32', title: 'تمر حسني كده - آلاف مستشفى ألام رمضان', artist: 'تمر حسني', duration: '', category: 'modern', url: MUSIC_BASE_URL + 'Albumaty.Com_tamr_hsni_kdha_-_aalan_mstshfi_alanas_rmdan_T├Ô?.maudio' },
+            
+            // أغاني متنوعة
+            { id: 'e1', title: 'آه يا يا وليد', artist: 'الصعاليكي', duration: '', category: 'traditional', url: MUSIC_BASE_URL + 'Elsolasy_Elmareh_-_Aho_Ga_Ya_Willad.mp3' },
+            
+            // نغمات كوم
+            { id: 'n1', title: 'محمد الطوكي وانت بتكتب كتاك', artist: 'نغمات كوم', duration: '', category: 'modern', url: MUSIC_BASE_URL + 'Nghmaty.Com_m7md_al6wky_wint_bktbk_ktabk.mp3' },
+            
+            // ملفات مرقمة
+            { id: 'm1', title: 'مقطع 61', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + '061-i.mp3' },
+            { id: 'm2', title: 'مقطع 62', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + '062-.mp3' },
+            { id: 'm3', title: 'مقطع 64', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + '064-.mp3' },
+            { id: 'm4', title: 'مقطع 66', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + '066-.mp3' },
+            { id: 'm5', title: 'مقطع 67', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + '067-.mp3' },
+            { id: 'm6', title: 'مقطع 68', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + '068-.mp3' },
+            { id: 'm7', title: 'مقطع 69', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + '069-.mp3' },
+            { id: 'm8', title: 'مقطع 70', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + '070-.mp3' },
+            { id: 'm9', title: 'مقطع 71', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + '071-.mp3' },
+            { id: 'm10', title: 'مقطع 72', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + '072-.mp3' },
+            { id: 'm11', title: 'مقطع 73', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + '073-.mp3' },
+            { id: 'm12', title: 'مقطع 74', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + '074-.mp3' },
+            { id: 'm13', title: 'مقطع 75', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + '075-.mp3' },
+            { id: 'm14', title: 'مقطع 77', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + '077-.mp3' },
+            
+            // ملفات m220xxx
+            { id: 'x1', title: 'مقطع موسيقي 336', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + 'm220336.mp3' },
+            { id: 'x2', title: 'مقطع موسيقي 337', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + 'm220337.mp3' },
+            { id: 'x3', title: 'مقطع موسيقي 340', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + 'm220340.mp3' },
+            { id: 'x4', title: 'مقطع موسيقي 343', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + 'm220343.mp3' },
+            { id: 'x5', title: 'مقطع موسيقي 345', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + 'm220345.mp3' },
+            { id: 'x6', title: 'مقطع موسيقي 347', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + 'm220347.mp3' },
+            { id: 'x7', title: 'مقطع موسيقي 348', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + 'm220348.mp3' },
+            { id: 'x8', title: 'مقطع موسيقي 349', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + 'm220349.mp3' },
+            { id: 'x9', title: 'مقطع موسيقي 351', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + 'm220351.mp3' },
+            { id: 'x10', title: 'مقطع موسيقي 354', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + 'm220354.mp3' },
+            { id: 'x11', title: 'مقطع موسيقي 357', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + 'm220357.mp3' },
+            { id: 'x12', title: 'مقطع موسيقي 359', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + 'm220359.mp3' },
+            { id: 'x13', title: 'مقطع موسيقي 360', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + 'm220360.mp3' },
+            { id: 'x14', title: 'مقطع موسيقي 361', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + 'm220361.mp3' },
+            { id: 'x15', title: 'مقطع موسيقي 362', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + 'm220362.mp3' },
+            { id: 'x16', title: 'مقطع موسيقي 369', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + 'm220369.mp3' },
+            { id: 'x17', title: 'مقطع موسيقي 374', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + 'm220374.mp3' },
+            { id: 'x18', title: 'مقطع موسيقي 379', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + 'm220379.mp3' },
+            { id: 'x19', title: 'مقطع موسيقي 380', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + 'm220380.mp3' },
+            { id: 'x20', title: 'مقطع موسيقي 381', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + 'm220381.mp3' },
+            { id: 'x21', title: 'مقطع موسيقي 385', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + 'm220385.mp3' },
+            { id: 'x22', title: 'مقطع موسيقي 386', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + 'm220386.mp3' },
+            { id: 'x23', title: 'مقطع موسيقي 389', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + 'm220389.mp3' },
+            { id: 'x24', title: 'مقطع موسيقي 391', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + 'm220391.mp3' },
+            
+            // ملفات أخرى
+            { id: 'o1', title: 'مقطع 39fU236q', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + '39fU236q.mp3' },
+            { id: 'o2', title: 'مقطع 44', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + '44.mp3' },
+            { id: 'o3', title: 'مقطع 47hb9836', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + '47hb9836.mp3' },
+            { id: 'o4', title: 'ملف 1785531303827_jtpIqi', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + '1785531303827_jtpIqi.mp3' },
+            { id: 'o5', title: 'ملف 1785532492804_8utner', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + '1785532492804_8utner.mp3' },
+            { id: 'o6', title: 'ملف 1785711133997_qmf76u', artist: 'موسيقى', duration: '', category: 'instrumental', url: MUSIC_BASE_URL + '1785711133997_qmf76u.mp3' },
+        ];
+        
+        // ===================================
+        // Initialize Music Page
+        // ===================================
+        document.addEventListener('DOMContentLoaded', function() {
+            initAudioPlayer();
+            renderRecommendedMusic();
+            loadUploadedTracks();
+            loadSavedSelection();
+            AOS.init({ duration: 600, once: true });
+        });
+        
+        // ===================================
+        // Audio Player Functions
+        // ===================================
+        function initAudioPlayer() {
+            audioPlayer.addEventListener('timeupdate', updateProgress);
+            audioPlayer.addEventListener('loadedmetadata', updateDuration);
+            audioPlayer.addEventListener('ended', playNext);
+            audioPlayer.addEventListener('play', () => setPlayingState(true));
+            audioPlayer.addEventListener('pause', () => setPlayingState(false));
+        }
+        
+        function togglePlay() {
+            if (!currentTrack) {
+                if (currentPlaylist.length > 0) {
+                    playTrack(currentPlaylist[0], 0);
+                }
+                return;
+            }
+            
+            if (isPlaying) {
+                audioPlayer.pause();
+            } else {
+                audioPlayer.play();
+            }
+        }
+        
+        function playTrack(track, index) {
+            if (!track) return;
+            
+            currentTrack = track;
+            currentIndex = index;
+            
+            // Update UI
+            document.getElementById('playerTitle').textContent = track.title || track.name;
+            document.getElementById('playerArtist').textContent = track.artist || 'ملف شخصي';
+            document.getElementById('playerAlbumArt').classList.add('playing');
+            
+            // Update active state in lists
+            document.querySelectorAll('.music-item').forEach(item => item.classList.remove('active', 'playing'));
+            const activeItem = document.querySelector(`.music-item[data-id="${track.id}"]`);
+            if (activeItem) {
+                activeItem.classList.add('active', 'playing');
+            }
+            
+            // Stop any simulated progress
+            clearInterval(simulatedInterval);
+            
+            // Play audio if URL exists
+            if (track.url) {
+                audioPlayer.src = track.url;
+                audioPlayer.load();
+                audioPlayer.play().catch(e => {
+                    console.log('Playback prevented or error:', e);
+                    // Show notification about playback issue
+                    if (window.db && window.db.showNotification) {
+                        window.db.showNotification('لا يمكن تشغيل الأغنية حالياً', 'error');
+                    }
+                });
+            } else {
+                // For demo tracks without actual URLs - simulate
+                isPlaying = true;
+                setPlayingState(true);
+                simulateProgress();
+            }
+        }
+        
+        function playNext() {
+            if (currentIndex < currentPlaylist.length - 1) {
+                playTrack(currentPlaylist[currentIndex + 1], currentIndex + 1);
+            } else {
+                playTrack(currentPlaylist[0], 0);
+            }
+        }
+        
+        function playPrevious() {
+            if (currentIndex > 0) {
+                playTrack(currentPlaylist[currentIndex - 1], currentIndex - 1);
+            } else {
+                playTrack(currentPlaylist[currentPlaylist.length - 1], currentPlaylist.length - 1);
+            }
+        }
+        
+        function setPlayingState(playing) {
+            isPlaying = playing;
+            const playBtn = document.getElementById('playBtn');
+            const albumArt = document.getElementById('playerAlbumArt');
+            
+            playBtn.innerHTML = `<i class="fas fa-${playing ? 'pause' : 'play'}"></i>`;
+            
+            if (playing) {
+                albumArt.classList.add('playing');
+            } else {
+                albumArt.classList.remove('playing');
+            }
+        }
+        
+        function updateProgress() {
+            if (audioPlayer.duration) {
+                const progress = (audioPlayer.currentTime / audioPlayer.duration) * 100;
+                document.getElementById('progressFill').style.width = progress + '%';
+                document.getElementById('currentTime').textContent = formatTime(audioPlayer.currentTime);
+            }
+        }
+        
+        function updateDuration() {
+            document.getElementById('duration').textContent = formatTime(audioPlayer.duration);
+        }
+        
+        function seekTo(event) {
+            const bar = event.currentTarget;
+            const rect = bar.getBoundingClientRect();
+            const percent = (rect.right - event.clientX) / rect.width; // RTL
+            audioPlayer.currentTime = audioPlayer.duration * percent;
+        }
+        
+        function toggleMute() {
+            audioPlayer.muted = !audioPlayer.muted;
+            document.getElementById('volumeIcon').className = `fas fa-volume-${audioPlayer.muted ? 'mute' : 'up'}`;
+        }
+        
+        function setVolume(event) {
+            const slider = event.currentTarget;
+            const rect = slider.getBoundingClientRect();
+            const percent = (rect.right - event.clientX) / rect.width;
+            audioPlayer.volume = Math.max(0, Math.min(1, percent));
+            document.getElementById('volumeFill').style.width = (percent * 100) + '%';
+        }
+        
+        function formatTime(seconds) {
+            if (!seconds || isNaN(seconds)) return '0:00';
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs.toString().padStart(2, '0')}`;
+        }
+        
+        // Simulate progress for demo tracks
+        let simulatedInterval = null;
+        function simulateProgress() {
+            clearInterval(simulatedInterval);
+            let fakeTime = 0;
+            const fakeDuration = 240; // 4 minutes
+            
+            simulatedInterval = setInterval(() => {
+                if (!isPlaying) return;
+                fakeTime += 1;
+                const progress = (fakeTime / fakeDuration) * 100;
+                document.getElementById('progressFill').style.width = progress + '%';
+                document.getElementById('currentTime').textContent = formatTime(fakeTime);
+                
+                if (fakeTime >= fakeDuration) {
+                    clearInterval(simulatedInterval);
+                    playNext();
+                }
+            }, 1000);
+        }
+        
+        // ===================================
+        // Render Recommended Music
+        // ===================================
+        function renderRecommendedMusic(filter = 'all', search = '') {
+            const list = document.getElementById('recommendedMusicList');
+            
+            let filtered = recommendedMusic;
+            
+            if (filter !== 'all') {
+                filtered = filtered.filter(m => m.category === filter);
+            }
+            
+            if (search) {
+                filtered = filtered.filter(m => 
+                    m.title.includes(search) || m.artist.includes(search)
+                );
+            }
+            
+            if (filtered.length === 0) {
+                list.innerHTML = `
+                    <li class="empty-state">
+                        <i class="fas fa-search"></i>
+                        <p>لا توجد نتائج</p>
+                    </li>
+                `;
+                return;
+            }
+            
+            currentPlaylist = filtered;
+            
+            list.innerHTML = filtered.map((track, index) => `
+                <li class="music-item ${currentTrack?.id === track.id ? 'active playing' : ''}" 
+                    data-id="${track.id}"
+                    onclick="playTrack(recommendedMusic.find(t => t.id === track.id), ${index})">
+                    <span class="item-index">${index + 1}</span>
+                    <div class="playing-indicator">
+                        <div class="playing-bar"></div>
+                        <div class="playing-bar"></div>
+                        <div class="playing-bar"></div>
+                        <div class="playing-bar"></div>
+                    </div>
+                    <div class="item-thumbnail">
+                        <i class="fas fa-${getCategoryIcon(track.category)}"></i>
+                    </div>
+                    <div class="item-details">
+                        <div class="item-title">${track.title}</div>
+                        <div class="item-meta">${track.artist} • ${getCategoryName(track.category)}</div>
+                    </div>
+                    <span class="item-duration">${track.duration || '🎵'}</span>
+                    <div class="item-actions" onclick="event.stopPropagation()">
+                        <button class="item-action-btn ${selectedTracks.has(track.id) ? 'selected' : ''}" 
+                                onclick="toggleSelectTrack('${track.id}', this)"
+                                title="اختيار">
+                            <i class="fas fa-check"></i>
+                        </button>
+                    </div>
+                </li>
+            `).join('');
+        }
+        
+        // ===================================
+        // Filter & Search
+        // ===================================
+        function filterByCategory(category) {
+            document.querySelectorAll('.category-tab').forEach(tab => {
+                tab.classList.toggle('active', tab.dataset.category === category);
+            });
+            renderRecommendedMusic(category, document.getElementById('searchInput').value);
+        }
+        
+        function filterMusicList() {
+            const search = document.getElementById('searchInput').value;
+            const activeTab = document.querySelector('.category-tab.active');
+            const category = activeTab ? activeTab.dataset.category : 'all';
+            renderRecommendedMusic(category, search);
+        }
+        
+        // ===================================
+        // Track Selection
+        // ===================================
+        function toggleSelectTrack(trackId, btn) {
+            if (selectedTracks.has(trackId)) {
+                selectedTracks.delete(trackId);
+                btn.classList.remove('selected');
+            } else {
+                selectedTracks.add(trackId);
+                btn.classList.add('selected');
+            }
+            updateSelectedCount();
+        }
+        
+        function updateSelectedCount() {
+            document.querySelector('#selectedCount strong').textContent = selectedTracks.size;
+        }
+        
+        // ===================================
+        // Audio Upload to R2
+        // ===================================
+        async function handleAudioUpload(file) {
+            if (!file) return;
+            if (!window.currentUserId) {
+                window.db.showNotification('يجب تسجيل الدخول أولاً', 'error');
+                return;
+            }
+            
+            // Validate file
+            if (!file.type.startsWith('audio/')) {
+                window.db.showNotification('يرجى اختيار ملف صوتي', 'error');
+                return;
+            }
+            
+            if (file.size > 20 * 1024 * 1024) {
+                window.db.showNotification('حجم الملف كبير جداً (الحد الأقصى 20MB)', 'error');
+                return;
+            }
+            
+            try {
+                window.db.showNotification('جاري رفع الملف...', 'info');
+                
+                const result = await window.db.uploadToR2(file, 'audio');
+                
+                if (result.success) {
+                    await saveAudioToFirebase({
+                        name: file.name,
+                        url: result.url,
+                        key: result.key,
+                        size: file.size,
+                        type: file.type,
+                        uploadedAt: Date.now()
+                    });
+                    
+                    window.db.showNotification('تم رفع الملف بنجاح', 'success');
+                    loadUploadedTracks();
+                } else {
+                    throw new Error(result.error);
+                }
+            } catch (error) {
+                console.error('Upload error:', error);
+                window.db.showNotification('حدث خطأ في رفع الملف', 'error');
+            }
+            
+            // Reset input
+            document.getElementById('fileInput').value = '';
+        }
+        
+        async function saveAudioToFirebase(audioData) {
+            if (!window.currentUserId) return;
+            
+            const audioRef = window.firebaseDb.ref(`users/${window.currentUserId}/music`).push();
+            await audioRef.set({
+                ...audioData,
+                isSelected: false
+            });
+            return audioRef.key;
+        }
+        
+        // ===================================
+        // Load Uploaded Tracks from Firebase
+        // ===================================
+        async function loadUploadedTracks() {
+            const list = document.getElementById('uploadedMusicList');
+            const emptyState = document.getElementById('uploadsEmptyState');
+            
+            if (!window.currentUserId) {
+                emptyState.style.display = 'block';
+                list.innerHTML = '';
+                return;
+            }
+            
+            try {
+                const snapshot = await window.rtdbOnce(`users/${window.currentUserId}/music`);
+                
+                if (snapshot) {
+                    uploadedTracks = Object.keys(snapshot).map(key => ({
+                        id: key,
+                        ...snapshot[key]
+                    }));
+                    
+                    if (uploadedTracks.length === 0) {
+                        emptyState.style.display = 'block';
+                        list.innerHTML = '';
+                    } else {
+                        emptyState.style.display = 'none';
+                        renderUploadedTracks(uploadedTracks);
+                    }
+                } else {
+                    uploadedTracks = [];
+                    emptyState.style.display = 'block';
+                    list.innerHTML = '';
+                }
+            } catch (error) {
+                console.error('Error loading music:', error);
+                emptyState.style.display = 'block';
+                list.innerHTML = '';
+            }
+        }
+        
+        function renderUploadedTracks(tracks) {
+            const list = document.getElementById('uploadedMusicList');
+            
+            list.innerHTML = tracks.map((track, index) => `
+                <li class="music-item ${currentTrack?.id === track.id ? 'active playing' : ''}" 
+                    data-id="${track.id}"
+                    onclick="playTrack(uploadedTracks.find(t => t.id === track.id), ${index})">
+                    <span class="item-index">${index + 1}</span>
+                    <div class="playing-indicator">
+                        <div class="playing-bar"></div>
+                        <div class="playing-bar"></div>
+                        <div class="playing-bar"></div>
+                        <div class="playing-bar"></div>
+                    </div>
+                    <div class="item-thumbnail" style="background: linear-gradient(135deg, #11998e, #38ef7d);">
+                        <i class="fas fa-file-audio"></i>
+                    </div>
+                    <div class="item-details">
+                        <div class="item-title">${track.name}</div>
+                        <div class="item-meta">${formatFileSize(track.size)} • ${formatDate(track.uploadedAt)}</div>
+                    </div>
+                    <div class="item-actions" onclick="event.stopPropagation()">
+                        <button class="item-action-btn ${track.isSelected ? 'selected' : ''}" 
+                                onclick="toggleUploadSelection('${track.id}')"
+                                title="اختيار">
+                            <i class="fas fa-check"></i>
+                        </button>
+                        <button class="item-action-btn" onclick="deleteAudio('${track.id}', '${track.key}')" title="حذف">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </li>
+            `).join('');
+        }
+        
+        async function toggleUploadSelection(trackId) {
+            if (!window.currentUserId) return;
+            
+            const track = uploadedTracks.find(t => t.id === trackId);
+            if (track) {
+                track.isSelected = !track.isSelected;
+                await window.rtdbUpdate(`users/${window.currentUserId}/music/${trackId}`, {
+                    isSelected: track.isSelected
+                });
+                loadUploadedTracks();
+            }
+        }
+        
+        async function deleteAudio(trackId, r2Key) {
+            if (!confirm('هل أنت متأكد من حذف هذا الملف؟')) return;
+            
+            try {
+                if (r2Key) {
+                    await window.db.deleteFromR2(r2Key);
+                }
+                await window.rtdbRemove(`users/${window.currentUserId}/music/${trackId}`);
+                window.db.showNotification('تم حذف الملف بنجاح', 'success');
+                loadUploadedTracks();
+            } catch (error) {
+                console.error('Delete error:', error);
+                window.db.showNotification('حدث خطأ في الحذف', 'error');
+            }
+        }
+        
+        // ===================================
+        // Save & Load Selection
+        // ===================================
+        async function saveMusicSelection() {
+            if (!window.currentUserId) return;
+            
+            try {
+                const selection = {
+                    recommendedIds: Array.from(selectedTracks),
+                    uploadedIds: uploadedTracks.filter(t => t.isSelected).map(t => t.id),
+                    savedAt: Date.now()
+                };
+                
+                await window.rtdbSet(`users/${window.currentUserId}/musicSelection`, selection);
+                window.db.showNotification('تم حفظ اختيار الموسيقى بنجاح', 'success');
+            } catch (error) {
+                console.error('Save error:', error);
+                window.db.showNotification('حدث خطأ في الحفظ', 'error');
+            }
+        }
+        
+        async function loadSavedSelection() {
+            if (!window.currentUserId) return;
+            
+            try {
+                const selection = await window.rtdbOnce(`users/${window.currentUserId}/musicSelection`);
+                
+                if (selection) {
+                    // Restore recommended selections
+                    if (selection.recommendedIds) {
+                        selection.recommendedIds.forEach(id => selectedTracks.add(id));
+                        updateSelectedCount();
+                        
+                        // Update UI buttons
+                        setTimeout(() => {
+                            selection.recommendedIds.forEach(id => {
+                                const btn = document.querySelector(`.music-item[data-id="${id}"] .item-action-btn`);
+                                if (btn) btn.classList.add('selected');
+                            });
+                        }, 100);
+                    }
+                }
+            } catch (error) {
+                console.error('Load selection error:', error);
+            }
+        }
+        
+        // ===================================
+        // Helper Functions
+        // ===================================
+        function getCategoryIcon(category) {
+            const icons = {
+                romantic: 'heart',
+                traditional: 'drum',
+                modern: 'star',
+                instrumental: 'guitar'
+            };
+            return icons[category] || 'music';
+        }
+        
+        function getCategoryName(category) {
+            const names = {
+                romantic: 'رومانسي',
+                traditional: 'تراثي',
+                modern: 'حديث',
+                instrumental: 'آلات'
+            };
+            return names[category] || category;
+        }
+        
+        function formatFileSize(bytes) {
+            if (!bytes) return '0 B';
+            const k = 1024;
+            const sizes = ['B', 'KB', 'MB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+        }
+        
+        function formatDate(timestamp) {
+            if (!timestamp) return '';
+            return new Date(timestamp).toLocaleDateString('ar-SA', {
+                month: 'short',
+                day: 'numeric'
+            });
+        }
+        
+        console.log('✅ Music page initialized');
+    </script>
+    <script src="/js/pwa-manager.js" defer></script>
+</body>
+</html>
